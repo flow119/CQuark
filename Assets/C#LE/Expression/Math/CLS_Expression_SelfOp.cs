@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+
 namespace CSLE
 {
 
@@ -41,6 +43,11 @@ namespace CSLE
             get;
             private set;
         }
+		public bool hasCoroutine{
+			get{
+				return false;
+			}
+		}
         public CLS_Content.Value ComputeValue(CLS_Content content)
         {
             content.InStack(this);
@@ -60,6 +67,11 @@ namespace CSLE
 
             return content.Get(value_name);
         }
+
+		public IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine)
+		{
+			throw new Exception ("暂时不支持套用协程");
+		}
 
   
         public string value_name;

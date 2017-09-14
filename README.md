@@ -4,8 +4,26 @@
 
 如果在非Unity环境下运行，直接删除Asset下_Unity文件夹即可使用
 
-# 0.7.0 把C#LightEvil搬过来
+# 0.7.2
+ScriptMono增加Inspector(选择加载类型，重载文本按钮等)
+支持协程~~
+
+# 0.7.1 
+增加ScriptMono，像MonoBehaviour
+
+# 0.7.0 
+把C#LightEvil搬过来
 源码地址： https://github.com/lightszero/cslightcore
+
 增加了2个Unity的Demo
 
-# 0.7.1 增加协程
+
+#TODO
+下个版本
+1ScriptMono增加协程
+2文件全部从StreamingAssets或Persistent文件夹载入（更接近热更方案）
+下下个版本
+3增加载入单个文件的方法
+4ScriptMono增加使用单独文件或使用文本string作为类的方法
+
+

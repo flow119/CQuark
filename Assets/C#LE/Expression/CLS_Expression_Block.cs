@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+
 namespace CSLE
 {
 
@@ -40,24 +42,56 @@ namespace CSLE
             get;
             private set;
         }
+		public bool hasCoroutine{
+			get{
+				if(listParam == null || listParam.Count == 0)
+					return false;
+				foreach(ICLS_Expression expr in listParam){
+					if(expr.hasCoroutine)
+						return true;
+				}
+				return false;
+			}
+		}
         public CLS_Content.Value ComputeValue(CLS_Content content)
         {
             content.InStack(this);
             content.DepthAdd();
             CLS_Content.Value value = null;
-            foreach (ICLS_Expression i in listParam)
-            {
-                ICLS_Expression e =i  as ICLS_Expression;
-                if (e != null)
-                    value =e.ComputeValue(content);
+			foreach (ICLS_Expression i in listParam)
+			{
+				ICLS_Expression e =i  as ICLS_Expression;
+				if (e != null)
+					value =e.ComputeValue(content);
 
-
-                if (value!=null&&value.breakBlock != 0) break;
-            }
+				if (value!=null&&value.breakBlock != 0) break;
+			} 
             content.DepthRemove();
             content.OutStack(this);
-            return value;
+			return value;
         }
+		public IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine)
+		{
+			content.InStack(this);
+			content.DepthAdd();
+			CLS_Content.Value value = null;
+			foreach (ICLS_Expression i in listParam)
+			{
+				ICLS_Expression e =i  as ICLS_Expression;
+				if (e != null){
+					if(e.hasCoroutine){
+						yield return coroutine.StartNewCoroutine(e.CoroutineCompute(content, coroutine));
+					}else{
+						value =e.ComputeValue(content);
+						if (value != null && value.breakBlock != 0)
+							yield break;
+					}
+				}
+			}
+			content.DepthRemove();
+			content.OutStack(this);
+			yield break;
+		}
 
   
         public override string ToString()

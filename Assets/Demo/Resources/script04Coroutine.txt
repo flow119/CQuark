@@ -1,0 +1,35 @@
+Debug.Log("Start");
+
+float a = 0.1f;
+
+YieldWaitForSecond(1);
+
+Debug.Log("A");
+
+YieldWaitForSecond(1+2f);
+
+Debug.Log("B");
+
+YieldWaitForSecond(a);
+
+Debug.Log("C");
+
+YieldWaitForSecond(a+2);
+
+Debug.Log("D");
+
+YieldWaitForSecond(a == 0 ? 2f : 3f);
+
+Debug.Log("E");
+
+for(int i = 0; i < 5; i++){
+	YieldWaitForSecond(1f);
+	Debug.Log("" + i);
+}
+
+for(int i = 0; i < 5; i++){
+	if(i % 2 == 0){
+		YieldWaitForSecond(1f);
+		Debug.Log("" + i);
+	}
+}

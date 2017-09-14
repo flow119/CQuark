@@ -25,7 +25,8 @@ namespace CSLE
 
 
                 ICLS_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
+//                bool succ = Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
+				Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
                 //if (!succ) return null;
                 if (subvalue != null)
                 {

@@ -1,12 +1,10 @@
 ﻿/// C#Light/Evil
-/// 原作者 疯光无限 版本见ICLS_Environment.version
+/// 作者 疯光无限 版本见ICLS_Environment.version
 /// https://github.com/lightszero/CSLightStudio
 /// http://crazylights.cnblogs.com
-/// 
-/// CQuark
-/// https://github.com/flow119/CQuark
 /// 请勿删除此声明
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -276,6 +274,12 @@ namespace CSLE
             if (content == null) content = CreateContent();
             return expr.ComputeValue(content);
         }
+		public IEnumerator Expr_Coroutine(ICLS_Expression expr, CLS_Content content, ICoroutine coroutine)
+		{
+			if (content == null)
+				content = CreateContent();
+			yield return coroutine.StartNewCoroutine(expr.CoroutineCompute(content, coroutine));
+		}
 
         public void Project_Compile(Dictionary<string, IList<Token>> project, bool embDebugToken)
         {

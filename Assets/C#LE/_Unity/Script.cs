@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using CSLE;
+using System.Collections;
 
 class ScriptLogger : ICLS_Logger
 {
@@ -85,7 +86,11 @@ public class Script
         return value.value;
     }
 
-
+	public IEnumerator StartCoroutine(string script, ICoroutine coroutine){
+		var token = env.ParserToken(script);//词法分析
+		var expr = env.Expr_CompilerToken(token, false);//语法分析，语法块
+		yield return coroutine.StartNewCoroutine(env.Expr_Coroutine (expr, content, coroutine));
+	}
 //	public static void StartCoroutine(string script){
 //		var token = Instance.env.ParserToken(script);//词法分析
 //		var expr = Instance.env.Expr_CompilerToken(token, false);//语法分析，语法块

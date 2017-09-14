@@ -165,7 +165,7 @@ namespace CSLE
 
                         content.DepthRemove();
                     }
-                    catch (Exception err)
+                    catch (Exception )
                     {
                         string errinfo = "Dump Call lambda in:";
                         if (content.CallType != null) errinfo += content.CallType.Name + "::";

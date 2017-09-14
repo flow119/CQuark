@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+
 namespace CSLE
 {
 
@@ -47,6 +49,17 @@ namespace CSLE
             get;
             private set;
         }
+		public bool hasCoroutine{
+			get{
+				if(listParam == null || listParam.Count == 0)
+					return false;
+				foreach(ICLS_Expression expr in listParam){
+					if(expr.hasCoroutine)
+						return true;
+				}
+				return false;
+			}
+		}
         public CLS_Content.Value ComputeValue(CLS_Content content)
         {
             content.InStack(this);
@@ -78,7 +91,42 @@ namespace CSLE
             content.OutStack(this);
 
             return null;
-        }
+		}
+		public IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine)
+		{
+			content.InStack(this);
+			
+			if (_listParam != null && _listParam.Count > 0)
+			{
+				if(_listParam[0].hasCoroutine){
+					yield return coroutine.StartNewCoroutine(CoroutineCompute(content, coroutine));
+				}else{
+					CLS_Content.Value v = _listParam[0].ComputeValue(content);
+					object val = v.value;
+					if ((Type)value_type == typeof(CLS_Type_Var.var))
+					{
+						if(v.type!=null)
+							value_type = v.type;
+						
+					}
+					else if (v.type != value_type)
+					{
+						val = content.environment.GetType(v.type).ConvertTo(content, v.value, value_type);
+						
+					}
+					
+					content.DefineAndSet(value_name, value_type, val);
+				}
+			}
+			else
+			{
+				content.Define(value_name, value_type);
+			}
+			//设置环境变量为
+			content.OutStack(this);
+		}
+
+
         public string value_name;
         public CLType value_type;
         public override string ToString()

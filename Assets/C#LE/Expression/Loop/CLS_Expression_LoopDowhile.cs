@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+
 namespace CSLE
 {
 
@@ -41,6 +43,17 @@ namespace CSLE
             get;
             set;
         }
+		public bool hasCoroutine{
+			get{
+				if(listParam == null || listParam.Count == 0)
+					return false;
+				foreach(ICLS_Expression expr in listParam){
+					if(expr.hasCoroutine)
+						return true;
+				}
+				return false;
+			}
+		}
         public CLS_Content.Value ComputeValue(CLS_Content content)
         {
             content.InStack(this);
@@ -88,6 +101,63 @@ namespace CSLE
             //从上下文取值
             //_value = null;
         }
+		public IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine)
+		{
+			content.InStack(this);
+			content.DepthAdd();
+			ICLS_Expression expr_while = listParam[1] as ICLS_Expression;
+			ICLS_Expression expr_block = listParam[0] as ICLS_Expression;
+			
+//			CLS_Content.Value vrt = null;
+			do
+			{
+				if (expr_block != null)
+				{
+					if (expr_block is CLS_Expression_Block)
+					{
+						if(expr_block.hasCoroutine){
+							yield return coroutine.StartNewCoroutine(expr_block.CoroutineCompute(content, coroutine));
+						}else{
+							var v = expr_block.ComputeValue(content);
+							if (v != null)
+							{
+//								if (v.breakBlock > 2) vrt = v;
+								if (v.breakBlock > 1) break;
+							}
+						}
+					}
+					else
+					{
+						content.DepthAdd();
+						bool bbreak = false;
+						if(expr_block.hasCoroutine){
+							yield return coroutine.StartNewCoroutine(expr_block.CoroutineCompute(content, coroutine));
+						}else{
+							var v = expr_block.ComputeValue(content);
+							if (v != null)
+							{
+//								if (v.breakBlock > 2) vrt = v;
+								if (v.breakBlock > 1) bbreak = true;
+							}
+							content.DepthRemove();
+							if (bbreak) break;
+						}
+					}
+					//if (v.breakBlock == 1) continue;
+					//if (v.breakBlock == 2) break;
+					//if (v.breakBlock == 10) return v;
+				}
+			}
+			while ((bool)expr_while.ComputeValue(content).value);
+			//while ((bool)expr_while.ComputeValue(content).value);
+			content.DepthRemove();
+			content.OutStack(this);
+;
+			//for 逻辑
+			//做数学计算
+			//从上下文取值
+			//_value = null;
+		} 
 
 
         public override string ToString()

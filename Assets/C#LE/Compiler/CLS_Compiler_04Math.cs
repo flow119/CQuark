@@ -32,7 +32,10 @@ namespace CSLE
                 //}
                 if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")//函数表达式
                 {
-                    return Compiler_Expression_Function(tlist, content, pos, posend);
+					if(tlist[pos].text == "YieldWaitForSecond")
+						return Compiler_Expression_Coroutine(tlist, content, pos, posend);
+					else
+	                    return Compiler_Expression_Function(tlist, content, pos, posend);
                 }
                 else
                 {

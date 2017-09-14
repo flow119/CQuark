@@ -20,7 +20,7 @@ class script03 : IScriptBehaviour
     public void Update()
     {
         Transform trans = this.gameObject.GetComponent("Transform") as Transform;
-        Debug.Log("trans=" + trans);
+    
         trans.Rotate(Vector3.up, 5.0f);
     }
 

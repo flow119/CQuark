@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
+
 namespace CSLE
 {
     //值
@@ -47,7 +49,12 @@ namespace CSLE
             get;
         }
         CLS_Content.Value ComputeValue(CLS_Content content);
-
+		IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine);
+//		IEnumerator CoroutineCompute(CLS_Content content);
+		bool hasCoroutine
+		{
+			get;
+		}
         int tokenBegin
         {
             get;

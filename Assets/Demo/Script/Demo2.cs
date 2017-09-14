@@ -9,8 +9,8 @@ public class Demo2 : MonoBehaviour {
 
 //		Script.Init ();
 
-		Type tt = typeof(UnityEngine.GameObject);
-		Type t = Type.GetType ("UnityEngine.GameObject");
+//		Type tt = typeof(UnityEngine.GameObject);
+//		Type t = Type.GetType ("UnityEngine.GameObject");
 
 		//将函数Today()注册给脚本使用
 		Script.Instance.env.RegFunction (new CSLE.RegHelper_Function ((deleToday)Today));
@@ -39,7 +39,7 @@ public class Demo2 : MonoBehaviour {
 		Debug.Log ("result = " + obj);
 	}
 
-	//这个函数展示了如何执行一个文件里某个函数
+	//这个函数展示了如何执行一个文件(类)里某个函数
 	void ExecuteFileFunction(){
 		//TODO 执行文件里某个函数
 	}

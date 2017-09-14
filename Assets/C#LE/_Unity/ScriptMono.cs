@@ -7,13 +7,14 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 
 	public enum ECodeType
 	{
-		FunctionText,	//常用函数作为string
+//		FunctionBlock,	//一个函数块（一般用来测试）
+		FunctionsText,	//常用函数作为string
 		FileName,		//在StreamingAssets下的cs文件名
 		Text,			//cs文件作为string
 		TextAsset,		//cs文件作为TextAsset
 	}
 
-	public ECodeType m_codeType = ECodeType.FunctionText;
+	public ECodeType m_codeType = ECodeType.FunctionsText;
 
 	//如果!m_useTextAsset，则纯文本
 	public Script m_script = new Script();
@@ -37,6 +38,14 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 
 	public object StartNewCoroutine(IEnumerator method){
 		return StartCoroutine(method);
+	}
+
+	public object WaitForSecond(float time){
+		return StartCoroutine(Timer (time));
+	}
+
+	IEnumerator Timer(float time){
+		yield return new WaitForSeconds (time);
 	}
 
 	void Awake(){
@@ -76,7 +85,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 
 	void CallScript(string key){
 		switch (m_codeType) {
-		case ECodeType.FunctionText:
+		case ECodeType.FunctionsText:
 			if (!dictExpr.ContainsKey (key))
 				return;
 			var expr = dictExpr [key];
@@ -105,7 +114,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 		m_script.Reset ();
 		m_script.RegTypes ();
 		switch (m_codeType) {
-		case ECodeType.FunctionText:
+		case ECodeType.FunctionsText:
 			BuildScript ("Start", m_Start);
 			BuildScript ("OnEnable", m_OnEnable);
 			BuildScript ("OnDisable", m_OnDisable);
