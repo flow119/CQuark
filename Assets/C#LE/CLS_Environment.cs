@@ -1,7 +1,10 @@
 ﻿/// C#Light/Evil
-/// 作者 疯光无限 版本见ICLS_Environment.version
+/// 原作者 疯光无限 版本见ICLS_Environment.version
 /// https://github.com/lightszero/CSLightStudio
 /// http://crazylights.cnblogs.com
+/// 
+/// CQuark
+/// https://github.com/flow119/CQuark
 /// 请勿删除此声明
 using System;
 using System.Collections.Generic;
@@ -18,7 +21,7 @@ namespace CSLE
         {
             get
             {
-                return "0.64.1Beta";
+                return "0.7.0";
             }
         }
         public CLS_Environment(ICLS_Logger logger)
