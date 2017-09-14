@@ -1,29 +1,52 @@
-﻿# CQuark
-西瓜（CQuark）是一个简单的C#语法的脚本语言。前身是曾经自己写的一个脚本语言以及C#LightEvil（https://github.com/lightszero/cslightcore）。
-西瓜语法与C#完全一致，可以用于Unity热更新。
+## 西瓜
+CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity热更新。支持Windows,iOS,Android平台。
+本项目是在Unity3D项目环境下运行。如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。
 
-如果在非Unity环境下运行，直接删除Asset下_Unity文件夹即可使用
+西瓜的前身是疯光无线前辈写的C#LightEvil和自己曾经写的一个脚本语言。
 
-# 0.7.2
-ScriptMono增加Inspector(选择加载类型，重载文本按钮等)
-支持协程~~
+项目最新地址：    	https://github.com/flow119/CQuark
 
-# 0.7.1 
-增加ScriptMono，像MonoBehaviour
+疯光无线前辈的项目地址：https://github.com/lightszero/cslightcore
 
-# 0.7.0 
-把C#LightEvil搬过来
-源码地址： https://github.com/lightszero/cslightcore
-
-增加了2个Unity的Demo
+以及疯光无线的Unity案例：https://github.com/lightszero/CSLightStudio
 
 
-#TODO
+
+## 西瓜的优势
+
+* 可以热更新。
+* 纯C#语法，你不用去学lua了。
+* 编辑器下无需生成代码，如果你乐意，你直接拿.cs文件后缀改成.txt就能用。
+* 目前支持几乎所有常用C#语法，据说执行效率高于lua。
+
+
+
+
+## 版本更新记录
+2017-09-15 v0.7.1
+    
+    增加ScriptMono（类似MonoBehaviour）以及对应的Demo3
+	ScriptMono增加Inspector(选择加载类型，重载文本按钮等) 
+    支持协程(Coroutine)
+    
+2017-09-14 v0.7.0
+    
+    把cslightcore迁移过来，这个版本和cslight的0.64.1Beta完全一样
+    Unity的Demo1(执行函数块)
+    Unity的Demo2(执行类里的函数)
+
+
+## TODO
+
 下个版本
-1ScriptMono增加协程
-2文件全部从StreamingAssets或Persistent文件夹载入（更接近热更方案）
+
+* ScriptMono里增加调用协程的方法
+* 文件从StreamingAssets或Persistent目录加载（更接近热更方案）
+
 下下个版本
-3增加载入单个文件的方法
-4ScriptMono增加使用单独文件或使用文本string作为类的方法
 
+* 增加载入单个文件的方法
+* ScriptMono增加使用单独文件或使用文本作为类的功能
 
+## 联系我
+QQ:181664367
