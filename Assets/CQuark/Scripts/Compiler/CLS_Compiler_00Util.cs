@@ -308,12 +308,10 @@ namespace CSLE
                         if (start.Value.text == "if")
                         {
                             return FindCodeKeyWord_If(tokens, i);
-
                         }
                         if (start.Value.text == "return")
                         {
                             return FindCodeKeyWord_Return(tokens, i);
-
                         }
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
@@ -440,6 +438,10 @@ namespace CSLE
                     }
                     if (start.Value.type == TokenType.KEYWORD)
                     {
+
+
+
+
                         if (start.Value.text == "for")
                         {
                             return FindCodeKeyWord_For(tokens, i);
@@ -459,12 +461,10 @@ namespace CSLE
                         if (start.Value.text == "if")
                         {
                             return FindCodeKeyWord_If(tokens, i);
-
                         }
                         if (start.Value.text == "return")
                         {
                             return FindCodeKeyWord_Return(tokens, i);
-
                         }
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
@@ -596,6 +596,10 @@ namespace CSLE
                     }
                     if (start.Value.type == TokenType.KEYWORD)
                     {
+
+
+
+
                         if (start.Value.text == "for")
                         {
                             return FindCodeKeyWord_For(tokens, i);
@@ -615,12 +619,10 @@ namespace CSLE
                         if (start.Value.text == "if")
                         {
                             return FindCodeKeyWord_If(tokens, i);
-
                         }
                         if (start.Value.text == "return")
                         {
                             return FindCodeKeyWord_Return(tokens, i);
-
                         }
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
