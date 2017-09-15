@@ -40,6 +40,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
 
 
 ## TODO
+* if后接else if无法解析的问题
+* switch case语法
 
 下个版本
 * ScriptMono里增加调用协程的方法
