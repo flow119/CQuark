@@ -857,30 +857,38 @@ namespace CSLE
         {
             int b1;
             int fs1 = pos + 1;
-            int fe1 = FindCodeAny(tokens, ref fs1, out b1);
+			for(;;){
+	            int fe1 = FindCodeAny(tokens, ref fs1, out b1);
 
-            int b2;
-            int fs2 = fe1 + 1;
-            int fe2 = FindCodeAny(tokens, ref fs2, out b2);
+	            int b2;
+	            int fs2 = fe1 + 1;
+	            int fe2 = FindCodeAny(tokens, ref fs2, out b2);
 
-            int nelse = fe2 + 1;
-            if (b2 == 0)
-				nelse++;
-            FindCodeAny(tokens, ref nelse, out b2);
+	            int nelse = fe2 + 1;
+	            if (b2 == 0)
+					nelse++;
+	            FindCodeAny(tokens, ref nelse, out b2);
 
-            if (tokens.Count > nelse)
-            {
-                if (tokens[nelse].type == TokenType.KEYWORD && tokens[nelse].text == "else")
-                {
-                    int b3;
-                    int fs3 = nelse + 1;
-                    int fe3 = FindCodeAny(tokens, ref fs3, out b3);
-					UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe3));
-                    return fe3;
-                }
-            }
-			UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe2));
-            return fe2;
+	            if (tokens.Count > nelse)
+	            {
+	                if (tokens[nelse].type == TokenType.KEYWORD && tokens[nelse].text == "else")
+	                {
+						if(tokens.Count > nelse + 1 && tokens[nelse+1].type == TokenType.KEYWORD && tokens[nelse + 1].text == "if"){
+							fs1 = nelse + 2;
+							continue;
+						}else{
+		                    int b3;
+		                    int fs3 = nelse + 1;
+		                    int fe3 = FindCodeAny(tokens, ref fs3, out b3);
+//							UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe3));
+		                    return fe3;
+						}
+	                }
+	            }
+//				UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe2));
+				return fe2;
+			}
+			return tokens.Count - 1;
         }
         int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
         {
