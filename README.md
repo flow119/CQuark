@@ -27,7 +27,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
 2017-09-14 v0.7.1
     
     增加ScriptMono（类似于MonoBehaviour）以及对应的Demo3
-    ScriptMono增加Inspector(选择加载类型，重载文本按钮等) 
+    ScriptMono增加Inspector(选择加载类型，重载文本按钮等) 
     支持协程(Coroutine)
     
 2017-09-13 v0.7.0
