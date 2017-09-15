@@ -289,30 +289,9 @@ namespace CSLE
                         {
                             return FindCodeKeyWord_New(tokens, i);
                         }
-                        if (start.Value.text == "for")
-                        {
-                            return FindCodeKeyWord_For(tokens, i);
-                        }
-                        if (start.Value.text == "foreach")
-                        {
-                            return FindCodeKeyWord_ForEach(tokens, i);
-                        }
-                        if (start.Value.text == "while")
-                        {
-                            return FindCodeKeyWord_While(tokens, i);
-                        }
-                        if (start.Value.text == "do")
-                        {
-                            return FindCodeKeyWord_Dowhile(tokens, i);
-                        }
-                        if (start.Value.text == "if")
-                        {
-                            return FindCodeKeyWord_If(tokens, i);
-                        }
-                        if (start.Value.text == "return")
-                        {
-                            return FindCodeKeyWord_Return(tokens, i);
-                        }
+						int index = FindCodeAnyOnlyKeyword(start.Value, tokens, i);
+						if(index > 0)
+							return index;
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
                     //{
@@ -438,34 +417,9 @@ namespace CSLE
                     }
                     if (start.Value.type == TokenType.KEYWORD)
                     {
-
-
-
-
-                        if (start.Value.text == "for")
-                        {
-                            return FindCodeKeyWord_For(tokens, i);
-                        }
-                        if (start.Value.text == "foreach")
-                        {
-                            return FindCodeKeyWord_ForEach(tokens, i);
-                        }
-                        if (start.Value.text == "while")
-                        {
-                            return FindCodeKeyWord_While(tokens, i);
-                        }
-                        if (start.Value.text == "do")
-                        {
-                            return FindCodeKeyWord_Dowhile(tokens, i);
-                        }
-                        if (start.Value.text == "if")
-                        {
-                            return FindCodeKeyWord_If(tokens, i);
-                        }
-                        if (start.Value.text == "return")
-                        {
-                            return FindCodeKeyWord_Return(tokens, i);
-                        }
+						int index = FindCodeAnyOnlyKeyword(start.Value, tokens, i);
+						if(index > 0)
+							return index;
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
                     //{
@@ -596,34 +550,9 @@ namespace CSLE
                     }
                     if (start.Value.type == TokenType.KEYWORD)
                     {
-
-
-
-
-                        if (start.Value.text == "for")
-                        {
-                            return FindCodeKeyWord_For(tokens, i);
-                        }
-                        if (start.Value.text == "foreach")
-                        {
-                            return FindCodeKeyWord_ForEach(tokens, i);
-                        }
-                        if (start.Value.text == "while")
-                        {
-                            return FindCodeKeyWord_While(tokens, i);
-                        }
-                        if (start.Value.text == "do")
-                        {
-                            return FindCodeKeyWord_Dowhile(tokens, i);
-                        }
-                        if (start.Value.text == "if")
-                        {
-                            return FindCodeKeyWord_If(tokens, i);
-                        }
-                        if (start.Value.text == "return")
-                        {
-                            return FindCodeKeyWord_Return(tokens, i);
-                        }
+						int index = FindCodeAnyOnlyKeyword(start.Value, tokens, i);
+						if(index > 0)
+							return index;
                     }
                     //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
                     //{
@@ -718,6 +647,34 @@ namespace CSLE
             else
                 return tokens.Count - 1;
         }
+
+		int FindCodeAnyOnlyKeyword(Token start, IList<Token> tokens, int startPos){
+			if (start.text == "for")
+			{
+				return FindCodeKeyWord_For(tokens, startPos);
+			}
+			if (start.text == "foreach")
+			{
+				return FindCodeKeyWord_ForEach(tokens, startPos);
+			}
+			if (start.text == "while")
+			{
+				return FindCodeKeyWord_While(tokens, startPos);
+			}
+			if (start.text == "do")
+			{
+				return FindCodeKeyWord_Dowhile(tokens, startPos);
+			}
+			if (start.text == "if")
+			{
+				return FindCodeKeyWord_If(tokens, startPos);
+			}
+			if (start.text == "return")
+			{
+				return FindCodeKeyWord_Return(tokens, startPos);
+			}
+			return -1;
+		}
 
         int FindCodeAnyWithoutKeyword(IList<Token> tokens, ref int pos, out int depstyle)
         {
@@ -890,7 +847,6 @@ namespace CSLE
 //				UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe2));
 				return fe2;
 			}
-			return tokens.Count - 1;
         }
         int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
         {

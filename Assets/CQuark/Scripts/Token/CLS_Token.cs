@@ -99,6 +99,14 @@ namespace CSLE
             keywords.Add("catch");
             keywords.Add("throw");
 
+			//2017-09-15 0.7.1 补充协程
+			keywords.Add("IEnumerator");
+
+			//2017-09-15 0.7.2 补充switch case
+			keywords.Add("switch");
+			keywords.Add("case");
+			keywords.Add("break");
+
         }
         public List<string> types
         {
@@ -405,13 +413,9 @@ namespace CSLE
                 t.text = line.Substring(nstart, i - nstart);
                 //判断字母类型： 关键字 类型 标识符
                 if (keywords.Contains(t.text))
-                //foreach (string s in keywords)
                 {
-                    //if (t.text == s)
-                    {
-                        t.type = TokenType.KEYWORD;
-                        return nstart + t.text.Length;
-                    }
+                    t.type = TokenType.KEYWORD;
+                    return nstart + t.text.Length;
                 }
                 if (types.Contains(t.text))
                 //foreach (string s in types)
@@ -448,8 +452,6 @@ namespace CSLE
                                 t.type = TokenType.TYPE;
                                 return i;
                             }
-
-
                         }
                         else
                         {
