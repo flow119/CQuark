@@ -43,8 +43,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
 
 
 ## TODO
-* switch case语法
-* windows下用记事本写脚本会在开头第一个字符出现不可解析的字符，需要处理
+* 完善switch case语法
+* windows下用记事本写脚本会在开头出现一个不可解析的字符，需要处理
 
 下个版本
 * ScriptMono里增加调用协程的方法
