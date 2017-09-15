@@ -1,8 +1,9 @@
 ## 西瓜
 CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity热更新。支持Windows,iOS,Android平台。
-本项目是在Unity3D项目环境下运行。如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。
 
-西瓜的前身是疯光无线前辈写的C#LightEvil和自己曾经写的一个脚本语言。
+* 本项目是在Unity3D项目环境下运行。如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。
+
+* 西瓜的前身是疯光无线前辈写的C#LightEvil和自己曾经写的一个脚本语言。
 
 项目最新地址：    	https://github.com/flow119/CQuark
 
@@ -26,9 +27,9 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
 ## 版本更新记录
 2017-09-14 v0.7.1
     
-    支持协程(Coroutine)
-    增加ScriptMono（类似于MonoBehaviour）以及对应的Demo3
-    ScriptMono增加Inspector（选择加载类型，重载文本按钮等）
+    支持协程(Coroutine)
+    增加ScriptMono（类似于MonoBehaviour）以及对应的Demo3
+    ScriptMono增加Inspector（选择加载类型，重载文本按钮等）
 
 2017-09-13 v0.7.0
     
