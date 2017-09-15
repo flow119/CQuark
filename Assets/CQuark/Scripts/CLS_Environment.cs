@@ -19,7 +19,7 @@ namespace CSLE
         {
             get
             {
-                return "0.7.0";
+                return "0.7.1";
             }
         }
         public CLS_Environment(ICLS_Logger logger)
