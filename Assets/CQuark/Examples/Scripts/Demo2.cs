@@ -28,17 +28,20 @@ public class Demo2 : MonoBehaviour {
 
 	// 这个函数展示了如何执行一个文件（作为函数块）
 	void ExecuteFile () {
-		string script = (Resources.Load ("script02") as TextAsset).text;
 
 		Script.Instance.ClearValue ();
 		Script.Instance.SetValue ("Monday", 1);
 		Script.Instance.SetValue ("Sunday", 0);
 		Script.Instance.SetValue ("HP1", 200);
 		Script.Instance.SetValue ("HP2", 300);
-		object obj = Script.Instance.Execute (script);
-		Debug.Log ("result = " + obj);
-	}
 
+		Action<WWW> cb = delegate(WWW www) {
+			object obj = Script.Instance.Execute (www.text);
+			Debug.Log ("result = " + obj);
+		};
+		LoadMgr.Instance.LoadFromStreaming ("Blocks/script02.txt", cb);
+	}
+	
 	//这个函数展示了如何执行一个文件(类)里某个函数
 	void ExecuteFileFunction(){
 		//TODO 执行文件里某个函数

@@ -125,7 +125,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			break;
 		case ECodeType.FileName:
 			if(!s_projectBuilded){
-				Script.Instance.BuildProject(Application.streamingAssetsPath, "*.txt");
+				Script.Instance.BuildProject(Application.streamingAssetsPath + "/Classes", "*.txt");
 				s_projectBuilded = true;
 			}
 			break;
