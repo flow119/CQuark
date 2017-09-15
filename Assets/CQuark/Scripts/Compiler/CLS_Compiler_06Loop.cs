@@ -219,6 +219,12 @@ namespace CSLE
                 return null;
             }
 
+			//TODO 需要支持else if
+			//2个参数表示：if(A){B}
+			//3个参数表示：if(A){B}else{C}
+			//4个参数表示：if(A){B}else if(C){D}
+			//5个参数表示：if(A){B}else if(C){D} else{E}
+
             //if(xxx)
             {
                 ICLS_Expression subvalue;

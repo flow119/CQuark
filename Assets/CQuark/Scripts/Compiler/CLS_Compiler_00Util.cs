@@ -863,10 +863,11 @@ namespace CSLE
             int fs2 = fe1 + 1;
             int fe2 = FindCodeAny(tokens, ref fs2, out b2);
 
-
             int nelse = fe2 + 1;
-            if (b2 == 0) nelse++;
+            if (b2 == 0)
+				nelse++;
             FindCodeAny(tokens, ref nelse, out b2);
+
             if (tokens.Count > nelse)
             {
                 if (tokens[nelse].type == TokenType.KEYWORD && tokens[nelse].text == "else")
@@ -874,9 +875,11 @@ namespace CSLE
                     int b3;
                     int fs3 = nelse + 1;
                     int fe3 = FindCodeAny(tokens, ref fs3, out b3);
+					UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe3));
                     return fe3;
                 }
             }
+			UnityEngine.Debug.Log(GetCodeKeyString(tokens, pos, fe2));
             return fe2;
         }
         int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
@@ -1050,5 +1053,13 @@ namespace CSLE
 
             return npos;
         }
+		//调试用
+		static string GetCodeKeyString(IList<Token> tokens, int start, int end){
+			string ret = "";
+			for(int i = start; i <= end; i++){
+				ret += tokens[i].text;
+			}
+			return ret;
+		}
     }
 }
