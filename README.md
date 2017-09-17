@@ -27,7 +27,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
      
 2017-09-17 v0.7.3
     
-    新增switch case语法，支持switch case嵌套，但还不支持goto
+    新增switch case语法，支持switch case嵌套，但还不支持goto
 
 
 2017-09-15 v0.7.2
