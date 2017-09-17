@@ -4,6 +4,8 @@ using System;
 
 public class Demo2 : MonoBehaviour {
 
+	public string m_blockFilePath;
+
 	// Use this for initialization
 	void Start () {
 
@@ -39,7 +41,7 @@ public class Demo2 : MonoBehaviour {
 			object obj = Script.Instance.Execute (www.text);
 			Debug.Log ("result = " + obj);
 		};
-		LoadMgr.Instance.LoadFromStreaming ("Blocks/script02.txt", cb);
+		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
 	}
 	
 	//这个函数展示了如何执行一个文件(类)里某个函数

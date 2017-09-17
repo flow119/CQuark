@@ -446,6 +446,17 @@ namespace CSLE
                                 values.Add(subvalue);
                             bTest = true;
                         }
+						else if(tlist[expbegin].text == "switch"){
+//							UnityEngine.Debug.Log("SwitchCase : " + GetCodeKeyString(tlist, expbegin, expend));
+							ICLS_Expression subvalue = Compiler_Expression_Loop_SwitchCase(tlist, content, expbegin, expend);
+							if(null == subvalue){
+								LogError(tlist, "不可识别的switch case：", expbegin, expend);
+								return false;
+							}
+							else
+								values.Add(subvalue);
+							bTest = true;
+						}
                         else if (tlist[expbegin].text == "foreach")
                         {
                             ICLS_Expression subvalue = Compiler_Expression_Loop_ForEach(tlist, content, expbegin, expend);

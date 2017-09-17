@@ -43,18 +43,10 @@ namespace CSLE
     //表达式是一个值
     public interface ICLS_Expression
     {
-
         List<ICLS_Expression> listParam
         {
             get;
         }
-        CLS_Content.Value ComputeValue(CLS_Content content);
-		IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine);
-//		IEnumerator CoroutineCompute(CLS_Content content);
-		bool hasCoroutine
-		{
-			get;
-		}
         int tokenBegin
         {
             get;
@@ -71,6 +63,12 @@ namespace CSLE
         {
             get;
         }
+		bool hasCoroutine
+		{
+			get;
+		}
+		CLS_Content.Value ComputeValue(CLS_Content content);
+		IEnumerator CoroutineCompute(CLS_Content content, ICoroutine coroutine);
     }
     public interface ICLS_Environment
     {

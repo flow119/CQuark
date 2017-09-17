@@ -71,7 +71,7 @@ public class Script
 	
     public object Eval(string script){
 		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompilerToken(token, true);//语法分析,简单表达式，一句话
+		var expr = env.Expr_CompileToken(token, true);//语法分析,简单表达式，一句话
 		var value = env.Expr_Execute(expr, content);//执行表达式
         if (value == null)
 			return null;
@@ -80,7 +80,7 @@ public class Script
 	
     public object Execute(string script){
 		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompilerToken(token, false);//语法分析，语法块
+		var expr = env.Expr_CompileToken(token, false);//语法分析，语法块
 		var value = env.Expr_Execute(expr, content);//执行表达式
         if (value == null) return null;
         return value.value;
@@ -88,17 +88,9 @@ public class Script
 
 	public IEnumerator StartCoroutine(string script, ICoroutine coroutine){
 		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompilerToken(token, false);//语法分析，语法块
+		var expr = env.Expr_CompileToken(token, false);//语法分析，语法块
 		yield return coroutine.StartNewCoroutine(env.Expr_Coroutine (expr, content, coroutine));
 	}
-//	public static void StartCoroutine(string script){
-//		var token = Instance.env.ParserToken(script);//词法分析
-//		var expr = Instance.env.Expr_CompilerToken(token, false);//语法分析，语法块
-//		Instance.env.Expr_Coroutine(expr, content);//执行表达式
-////		if (value == null) return null;
-////		return value.value;
-//	}
-	
 
 	public CLS_Content.Value GetValue(string name){
 		if (content == null)

@@ -28,16 +28,16 @@ namespace CSLE
 //                bool succ = Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
 				Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
                 //if (!succ) return null;
-                if (subvalue != null)
-                {
+//                if (subvalue != null)
+//                {
                     value.listParam.Add(subvalue);
                     testbegin = fe2 + 2;
-                }
-                else
-                {
-                    value.listParam.Add(null);
-                    testbegin = fe2 + 2;
-                }
+//                }
+//                else
+//                {
+//                    value.listParam.Add(null);
+//                    testbegin = fe2 + 2;
+//                }
             }
             while (testbegin <= fe1);
 
@@ -60,6 +60,95 @@ namespace CSLE
             }
             return null;
         }
+
+		public ICLS_Expression Compiler_Expression_Loop_SwitchCase(IList<Token> tlist, ICLS_Environment content, int pos, int posend)
+		{
+//			UnityEngine.Debug.Log("CompilerLoop : " + GetCodeKeyString(tlist, pos, posend));
+			int b1;
+			int fs1 = pos + 1;
+			int fe1 = FindCodeAny(tlist, ref fs1, out b1);
+			CLS_Expression_LoopSwitchCase value = new CLS_Expression_LoopSwitchCase(pos, posend, tlist[pos].line, tlist[posend].line);
+
+//			UnityEngine.Debug.Log("switch : " + GetCodeKeyString(tlist,pos, fe1));
+			//switch(xxx)
+			ICLS_Expression subvalueblock;
+			bool succ = Compiler_Expression_Block(tlist, content, fs1, fe1, out subvalueblock);
+			if(!succ)
+				return null;
+
+			value.listParam.Add(subvalueblock);
+
+			int caseBegin = fe1 + 2;
+
+			while(caseBegin < posend){
+				if(tlist[caseBegin].type == TokenType.KEYWORD){
+					int poscolon = caseBegin;
+					for(; poscolon < posend; poscolon++){
+						if(tlist[poscolon].type == TokenType.PUNCTUATION && tlist[poscolon].text == ":"){
+							break;
+						}
+					}
+					int sexpr = caseBegin;
+					if(tlist[caseBegin].text == "case"){
+						//case xxx:
+						caseBegin ++;
+//						UnityEngine.Debug.Log(GetCodeKeyString(tlist,caseBegin, poscolon - 1));
+						bool succ2 = Compiler_Expression_Block(tlist, content, caseBegin, poscolon - 1, out subvalueblock);
+						if(succ2){
+							value.listParam.Add(subvalueblock);
+							sexpr = poscolon + 1;
+						}else{
+							return null;
+						}
+					}else if(tlist[caseBegin].text == "default"){
+						//default:
+						value.listParam.Add(null);
+						sexpr = poscolon + 1;
+					}
+					else{
+						return null;
+					}
+
+					if(tlist[sexpr].type == TokenType.KEYWORD && tlist[sexpr].text == "case"){
+						//switch(..){case ...:case ...}  //(no break)
+						value.listParam.Add(null);
+						caseBegin = poscolon + 1;
+						continue;
+					}else{
+						//找到下一个深度为0的case或default或深度为-1的“}”
+						int eexpr = sexpr + 1;
+//						UnityEngine.Debug.Log("case do ~ : " + GetCodeKeyString(tlist, sexpr, posend));
+						int bracedepth = 0;
+						for(;eexpr < posend; eexpr++){
+							if(tlist[eexpr].type == TokenType.PUNCTUATION && tlist[eexpr].text == "{"){
+								bracedepth++;
+							}else{
+								if(tlist[eexpr].type == TokenType.KEYWORD && (tlist[eexpr].text == "case" || tlist[eexpr].text == "default")){
+									if(bracedepth == 0)
+										break;
+								}
+								if(tlist[eexpr].type == TokenType.PUNCTUATION && tlist[eexpr].text == "}"){
+									bracedepth--;
+									if(bracedepth == -1)
+										break;
+								}
+							}
+						}
+//						UnityEngine.Debug.Log("case do ~ break" + GetCodeKeyString(tlist, sexpr, eexpr - 1));
+						bool succ3 = Compiler_Expression_Block(tlist, content, sexpr, eexpr - 1, out subvalueblock);
+						if(succ3){
+							value.listParam.Add(subvalueblock);
+							caseBegin = eexpr;
+						}
+						else{
+							return null;
+						}
+					}
+				}else
+					return null;
+			}
+			return value;
+		}
 
         public ICLS_Expression Compiler_Expression_Loop_ForEach(IList<Token> tlist, ICLS_Environment content, int pos, int posend)
         {
@@ -219,12 +308,6 @@ namespace CSLE
                 return null;
             }
 
-			//TODO 需要支持else if
-			//2个参数表示：if(A){B}
-			//3个参数表示：if(A){B}else{C}
-			//4个参数表示：if(A){B}else if(C){D}
-			//5个参数表示：if(A){B}else if(C){D} else{E}
-
             //if(xxx)
             {
                 ICLS_Expression subvalue;
@@ -242,7 +325,6 @@ namespace CSLE
             }
 
             //if(...){yyy}
-
             int b2;
             int fs2 = fe1 + 1;
             int fe2 = FindCodeAny(tlist, ref fs2, out b2);

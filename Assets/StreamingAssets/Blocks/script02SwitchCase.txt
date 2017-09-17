@@ -1,0 +1,25 @@
+int a = 1;
+switch(a){
+case 0:
+	Debug.Log("zero");
+	break;
+case 1:
+case 2:
+	Debug.Log("number");
+	int b = 3;
+	switch(b){
+	case 3:
+		Debug.Log("b=3");
+		break;
+	case 4:
+		Debug.Log("b=4");
+		break;
+	}
+	break;
+default:
+	Debug.Log("not zero");
+	break;
+}
+
+
+return HP1+HP2*0.5;

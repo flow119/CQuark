@@ -105,7 +105,7 @@ namespace CSLE
 			//2017-09-15 0.7.2 补充switch case
 			keywords.Add("switch");
 			keywords.Add("case");
-			keywords.Add("break");
+			keywords.Add("default");
 
         }
         public List<string> types

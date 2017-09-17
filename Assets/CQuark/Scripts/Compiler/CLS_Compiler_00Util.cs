@@ -669,6 +669,10 @@ namespace CSLE
 			{
 				return FindCodeKeyWord_If(tokens, startPos);
 			}
+			if(start.text == "switch")
+			{
+				return FindCodeKeyWord_SwitchCase(tokens, startPos);
+			}
 			if (start.text == "return")
 			{
 				return FindCodeKeyWord_Return(tokens, startPos);
@@ -848,6 +852,27 @@ namespace CSLE
 				return fe2;
 			}
         }
+		int FindCodeKeyWord_SwitchCase(IList<Token> tokens, int pos)
+		{
+			int braceDepth = 0;
+			for(int i = pos; i < tokens.Count; i ++){
+				if(tokens[i].type == TokenType.PUNCTUATION){
+					if(tokens[i].text == "{")
+						braceDepth++;
+					else if(tokens[i].text == "}"){
+						braceDepth--;
+						if(braceDepth < 0){
+							throw new Exception("无法解析的switch");
+						}
+						if (braceDepth == 0){
+//							UnityEngine.Debug.Log("完整的switch case : " + GetCodeKeyString(tokens, pos, i));
+							return i;
+						}
+					}
+				}
+			}
+			return tokens.Count - 1;
+		}
         int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
         {
 

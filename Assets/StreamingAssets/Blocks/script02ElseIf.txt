@@ -1,0 +1,13 @@
+Debug.Log("Today is:"+Today());
+int a = 1;
+if(a == 0){
+	Debug.Log("AAA");
+	a = a+1;
+}else if(a==1){
+	Debug.Log("BBB");
+}else if(a==1){
+	Debug.Log("CCC");
+}
+
+
+return HP1+HP2*0.5;
