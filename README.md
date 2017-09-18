@@ -52,6 +52,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity
 * windows下用记事本写脚本会在开头出现一个不可解析的字符，需要处理
 * ScriptMono里增加调用协程的方法
 * ScriptMono增加使用单独文件或使用文本作为类的功能
+* 执行效率测试，主要看反射在iOS上的速度
 
 下个版本
 * 优化编译速度，减少gc alloc以及重复的GetCodeKey
