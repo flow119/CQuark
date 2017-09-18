@@ -44,7 +44,6 @@ public class Demo1 : MonoBehaviour {
 
 	//这个函数展示了执行一个函数块，且函数块再调用Unity的Debug类
 	void Execute2(){
-		Script.Instance.env.RegType(new CSLE.RegHelper_Type(typeof(UnityEngine.Debug)));
 		Script.Instance.Execute (
 			"int a = 2;\n" +
 			"if(a == 0)\n" +

@@ -17,8 +17,7 @@ public class Demo2 : MonoBehaviour {
 		//将函数Today()注册给脚本使用
 		Script.Instance.env.RegFunction (new CSLE.RegHelper_Function ((deleToday)Today));
 	
-		//让脚本能使用UnityEngine.Debug
-		Script.Instance.env.RegType (new CSLE.RegHelper_Type (typeof(UnityEngine.Debug)));
+
 	
 		ExecuteFile ();
 	}
