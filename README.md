@@ -1,5 +1,5 @@
 ## 西瓜
-CQuark（西瓜） 是一个简单的C#语法的脚本语言。可以用于Unity热更新。支持Windows,iOS,Android平台。
+CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Unity热更新。支持Windows,iOS,Android平台。
 
 * 本项目是在Unity3D项目环境下运行。如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。
 
