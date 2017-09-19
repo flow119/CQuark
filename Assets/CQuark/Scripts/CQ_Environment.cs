@@ -330,7 +330,7 @@ namespace CQuark
 
         public void Project_PacketToStream(Dictionary<string, IList<Token>> project, System.IO.Stream outstream)
         {
-            byte[] FileHead = System.Text.Encoding.UTF8.GetBytes("C#LE-DLL");
+            byte[] FileHead = System.Text.Encoding.UTF8.GetBytes("CQuark-DLL");
             outstream.Write(FileHead, 0, 8);
             UInt16 count = (UInt16)project.Count;
             outstream.Write(BitConverter.GetBytes(count), 0, 2);
@@ -348,7 +348,7 @@ namespace CQuark
             byte[] buf = new byte[8];
             instream.Read(buf, 0, 8);
             string filehead = System.Text.Encoding.UTF8.GetString(buf, 0, 8);
-            if (filehead != "C#LE-DLL") return null;
+			if (filehead != "CQuark-DLL") return null;
             instream.Read(buf, 0, 2);
             UInt16 count = BitConverter.ToUInt16(buf, 0);
             for (int i = 0; i < count; i++)

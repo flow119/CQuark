@@ -160,11 +160,11 @@ namespace CQuark
                 {
                     if ((s.tokenBegin == 0 && s.tokenEnd == 0)||tokenlist==null)
                     {
-                        svalues += "<C#LE>:line(" + s.lineBegin + "-" + s.lineEnd + ")\n";
+						svalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")\n";
                     }
                     else
                     {
-                        svalues += "<C#LE>:line(" + s.lineBegin + "-" + s.lineEnd + ")";
+						svalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")";
                         
                         if (s.tokenEnd - s.tokenBegin >= 20)
                         {
