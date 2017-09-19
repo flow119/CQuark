@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
-using CSLE;
+using CQuark;
 using System.Collections;
 
-class ScriptLogger : ICLS_Logger
+class ScriptLogger : ICQ_Logger
 {
     public void Log(string str)
     {
@@ -29,8 +29,8 @@ public class Script
 	public Script(){
 		Reset ();
 	}
-	public CLS_Environment env {get; private set; }
-	public CSLE.CLS_Content content = null;
+	public CQ_Environment env {get; private set; }
+	public CQuark.CQ_Content content = null;
 
 
 	public static Script Instance{
@@ -45,7 +45,7 @@ public class Script
 
 	
 	public void Reset(){
-		env = new CLS_Environment (new ScriptLogger ());
+		env = new CQ_Environment (new ScriptLogger ());
 //		env.logger.Log("CQuark Inited.Ver = "+ env.version);
 	}
 //	/// <summary>
@@ -105,23 +105,23 @@ public class Script
 		env.RegType(RegHelper_Type.MakeType(typeof(List<>), "List"));	//模板类要独立注册
 		env.RegType(RegHelper_Type.MakeType(typeof(Dictionary<,>), "Dictionary"));
 
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Vector2)));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Vector3)));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Vector4)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector2)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector3)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector4)));
 //
 //
-//		env.RegType(new CSLE.RegHelper_Type(typeof(GameObject)));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Transform)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(GameObject)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Transform)));
 //
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Component)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Component)));
 //
-//		env.RegType(new CSLE.RegHelper_Type(typeof(Debug)));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(UnityEngine.Object)));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(UnityEngine.Time)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(Debug)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(UnityEngine.Object)));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(UnityEngine.Time)));
 //
 //
-//		env.RegType(new CSLE.RegHelper_Type(typeof(int[]),"int[]"));
-//		env.RegType(new CSLE.RegHelper_Type(typeof(List<int>), "List<int>"));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(int[]),"int[]"));
+//		env.RegType(new CQuark.RegHelper_Type(typeof(List<int>), "List<int>"));
 	}
 
 	
@@ -148,7 +148,7 @@ public class Script
 		yield return coroutine.StartNewCoroutine(env.Expr_Coroutine (expr, content, coroutine));
 	}
 
-	public CLS_Content.Value GetValue(string name){
+	public CQ_Content.Value GetValue(string name){
 		if (content == null)
 			content = env.CreateContent();
 		return content.Get(name);
@@ -176,7 +176,7 @@ public class Script
 	{
 		#if UNITY_STANDALONE
 		string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
-		Dictionary<string, IList<CSLE.Token>> project = new Dictionary<string, IList<CSLE.Token>>();
+		Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
 		foreach (var v in files)
 		{
 			var tokens = env.tokenParser.Parse(System.IO.File.ReadAllText(v));

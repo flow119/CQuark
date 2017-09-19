@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
-    public class RegHelper_TypeFunction : ICLS_TypeFunction
+    public class RegHelper_TypeFunction : ICQ_TypeFunction
     {
         Type type;
         public RegHelper_TypeFunction(Type type)
         {
             this.type = type;
         }
-        public virtual CLS_Content.Value New(CLS_Content environment, IList<CLS_Content.Value> _params)
+        public virtual CQ_Content.Value New(CQ_Content environment, IList<CQ_Content.Value> _params)
         {
 
             List<Type> types = new List<Type>();
@@ -21,7 +21,7 @@ namespace CSLE
                 types.Add(p.type);
                 objparams.Add(p.value);
             }
-            CLS_Content.Value value = new CLS_Content.Value();
+            CQ_Content.Value value = new CQ_Content.Value();
             value.type = type;
             var con = this.type.GetConstructor(types.ToArray());
             if (con == null)
@@ -34,17 +34,17 @@ namespace CSLE
             }
             return value;
         }
-        public virtual CLS_Content.Value StaticCall(CLS_Content environment, string function, IList<CLS_Content.Value> _params)
+        public virtual CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params)
         {
             return StaticCall(environment, function, _params, null);
         }
-        public virtual CLS_Content.Value StaticCall(CLS_Content environment, string function, IList<CLS_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             bool needConvert = false;
             List<object> _oparams = new List<object>();
             List<Type> types = new List<Type>();
             bool bEm = false;
-            foreach (CLS_Content.Value p in _params)
+            foreach (CQ_Content.Value p in _params)
             {
                 _oparams.Add(p.value);
                 if ((SType)p.type != null)
@@ -123,7 +123,7 @@ namespace CSLE
             }
 
 
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             v.value = targetop.Invoke(null, _oparams.ToArray());
             v.type = targetop.ReturnType;
             return v;
@@ -131,7 +131,7 @@ namespace CSLE
 
         }
 
-        public virtual CLS_Content.Value StaticCallCache(CLS_Content content, IList<CLS_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value StaticCallCache(CQ_Content content, IList<CQ_Content.Value> _params, MethodCache cache)
         {
 
             List<object> _oparams = new List<object>();
@@ -167,7 +167,7 @@ namespace CSLE
                     }
                 }
             }
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             v.value = targetop.Invoke(null, _oparams.ToArray());
             v.type = targetop.ReturnType;
             return v;
@@ -175,7 +175,7 @@ namespace CSLE
 
         }
 
-        public virtual CLS_Content.Value StaticValueGet(CLS_Content environment, string valuename)
+        public virtual CQ_Content.Value StaticValueGet(CQ_Content environment, string valuename)
         {
             var v = MemberValueGet(environment, null, valuename);
             if (v == null)
@@ -197,7 +197,7 @@ namespace CSLE
             //var targetf = type.GetField(valuename);
             //if (targetf != null)
             //{
-            //    CLS_Content.Value v = new CLS_Content.Value();
+            //    CQ_Content.Value v = new CQ_Content.Value();
             //    v.value = targetf.GetValue(null);
             //    v.type = targetf.FieldType;
             //    return v;
@@ -207,7 +207,7 @@ namespace CSLE
             //    var methodf = type.GetMethod("get_" + valuename);
             //    if (methodf != null)
             //    {
-            //        CLS_Content.Value v = new CLS_Content.Value();
+            //        CQ_Content.Value v = new CQ_Content.Value();
             //        v.value = methodf.Invoke(null, null);
             //        v.type = methodf.ReturnType;
             //        return v;
@@ -215,7 +215,7 @@ namespace CSLE
             //    //var targetf = type.GetField(valuename);
             //    //if (targetf != null)
             //    //{
-            //    //    CLS_Content.Value v = new CLS_Content.Value();
+            //    //    CQ_Content.Value v = new CQ_Content.Value();
             //    //    v.value = targetf.GetValue(null);
             //    //    v.type = targetf.FieldType;
             //    //    return v;
@@ -225,7 +225,7 @@ namespace CSLE
             //        var targete = type.GetEvent(valuename);
             //        if (targete != null)
             //        {
-            //            CLS_Content.Value v = new CLS_Content.Value();
+            //            CQ_Content.Value v = new CQ_Content.Value();
 
             //            v.value = new DeleEvent(null, targete);
             //            v.type = targete.EventHandlerType;
@@ -242,7 +242,7 @@ namespace CSLE
             //throw new NotImplementedException();
         }
 
-        public virtual bool StaticValueSet(CLS_Content content, string valuename, object value)
+        public virtual bool StaticValueSet(CQ_Content content, string valuename, object value)
         {
 
             bool b = MemberValueSet(content, null, valuename, value);
@@ -267,7 +267,7 @@ namespace CSLE
 
         }
         Dictionary<int, System.Reflection.MethodInfo> cacheT;//= new Dictionary<string, System.Reflection.MethodInfo>();
-        System.Reflection.MethodInfo FindTMethod(Type type, string func, IList<CLS_Content.Value> _params, Type[] gtypes)
+        System.Reflection.MethodInfo FindTMethod(Type type, string func, IList<CQ_Content.Value> _params, Type[] gtypes)
         {
             string hashkey = func + "_" + _params.Count + ":";
             foreach (var p in _params)
@@ -322,17 +322,17 @@ namespace CSLE
             //targetop = targetop.MakeGenericMethod(gtypes);
             return null;
         }
-        public virtual CLS_Content.Value MemberCall(CLS_Content environment, object object_this, string function, IList<CLS_Content.Value> _params)
+        public virtual CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params)
         {
             return MemberCall(environment, object_this, function, _params, null);
         }
-        public virtual CLS_Content.Value MemberCall(CLS_Content environment, object object_this, string function, IList<CLS_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             bool needConvert = false;
             List<Type> types = new List<Type>();
             List<object> _oparams = new List<object>();
             bool bEm = false;
-            foreach (CLS_Content.Value p in _params)
+            foreach (CQ_Content.Value p in _params)
             {
                 {
                     _oparams.Add(p.value);
@@ -356,7 +356,7 @@ namespace CSLE
             {
                 targetop = type.GetMethod(function, types.ToArray());
             }
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             if (targetop == null)
             {
                 if (function[function.Length - 1] == '>')//这是一个临时的模板函数调用
@@ -420,7 +420,7 @@ namespace CSLE
 
         Dictionary<string, IList<System.Reflection.MethodInfo>> slowCache = null;
 
-        System.Reflection.MethodInfo GetMethodSlow(CSLE.CLS_Content content, bool bStatic, string funcname, IList<Type> types, IList<object> _params)
+        System.Reflection.MethodInfo GetMethodSlow(CQuark.CQ_Content content, bool bStatic, string funcname, IList<Type> types, IList<object> _params)
         {
             List<object> myparams = new List<object>(_params);
             if (slowCache == null)
@@ -521,7 +521,7 @@ namespace CSLE
             return null;
 
         }
-        public virtual CLS_Content.Value MemberCallCache(CLS_Content content, object object_this, IList<CLS_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             List<Type> types = new List<Type>();
             List<object> _oparams = new List<object>();
@@ -541,7 +541,7 @@ namespace CSLE
             }
 
             var targetop = cache.info;
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             if (cache.slow)
             {
                 var pp = targetop.GetParameters();
@@ -574,7 +574,7 @@ namespace CSLE
 
         }
         Dictionary<string, MemberValueCache> memberValuegetCaches = new Dictionary<string, MemberValueCache>();
-        public virtual CLS_Content.Value MemberValueGet(CLS_Content environment, object object_this, string valuename)
+        public virtual CQ_Content.Value MemberValueGet(CQ_Content environment, object object_this, string valuename)
         {
 
             MemberValueCache c;
@@ -612,7 +612,7 @@ namespace CSLE
             }
 
             if (c.type < 0) return null;
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             switch (c.type)
             {
                 case 1:
@@ -636,7 +636,7 @@ namespace CSLE
             //var targetf = type.GetField(valuename);
             //if (targetf != null)
             //{
-            //    CLS_Content.Value v = new CLS_Content.Value();
+            //    CQ_Content.Value v = new CQ_Content.Value();
             //    v.value = targetf.GetValue(object_this);
             //    v.type = targetf.FieldType;
             //    return v;
@@ -645,7 +645,7 @@ namespace CSLE
             //var targetp = type.GetProperty(valuename);
             //if (targetp != null)
             //{
-            //    CLS_Content.Value v = new CLS_Content.Value();
+            //    CQ_Content.Value v = new CQ_Content.Value();
             //    v.value = targetp.GetValue(object_this, null);
             //    v.type = targetp.PropertyType;
             //    return v;
@@ -655,7 +655,7 @@ namespace CSLE
             //    var methodf = type.GetMethod("get_" + valuename);
             //    if (methodf != null)
             //    {
-            //        CLS_Content.Value v = new CLS_Content.Value();
+            //        CQ_Content.Value v = new CQ_Content.Value();
             //        v.value = methodf.Invoke(object_this, null);
             //        v.type = methodf.ReturnType;
             //        return v;
@@ -663,7 +663,7 @@ namespace CSLE
             //var targetf = type.GetField(valuename);
             //if (targetf != null)
             //{
-            //    CLS_Content.Value v = new CLS_Content.Value();
+            //    CQ_Content.Value v = new CQ_Content.Value();
             //    v.value = targetf.GetValue(object_this);
             //    v.type = targetf.FieldType;
             //    return v;
@@ -673,7 +673,7 @@ namespace CSLE
             //        System.Reflection.EventInfo targete = type.GetEvent(valuename);
             //        if (targete != null)
             //        {
-            //            CLS_Content.Value v = new CLS_Content.Value();
+            //            CQ_Content.Value v = new CQ_Content.Value();
             //            v.value = new DeleEvent(object_this, targete);
             //            v.type = targete.EventHandlerType;
             //            return v;
@@ -686,7 +686,7 @@ namespace CSLE
 
         Dictionary<string, MemberValueCache> memberValuesetCaches = new Dictionary<string, MemberValueCache>();
 
-        public virtual bool MemberValueSet(CLS_Content content, object object_this, string valuename, object value)
+        public virtual bool MemberValueSet(CQ_Content content, object object_this, string valuename, object value)
         {
             MemberValueCache c;
 
@@ -785,7 +785,7 @@ namespace CSLE
         System.Reflection.MethodInfo indexGetCache = null;
         Type indexGetCachetypeindex;
         Type indexGetCacheType = null;
-        public virtual CLS_Content.Value IndexGet(CLS_Content environment, object object_this, object key)
+        public virtual CQ_Content.Value IndexGet(CQ_Content environment, object object_this, object key)
         {
             //var m = type.GetMembers();
             if (indexGetCache == null)
@@ -795,7 +795,7 @@ namespace CSLE
                 {
                     indexGetCacheType = indexGetCache.ReturnType;
                 }
-                //    CLS_Content.Value v = new CLS_Content.Value();
+                //    CQ_Content.Value v = new CQ_Content.Value();
                 //    v.type = targetop.ReturnType;
                 //    v.value = targetop.Invoke(object_this, new object[] { key });
                 //    return v;
@@ -812,7 +812,7 @@ namespace CSLE
                 indexGetCachetypeindex = indexGetCache.GetParameters()[0].ParameterType;
                 //if (indexGetCache != null)
                 //{
-                //    CLS_Content.Value v = new CLS_Content.Value();
+                //    CQ_Content.Value v = new CQ_Content.Value();
                 //    v.type = indexGetCacheType;
                 //    v.value = indexGetCache.Invoke(object_this, new object[] { key });
                 //    return v;
@@ -823,7 +823,7 @@ namespace CSLE
                 //    {
                 //        //targetop = type.GetMethod("Get");
 
-                //        CLS_Content.Value v = new CLS_Content.Value();
+                //        CQ_Content.Value v = new CQ_Content.Value();
                 //        v.type = type.GetElementType();
                 //        v.value = targetop.Invoke(object_this, new object[] { key });
                 //        return v;
@@ -832,10 +832,10 @@ namespace CSLE
             }
             //else
             {
-                CLS_Content.Value v = new CLS_Content.Value();
+                CQ_Content.Value v = new CQ_Content.Value();
                 v.type = indexGetCacheType;
                 if (key != null && key.GetType() != indexGetCachetypeindex)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CSLE.CLType)indexGetCachetypeindex);
+                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexGetCachetypeindex);
                 v.value = indexGetCache.Invoke(object_this, new object[] { key });
                 return v;
             }
@@ -847,7 +847,7 @@ namespace CSLE
         Type indexSetCachetype1;
         Type indexSetCachetype2;
         bool indexSetCachekeyfirst = false;
-        public virtual void IndexSet(CLS_Content environment, object object_this, object key, object value)
+        public virtual void IndexSet(CQ_Content environment, object object_this, object key, object value)
         {
             if (indexSetCache == null)
             {
@@ -867,17 +867,17 @@ namespace CSLE
             {
 
                 if (key != null && key.GetType() != indexSetCachetype1)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CSLE.CLType)indexSetCachetype1);
+                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexSetCachetype1);
                 if (value != null && value.GetType() != indexSetCachetype2)
-                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CSLE.CLType)indexSetCachetype2);
+                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CQuark.CQType)indexSetCachetype2);
                 indexSetCache.Invoke(object_this, new object[] { key, value });
             }
             else
             {
                 if (value != null && value.GetType() != indexSetCachetype1)
-                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CSLE.CLType)indexSetCachetype1);
+                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CQuark.CQType)indexSetCachetype1);
                 if (key != null && key.GetType() != indexSetCachetype2)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CSLE.CLType)indexSetCachetype2);
+                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexSetCachetype2);
 
                 indexSetCache.Invoke(object_this, new object[] { value, key });
             }
@@ -894,7 +894,7 @@ namespace CSLE
         }
     }
 
-    public class RegHelper_Type : ICLS_Type
+    public class RegHelper_Type : ICQ_Type
     {
         public static RegHelper_Type MakeType(Type type, string keyword)
         {
@@ -1025,25 +1025,25 @@ namespace CSLE
         {
             get { return type.NameSpace; }
         }
-        public CLType type
+        public CQType type
         {
             get;
             protected set;
         }
         public Type _type;
 
-        public virtual ICLS_Value MakeValue(object value) //这个方法可能存在AOT陷阱
+        public virtual ICQ_Value MakeValue(object value) //这个方法可能存在AOT陷阱
         {
             //这个方法可能存在AOT陷阱
-            //Type target = typeof(CLS_Value_Value<>).MakeGenericType(new Type[] { type }); 
-            //return target.GetConstructor(new Type[] { }).Invoke(new object[0]) as ICLS_Value;
+            //Type target = typeof(CQ_Value_Value<>).MakeGenericType(new Type[] { type }); 
+            //return target.GetConstructor(new Type[] { }).Invoke(new object[0]) as ICQ_Value;
 
-            CLS_Value_Object rvalue = new CLS_Value_Object(type);
+            CQ_Value_Object rvalue = new CQ_Value_Object(type);
             rvalue.value_value = value;
             return rvalue;
         }
 
-        public virtual object ConvertTo(CLS_Content env, object src, CLType targetType)
+        public virtual object ConvertTo(CQ_Content env, object src, CQType targetType)
         {
             Type targettype = (Type)targetType;
             if (this._type == targettype) return src;
@@ -1095,7 +1095,7 @@ namespace CSLE
             return null;
         }
 
-        public virtual object Math2Value(CLS_Content env, char code, object left, CLS_Content.Value right, out CLType returntype)
+        public virtual object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = type;
             System.Reflection.MethodInfo call = null;
@@ -1109,13 +1109,13 @@ namespace CSLE
                 }
                 call = _type.GetMethod("op_Addition", new Type[] { this.type, right.type });
             }
-            else if (code == '-')//base = {CLScriptExt.Vector3 op_Subtraction(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Subtraction", new Type[] { this.type, right.type });
-            else if (code == '*')//[2] = {CLScriptExt.Vector3 op_Multiply(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Multiply", new Type[] { this.type, right.type });
-            else if (code == '/')//[3] = {CLScriptExt.Vector3 op_Division(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == '/')//[3] = {CQcriptExt.Vector3 op_Division(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Division", new Type[] { this.type, right.type });
-            else if (code == '%')//[4] = {CLScriptExt.Vector3 op_Modulus(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Modulus", new Type[] { this.type, right.type });
 
 
@@ -1124,20 +1124,20 @@ namespace CSLE
             return obj;
         }
 
-        public virtual bool MathLogic(CLS_Content env, logictoken code, object left, CLS_Content.Value right)
+        public virtual bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right)
         {
             System.Reflection.MethodInfo call = null;
 
             //var m = _type.GetMethods();
-            if (code == logictoken.more)//[2] = {Boolean op_GreaterThan(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            if (code == logictoken.more)//[2] = {Boolean op_GreaterThan(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_GreaterThan");
-            else if (code == logictoken.less)//[4] = {Boolean op_LessThan(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == logictoken.less)//[4] = {Boolean op_LessThan(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_LessThan");
-            else if (code == logictoken.more_equal)//[3] = {Boolean op_GreaterThanOrEqual(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == logictoken.more_equal)//[3] = {Boolean op_GreaterThanOrEqual(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_GreaterThanOrEqual");
-            else if (code == logictoken.less_equal)//[5] = {Boolean op_LessThanOrEqual(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == logictoken.less_equal)//[5] = {Boolean op_LessThanOrEqual(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_LessThanOrEqual");
-            else if (code == logictoken.equal)//[6] = {Boolean op_Equality(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == logictoken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if (left == null || right.type == null)
                 {
@@ -1152,7 +1152,7 @@ namespace CSLE
                     return left.Equals(right.value);
                 }
             }
-            else if (code == logictoken.not_equal)//[7] = {Boolean op_Inequality(CLScriptExt.Vector3, CLScriptExt.Vector3)}
+            else if (code == logictoken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if (left == null || right.type == null)
                 {
@@ -1168,7 +1168,7 @@ namespace CSLE
             return (bool)obj;
         }
 
-        public ICLS_TypeFunction function
+        public ICQ_TypeFunction function
         {
             get;
             protected set;

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
-    public class RegHelper_Function : ICLS_Function
+    public class RegHelper_Function : ICQ_Function
     {
         Delegate dele;
         public RegHelper_Function(Delegate dele)
@@ -47,9 +47,9 @@ namespace CSLE
             private set;
         }
 
-        public CLS_Content.Value Call(CLS_Content content, IList<CLS_Content.Value> param)
+        public CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param)
         {
-            CLS_Content.Value v = new CLS_Content.Value();
+            CQ_Content.Value v = new CQ_Content.Value();
             List<object> objs = new List<object>();
             //var _params =   dele.Method.GetParameters();
             for (int i = 0; i < this.defvalues.Count; i++)

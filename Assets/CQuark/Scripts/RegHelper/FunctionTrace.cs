@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
-    public class FunctionTrace : ICLS_Function
+    public class FunctionTrace : ICQ_Function
     {
         public string keyword
         {
             get { return "trace"; }
         }
 
-        public CLS_Content.Value Call(CLS_Content content, IList<CLS_Content.Value> param)
+        public CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param)
         {
             string output = "trace:";
             bool bfirst = true;
@@ -23,7 +23,7 @@ namespace CSLE
                 else output += p.value.ToString();
             }
             content.environment.logger.Log(output);
-            return CLS_Content.Value.Void;
+            return CQ_Content.Value.Void;
         }
         
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
     //改为DeleEvent
     public class DeleEvent //指向系统中的事件委托
@@ -12,12 +12,12 @@ namespace CSLE
             this.source = source;
             this._event = _event;
         }
-        //public DeleEvent(Delegate instance, CSLE.CLS_Content content)
+        //public DeleEvent(Delegate instance, CQuark.CQ_Content content)
         //{
         //    deleInstance = instance;
         //    deleContent = content;
         //}
-        //public object Call(CSLE.CLS_Content parentContent, IList<CSLE.CLS_Content.Value> _params)
+        //public object Call(CQuark.CQ_Content parentContent, IList<CQuark.CQ_Content.Value> _params)
         //{
         //    object[] plist = new object[_params.Count];
         //    for (int i = 0; i < _params.Count; i++)
@@ -46,7 +46,7 @@ namespace CSLE
 
         //如果是委托实例有这两个参数
         //public Delegate deleInstance;
-        //public CLS_Content deleContent;
+        //public CQ_Content deleContent;
     }
 
     /// <summary>
@@ -130,14 +130,14 @@ namespace CSLE
 
     public class DeleLambda// : IDeleBase //指向Lambda表达式
     {
-        public DeleLambda(CLS_Content content, IList<ICLS_Expression> param, ICLS_Expression func)
+        public DeleLambda(CQ_Content content, IList<ICQ_Expression> param, ICQ_Expression func)
         {
             this.content = content.Clone();
             this.expr_func = func;
             foreach (var p in param)
             {
-                CLS_Expression_GetValue v1 = p as CLS_Expression_GetValue;
-                CLS_Expression_Define v2 = p as CLS_Expression_Define;
+                CQ_Expression_GetValue v1 = p as CQ_Expression_GetValue;
+                CQ_Expression_Define v2 = p as CQ_Expression_Define;
                 if (v1 != null)
                 {
                     paramTypes.Add(null);
@@ -169,8 +169,8 @@ namespace CSLE
 
         public List<Type> paramTypes = new List<Type>();
         public List<string> paramNames = new List<string>();
-        public CLS_Content content;
-        public ICLS_Expression expr_func;
+        public CQ_Content content;
+        public ICQ_Expression expr_func;
     }
 
     /// <summary>

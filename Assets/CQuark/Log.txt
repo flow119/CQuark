@@ -53,19 +53,19 @@
 	整合了sulbon做了多一些错误提示，和改写了一些冗余的临时变量操作
 	增加了新的注册方法，删除了0.60.5的委托注册方式
 	    //新的委托注册方法    
-		env.RegType(CSLE.RegHelper_Type.MakeDelegate(typeof(TestDele.myup), "TestDele.myup"));
-        env.RegType(CSLE.RegHelper_Type.MakeDelegate(typeof(Action<int>), "Action<int>"));
-        env.RegType(CSLE.RegHelper_Type.MakeDelegate(typeof(Action<int,string>), "Action<int,string>"));
-        env.RegType(CSLE.RegHelper_Type.MakeDelegate(typeof(Action), "Action"));
+		env.RegType(CQuark.RegHelper_Type.MakeDelegate(typeof(TestDele.myup), "TestDele.myup"));
+        env.RegType(CQuark.RegHelper_Type.MakeDelegate(typeof(Action<int>), "Action<int>"));
+        env.RegType(CQuark.RegHelper_Type.MakeDelegate(typeof(Action<int,string>), "Action<int,string>"));
+        env.RegType(CQuark.RegHelper_Type.MakeDelegate(typeof(Action), "Action"));
         //新的类型注册方法
-		env.RegType(CSLE.RegHelper_Type.MakeClass(typeof(Color), "Color"));
+		env.RegType(CQuark.RegHelper_Type.MakeClass(typeof(Color), "Color"));
 
 2014-12-17 0.60.5Beta
 
     委托注册很多人理解困难，增加一个不那么容易出错的注册工具
 	
 	    Action<int, string> reg2 = (i, j) => { };//定义一个指定类型的委托，函数是啥不重要，不执行，只抽取参数
-        CSLE.RegHelper_Dele_Util.RegWithDelegate(env, reg2, "Action<int,string>");//用这个委托注册
+        CQuark.RegHelper_Dele_Util.RegWithDelegate(env, reg2, "Action<int,string>");//用这个委托注册
 
 2014-12-08 0.60.4Beta
 
@@ -119,13 +119,13 @@
 				("{\"love\":{\"id\":12345}\"name\":\"aname\",\"age\":123,\"like\":[{\"name\":\"aaa\",\"desc\":\"aaaaaa\"},{\"name\":\"bbb\",\"desc\":\"bbbbbb\"}],\"strs\":[\"aa\",\"bb\"]}")
 					as MyJson.JsonNode_Object;
 
-			TSave read = CSLEConvert.FromJson("TSave", objst) as TSave;
+			TSave read = CQuarkConvert.FromJson("TSave", objst) as TSave;
             
 			Debug.Log("read.name=" + read.name);
 			Debug.Log("read.like[0].name=" + read.like[0].name);
 			Debug.Log("read.strs[1]=" + read.strs[1]);
 			Debug.Log("read.love.id=" + read.love.id);
-			Debug.Log("write" + CSLEConvert.ToJson(read).ToString());
+			Debug.Log("write" + CQuarkConvert.ToJson(read).ToString());
 		}
 
 	}
@@ -260,7 +260,7 @@ return 异常的传递
 0.48Beta（IOS未测）
 泛型类型可以如此注册一次，编译时自动注册实做类型（IOS未测）
 Type t =Type.GetType("System.Collections.Generic.List`1");
-scriptService.RegType(new CSLE.RegHelper_Type(t, "List"));
+scriptService.RegType(new CQuark.RegHelper_Type(t, "List"));
 
 0.47Beta
 脚本类型可丢容器 List<object>

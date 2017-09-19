@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 using System.Collections;
-using CSLE;
+using CQuark;
 
 [CustomEditor(typeof(ScriptMono))]
 public class ScriptMonoInspector : Editor {

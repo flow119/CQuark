@@ -11,17 +11,17 @@ class script03 : IScriptBehaviour
         private set;
     }
 
+	Transform trans;
     public void Start()
     {
+	trans = gameObject.transform;
         Debug.Log("Start" + this.gameObject);
         gameObject.name = "Cool name.";
     }
 
     public void Update()
     {
-        Transform trans = this.gameObject.GetComponent("Transform") as Transform;
-    
-        trans.Rotate(Vector3.up, 5.0f);
+        trans.Rotate(Vector3.up, 180 * Time.deltaTime);
     }
 
 }

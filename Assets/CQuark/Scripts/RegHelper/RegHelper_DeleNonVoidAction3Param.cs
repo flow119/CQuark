@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
     /// <summary>
     /// 支持有返回值的带 3 个参数的委托注册.
@@ -15,7 +15,7 @@ namespace CSLE
     ///    那么注册方式如下：
     ///    env.RegType(new RegHelper_DeleNonVoidAction<bool, int, int, int>(typeof(Class.BoolParam3Delegate), "Class.BoolParam3Delegate"));
     /// </summary>
-    public class RegHelper_DeleNonVoidAction<ReturnType, T, T1, T2> : RegHelper_Type, ICLS_Type_Dele
+    public class RegHelper_DeleNonVoidAction<ReturnType, T, T1, T2> : RegHelper_Type, ICQ_Type_Dele
     {
         /// <summary>
         /// 有返回值,同时带 3 个 参数的委托.
@@ -29,7 +29,7 @@ namespace CSLE
 
         }
 
-        public override object Math2Value(CLS_Content env, char code, object left, CLS_Content.Value right, out CLType returntype)
+        public override object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = null;
 
@@ -110,7 +110,7 @@ namespace CSLE
             }
             return new NotSupportedException();
         }
-        public Delegate CreateDelegate(ICLS_Environment env, DeleFunction delefunc)
+        public Delegate CreateDelegate(ICQ_Environment env, DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -120,7 +120,7 @@ namespace CSLE
                 var func = _func.calltype.functions[_func.function];
                 if (func.expr_runtime != null)
                 {
-                    CLS_Content content = new CLS_Content(env, true);
+                    CQ_Content content = new CQ_Content(env, true);
                     try
                     {
                         content.DepthAdd();
@@ -132,7 +132,7 @@ namespace CSLE
                         content.DefineAndSet(func._paramnames[1], func._paramtypes[1].type, param1);
                         content.DefineAndSet(func._paramnames[2], func._paramtypes[2].type, param2);
 
-                        CLS_Content.Value retValue = func.expr_runtime.ComputeValue(content);
+                        CQ_Content.Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
 
                         return (ReturnType)retValue.value;
@@ -154,9 +154,9 @@ namespace CSLE
             return delefunc.cacheFunction(this._type, _dele);
         }
 
-        public Delegate CreateDelegate(ICLS_Environment env, DeleLambda lambda)
+        public Delegate CreateDelegate(ICQ_Environment env, DeleLambda lambda)
         {
-            CLS_Content content = lambda.content.Clone();
+            CQ_Content content = lambda.content.Clone();
             var pnames = lambda.paramNames;
             var expr = lambda.expr_func;
 
@@ -171,7 +171,7 @@ namespace CSLE
                         content.DefineAndSet(pnames[0], typeof(T), param0);
                         content.DefineAndSet(pnames[1], typeof(T1), param1);
                         content.DefineAndSet(pnames[2], typeof(T2), param2);
-                        CLS_Content.Value retValue = expr.ComputeValue(content);
+                        CQ_Content.Value retValue = expr.ComputeValue(content);
 
                         content.DepthRemove();
 

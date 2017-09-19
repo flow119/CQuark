@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using CSLE;
+using CQuark;
 
 public class ScriptMono : MonoBehaviour, ICoroutine {
 
@@ -25,7 +25,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 	public string m_Update = "";
 	public string m_FixedUpdate = "";
 	public string m_OnDestroy = "";
-	Dictionary<string, CSLE.ICLS_Expression> dictExpr = new Dictionary<string, CSLE.ICLS_Expression>();
+	Dictionary<string, CQuark.ICQ_Expression> dictExpr = new Dictionary<string, CQuark.ICQ_Expression>();
 	//FileName
 	public string m_fileName = "";
 	static bool s_projectBuilded = false;
@@ -91,9 +91,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			var expr = dictExpr [key];
 			if (expr == null)
 				return;
-			var content = m_script.env.CreateContent ();//创建上下文，并设置变量给脚本访问
-			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
-			content.DefineAndSet ("transform", typeof(Transform), this.transform);
+
 			try {
 				expr.ComputeValue (content);
 			} catch (System.Exception e) {
@@ -105,10 +103,14 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			}
 			break;
 		case ECodeType.FileName:
+//			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
+//			content.DefineAndSet ("transform", typeof(Transform), this.transform);
 			inst.MemberCall(key);
 			break;
 		}
 	}
+
+	CQ_Content content;
 
 	public void ReBuildScript(){
 		m_script.Reset ();
@@ -122,6 +124,9 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			BuildScript ("Update", m_Update);
 			BuildScript ("FixedUpdate", m_FixedUpdate);
 			BuildScript ("OnDestroy", m_OnDestroy);
+			content = m_script.env.CreateContent ();//创建上下文，并设置变量给脚本访问
+			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
+			content.DefineAndSet ("transform", typeof(Transform), this.transform);
 			break;
 		case ECodeType.FileName:
 			if(!s_projectBuilded){
@@ -150,9 +155,9 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 
 	#region 文件名执行
 	public class ScriptInstanceHelper{
-		CSLE.ICLS_Type type;
-		CSLE.SInstance inst;//脚本实例
-		CSLE.CLS_Content content;//操作上下文
+		CQuark.ICQ_Type type;
+		CQuark.SInstance inst;//脚本实例
+		CQuark.CQ_Content content;//操作上下文
 
 		public ScriptInstanceHelper(string scriptTypeName){
 			type = Script.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
@@ -161,7 +166,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 				return;
 			}
 			content = Script.Instance.env.CreateContent();
-			inst = type.function.New(content, null).value as CSLE.SInstance;
+			inst = type.function.New(content, null).value as CQuark.SInstance;
 			content.CallType = inst.type;
 			content.CallThis = inst;
 		}
@@ -171,6 +176,14 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 				return inst.member["gameObject"].value as GameObject;
 			}set{
 				inst.member["gameObject"].value = value;
+			}
+		}
+
+		public Transform transform{
+			get{
+				return inst.member["transform"].value as Transform;
+			}set{
+				inst.member["transform"].value = value;
 			}
 		}
 

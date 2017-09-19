@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
     /// <summary>
     /// 数值类型系列类的公用工具函数.
@@ -19,7 +19,7 @@ namespace CSLE
         /// <param name="src"></param>
         /// <param name="targetType"></param>
         /// <returns></returns>
-        public static object TryConvertTo<OriginalType>(object src, CLType targetType, out bool convertSuccess) where OriginalType : struct
+        public static object TryConvertTo<OriginalType>(object src, CQType targetType, out bool convertSuccess) where OriginalType : struct
         {
 
             convertSuccess = true;
@@ -46,7 +46,7 @@ namespace CSLE
         /// <param name="returntype"></param>
         /// <param name="math2ValueSuccess"></param>
         /// <returns></returns>
-        public static object Math2Value<LeftType>(char opCode, object left, CLS_Content.Value right, out CLType returntype, out bool math2ValueSuccess) where LeftType : struct
+        public static object Math2Value<LeftType>(char opCode, object left, CQ_Content.Value right, out CQType returntype, out bool math2ValueSuccess) where LeftType : struct
         {
 
             math2ValueSuccess = true;
@@ -90,7 +90,7 @@ namespace CSLE
             }
         }
 
-        public static bool MathLogic<LeftType>(logictoken logicCode, object left, CLS_Content.Value right, out bool mathLogicSuccess)
+        public static bool MathLogic<LeftType>(logictoken logicCode, object left, CQ_Content.Value right, out bool mathLogicSuccess)
         {
 
             mathLogicSuccess = true;

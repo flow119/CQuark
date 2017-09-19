@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CSLE
+namespace CQuark
 {
-    public class RegHelper_DeleAction : RegHelper_Type, ICLS_Type_Dele
+    public class RegHelper_DeleAction : RegHelper_Type, ICQ_Type_Dele
     {
 
         public RegHelper_DeleAction(Type type, string setkeyword)
@@ -14,7 +14,7 @@ namespace CSLE
         }
 
 
-        public override object Math2Value(CLS_Content env, char code, object left, CLS_Content.Value right, out CLType returntype)
+        public override object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = null;
 
@@ -98,7 +98,7 @@ namespace CSLE
 
 
 
-        public Delegate CreateDelegate(ICLS_Environment env, DeleFunction delefunc)
+        public Delegate CreateDelegate(ICQ_Environment env, DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -108,7 +108,7 @@ namespace CSLE
                 var func = _func.calltype.functions[_func.function];
                 if (func.expr_runtime != null)
                 {
-                    CLS_Content content = new CLS_Content(env, true);
+                    CQ_Content content = new CQ_Content(env, true);
                     try
                     {
                         content.DepthAdd();
@@ -145,9 +145,9 @@ namespace CSLE
         }
 
 
-        public Delegate CreateDelegate(ICLS_Environment env, DeleLambda lambda)
+        public Delegate CreateDelegate(ICQ_Environment env, DeleLambda lambda)
         {
-            CLS_Content content = lambda.content.Clone();
+            CQ_Content content = lambda.content.Clone();
             //var pnames = lambda.paramNames;
             var expr = lambda.expr_func;
             Action dele = () =>
