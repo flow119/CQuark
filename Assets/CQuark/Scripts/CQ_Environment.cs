@@ -212,6 +212,10 @@ namespace CQuark
             //}
             calls[func.keyword] = func;
         }
+		public void RegFunction(Delegate dele)
+		{
+			RegFunction(new RegHelper_Function (dele));
+		}
         public ICQ_Function GetFunction(string name)
         {
             ICQ_Function func = null;

@@ -15,7 +15,7 @@ public class Demo2 : MonoBehaviour {
 //		Type t = Type.GetType ("UnityEngine.GameObject");
 
 		//将函数Today()注册给脚本使用
-		Script.Instance.env.RegFunction (new CQuark.RegHelper_Function ((deleToday)Today));
+		Script.Instance.env.RegFunction ((deleToday)Today);
 	
 
 	
