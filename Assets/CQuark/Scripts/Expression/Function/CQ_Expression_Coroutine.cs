@@ -58,7 +58,7 @@ namespace CQuark
                     list.Add(p.ComputeValue(content));
                 }
             }
-			UnityEngine.Debug.Log("YieldWaitForSecond");
+
 			if(funcname == "YieldWaitForSecond"){
 
 				content.OutStack(this);
@@ -76,12 +76,10 @@ namespace CQuark
 	                if (retFunc.bStatic)
 	                {
 	                    v = content.CallType.StaticCall(content, funcname, list);
-
 	                }
 	                else
 	                {
 	                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-
 	                }
 	            }
 
@@ -169,16 +167,12 @@ namespace CQuark
 					if (retFunc.bStatic)
 					{
 						v = content.CallType.StaticCall(content, funcname, list);
-						
 					}
 					else
 					{
 						v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-						
 					}
 				}
-				
-				
 				else
 				{
 					v = content.GetQuiet(funcname);
@@ -224,7 +218,6 @@ namespace CQuark
 
         public override string ToString()
         {
-
             return "Call|" + funcname + "(params[" + listParam.Count + ")";
         }
     }

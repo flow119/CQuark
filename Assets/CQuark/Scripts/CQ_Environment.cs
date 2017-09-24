@@ -14,7 +14,6 @@ namespace CQuark
     //环境 增加运行中的表达式查询
     public class CQ_Environment : ICQ_Environment, ICQ_Environment_Compiler
     {
-
         public string version
         {
             get
@@ -70,6 +69,10 @@ namespace CQuark
         Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
         Dictionary<string, ICQ_Function> calls = new Dictionary<string, ICQ_Function>();
         //Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
+		public void RegType(Type type, string keyword)
+		{
+			RegType(RegHelper_Type.MakeType(type, keyword));
+		}
         public void RegType(ICQ_Type type)
         {
             types[type.type] = type;
@@ -186,11 +189,9 @@ namespace CQuark
                             RegType(CQuark.RegHelper_Type.MakeType(IType, keyword));
                             return GetTypeByKeyword(keyword);
                         }
-
                     }
                 }
                 logger.Log_Error("(CQcript)类型未注册:" + keyword);
-
             }
 
             return ret;
@@ -216,6 +217,7 @@ namespace CQuark
 		{
 			RegFunction(new RegHelper_Function (dele));
 		}
+
         public ICQ_Function GetFunction(string name)
         {
             ICQ_Function func = null;
@@ -335,7 +337,7 @@ namespace CQuark
             }
         }
 
-
+		#region Tools
         public void Project_PacketToStream(Dictionary<string, IList<Token>> project, System.IO.Stream outstream)
         {
             byte[] FileHead = System.Text.Encoding.UTF8.GetBytes("CQuark-DLL");
@@ -369,7 +371,7 @@ namespace CQuark
                 project[key] = tlist;
             }
             return project;
-
         }
+		#endregion
     }
 }
