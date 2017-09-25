@@ -25,7 +25,6 @@ namespace CQuark
                 {
                     break;
                 }
-
             }
             return npos;
         }
@@ -62,7 +61,8 @@ namespace CQuark
 
             }
 
-            if (npos < pos || tokens[npos].type != TokenType.IDENTIFIER) return -1;
+            if (npos < pos || tokens[npos].type != TokenType.IDENTIFIER)
+				return -1;
             return npos;
         }
         //得到完整的表达式
@@ -168,13 +168,15 @@ namespace CQuark
                 }
                 else
                 {
-                    if (tokens[i].type != TokenType.PUNCTUATION) return -1;
+                    if (tokens[i].type != TokenType.PUNCTUATION)
+						return -1;
                     oppos.Add(i);
                     state = 0;
                     i--;
                 }
             }
-            if (state == 0) return -1;
+            if (state == 0) 
+				return -1;
             //找出优先级最低的操作符
             int nmax = 0;//优先级
             int npos = -1;//字符
@@ -875,7 +877,6 @@ namespace CQuark
 		}
         int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
         {
-
             int fs = pos + 1;
             if (tokens[fs].type == TokenType.PUNCTUATION && tokens[fs].text == ";")
                 return pos;
@@ -895,8 +896,7 @@ namespace CQuark
                 if (tokens[i].type == TokenType.PUNCTUATION || (tokens[i].type == TokenType.KEYWORD && tokens[i].text == "as") || (tokens[i].type == TokenType.KEYWORD && tokens[i].text == "is"))
                 {
                     if (tokens[i].text == "(")
-                    {
-
+					{
                         if (dep == 0 && (i == pos || tokens[i - 1].type == TokenType.PUNCTUATION) && i + 1 <= posend && tokens[i + 1].type == TokenType.TYPE)
                         {
                             list.Add(i);
@@ -924,7 +924,8 @@ namespace CQuark
                     else if (tokens[i].text == ")" || tokens[i].text == "}" || tokens[i].text == "]")
                     {
                         dep--;
-                        if (dep < 0) return null;
+                        if (dep < 0) 
+							return null;
                         continue;
                     }
 
@@ -949,9 +950,9 @@ namespace CQuark
             }
             return list.Count > 0 ? list : listt;
         }
+
         int GetLowestMathOp(IList<Token> tokens, IList<int> list)
         {
-
             int nmax = int.MaxValue;//优先级
             int npos = -1;//字符
             foreach (int i in list)
@@ -966,14 +967,8 @@ namespace CQuark
                         max = 0;
                         break;
                     case "<":
-                        max = 5;
-                        break;
                     case ">":
-                        max = 5;
-                        break;
                     case "<=":
-                        max = 5;
-                        break;
                     case ">=":
                         max = 5;
                         break;
@@ -984,8 +979,6 @@ namespace CQuark
                         max = 3;
                         break;
                     case "==":
-                        max = 4;
-                        break;
                     case "!=":
                         max = 4;
                         break;
@@ -999,8 +992,6 @@ namespace CQuark
                         max = 7;
                         break;
                     case "+":
-                        max = 6;
-                        break;
                     case "-":
                         max = 6;
                         break;

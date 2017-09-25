@@ -122,7 +122,6 @@ namespace CQuark
                     convert.listParam.Add(v);
                     convert.targettype = content.GetTypeByKeyword(tlist[oppos + 1].text).type;
 
-
                     return convert;
                 }
                 ICQ_Expression valueleft;
@@ -198,15 +197,10 @@ namespace CQuark
                         {
                             throw new Exception("非法的Member Set表达式" + valueleft);
                         }
-
-
-
-
                     }
                     else if (tkCur.text == ".")
                     {
                         //FindMember
-
                         CQ_Expression_GetValue vg = valueright as CQ_Expression_GetValue;
                         CQ_Expression_Function vf = valueright as CQ_Expression_Function;
 
@@ -237,13 +231,8 @@ namespace CQuark
                             return value;
                         }
 
-
-
                         throw new Exception("不可识别的表达式" + valueleft + "." + valueright);
                         //value.listParam.Add(valueright);
-
-
-
                     }
                     else if (tkCur.text == "+=" || tkCur.text == "-=" || tkCur.text == "*=" || tkCur.text == "/=" || tkCur.text == "%=")
                     {
@@ -344,8 +333,6 @@ namespace CQuark
                         }
 
                     }
-
-
                 }
                 else
                 {
@@ -363,7 +350,5 @@ namespace CQuark
 
             return value;
         }
-
-
     }
 }

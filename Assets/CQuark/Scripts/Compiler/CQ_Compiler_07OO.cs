@@ -97,12 +97,10 @@ namespace CQuark
                     else if (onlyGotType)
                     {
                         env.logger.Log("(scriptPreParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
-
                     }
                     else
                     {
                         env.logger.Log("(scriptParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
-
                     }
                     if (bJumpClass)
                     {//忽略这个Class
@@ -143,7 +141,8 @@ namespace CQuark
                 stype.SetBaseType(basetypess);
             }
 
-            if (onlyGotType) return stype;
+            if (onlyGotType) 
+				return stype;
 
             //if (env.useNamespace && usinglist != null)
             //{//使用命名空间,替换token

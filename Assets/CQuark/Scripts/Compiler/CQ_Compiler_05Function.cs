@@ -5,8 +5,6 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
-
-
         public ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);

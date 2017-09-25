@@ -7,13 +7,14 @@ namespace CQuark
     public class RegHelper_TypeFunction : ICQ_TypeFunction
     {
         Type type;
+		Dictionary<int, System.Reflection.MethodInfo> cacheT;//= new Dictionary<string, System.Reflection.MethodInfo>();
+
         public RegHelper_TypeFunction(Type type)
         {
             this.type = type;
         }
         public virtual CQ_Content.Value New(CQ_Content environment, IList<CQ_Content.Value> _params)
         {
-
             List<Type> types = new List<Type>();
             List<object> objparams = new List<object>();
             foreach (var p in _params)
@@ -107,7 +108,8 @@ namespace CQuark
                 }
             }
             if (targetop == null)
-            {//因为有cache的存在，可以更慢更多的查找啦，哈哈哈哈
+            {
+				//因为有cache的存在，可以更慢更多的查找啦，哈哈哈哈
                 targetop = GetMethodSlow(environment, true, function, types, _oparams);
                 needConvert = true;
             }
@@ -127,13 +129,10 @@ namespace CQuark
             v.value = targetop.Invoke(null, _oparams.ToArray());
             v.type = targetop.ReturnType;
             return v;
-
-
         }
 
         public virtual CQ_Content.Value StaticCallCache(CQ_Content content, IList<CQ_Content.Value> _params, MethodCache cache)
         {
-
             List<object> _oparams = new List<object>();
             List<Type> types = new List<Type>();
             foreach (var p in _params)
@@ -171,8 +170,6 @@ namespace CQuark
             v.value = targetop.Invoke(null, _oparams.ToArray());
             v.type = targetop.ReturnType;
             return v;
-
-
         }
 
         public virtual CQ_Content.Value StaticValueGet(CQ_Content environment, string valuename)
@@ -263,10 +260,9 @@ namespace CQuark
             {
                 return b;
             }
-
-
         }
-        Dictionary<int, System.Reflection.MethodInfo> cacheT;//= new Dictionary<string, System.Reflection.MethodInfo>();
+
+       
         System.Reflection.MethodInfo FindTMethod(Type type, string func, IList<CQ_Content.Value> _params, Type[] gtypes)
         {
             string hashkey = func + "_" + _params.Count + ":";
@@ -954,10 +950,7 @@ namespace CQuark
                     throw new Exception("还没有支持这么多参数的委托");
                 }
                 return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
-
             }
-
-
         }
         [Obsolete("use MakeType Instead.")]
         public static RegHelper_Type Make(Type type, string keyword)
@@ -1052,8 +1045,6 @@ namespace CQuark
 
             if (_type.IsEnum)
             {
-
-
                 if ((Type)targetType == typeof(int))
                     return System.Convert.ToInt32(src);
                 else if ((Type)targetType == typeof(uint))
@@ -1118,7 +1109,6 @@ namespace CQuark
             else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Modulus", new Type[] { this.type, right.type });
 
-
             var obj = call.Invoke(null, new object[] { left, right.value });
             //function.StaticCall(env,"op_Addtion",new List<ICL>{})
             return obj;
@@ -1143,8 +1133,6 @@ namespace CQuark
                 {
                     return left == right.value;
                 }
-
-
 
                 call = _type.GetMethod("op_Equality");
                 if (call == null)
@@ -1173,7 +1161,6 @@ namespace CQuark
             get;
             protected set;
         }
-
 
         public virtual object DefValue
         {
