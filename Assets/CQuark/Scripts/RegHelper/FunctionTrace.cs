@@ -11,6 +11,11 @@ namespace CQuark
             get { return "trace"; }
         }
 
+		public Type returntype
+		{
+			get {return typeof(void);}
+		}
+
         public CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param)
         {
             string output = "trace:";

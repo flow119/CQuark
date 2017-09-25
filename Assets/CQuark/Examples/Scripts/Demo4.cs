@@ -7,6 +7,8 @@ public class Demo4 : MonoBehaviour,ICoroutine {
 	Script script = new Script();
 	void Start(){
 		script.RegTypes ();
+		script.env.RegFunction ((eDelay)Wait);
+		script.env.RegFunction ((eDelay)YieldWaitForSecond);
 		ExecuteFile ();
 	}
 
@@ -20,12 +22,16 @@ public class Demo4 : MonoBehaviour,ICoroutine {
 	public object StartNewCoroutine(IEnumerator method){
 		return StartCoroutine(method);
 	}
-	
-	public object WaitForSecond(float time){
-		return StartCoroutine(Timer (time));
-	}
 
-	IEnumerator Timer(float time){
+	delegate IEnumerator eDelay(float t);
+	IEnumerator Wait(float time){
+		yield return new WaitForSeconds (time);
+	}
+	IEnumerator YieldWaitForSecond(float time){
+		for (int i = 0; i < 10; i++) {
+			yield return new WaitForSeconds (0.1f);
+			Debug.Log (i.ToString());
+		}
 		yield return new WaitForSeconds (time);
 	}
 }

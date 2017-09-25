@@ -59,72 +59,72 @@ namespace CQuark
                 }
             }
 
-			if(funcname == "YieldWaitForSecond"){
-
-				content.OutStack(this);
+//			if(funcname == "YieldWaitForSecond"){
+//
+//				content.OutStack(this);
 				return null;
-			}else{
-	            CQ_Content.Value v = null;
-
-	            SType.Function retFunc = null;
-	            bool bFind = false;
-	            if (content.CallType != null)
-	                bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
-
-	            if (bFind)
-	            {
-	                if (retFunc.bStatic)
-	                {
-	                    v = content.CallType.StaticCall(content, funcname, list);
-	                }
-	                else
-	                {
-	                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-	                }
-	            }
-
-
-	            else
-	            {
-	                v = content.GetQuiet(funcname);
-	                if (v != null && v.value is Delegate)
-	                {
-	                    //if(v.value is Delegate)
-	                    {
-	                        Delegate d = v.value as Delegate;
-	                        v = new CQ_Content.Value();
-	                        object[] obja = new object[list.Count];
-	                        for (int i = 0; i < list.Count; i++)
-	                        {
-	                            obja[i] = list[i].value;
-	                        }
-	                        v.value = d.DynamicInvoke(obja);
-	                        if (v.value == null)
-	                        {
-	                            v.type = null;
-	                        }
-	                        else
-	                        {
-	                            v.type = v.value.GetType();
-	                        }
-	                    }
-	                    //else
-	                    //{
-	                    //    throw new Exception(funcname + "不是函数");
-	                    //}
-	                }
-	                else
-	                {
-	                    v = content.environment.GetFunction(funcname).Call(content, list);
-	                }
-	            }
-	            //操作变量之
-	            //做数学计算
-	            //从上下文取值
-	            //_value = null;
-	            content.OutStack(this);
-	            return v;
-			}
+//			}else{
+//	            CQ_Content.Value v = null;
+//
+//	            SType.Function retFunc = null;
+//	            bool bFind = false;
+//	            if (content.CallType != null)
+//	                bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
+//
+//	            if (bFind)
+//	            {
+//	                if (retFunc.bStatic)
+//	                {
+//	                    v = content.CallType.StaticCall(content, funcname, list);
+//	                }
+//	                else
+//	                {
+//	                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
+//	                }
+//	            }
+//
+//
+//	            else
+//	            {
+//	                v = content.GetQuiet(funcname);
+//	                if (v != null && v.value is Delegate)
+//	                {
+//	                    //if(v.value is Delegate)
+//	                    {
+//	                        Delegate d = v.value as Delegate;
+//	                        v = new CQ_Content.Value();
+//	                        object[] obja = new object[list.Count];
+//	                        for (int i = 0; i < list.Count; i++)
+//	                        {
+//	                            obja[i] = list[i].value;
+//	                        }
+//	                        v.value = d.DynamicInvoke(obja);
+//	                        if (v.value == null)
+//	                        {
+//	                            v.type = null;
+//	                        }
+//	                        else
+//	                        {
+//	                            v.type = v.value.GetType();
+//	                        }
+//	                    }
+//	                    //else
+//	                    //{
+//	                    //    throw new Exception(funcname + "不是函数");
+//	                    //}
+//	                }
+//	                else
+//	                {
+//	                    v = content.environment.GetFunction(funcname).Call(content, list);
+//	                }
+//	            }
+//	            //操作变量之
+//	            //做数学计算
+//	            //从上下文取值
+//	            //_value = null;
+//	            content.OutStack(this);
+//	            return v;
+//			}
         }
 
 		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
@@ -139,86 +139,90 @@ namespace CQuark
 					list.Add(p.ComputeValue(content));
 				}
 			}
-			if(funcname == "YieldWaitForSecond"){
-				if(list[0].type.Name == "Int32"){
-					int delay = (int)list[0].value;
-					yield return coroutine.WaitForSecond((float)delay);
-				}else if(list[0].type.Name == "Single"){
-					float delay = (float)list[0].value;
-					yield return coroutine.WaitForSecond(delay);
-				}else if(list[0].type.Name == "Double"){
-					double delay = (double)list[0].value;
-					yield return coroutine.WaitForSecond((float)delay);
-				}else{
-					//Unknow Number Type
-				}
 
-				content.OutStack(this);
-			}else{
-				CQ_Content.Value v = null;
-				
-				SType.Function retFunc = null;
-				bool bFind = false;
-				if (content.CallType != null)
-					bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
-				
-				if (bFind)
-				{
-					if (retFunc.bStatic)
-					{
-						v = content.CallType.StaticCall(content, funcname, list);
-					}
-					else
-					{
-						v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-					}
-				}
-				else
-				{
-					v = content.GetQuiet(funcname);
-					if (v != null && v.value is Delegate)
-					{
-						//if(v.value is Delegate)
-						{
-							Delegate d = v.value as Delegate;
-							v = new CQ_Content.Value();
-							object[] obja = new object[list.Count];
-							for (int i = 0; i < list.Count; i++)
-							{
-								obja[i] = list[i].value;
-							}
-							v.value = d.DynamicInvoke(obja);
-							if (v.value == null)
-							{
-								v.type = null;
-							}
-							else
-							{
-								v.type = v.value.GetType();
-							}
-						}
-						//else
-						//{
-						//    throw new Exception(funcname + "不是函数");
-						//}
-					}
-					else
-					{
-						v = content.environment.GetFunction(funcname).Call(content, list);
-					}
-				}
-				//操作变量之
-				//做数学计算
-				//从上下文取值
-				//_value = null;
-				content.OutStack(this);
-			}
+			ICQ_Function func = content.environment.GetFunction (funcname);
+			yield return coroutine.StartNewCoroutine (func.Call(content, list).value as IEnumerator);
+			content.OutStack(this);
+//			if(funcname == "YieldWaitForSecond"){
+//				if(list[0].type.Name == "Int32"){
+//					int delay = (int)list[0].value;
+//					yield return coroutine.WaitForSecond((float)delay);
+//				}else if(list[0].type.Name == "Single"){
+//					float delay = (float)list[0].value;
+//					yield return coroutine.WaitForSecond(delay);
+//				}else if(list[0].type.Name == "Double"){
+//					double delay = (double)list[0].value;
+//					yield return coroutine.WaitForSecond((float)delay);
+//				}else{
+//					//Unknow Number Type
+//				}
+//
+//				content.OutStack(this);
+//			}else{
+//				CQ_Content.Value v = null;
+//				
+//				SType.Function retFunc = null;
+//				bool bFind = false;
+//				if (content.CallType != null)
+//					bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
+//				
+//				if (bFind)
+//				{
+//					if (retFunc.bStatic)
+//					{
+//						v = content.CallType.StaticCall(content, funcname, list);
+//					}
+//					else
+//					{
+//						v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
+//					}
+//				}
+//				else
+//				{
+//					v = content.GetQuiet(funcname);
+//					if (v != null && v.value is Delegate)
+//					{
+//						//if(v.value is Delegate)
+//						{
+//							Delegate d = v.value as Delegate;
+//							v = new CQ_Content.Value();
+//							object[] obja = new object[list.Count];
+//							for (int i = 0; i < list.Count; i++)
+//							{
+//								obja[i] = list[i].value;
+//							}
+//							v.value = d.DynamicInvoke(obja);
+//							if (v.value == null)
+//							{
+//								v.type = null;
+//							}
+//							else
+//							{
+//								v.type = v.value.GetType();
+//							}
+//						}
+//						//else
+//						//{
+//						//    throw new Exception(funcname + "不是函数");
+//						//}
+//					}
+//					else
+//					{
+//						v = content.environment.GetFunction(funcname).Call(content, list);
+//					}
+//				}
+//				//操作变量之
+//				//做数学计算
+//				//从上下文取值
+//				//_value = null;
+//				content.OutStack(this);
+//			}
 		}
         public string funcname;
 
         public override string ToString()
         {
-            return "Call|" + funcname + "(params[" + listParam.Count + ")";
+            return "Coroutine |" + funcname + "(params[" + listParam.Count + ")";
         }
     }
 }

@@ -2,7 +2,7 @@ Debug.Log("Start");
 
 float a = 0.1f;
 
-YieldWaitForSecond(1);
+Wait(1);
 
 Debug.Log("A");
 

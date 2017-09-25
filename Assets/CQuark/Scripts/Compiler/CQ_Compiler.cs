@@ -7,9 +7,10 @@ namespace CQuark
     {
         ICQ_Logger logger;
         public CQ_Expression_Compiler(ICQ_Logger logger)
-        {
-            this.logger = logger;
-        }
+		{
+			this.logger = logger;
+		}
+
         public ICQ_Expression Compile(IList<Token> tlist, ICQ_Environment content)
         {
             ICQ_Expression value;
@@ -36,9 +37,6 @@ namespace CQuark
                 LogError(tlist, "编译失败:", expbegin, expend);
                 return null;
             }
-
-
-
         }
 
         public ICQ_Expression Compile_NoBlock(IList<Token> tlist, ICQ_Environment content)
@@ -54,22 +52,22 @@ namespace CQuark
                     logger.Log_Warn("编译为null:");
                 }
                 return value;
-
             }
             else
             {
                 LogError(tlist, "编译失败:", expbegin, expend);
                 return null;
             }
-
-
         }
         public ICQ_Expression Optimize(ICQ_Expression value, ICQ_Environment env)
         {
             ICQ_Expression expr = value as ICQ_Expression;
-            if (expr == null) return value;
-            else return OptimizeDepth(expr, new CQ_Content(env));
+            if (expr == null) 
+				return value;
+            else 
+				return OptimizeDepth(expr, new CQ_Content(env));
         }
+
         ICQ_Expression OptimizeDepth(ICQ_Expression expr, CQ_Content content)
         {
             //先进行深入优化
@@ -84,17 +82,13 @@ namespace CQuark
                     }
                 }
             }
-
-
             return OptimizeSingle(expr, content);
-
         }
+
         ICQ_Expression OptimizeSingle(ICQ_Expression expr, CQ_Content content)
         {
-
             if (expr is CQ_Expression_Math2Value || expr is CQ_Expression_Math2ValueAndOr || expr is CQ_Expression_Math2ValueLogic)
             {
-
                 if (expr.listParam[0] is ICQ_Value &&
                 expr.listParam[1] is ICQ_Value)
                 {
@@ -119,8 +113,6 @@ namespace CQuark
                         value.lineEnd = expr.listParam[1].lineEnd;
                         return value;
                     }
-
-
                 }
             }
             if (expr is CQ_Expression_Math3Value)
@@ -135,15 +127,14 @@ namespace CQuark
                         return expr.listParam[2];
                 }
             }
-
             return expr;
         }
-
-
+			
         public IList<ICQ_Type> FileCompile(ICQ_Environment env,string filename,IList<Token> tlist, bool embDebugToken)
         {
             return _FileCompiler(filename, tlist, embDebugToken, env, false);
         }
+
         public IList<ICQ_Type> FilePreCompile(ICQ_Environment env, string filename, IList<Token> tlist)
         {
             return _FileCompiler(filename, tlist, false, env, true);

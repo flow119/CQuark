@@ -10,6 +10,9 @@ namespace CQuark
         {
             get;
         }
+		Type returntype {
+			get;
+		}
 
         CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param);
     }

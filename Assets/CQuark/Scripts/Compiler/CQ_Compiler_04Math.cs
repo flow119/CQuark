@@ -32,7 +32,8 @@ namespace CQuark
                 //}
                 if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")//函数表达式
                 {
-					if(tlist[pos].text == "YieldWaitForSecond")
+					if(content.IsCoroutine(tlist[pos].text))
+//					if(tlist[pos].text == "YieldWaitForSecond")
 						return Compiler_Expression_Coroutine(tlist, content, pos, posend);
 					else
 	                    return Compiler_Expression_Function(tlist, content, pos, posend);
@@ -52,13 +53,12 @@ namespace CQuark
             }
             Token tkCur = tlist[oppos];
             if (tkCur.text == "=>")
-            {//lambda
+            {
+				//lambda
                 return Compiler_Expression_Lambda(tlist, content, pos, posend);
             }
             else if (tkCur.text == "." && pos == oppos - 1 && tlist[pos].type == TokenType.TYPE)
             {
-
-
                 int right = oppos + 1;
                 int rightend = posend;
 
@@ -66,9 +66,6 @@ namespace CQuark
                 bool succ2 = Compiler_Expression(tlist, content, right, rightend, out valueright);
                 if (succ2)
                 {
-
-
-
                     CQ_Expression_GetValue vg = valueright as CQ_Expression_GetValue;
                     CQ_Expression_Function vf = valueright as CQ_Expression_Function;
                     if (vg != null)
@@ -97,12 +94,10 @@ namespace CQuark
                         value.mathop = vr.mathop;
                         return value;
                     }
-
                     else
                     {
                         throw new Exception("不可识别的表达式:" + tkCur.ToString() + tkCur.SourcePos());
                     }
-
                 }
                 else
                 {

@@ -1,5 +1,5 @@
 ﻿/// C#Light/Evil
-/// 作者 疯光无限 版本见ICQ_Environment.version
+/// 作者 疯光无限 版本见
 /// https://github.com/lightszero/CSLightStudio
 /// http://crazylights.cnblogs.com
 /// 请勿删除此声明
@@ -14,13 +14,25 @@ namespace CQuark
     //环境 增加运行中的表达式查询
     public class CQ_Environment : ICQ_Environment, ICQ_Environment_Compiler
     {
-        public string version
-        {
-            get
-            {
-                return "0.7.1";
-            }
-        }
+		Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
+		Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
+		Dictionary<string, ICQ_Function> calls = new Dictionary<string, ICQ_Function>();
+		Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
+		//Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
+
+		public ICQ_Logger logger
+		{
+			get;
+			private set;
+		}
+		//public ICQ_Debugger debugger;
+		public ICQ_TokenParser tokenParser
+		{
+			get;
+			private set;
+		}
+		ICQ_Expression_Compiler compiler = null;
+
         public CQ_Environment(ICQ_Logger logger)
         {
             //if(useNamespace==true)
@@ -48,9 +60,9 @@ namespace CQuark
             RegType(new CQ_Type_Long());
             RegType(new CQ_Type_ULong());
 
-            RegType(RegHelper_Type.MakeType(typeof(object), "object"));
-            RegType(RegHelper_Type.MakeType(typeof(List<>), "List"));
-            RegType(RegHelper_Type.MakeType(typeof(Dictionary<,>), "Dictionary"));
+            RegType(typeof(object), "object");
+            RegType(typeof(List<>), "List");
+            RegType(typeof(Dictionary<,>), "Dictionary");
 
             typess["null"] = new CQ_Type_NULL();
             //contentGloabl = CreateContent();
@@ -65,10 +77,7 @@ namespace CQuark
         //    private set;
         //}
 
-        Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
-        Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
-        Dictionary<string, ICQ_Function> calls = new Dictionary<string, ICQ_Function>();
-        //Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
+        
 		public void RegType(Type type, string keyword)
 		{
 			RegType(RegHelper_Type.MakeType(type, keyword));
@@ -211,7 +220,10 @@ namespace CQuark
             //{
             //    throw new Exception("用命名空间时不能直接使用函数，必须直接定义在类里");
             //}
-            calls[func.keyword] = func;
+			if (func.returntype == typeof(IEnumerator))
+				corouts [func.keyword] = func;
+			else
+				calls[func.keyword] = func;
         }
 		public void RegFunction(Delegate dele)
 		{
@@ -224,22 +236,18 @@ namespace CQuark
             calls.TryGetValue(name, out func);
             if (func == null)
             {
-                throw new Exception("找不到函数:" + name);
+				corouts.TryGetValue (name, out func);
+				if(func == null)
+	                throw new Exception("找不到函数:" + name);
             }
             return func;
         }
-        public ICQ_Logger logger
-        {
-            get;
-            private set;
-        }
-        //public ICQ_Debugger debugger;
-        public ICQ_TokenParser tokenParser
-        {
-            get;
-            private set;
-        }
-        ICQ_Expression_Compiler compiler = null;
+			
+		//是否是一个协程方法
+		public bool IsCoroutine(string name){
+			return corouts.ContainsKey (name);
+		}
+
 		public IList<Token> ParserToken(string code)
 		{
 			IList<Token> tokens = tokenParser.Parse(code);

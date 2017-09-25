@@ -40,13 +40,16 @@ namespace CQuark
         }
         List<object> defvalues = new List<object>();
         List<Type> paramtype = new List<Type>();
-        Type returntype;
+       
         public string keyword
         {
             get;
             private set;
         }
-
+		public Type returntype {
+			get;
+			private set;
+		}
         public CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param)
         {
             CQ_Content.Value v = new CQ_Content.Value();
