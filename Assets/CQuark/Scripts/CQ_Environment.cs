@@ -251,6 +251,9 @@ namespace CQuark
 		public IList<Token> ParserToken(string code)
 		{
 			IList<Token> tokens = tokenParser.Parse(code);
+			if (tokens == null)
+				logger.Log_Warn ("没有解析到代码");
+
 			//windows下用记事本写，会在文本第一个字符出现不可解析的字符
 			if (tokens [0].type == TokenType.UNKNOWN)
 				tokens.RemoveAt (0);

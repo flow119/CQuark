@@ -79,6 +79,7 @@ public class Script
 		env.RegType (typeof(Mesh), "Mesh");
 		env.RegType (typeof(MeshFilter), "MeshFilter");
 		env.RegType (typeof(Renderer), "Renderer");
+		env.RegType (typeof(UnityEngine.Random), "Random");
 
 		env.RegType (typeof(ParticleSystem), "ParticleSystem");
 		env.RegType (typeof(PlayerPrefs), "PlayerPrefs");
