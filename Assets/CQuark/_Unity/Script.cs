@@ -56,6 +56,7 @@ public class Script
 		env.RegType(typeof(object), "object");
 
 		//大部分类型用RegHelper_Type提供即可
+		env.RegType (typeof(System.DateTime), "DateTime");
 		env.RegType (typeof(AssetBundle), "AssetBundle");
 		env.RegType (typeof(Animation), "Animation");
 		env.RegType (typeof(AnimationCurve), "AnimationCurve");
