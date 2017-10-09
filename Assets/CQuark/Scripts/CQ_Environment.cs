@@ -250,13 +250,15 @@ namespace CQuark
 
 		public IList<Token> ParserToken(string code)
 		{
+			if (code [0] == 0xFEFF) {
+				//windows下用记事本写，会在文本第一个字符出现BOM（65279）
+				code = code.Substring(1);
+			}
+
 			IList<Token> tokens = tokenParser.Parse(code);
 			if (tokens == null)
 				logger.Log_Warn ("没有解析到代码");
 
-			//windows下用记事本写，会在文本第一个字符出现不可解析的字符
-			if (tokens [0].type == TokenType.UNKNOWN)
-				tokens.RemoveAt (0);
 			return tokens;
 		}
         public ICQ_Expression Expr_CompileToken(IList<Token> listToken)
