@@ -104,9 +104,14 @@ namespace CQuark
         public void OutStack(ICQ_Expression expr)
         {
             if (!useDebug) return;
-            if (stackExpr.Peek() != expr)
+
+			if (stackExpr.Peek() != expr)
             {
-                throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
+				if (expr.hasCoroutine) {
+					DepthRemove ();
+				}else {
+					throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
+				}
             }
             stackExpr.Pop();
         }
@@ -396,6 +401,8 @@ namespace CQuark
         }
         public void DepthRemove()//控制变量作用域，退出一层，上一层的变量都清除
         {
+			if (tvalues.Count == 0)
+				return;
             List<string> list = tvalues.Pop();
             foreach(var v in list)
             {

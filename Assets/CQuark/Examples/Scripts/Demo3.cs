@@ -2,7 +2,8 @@
 using System.Collections;
 using System;
 
-public class Demo4 : MonoBehaviour,ICoroutine {
+public class Demo3 : MonoBehaviour,ICoroutine {
+	public string m_blockFilePath;
 
 	Script script = new Script();
 	void Start(){
@@ -16,7 +17,7 @@ public class Demo4 : MonoBehaviour,ICoroutine {
 		Action<WWW> cb = delegate(WWW www) {
 			StartCoroutine (script.StartCoroutine (www.text, this));
 		};
-		LoadMgr.Instance.LoadFromStreaming ("Blocks/script04Coroutine.txt", cb);
+		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
 	}
 
 	public object StartNewCoroutine(IEnumerator method){

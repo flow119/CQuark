@@ -16,7 +16,7 @@ public class Demo2 : MonoBehaviour {
 
 		//将函数Today()注册给脚本使用
 		Script.Instance.env.RegFunction ((deleToday)Today);
-	
+		Script.Instance.env.RegFunction ((eDelay)Wait);
 
 	
 		ExecuteFile ();
@@ -25,6 +25,11 @@ public class Demo2 : MonoBehaviour {
 	delegate int deleToday();
 	int Today(){
 		return (int)DateTime.Now.DayOfWeek;
+	}
+
+	delegate IEnumerator eDelay(float t);
+	IEnumerator Wait(float time){
+		yield return new WaitForSeconds (time);
 	}
 
 	// 这个函数展示了如何执行一个文件（作为函数块）

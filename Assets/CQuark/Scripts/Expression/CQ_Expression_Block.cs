@@ -62,9 +62,10 @@ namespace CQuark
 			{
 				ICQ_Expression e =i  as ICQ_Expression;
 				if (e != null)
-					value =e.ComputeValue(content);
+					value = e.ComputeValue(content);
 
-				if (value!=null&&value.breakBlock != 0) break;
+				if (value != null && value.breakBlock != 0) 
+					break;
 			} 
             content.DepthRemove();
             content.OutStack(this);
@@ -82,7 +83,7 @@ namespace CQuark
 					if(e.hasCoroutine){
 						yield return coroutine.StartNewCoroutine(e.CoroutineCompute(content, coroutine));
 					}else{
-						value =e.ComputeValue(content);
+						value = e.ComputeValue(content);
 						if (value != null && value.breakBlock != 0)
 							yield break;
 					}
