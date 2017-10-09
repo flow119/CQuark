@@ -15,6 +15,7 @@ case 2:
 		Debug.Log("b=4");
 		break;
 	}
+	Debug.Log("1 or 2");
 	break;
 default:
 	Debug.Log("not zero");

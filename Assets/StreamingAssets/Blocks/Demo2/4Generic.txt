@@ -4,7 +4,6 @@ List<string> a = new List<string>();
 a.Add("AAA");
 a.Add("BBB");
 a.Add("CCC");
-
 for(int i = 0; i < a.Count; i++){
 	Debug.Log(a[i]);
 }
@@ -13,7 +12,6 @@ Queue<string> b = new Queue<string>();
 b.Enqueue("AAA");
 b.Enqueue("BBB");
 b.Enqueue("CCC");
-
 while(b.Count > 0){
 	Debug.Log(b.Dequeue());
 }
@@ -25,3 +23,11 @@ c.Push("CCC");
 while(c.Count > 0){
 	Debug.Log(c.Pop());
 }
+
+Dictionary<int, string> _dic = new Dictionary<int, string>();
+_dic.Add(1, "number one");
+_dic.Add(2, "number two");
+_dic.Add(3, "number three");
+Debug.Log(_dic[1]);
+Debug.Log(_dic[2]);
+Debug.Log(_dic[3]);
