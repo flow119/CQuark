@@ -103,6 +103,7 @@ public class Script
 		//对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
 		env.RegType(typeof(int[]), "int[]");	//数组要独立注册
 		env.RegType(typeof(string[]), "string[]");	
+		env.RegType(typeof(float[]), "float[]");	
 		env.RegType(typeof(bool[]), "bool[]");	
 		env.RegType(typeof(List<>), "List");	//模板类要独立注册
 		env.RegType(typeof(Dictionary<,>), "Dictionary");
