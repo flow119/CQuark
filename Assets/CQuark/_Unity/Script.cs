@@ -105,8 +105,7 @@ public class Script
 		env.RegType(typeof(string[]), "string[]");	
 		env.RegType(typeof(float[]), "float[]");	
 		env.RegType(typeof(bool[]), "bool[]");	
-		env.RegType(typeof(List<>), "List");	//模板类要独立注册
-		env.RegType(typeof(Dictionary<,>), "Dictionary");
+		env.RegType (typeof(byte[]), "byte[]");
 
 //		env.RegType(new CQuark.RegHelper_Type(typeof(Vector2)));
 //		env.RegType(new CQuark.RegHelper_Type(typeof(Vector3)));

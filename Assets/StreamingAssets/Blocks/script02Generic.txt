@@ -1,0 +1,27 @@
+Debug.Log("Start");
+
+List<string> a = new List<string>();
+a.Add("AAA");
+a.Add("BBB");
+a.Add("CCC");
+
+for(int i = 0; i < a.Count; i++){
+	Debug.Log(a[i]);
+}
+
+Queue<string> b = new Queue<string>();
+b.Enqueue("AAA");
+b.Enqueue("BBB");
+b.Enqueue("CCC");
+
+while(b.Count > 0){
+	Debug.Log(b.Dequeue());
+}
+
+Stack<string> c = new Stack<string>();
+c.Push("AAA");
+c.Push("BBB");
+c.Push("CCC");
+while(c.Count > 0){
+	Debug.Log(c.Pop());
+}

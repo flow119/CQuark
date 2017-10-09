@@ -61,8 +61,11 @@ namespace CQuark
             RegType(new CQ_Type_ULong());
 
             RegType(typeof(object), "object");
-            RegType(typeof(List<>), "List");
-            RegType(typeof(Dictionary<,>), "Dictionary");
+
+			RegType (typeof(List<>), "List");	//模板类要独立注册
+			RegType (typeof(Dictionary<,>), "Dictionary");
+			RegType (typeof(Stack<>), "Stack");
+			RegType (typeof(Queue<>), "Queue");
 
             typess["null"] = new CQ_Type_NULL();
             //contentGloabl = CreateContent();
