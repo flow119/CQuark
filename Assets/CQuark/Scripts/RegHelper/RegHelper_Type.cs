@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -413,6 +414,17 @@ namespace CQuark
             v.type = targetop.ReturnType;
             return v;
         }
+
+		public bool HasFunction(string key){
+			//TODO 
+			return false;
+		}
+
+		public virtual IEnumerator CoroutineCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params, ICoroutine coroutine){
+			//TODO 不存在這樣的調用
+			MemberCall(environment, object_this, function, _params, null);
+			yield return null;
+		}
 
         Dictionary<string, IList<System.Reflection.MethodInfo>> slowCache = null;
 

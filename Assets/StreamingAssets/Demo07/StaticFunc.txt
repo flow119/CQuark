@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-class script03 : IScriptBehaviour
+class StaticScript : IScriptBehaviour
 {
     public GameObject gameObject
     {
@@ -14,14 +14,14 @@ class script03 : IScriptBehaviour
 	Transform trans;
     public void Start()
     {
-	trans = gameObject.transform;
-        Debug.Log("Start" + this.gameObject);
-        gameObject.name = "Cool name.";
+	
+        Debug.Log("Start");
+
     }
 
     public void Update()
     {
-        trans.Rotate(Vector3.up, 180 * Time.deltaTime);
+        Debug.Log("Update");
     }
 
 }

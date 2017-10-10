@@ -4,52 +4,37 @@ using System;
 
 public class Demo2 : MonoBehaviour {
 
-	public string m_blockFilePath;
-
 	// Use this for initialization
 	void Start () {
-
 //		Script.Init ();
 
-//		Type tt = typeof(UnityEngine.GameObject);
-//		Type t = Type.GetType ("UnityEngine.GameObject");
+		Execute1 ();
 
 		//将函数Today()注册给脚本使用
 		Script.Instance.env.RegFunction ((deleToday)Today);
-		Script.Instance.env.RegFunction ((eDelay)Wait);
-
-	
-		ExecuteFile ();
+		Execute2 ();
 	}
 
 	delegate int deleToday();
 	int Today(){
 		return (int)DateTime.Now.DayOfWeek;
 	}
-
-	delegate IEnumerator eDelay(float t);
-	IEnumerator Wait(float time){
-		yield return new WaitForSeconds (time);
-	}
-
-	// 这个函数展示了如何执行一个文件（作为函数块）
-	void ExecuteFile () {
-
-		Script.Instance.ClearValue ();
-		Script.Instance.SetValue ("Monday", 1);
-		Script.Instance.SetValue ("Sunday", 0);
-		Script.Instance.SetValue ("HP1", 200);
-		Script.Instance.SetValue ("HP2", 300);
-
-		Action<WWW> cb = delegate(WWW www) {
-			object obj = Script.Instance.Execute (www.text);
-			Debug.Log ("result = " + obj);
-		};
-		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
-	}
 	
-	//这个函数展示了如何执行一个文件(类)里某个函数
-	void ExecuteFileFunction(){
-		//TODO 执行文件里某个函数
+	//这个函数展示了执行一个函数块，且函数块再调用Unity的Debug类
+	void Execute1(){
+		Script.Instance.Execute (
+			"int a = 2;\n" +
+			"if(a == 0)\n" +
+				"Debug.Log(\"a is zero!\");\n" +
+			"else\n" +
+				"Debug.Log(\"a is not zero!\");");
+	}
+
+	//这个函数展示了执行一个函数块，且函数块再调用一个方法
+	void Execute2(){
+		int ret = (int)Script.Instance.Execute (
+			"Debug.Log(\"Today is \" + Today());\n" +
+			"return Today();");
+		Debug.Log("return = " + ret);
 	}
 }

@@ -9,8 +9,8 @@ public class Demo1 : MonoBehaviour {
 
 		Eval1 ();
 		Eval2 ();
-		Execute1 ();
-		Execute2 ();
+		ExecuteBlock ();
+
 	}
 
 	//这个函数展示最简单的计算
@@ -31,7 +31,7 @@ public class Demo1 : MonoBehaviour {
 	}
 
 	//这个函数展示了执行一个函数块
-	void Execute1(){
+	void ExecuteBlock(){
 		string method =
 			"string ret = \"\";\n" +
 			"for(int i = 0; i < 10; i++){\n" +
@@ -40,15 +40,5 @@ public class Demo1 : MonoBehaviour {
 			"return ret";
 		string s = (string)Script.Instance.Execute (method);
 		Debug.Log (s);
-	}
-
-	//这个函数展示了执行一个函数块，且函数块再调用Unity的Debug类
-	void Execute2(){
-		Script.Instance.Execute (
-			"int a = 2;\n" +
-			"if(a == 0)\n" +
-				"Debug.Log(\"a is zero!\");\n" +
-			"else\n" +
-				"Debug.Log(\"a is not zero!\");");
 	}
 }

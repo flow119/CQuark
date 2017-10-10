@@ -59,6 +59,7 @@ namespace CQuark
             RegType(new CQ_Type_Short());
             RegType(new CQ_Type_Long());
             RegType(new CQ_Type_ULong());
+			RegType (typeof(IEnumerator), "IEnumerator");
 
             RegType(typeof(object), "object");
 

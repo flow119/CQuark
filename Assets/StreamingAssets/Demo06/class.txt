@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+class ScriptClass6
+{
+    public int defHP1 = 5;
+    public int defHP2 = 8;
+
+    public int Calc1()
+    {
+        return defHP1 + (int)(defHP2*0.5f);
+    }
+
+    public int Calc2()
+    {
+        return defHP1 + (defHP2 * 2);
+    }
+
+    public IEnumerator GetHP()
+    {
+    	Debug.Log((defHP1 + defHP2).ToString());
+		Wait(1);
+		for(int i = 0; i < 10; i ++){
+			Wait(0.2f);
+			Debug.Log("B" + i);
+		}
+    }
+}
+

@@ -2,37 +2,43 @@
 using System.Collections;
 using System;
 
-public class Demo3 : MonoBehaviour,ICoroutine {
+public class Demo3 : MonoBehaviour {
+
 	public string m_blockFilePath;
 
-	Script script = new Script();
-	void Start(){
-		script.RegTypes ();
-		script.env.RegFunction ((eDelay)Wait);
-		script.env.RegFunction ((eDelay)YieldWaitForSecond);
+	// Use this for initialization
+	void Start () {
+
+//		Script.Init ();
+
+//		Type tt = typeof(UnityEngine.GameObject);
+//		Type t = Type.GetType ("UnityEngine.GameObject");
+
+		//将函数Today()注册给脚本使用
+		Script.Instance.env.RegFunction ((deleToday)Today);
+	
 		ExecuteFile ();
 	}
 
+	delegate int deleToday();
+	int Today(){
+		return (int)DateTime.Now.DayOfWeek;
+	}
+
+
+	// 这个函数展示了如何执行一个文件（作为函数块）
 	void ExecuteFile () {
+
+		Script.Instance.ClearValue ();
+		Script.Instance.SetValue ("Monday", 1);
+		Script.Instance.SetValue ("Sunday", 0);
+		Script.Instance.SetValue ("HP1", 200);
+		Script.Instance.SetValue ("HP2", 300);
+
 		Action<WWW> cb = delegate(WWW www) {
-			StartCoroutine (script.StartCoroutine (www.text, this));
+			object obj = Script.Instance.Execute (www.text);
+			Debug.Log ("result = " + obj);
 		};
 		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
-	}
-
-	public object StartNewCoroutine(IEnumerator method){
-		return StartCoroutine(method);
-	}
-
-	delegate IEnumerator eDelay(float t);
-	IEnumerator Wait(float time){
-		yield return new WaitForSeconds (time);
-	}
-	IEnumerator YieldWaitForSecond(float time){
-		for (int i = 0; i < 10; i++) {
-			yield return new WaitForSeconds (0.1f);
-			Debug.Log (i.ToString());
-		}
-		yield return new WaitForSeconds (time);
 	}
 }

@@ -254,7 +254,7 @@ namespace CQuark
                             idtype = env.GetTypeByKeyword(tokens[i].text + "[]");
                             i += 2;
                         }
-                        else if (tokens[i].text == "void")
+						else if (tokens[i].text == "void")
                         {
 
                         }

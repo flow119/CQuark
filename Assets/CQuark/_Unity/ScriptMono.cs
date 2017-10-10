@@ -8,15 +8,32 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 	public enum ECodeType
 	{
 //		FunctionBlock,	//一个函数块（一般用来测试）
-		FunctionsText,	//常用函数作为string
 		FileName,		//在StreamingAssets下的cs文件名
-		Text,			//cs文件作为string
 		TextAsset,		//cs文件作为TextAsset
+		Text,			//cs文件作为string
+		FunctionsText,	//常用函数作为string
 	}
 
 	public ECodeType m_codeType = ECodeType.FunctionsText;
 
-	//如果!m_useTextAsset，则纯文本
+	CQ_Content content;
+
+	//FileName or TextAsset or Text
+	public string m_className;
+
+	//FileName
+	static bool s_projectBuilded = false;
+	ScriptInstanceHelper inst;
+	public string m_folderPath = "/Demo07";
+	public string m_pattern = "*.txt";
+
+	//TextAsset Or Text
+	ICQ_Type typeOfScript;////得到脚本类型
+	object thisOfScript; //调用脚本类构造创造一个实例
+	public TextAsset m_ta;
+	public string m_codeText = "";
+
+	//FunctionsText
 	public Script m_script = new Script();
 	public string m_Awake = "";
 	public string m_OnEnable = "";
@@ -26,34 +43,20 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 	public string m_FixedUpdate = "";
 	public string m_OnDestroy = "";
 	Dictionary<string, CQuark.ICQ_Expression> dictExpr = new Dictionary<string, CQuark.ICQ_Expression>();
-	//FileName
-	public string m_fileName = "";
-	static bool s_projectBuilded = false;
-	ScriptInstanceHelper inst;
-//	//整个文件作为string
-//	public string m_codeText = "";
-//	//如果m_useTextAsset，则用文件
-//	public TextAsset m_ta;
 
 
 	public object StartNewCoroutine(IEnumerator method){
 		return StartCoroutine(method);
 	}
-
-	public object WaitForSecond(float time){
-		return StartCoroutine(Timer (time));
-	}
-
-	IEnumerator Timer(float time){
+	
+	delegate IEnumerator eDelay(float t);
+	IEnumerator Wait(float time){
 		yield return new WaitForSeconds (time);
 	}
 
+
 	void Awake(){
-		ReBuildScript ();
-		if (m_codeType == ECodeType.FileName) {
-			inst = new ScriptInstanceHelper(m_fileName);
-			inst.gameObject = this.gameObject;
-		}
+		Initialize ();
 		CallScript ("Awake");
 	}
 
@@ -84,7 +87,33 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 	}
 
 	void CallScript(string key){
+		CallScript (key, false);
+	}
+
+	void CallScript(string key, bool useCoroutine){
 		switch (m_codeType) {
+		case ECodeType.Text:
+		case ECodeType.TextAsset:
+		case ECodeType.FileName:
+			//			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
+			//			content.DefineAndSet ("transform", typeof(Transform), this.transform);
+			if(useCoroutine)
+				inst.CoroutineCall(key, this);
+			else
+				inst.MemberCall(key);
+			break;
+
+//		case ECodeType.Text:
+//		case ECodeType.TextAsset:
+//
+//			if(typeOfScript.function.HasFunction(key)){
+//				if(useCoroutine)
+//					StartCoroutine(typeOfScript.function.CoroutineCall(content, thisOfScript, key, null, this));
+//				else
+//					typeOfScript.function.MemberCall(content, thisOfScript, key, null);
+//			}
+//			break;
+
 		case ECodeType.FunctionsText:
 			if (!dictExpr.ContainsKey (key))
 				return;
@@ -92,54 +121,119 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			if (expr == null)
 				return;
 
-			try {
-				expr.ComputeValue (content);
-			} catch (System.Exception e) {
-				string dumpValue = content.DumpValue ();//出错可以dump脚本上现存的变量
-				string dumpStack = content.DumpStack (null);//dump脚本堆栈，如果保存着token就可以dump出具体代码
-				string dumpException = e.ToString ();
-				Debug.LogError ("callscript:" + key + " error\n" 
-				                + dumpValue + "\n" + dumpStack + "\n" + dumpException);
+			if(useCoroutine){
+				StartNewCoroutine(expr.CoroutineCompute(content, this));
 			}
-			break;
-		case ECodeType.FileName:
-//			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
-//			content.DefineAndSet ("transform", typeof(Transform), this.transform);
-			inst.MemberCall(key);
+			else{
+				try {
+					expr.ComputeValue (content);
+				} catch (System.Exception e) {
+					string dumpValue = content.DumpValue ();//出错可以dump脚本上现存的变量
+					string dumpStack = content.DumpStack (null);//dump脚本堆栈，如果保存着token就可以dump出具体代码
+					string dumpException = e.ToString ();
+					Debug.LogError ("callscript:" + key + " error\n" 
+					                + dumpValue + "\n" + dumpStack + "\n" + dumpException);
+				}
+			}
 			break;
 		}
 	}
 
-	CQ_Content content;
-
-	public void ReBuildScript(){
+	public void Initialize(){
 		m_script.Reset ();
 		m_script.RegTypes ();
-		switch (m_codeType) {
-		case ECodeType.FunctionsText:
-			BuildScript ("Start", m_Start);
-			BuildScript ("OnEnable", m_OnEnable);
-			BuildScript ("OnDisable", m_OnDisable);
-			BuildScript ("Start", m_Start);
-			BuildScript ("Update", m_Update);
-			BuildScript ("FixedUpdate", m_FixedUpdate);
-			BuildScript ("OnDestroy", m_OnDestroy);
+		m_script.env.RegFunction ((eDelay)Wait);
+
+		if (m_codeType != ECodeType.FunctionsText) {
+			switch(m_codeType){
+			case ECodeType.FileName:
+				if(!s_projectBuilded){
+					Script.Instance.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
+					s_projectBuilded = true;
+				}
+				break;
+			case ECodeType.TextAsset:
+				Script.Instance.BuildFile(m_className, m_ta.text);
+				break;
+			case ECodeType.Text:
+				Script.Instance.BuildFile(m_className, m_codeText);
+				break;
+			}
+			inst = new ScriptInstanceHelper(m_className);
+			inst.gameObject = this.gameObject;
+
+		} else {
+			BuildBlock ("Start", m_Start);
+			BuildBlock ("OnEnable", m_OnEnable);
+			BuildBlock ("OnDisable", m_OnDisable);
+			BuildBlock ("Start", m_Start);
+			BuildBlock ("Update", m_Update);
+			BuildBlock ("FixedUpdate", m_FixedUpdate);
+			BuildBlock ("OnDestroy", m_OnDestroy);
 			content = m_script.env.CreateContent ();//创建上下文，并设置变量给脚本访问
 			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 			content.DefineAndSet ("transform", typeof(Transform), this.transform);
-			break;
-		case ECodeType.FileName:
-			if(!s_projectBuilded){
-				Script.Instance.BuildProject(Application.streamingAssetsPath + "/Classes", "*.txt");
-				s_projectBuilded = true;
-			}
-			break;
 		}
-
 	}
 
+	#region 文件名执行
+	public class ScriptInstanceHelper{
+		CQuark.ICQ_Type type;
+		CQuark.SInstance inst;//脚本实例
+		CQuark.CQ_Content content;//操作上下文
+		
+		public ScriptInstanceHelper(string scriptTypeName){
+			type = Script.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
+			if(type == null){
+				Debug.LogError("Type:" + scriptTypeName + "不存在与脚本项目中");
+				return;
+			}
+			content = Script.Instance.env.CreateContent();
+			inst = type.function.New(content, null).value as CQuark.SInstance;
+			content.CallType = inst.type;
+			content.CallThis = inst;
+		}
+		
+		public GameObject gameObject{
+			get{
+				return inst.member["gameObject"].value as GameObject;
+			}set{
+				inst.member["gameObject"].value = value;
+			}
+		}
+		
+		public Transform transform{
+			get{
+				return inst.member["transform"].value as Transform;
+			}set{
+				inst.member["transform"].value = value;
+			}
+		}
+		
+		public void MemberCall(string methodName){
+			SType cclass = type.function as SType;
+			if(cclass.functions.ContainsKey(methodName) || cclass.members.ContainsKey(methodName))
+				type.function.MemberCall(content, inst, methodName, null);
+		}
+		
+		public void CoroutineCall(string methodName, ICoroutine coroutine){
+			SType cclass = type.function as SType;
+			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
+				coroutine.StartNewCoroutine (type.function.CoroutineCall (content, inst, methodName, null, coroutine));
+		}
+	}
+	public interface IScriptBehaviour
+	{
+		GameObject gameObject{ get; }
+	}
+	#endregion
+
+	#region TextAsset or Text
+
+	#endregion
+
 	#region 文本函数
-	void BuildScript(string key, string code){
+	void BuildBlock(string key, string code){
 		if (string.IsNullOrEmpty (code))
 			return;
 		try{
@@ -153,49 +247,5 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 
 	#endregion
 
-	#region 文件名执行
-	public class ScriptInstanceHelper{
-		CQuark.ICQ_Type type;
-		CQuark.SInstance inst;//脚本实例
-		CQuark.CQ_Content content;//操作上下文
 
-		public ScriptInstanceHelper(string scriptTypeName){
-			type = Script.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
-			if(type == null){
-				Debug.LogError("Type:" + scriptTypeName + "不存在与脚本项目中");
-				return;
-			}
-			content = Script.Instance.env.CreateContent();
-			inst = type.function.New(content, null).value as CQuark.SInstance;
-			content.CallType = inst.type;
-			content.CallThis = inst;
-		}
-
-		public GameObject gameObject{
-			get{
-				return inst.member["gameObject"].value as GameObject;
-			}set{
-				inst.member["gameObject"].value = value;
-			}
-		}
-
-		public Transform transform{
-			get{
-				return inst.member["transform"].value as Transform;
-			}set{
-				inst.member["transform"].value = value;
-			}
-		}
-
-		public void MemberCall(string methodName){
-			SType cclass = type.function as SType;
-			if(cclass.functions.ContainsKey(methodName) || cclass.members.ContainsKey(methodName))
-				type.function.MemberCall(content, inst, methodName, null);
-		}
-	}
-	public interface IScriptBehaviour
-	{
-		GameObject gameObject{ get; }
-	}
-	#endregion
 }

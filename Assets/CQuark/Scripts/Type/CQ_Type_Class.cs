@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CQuark
 {
-
     public class SType : ICQ_TypeFunction
     {
 
@@ -332,6 +332,51 @@ namespace CQuark
             }
             throw new NotImplementedException();
         }
+
+		public bool HasFunction(string key){
+			return this.functions.ContainsKey (key) || this.members.ContainsKey (key);
+		}
+
+		public virtual IEnumerator CoroutineCall(CQ_Content contentParent, object object_this, string func, IList<CQ_Content.Value> _params, ICoroutine coroutine){
+			//TODO
+			if (this.functions.ContainsKey(func))
+			{
+				if (this.functions[func].bStatic == false)
+				{
+					CQ_Content content = new CQ_Content(contentParent.environment, true);
+					
+					contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
+					content.CallType = this;
+					content.CallThis = object_this as SInstance;
+					content.function = func;
+					for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
+						//int i = 0;
+						//foreach (var p in this.functions[func]._params)
+					{
+						content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].type, _params[i].value);
+						//i++;
+					}
+					CQ_Content.Value value = null;
+					var funcobj = this.functions[func];
+					if (this.bInterface)
+					{
+						content.CallType = (object_this as SInstance).type;
+						funcobj = (object_this as SInstance).type.functions[func];
+					}
+					if (funcobj.expr_runtime != null)
+					{
+						yield return coroutine.StartNewCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
+//						if (value != null)
+//							value.breakBlock = 0;
+					}
+					contentParent.OutStack(content);
+					
+//					return value;
+				}
+			}
+			else
+				yield return MemberCall(contentParent, object_this, func, _params, null);
+		}
 
         public CQ_Content.Value MemberValueGet(CQ_Content environment, object object_this, string valuename)
         {

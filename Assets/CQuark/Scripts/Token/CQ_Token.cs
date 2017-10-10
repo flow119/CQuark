@@ -67,6 +67,7 @@ namespace CQuark
             types.Add("float");
             types.Add("double");
             types.Add("string");
+			types.Add ("IEnumerator");
 
 
             keywords.Add("if");
@@ -100,7 +101,7 @@ namespace CQuark
             keywords.Add("throw");
 
 			//2017-09-15 0.7.1 补充协程
-			keywords.Add("IEnumerator");
+//			keywords.Add("IEnumerator");
 
 			//2017-09-15 0.7.2 补充switch case
 			keywords.Add("switch");
