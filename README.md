@@ -28,8 +28,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 2017-10-10 v0.7.6
     
     重新制作了范例
-    类里的协程也能直接被调用
-    完善了ScriptMono类，允许只编译单个脚本（string或者TextAsset都可以），详细见Demo07
+    类里的协程也能直接被调用
+    完善了ScriptMono类，允许只编译单个脚本（string或者TextAsset都可以），详细见Demo07
     
 2017-10-09 v0.7.5
     
