@@ -64,10 +64,6 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 
 ## TODO
-* ScriptMono里增加调用协程的方法
-* ScriptMono增加使用单独文件或使用文本作为类的功能
-
-
 下个版本
 * 优化编译速度，减少gc alloc以及重复的GetCodeKey
 * 执行效率测试，主要看反射在iOS上的速度
