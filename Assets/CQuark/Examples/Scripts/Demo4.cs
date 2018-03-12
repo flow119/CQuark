@@ -11,11 +11,8 @@ public class Demo4 : MonoBehaviour {
 		Script.Instance.env.RegType (typeof(System.DateTime),"DateTime");
 		Script.Instance.env.RegType (typeof(System.DayOfWeek),"DayOfWeek");
 
-		Action<WWW> cb = delegate(WWW www) {
-			//这里的第一个参数filename只是用于编译错误的调试
-			Script.Instance.BuildFile(m_blockFilePath, www.text);
-		};
-		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
+		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
+		Script.Instance.BuildFile(m_blockFilePath, text);
 	}
 
 	string result = "";

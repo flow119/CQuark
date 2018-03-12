@@ -15,7 +15,7 @@ class InstanceScript : IScriptBehaviour
     public void Start()
     {
 	trans = gameObject.transform;
-        Debug.Log("Start" + this.gameObject);
+   //     Debug.Log("Start" + this.gameObject);
         gameObject.name = "Cool name.";
     }
 

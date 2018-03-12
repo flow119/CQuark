@@ -14,10 +14,8 @@ public class Demo5 : MonoBehaviour,ICoroutine {
 	}
 
 	void ExecuteFile () {
-		Action<WWW> cb = delegate(WWW www) {
-			StartCoroutine (script.StartCoroutine (www.text, this));
-		};
-		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
+		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
+		StartCoroutine (script.StartCoroutine (text, this));
 	}
 
 	public object StartNewCoroutine(IEnumerator method){

@@ -10,11 +10,9 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	void Start () {
 		Script.Instance.RegTypes ();
 		Script.Instance.env.RegFunction ((eDelay)Wait);
-		Action<WWW> cb = delegate(WWW www) {
-			//这里的第一个参数filename只是用于编译错误的调试
-			Script.Instance.BuildFile(m_blockFilePath, www.text);
-		};
-		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
+
+		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
+		Script.Instance.BuildFile(m_blockFilePath, text);
 	}
 
 	delegate IEnumerator eDelay(float t);

@@ -46,9 +46,17 @@ public class LoadMgr : MonoBehaviour {
 		StartCoroutine (LoadIE (path, loadCallback));
 	}
 
+	public static string LoadFromStreaming(string fileName){
+		return System.IO.File.ReadAllText( Application.streamingAssetsPath + "/" + fileName);
+	}
+
 	public void LoadFromPersistent(string filename, Action<WWW> loadCallback){
 		string path = FixPersistentPath (filename);
 		StartCoroutine (LoadIE (path, loadCallback));
+	}
+
+	public static string LoadFromPersistent(string fileName){
+		return System.IO.File.ReadAllText( Application.persistentDataPath + "/" + fileName);
 	}
 
 	IEnumerator LoadIE(string path, Action<WWW> callBack){

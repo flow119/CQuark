@@ -35,10 +35,8 @@ public class Demo3 : MonoBehaviour {
 		Script.Instance.SetValue ("HP1", 200);
 		Script.Instance.SetValue ("HP2", 300);
 
-		Action<WWW> cb = delegate(WWW www) {
-			object obj = Script.Instance.Execute (www.text);
-			Debug.Log ("result = " + obj);
-		};
-		LoadMgr.Instance.LoadFromStreaming (m_blockFilePath, cb);
+		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
+		object obj = Script.Instance.Execute (text);
+		Debug.Log ("result = " + obj);
 	}
 }

@@ -14,12 +14,12 @@ class ScriptLogger : ICQ_Logger
 
     public void Log_Error(string str)
     {
-        Debug.LogError(str);
+		UnityEngine.Debug.LogError(str);
     }
 
     public void Log_Warn(string str)
     {
-        Debug.LogWarning(str);
+		UnityEngine.Debug.LogWarning(str);
     }
 }
 
@@ -167,7 +167,9 @@ public class Script
         content = null;
     }
 
-
+	/// <summary>
+	/// 这里的filename只是为了编译时报错可以看到出错文件
+	/// </summary>
 	public void BuildFile(string filename, string code){
 		var token = env.ParserToken(code);//词法分析
 		env.File_CompileToken(filename, token, false);
