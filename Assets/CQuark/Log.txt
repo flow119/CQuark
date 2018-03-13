@@ -1,4 +1,9 @@
-﻿2017-10-10 v0.7.6
+﻿2018-03-13 v0.7.7
+	CQ_TokenParser改成了静态类，删除了ICQ_TokenParser。
+	environment里不再需要成员icq_tokenParser。
+	CQ_TokenParser将缓存所有编译的文本到一个字典。（可以手动清空以重新编译）
+
+2017-10-10 v0.7.6
 	重新制作了范例
 	类里的协程方法也能直接被调用
 	完善了ScriptMono类，允许只编译单个脚本（string或者TextAsset），详细见Demo07

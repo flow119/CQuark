@@ -11,7 +11,7 @@ public class Demo2 : MonoBehaviour {
 		Execute1 ();
 
 		//将函数Today()注册给脚本使用
-		Script.Instance.env.RegFunction ((deleToday)Today);
+		CQuarkClass.Instance.env.RegFunction ((deleToday)Today);
 		Execute2 ();
 	}
 
@@ -22,7 +22,7 @@ public class Demo2 : MonoBehaviour {
 	
 	//这个函数展示了执行一个函数块，且函数块再调用Unity的Debug类
 	void Execute1(){
-		Script.Instance.Execute (
+		CQuarkClass.Instance.Execute (
 			"int a = 2;\n" +
 			"if(a == 0)\n" +
 				"Debug.Log(\"a is zero!\");\n" +
@@ -32,7 +32,7 @@ public class Demo2 : MonoBehaviour {
 
 	//这个函数展示了执行一个函数块，且函数块再调用一个方法
 	void Execute2(){
-		int ret = (int)Script.Instance.Execute (
+		int ret = (int)CQuarkClass.Instance.Execute (
 			"Debug.Log(\"Today is \" + Today());\n" +
 			"return Today();");
 		Debug.Log("return = " + ret);

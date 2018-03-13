@@ -15,18 +15,18 @@ public class Demo1 : MonoBehaviour {
 
 	//这个函数展示最简单的计算
 	void Eval1 () {
-		int ret = (int)Script.Instance.Eval ("1+2");
+		int ret = (int)CQuarkClass.Instance.Eval ("1+2");
 		Debug.Log ("return = " + ret);
 	}
 
 	//这个函数展示了先从外部向env赋值，再做计算
 	void Eval2(){
-		Script.Instance.ClearValue ();
-		Script.Instance.SetValue ("HP1", 200);
-		Script.Instance.SetValue ("HP2", 300);
-		double d = (double)Script.Instance.Eval ("HP1 + HP2 * 0.5");
+		CQuarkClass.Instance.ClearValue ();
+		CQuarkClass.Instance.SetValue ("HP1", 200);
+		CQuarkClass.Instance.SetValue ("HP2", 300);
+		double d = (double)CQuarkClass.Instance.Eval ("HP1 + HP2 * 0.5");
 		Debug.Log ("d = " + d);
-		float f = (float)Script.Instance.Eval ("HP1 + HP2 * 0.5f");
+		float f = (float)CQuarkClass.Instance.Eval ("HP1 + HP2 * 0.5f");
 		Debug.Log ("f = " + f);
 	}
 
@@ -38,7 +38,7 @@ public class Demo1 : MonoBehaviour {
 				"ret = ret + i;\n" +
 			"};\n" +
 			"return ret";
-		string s = (string)Script.Instance.Execute (method);
+		string s = (string)CQuarkClass.Instance.Execute (method);
 		Debug.Log (s);
 	}
 }

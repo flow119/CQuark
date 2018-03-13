@@ -24,24 +24,24 @@ class ScriptLogger : ICQ_Logger
 }
 
 
-public class Script
+public class CQuarkClass
 {
-	public Script(){
+	public CQuarkClass(){
 		Reset ();
 	}
 	public CQ_Environment env {get; private set; }
 	public CQuark.CQ_Content content = null;
 
 
-	public static Script Instance{
+	public static CQuarkClass Instance{
 		get{
 			if(_instance == null)
-				_instance = new Script();
+				_instance = new CQuarkClass();
 			_instance.RegTypes();
 			return _instance;
 		}
 	}
-	static Script _instance;
+	static CQuarkClass _instance;
 
 	
 	public void Reset(){
@@ -183,7 +183,7 @@ public class Script
 		Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
 		foreach (var v in files)
 		{
-			var tokens = env.tokenParser.Parse(System.IO.File.ReadAllText(v));
+			var tokens = CQ_TokenParser.Parse(System.IO.File.ReadAllText(v));
 			project.Add(v, tokens);
 		}
 		env.Project_Compile(project, true);

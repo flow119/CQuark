@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Collections;
 using CQuark;
 
-[CustomEditor(typeof(ScriptMono))]
+[CustomEditor(typeof(CQuarkBehaviour))]
 public class ScriptMonoInspector : Editor {
 
-	ScriptMono _script;
+	CQuarkBehaviour _script;
 
 	public override void OnInspectorGUI ()
 	{
 		//base.OnInspectorGUI ();
-		_script = target as ScriptMono;
+		_script = target as CQuarkBehaviour;
 
-		_script.m_codeType = (ScriptMono.ECodeType)EditorGUILayout.EnumPopup ("CodeType", _script.m_codeType);
+		_script.m_codeType = (CQuarkBehaviour.ECodeType)EditorGUILayout.EnumPopup ("CodeType", _script.m_codeType);
 
 		switch (_script.m_codeType) {
-		case ScriptMono.ECodeType.FileName:
+		case CQuarkBehaviour.ECodeType.FileName:
 			GUILayout.Label("编译StreamingAssets下所有脚本");
 			GUILayout.Space(5);
 			_script.m_folderPath = EditorGUILayout.TextField("编译文件夹", _script.m_folderPath);
@@ -30,21 +30,21 @@ public class ScriptMonoInspector : Editor {
 			}
 			break;
 
-		case ScriptMono.ECodeType.TextAsset:
+		case CQuarkBehaviour.ECodeType.TextAsset:
 			GUILayout.Label("TextAsset作为类");
 			GUILayout.Space(5);
 			_script.m_className = EditorGUILayout.TextField("类名", _script.m_className);
 			_script.m_ta = EditorGUILayout.ObjectField(_script.m_ta, typeof(TextAsset), false) as TextAsset;
 			break;
 
-		case ScriptMono.ECodeType.Text:
+		case CQuarkBehaviour.ECodeType.Text:
 			GUILayout.Label("文本作为类");
 			GUILayout.Space(5);
 			_script.m_className = EditorGUILayout.TextField("类名", _script.m_className);
 			_script.m_codeText = EditorGUILayout.TextArea(_script.m_codeText);
 			break;
 
-		case ScriptMono.ECodeType.FunctionsText:
+		case CQuarkBehaviour.ECodeType.FunctionsText:
 			GUILayout.Label("文本作为函数块");
 			GUILayout.Space(5);
 			_script.m_Start 		= EditorGUILayout.TextField("Start", _script.m_Start);

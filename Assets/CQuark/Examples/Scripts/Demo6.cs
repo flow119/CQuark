@@ -8,11 +8,11 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 
 	// Use this for initialization
 	void Start () {
-		Script.Instance.RegTypes ();
-		Script.Instance.env.RegFunction ((eDelay)Wait);
+		CQuarkClass.Instance.RegTypes ();
+		CQuarkClass.Instance.env.RegFunction ((eDelay)Wait);
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		Script.Instance.BuildFile(m_blockFilePath, text);
+		CQuarkClass.Instance.BuildFile(m_blockFilePath, text);
 	}
 
 	delegate IEnumerator eDelay(float t);
@@ -28,10 +28,10 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	{
 		if (GUI.Button(new Rect(0, 0, 200, 50), "Coroutine Call"))
 		{
-			Script.Instance.ClearValue();
-			CQuark.CQ_Content content = new CQuark.CQ_Content(Script.Instance.env);
+			CQuarkClass.Instance.ClearValue();
+			CQuark.CQ_Content content = new CQuark.CQ_Content(CQuarkClass.Instance.env);
 			//得到脚本类型
-			var typeOfScript = Script.Instance.env.GetTypeByKeyword("ScriptClass6");
+			var typeOfScript = CQuarkClass.Instance.env.GetTypeByKeyword("ScriptClass6");
 			//调用脚本类构造创造一个实例
 			var thisOfScript = typeOfScript.function.New(content, null).value;
 

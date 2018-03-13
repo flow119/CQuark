@@ -15,7 +15,7 @@ public class Demo3 : MonoBehaviour {
 //		Type t = Type.GetType ("UnityEngine.GameObject");
 
 		//将函数Today()注册给脚本使用
-		Script.Instance.env.RegFunction ((deleToday)Today);
+		CQuarkClass.Instance.env.RegFunction ((deleToday)Today);
 	
 		ExecuteFile ();
 	}
@@ -29,14 +29,14 @@ public class Demo3 : MonoBehaviour {
 	// 这个函数展示了如何执行一个文件（作为函数块）
 	void ExecuteFile () {
 
-		Script.Instance.ClearValue ();
-		Script.Instance.SetValue ("Monday", 1);
-		Script.Instance.SetValue ("Sunday", 0);
-		Script.Instance.SetValue ("HP1", 200);
-		Script.Instance.SetValue ("HP2", 300);
+		CQuarkClass.Instance.ClearValue ();
+		CQuarkClass.Instance.SetValue ("Monday", 1);
+		CQuarkClass.Instance.SetValue ("Sunday", 0);
+		CQuarkClass.Instance.SetValue ("HP1", 200);
+		CQuarkClass.Instance.SetValue ("HP2", 300);
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		object obj = Script.Instance.Execute (text);
+		object obj = CQuarkClass.Instance.Execute (text);
 		Debug.Log ("result = " + obj);
 	}
 }

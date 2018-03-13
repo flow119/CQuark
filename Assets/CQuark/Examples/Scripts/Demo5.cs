@@ -5,7 +5,7 @@ using System;
 public class Demo5 : MonoBehaviour,ICoroutine {
 	public string m_blockFilePath;
 
-	Script script = new Script();
+	CQuarkClass script = new CQuarkClass();
 	void Start(){
 		script.RegTypes ();
 		script.env.RegFunction ((eDelay)Wait);

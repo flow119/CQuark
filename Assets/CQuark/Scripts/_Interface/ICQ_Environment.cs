@@ -17,10 +17,6 @@ namespace CQuark
 			get;
 		}
 		//public ICQ_Debugger debugger;
-		ICQ_TokenParser tokenParser
-		{
-			get;
-		}
 
 		void RegType(ICQ_Type type);
 		//void RegDeleType(ICQ_Type_Dele type);
@@ -61,8 +57,5 @@ namespace CQuark
 
 		void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken);
 
-		void Project_PacketToStream(Dictionary<string, IList<Token>> project, System.IO.Stream outstream);
-
-		Dictionary<string, IList<Token>> Project_FromPacketStream(System.IO.Stream instream);
 	}
 }

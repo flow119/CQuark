@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CQuark;
 
-public class ScriptMono : MonoBehaviour, ICoroutine {
+public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 
 	public enum ECodeType
 	{
@@ -34,7 +34,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 	public string m_codeText = "";
 
 	//FunctionsText
-	public Script m_script = new Script();
+	public CQuarkClass m_script = new CQuarkClass();
 	public string m_Awake = "";
 	public string m_OnEnable = "";
 	public string m_OnDisable = "";
@@ -148,15 +148,15 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			switch(m_codeType){
 			case ECodeType.FileName:
 				if(!s_projectBuilded){
-					Script.Instance.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
+					CQuarkClass.Instance.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
 					s_projectBuilded = true;
 				}
 				break;
 			case ECodeType.TextAsset:
-				Script.Instance.BuildFile(m_className, m_ta.text);
+				CQuarkClass.Instance.BuildFile(m_className, m_ta.text);
 				break;
 			case ECodeType.Text:
-				Script.Instance.BuildFile(m_className, m_codeText);
+				CQuarkClass.Instance.BuildFile(m_className, m_codeText);
 				break;
 			}
 			inst = new ScriptInstanceHelper(m_className);
@@ -173,6 +173,7 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 			content = m_script.env.CreateContent ();//创建上下文，并设置变量给脚本访问
 			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 			content.DefineAndSet ("transform", typeof(Transform), this.transform);
+            
 		}
 	}
 
@@ -183,12 +184,12 @@ public class ScriptMono : MonoBehaviour, ICoroutine {
 		CQuark.CQ_Content content;//操作上下文
 		
 		public ScriptInstanceHelper(string scriptTypeName){
-			type = Script.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
+			type = CQuarkClass.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
 			if(type == null){
 				Debug.LogError("Type:" + scriptTypeName + "不存在与脚本项目中");
 				return;
 			}
-			content = Script.Instance.env.CreateContent();
+			content = CQuarkClass.Instance.env.CreateContent();
 			inst = type.function.New(content, null).value as CQuark.SInstance;
 			content.CallType = inst.type;
 			content.CallThis = inst;

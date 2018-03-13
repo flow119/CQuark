@@ -1,9 +1,4 @@
-﻿/// C#Light/Evil
-/// 作者 疯光无限 版本见
-/// https://github.com/lightszero/CSLightStudio
-/// http://crazylights.cnblogs.com
-/// 请勿删除此声明
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -26,11 +21,7 @@ namespace CQuark
 			private set;
 		}
 		//public ICQ_Debugger debugger;
-		public ICQ_TokenParser tokenParser
-		{
-			get;
-			private set;
-		}
+
 		ICQ_Expression_Compiler compiler = null;
 
         public CQ_Environment(ICQ_Logger logger)
@@ -41,7 +32,7 @@ namespace CQuark
             //}
             this.logger = logger;
             //this.useNamespace = useNamespace;
-            tokenParser = new CQ_TokenParser();
+
             compiler = new CQ_Expression_Compiler(logger);
             RegType(new CQ_Type_Int());
             RegType(new CQ_Type_UInt());
@@ -105,10 +96,7 @@ namespace CQuark
             else
             {
                 typess[typename] = type;
-                if (tokenParser.types.Contains(typename) == false)
-                {
-                    tokenParser.types.Add(typename);
-                }
+                CQ_TokenParser.AddType(typename);
             }
         }
 
@@ -259,7 +247,7 @@ namespace CQuark
 				code = code.Substring(1);
 			}
 
-			IList<Token> tokens = tokenParser.Parse(code);
+			IList<Token> tokens = CQ_TokenParser.Parse(code);
 			if (tokens == null)
 				logger.Log_Warn ("没有解析到代码");
 
@@ -319,7 +307,7 @@ namespace CQuark
                 //预处理符号
                 for (int i = 0; i < f.Value.Count; i++)
                 {
-                    if (f.Value[i].type == TokenType.IDENTIFIER && this.tokenParser.types.Contains(f.Value[i].text))
+                    if (f.Value[i].type == TokenType.IDENTIFIER && CQ_TokenParser.ContainsType(f.Value[i].text))
                     {//有可能预处理导致新的类型
                         if (i > 0
                             &&
@@ -353,42 +341,5 @@ namespace CQuark
                     this.RegType(type);
             }
         }
-
-		#region Tools
-        public void Project_PacketToStream(Dictionary<string, IList<Token>> project, System.IO.Stream outstream)
-        {
-            byte[] FileHead = System.Text.Encoding.UTF8.GetBytes("CQuark-DLL");
-            outstream.Write(FileHead, 0, 8);
-            UInt16 count = (UInt16)project.Count;
-            outstream.Write(BitConverter.GetBytes(count), 0, 2);
-            foreach (var p in project)
-            {
-                byte[] pname = System.Text.Encoding.UTF8.GetBytes(p.Key);
-                outstream.WriteByte((byte)pname.Length);
-                outstream.Write(pname, 0, pname.Length);
-                this.tokenParser.SaveTokenList(p.Value, outstream);
-            }
-        }
-        public Dictionary<string, IList<Token>> Project_FromPacketStream(System.IO.Stream instream)
-        {
-            Dictionary<string, IList<Token>> project = new Dictionary<string, IList<Token>>();
-            byte[] buf = new byte[8];
-            instream.Read(buf, 0, 8);
-            string filehead = System.Text.Encoding.UTF8.GetString(buf, 0, 8);
-			if (filehead != "CQuark-DLL") return null;
-            instream.Read(buf, 0, 2);
-            UInt16 count = BitConverter.ToUInt16(buf, 0);
-            for (int i = 0; i < count; i++)
-            {
-                int slen = instream.ReadByte();
-                byte[] buffilename = new byte[slen];
-                instream.Read(buffilename, 0, slen);
-                string key = System.Text.Encoding.UTF8.GetString(buffilename, 0, slen);
-                var tlist = tokenParser.ReadTokenList(instream);
-                project[key] = tlist;
-            }
-            return project;
-        }
-		#endregion
     }
 }
