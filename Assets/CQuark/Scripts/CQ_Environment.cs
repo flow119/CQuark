@@ -250,23 +250,14 @@ namespace CQuark
         {
             return compiler.Compile(listToken, this);
         }
-        public ICQ_Expression Expr_CompilerToken(IList<Token> listToken)
-        {
-            return compiler.Compile(listToken, this);
-        }
+
         public ICQ_Expression Expr_CompileToken(IList<Token> listToken, bool SimpleExpression)
         {
             return SimpleExpression ? compiler.Compile_NoBlock(listToken, this) : compiler.Compile(listToken, this);
         }
-        public ICQ_Expression Expr_CompilerToken(IList<Token> listToken, bool SimpleExpression)
-        {
-            return SimpleExpression ? compiler.Compile_NoBlock(listToken, this) : compiler.Compile(listToken, this);
-        }
+       
         //CQ_Content contentGloabl = null;
-        public ICQ_Expression Expr_Optimize(ICQ_Expression old)
-        {
-            return compiler.Optimize(old, this);
-        }
+
         public CQ_Content CreateContent()
         {
             return new CQ_Content(this, true);
