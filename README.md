@@ -25,6 +25,13 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 ## 版本更新记录
 
+2018-03-13 v0.7.7
+    
+    CQ_TokenParser改成了静态类，删除了ICQ_TokenParser。
+    environment里不再需要成员icq_tokenParser。
+    CQ_TokenParser将缓存所有编译的文本到一个字典。（可以手动清空以重新编译）。
+    Script改名为CQuarkClass，ScriptMono改名为CQuarkBehaviour
+    
 2017-10-10 v0.7.6
     
     重新制作了范例
@@ -69,7 +76,6 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 执行效率测试，主要看反射在iOS上的速度
 
 下下个版本
-* env改为全局唯一（出于效率考虑）
 * 类似XLua和Bridge，把项目里的cs文件转换成可以动态替换为西瓜的脚本
 
 
