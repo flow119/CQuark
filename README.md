@@ -30,8 +30,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
     CQ_TokenParser改成了静态类，删除了ICQ_TokenParser。
     environment里不再需要成员icq_tokenParser。
     CQ_TokenParser将缓存所有编译的文本到一个字典。（可以手动清空以重新编译）。
-    env里不再存loger，改成用静态类DebugUtil
-    Script改名为CQuarkClass，ScriptMono改名为CQuarkBehaviour
+    env里不再存loger，改成用静态类DebugUtil。
+    Script改名为CQuarkClass，ScriptMono改名为CQuarkBehaviour
     
 2017-10-10 v0.7.6
     
