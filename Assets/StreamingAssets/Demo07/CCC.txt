@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Text;
+
+class ClassC: IScriptBehaviour
+{
+
+
+
+	public void Log(){
+		Debug.Log("CC");
+	}
+
+    
+
+}

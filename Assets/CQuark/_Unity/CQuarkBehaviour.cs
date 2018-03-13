@@ -223,10 +223,7 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 				coroutine.StartNewCoroutine (type.function.CoroutineCall (content, inst, methodName, null, coroutine));
 		}
 	}
-	public interface IScriptBehaviour
-	{
-		GameObject gameObject{ get; }
-	}
+
 	#endregion
 
 	#region TextAsset or Text

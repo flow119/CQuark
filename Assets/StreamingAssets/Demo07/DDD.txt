@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Text;
+
+class ClassD: IScriptBehaviour
+{
+
+
+
+	public static void Log(){
+		Debug.Log("DD");
+	}
+
+    
+
+}

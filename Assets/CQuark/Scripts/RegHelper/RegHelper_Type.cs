@@ -14,7 +14,7 @@ namespace CQuark
         {
             this.type = type;
         }
-        public virtual CQ_Content.Value New(CQ_Content environment, IList<CQ_Content.Value> _params)
+        public virtual CQ_Content.Value New(CQ_Content content, IList<CQ_Content.Value> _params)
         {
             List<Type> types = new List<Type>();
             List<object> objparams = new List<object>();
@@ -36,11 +36,11 @@ namespace CQuark
             }
             return value;
         }
-        public virtual CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params)
+        public virtual CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params)
         {
-            return StaticCall(environment, function, _params, null);
+            return StaticCall(content, function, _params, null);
         }
-        public virtual CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             bool needConvert = false;
             List<object> _oparams = new List<object>();
@@ -82,7 +82,7 @@ namespace CQuark
                     Type[] gtypes = new Type[sf.Length];
                     for (int i = 0; i < sf.Length; i++)
                     {
-                        gtypes[i] = environment.environment.GetTypeByKeyword(sf[i]).type;
+                        gtypes[i] = content.environment.GetTypeByKeyword(sf[i]).type;
                     }
                     targetop = FindTMethod(type, tfunc, _params, gtypes);
 
@@ -94,10 +94,10 @@ namespace CQuark
                     {
                         targetop = ptype.GetMethod(function, types.ToArray());
                         if (targetop != null) break;
-                        var t = environment.environment.GetType(ptype);
+                        var t = content.environment.GetType(ptype);
                         try
                         {
-                            return t.function.StaticCall(environment, function, _params, cache);
+                            return t.function.StaticCall(content, function, _params, cache);
                         }
                         catch
                         {
@@ -111,7 +111,7 @@ namespace CQuark
             if (targetop == null)
             {
 				//因为有cache的存在，可以更慢更多的查找啦，哈哈哈哈
-                targetop = GetMethodSlow(environment, true, function, types, _oparams);
+                targetop = GetMethodSlow(content, true, function, types, _oparams);
                 needConvert = true;
             }
 
@@ -173,14 +173,14 @@ namespace CQuark
             return v;
         }
 
-        public virtual CQ_Content.Value StaticValueGet(CQ_Content environment, string valuename)
+        public virtual CQ_Content.Value StaticValueGet(CQ_Content content, string valuename)
         {
-            var v = MemberValueGet(environment, null, valuename);
+            var v = MemberValueGet(content, null, valuename);
             if (v == null)
             {
                 if (type.BaseType != null)
                 {
-                    return environment.environment.GetType(type.BaseType).function.StaticValueGet(environment, valuename);
+                    return content.environment.GetType(type.BaseType).function.StaticValueGet(content, valuename);
                 }
                 else
                 {
@@ -319,11 +319,11 @@ namespace CQuark
             //targetop = targetop.MakeGenericMethod(gtypes);
             return null;
         }
-        public virtual CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params)
+        public virtual CQ_Content.Value MemberCall(CQ_Content content, object object_this, string function, IList<CQ_Content.Value> _params)
         {
-            return MemberCall(environment, object_this, function, _params, null);
+            return MemberCall(content, object_this, function, _params, null);
         }
-        public virtual CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params, MethodCache cache)
+        public virtual CQ_Content.Value MemberCall(CQ_Content content, object object_this, string function, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             bool needConvert = false;
             List<Type> types = new List<Type>();
@@ -366,7 +366,7 @@ namespace CQuark
                     Type[] gtypes = new Type[sf.Length];
                     for (int i = 0; i < sf.Length; i++)
                     {
-                        gtypes[i] = environment.environment.GetTypeByKeyword(sf[i]).type;
+                        gtypes[i] = content.environment.GetTypeByKeyword(sf[i]).type;
                     }
                     targetop = FindTMethod(type, tfunc, _params, gtypes);
                     var ps = targetop.GetParameters();
@@ -375,7 +375,7 @@ namespace CQuark
                         if(ps[i].ParameterType!=(Type)_params[i].type)
                         {
 
-                            _oparams[i] = environment.environment.GetType(_params[i].type).ConvertTo(environment, _oparams[i], ps[i].ParameterType);
+                            _oparams[i] = content.environment.GetType(_params[i].type).ConvertTo(content, _oparams[i], ps[i].ParameterType);
                         }
                     }
                 }
@@ -391,7 +391,7 @@ namespace CQuark
                     }
                     if (targetop == null)
                     {//因为有cache的存在，可以更慢更多的查找啦，哈哈哈哈
-                        targetop = GetMethodSlow(environment, false, function, types, _oparams);
+                        targetop = GetMethodSlow(content, false, function, types, _oparams);
                         needConvert = true;
                     }
                     if (targetop == null)
@@ -420,9 +420,10 @@ namespace CQuark
 			return false;
 		}
 
-		public virtual IEnumerator CoroutineCall(CQ_Content environment, object object_this, string function, IList<CQ_Content.Value> _params, ICoroutine coroutine){
+        public virtual IEnumerator CoroutineCall(CQ_Content content, object object_this, string function, IList<CQ_Content.Value> _params, ICoroutine coroutine)
+        {
 			//TODO 不存在這樣的調用
-			MemberCall(environment, object_this, function, _params, null);
+            MemberCall(content, object_this, function, _params, null);
 			yield return null;
 		}
 
@@ -582,7 +583,7 @@ namespace CQuark
 
         }
         Dictionary<string, MemberValueCache> memberValuegetCaches = new Dictionary<string, MemberValueCache>();
-        public virtual CQ_Content.Value MemberValueGet(CQ_Content environment, object object_this, string valuename)
+        public virtual CQ_Content.Value MemberValueGet(CQ_Content content, object object_this, string valuename)
         {
 
             MemberValueCache c;
@@ -793,7 +794,7 @@ namespace CQuark
         System.Reflection.MethodInfo indexGetCache = null;
         Type indexGetCachetypeindex;
         Type indexGetCacheType = null;
-        public virtual CQ_Content.Value IndexGet(CQ_Content environment, object object_this, object key)
+        public virtual CQ_Content.Value IndexGet(CQ_Content content, object object_this, object key)
         {
             //var m = type.GetMembers();
             if (indexGetCache == null)
@@ -843,7 +844,7 @@ namespace CQuark
                 CQ_Content.Value v = new CQ_Content.Value();
                 v.type = indexGetCacheType;
                 if (key != null && key.GetType() != indexGetCachetypeindex)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexGetCachetypeindex);
+                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexGetCachetypeindex);
                 v.value = indexGetCache.Invoke(object_this, new object[] { key });
                 return v;
             }
@@ -855,7 +856,7 @@ namespace CQuark
         Type indexSetCachetype1;
         Type indexSetCachetype2;
         bool indexSetCachekeyfirst = false;
-        public virtual void IndexSet(CQ_Content environment, object object_this, object key, object value)
+        public virtual void IndexSet(CQ_Content content, object object_this, object key, object value)
         {
             if (indexSetCache == null)
             {
@@ -875,17 +876,17 @@ namespace CQuark
             {
 
                 if (key != null && key.GetType() != indexSetCachetype1)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexSetCachetype1);
+                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype1);
                 if (value != null && value.GetType() != indexSetCachetype2)
-                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CQuark.CQType)indexSetCachetype2);
+                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype2);
                 indexSetCache.Invoke(object_this, new object[] { key, value });
             }
             else
             {
                 if (value != null && value.GetType() != indexSetCachetype1)
-                    value = environment.environment.GetType(value.GetType()).ConvertTo(environment, value, (CQuark.CQType)indexSetCachetype1);
+                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype1);
                 if (key != null && key.GetType() != indexSetCachetype2)
-                    key = environment.environment.GetType(key.GetType()).ConvertTo(environment, key, (CQuark.CQType)indexSetCachetype2);
+                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype2);
 
                 indexSetCache.Invoke(object_this, new object[] { value, key });
             }

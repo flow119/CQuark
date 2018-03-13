@@ -378,7 +378,7 @@ namespace CQuark
 				yield return MemberCall(contentParent, object_this, func, _params, null);
 		}
 
-        public CQ_Content.Value MemberValueGet(CQ_Content environment, object object_this, string valuename)
+        public CQ_Content.Value MemberValueGet(CQ_Content content, object object_this, string valuename)
         {
             SInstance sin = object_this as SInstance;
             if (sin.member.ContainsKey(valuename))
@@ -420,12 +420,12 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public CQ_Content.Value IndexGet(CQ_Content environment, object object_this, object key)
+        public CQ_Content.Value IndexGet(CQ_Content content, object object_this, object key)
         {
             throw new NotImplementedException();
         }
 
-        public void IndexSet(CQ_Content environment, object object_this, object key, object value)
+        public void IndexSet(CQ_Content content, object object_this, object key, object value)
         {
             throw new NotImplementedException();
         }
@@ -469,13 +469,13 @@ namespace CQuark
 
 
 
-        public CQ_Content.Value StaticCallCache(CQ_Content environment, IList<CQ_Content.Value> _params, MethodCache cache)
+        public CQ_Content.Value StaticCallCache(CQ_Content content, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             throw new NotImplementedException();
         }
 
 
-        public CQ_Content.Value MemberCallCache(CQ_Content environment, object object_this, IList<CQ_Content.Value> _params, MethodCache cache)
+        public CQ_Content.Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Content.Value> _params, MethodCache cache)
         {
             throw new NotImplementedException();
         }

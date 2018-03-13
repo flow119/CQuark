@@ -23,26 +23,26 @@ namespace CQuark
     }
     public interface ICQ_TypeFunction
     {
-        CQ_Content.Value New(CQ_Content environment, IList<CQ_Content.Value> _params);
-        
-		CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params);
-        CQ_Content.Value StaticCall(CQ_Content environment, string function, IList<CQ_Content.Value> _params, MethodCache cache);
-        CQ_Content.Value StaticCallCache(CQ_Content environment, IList<CQ_Content.Value> _params, MethodCache cache);
+        CQ_Content.Value New(CQ_Content content, IList<CQ_Content.Value> _params);
 
-        CQ_Content.Value StaticValueGet(CQ_Content environment, string valuename);
-        bool StaticValueSet(CQ_Content environment, string valuename, object value);
+        CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params);
+        CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params, MethodCache cache);
+        CQ_Content.Value StaticCallCache(CQ_Content content, IList<CQ_Content.Value> _params, MethodCache cache);
+
+        CQ_Content.Value StaticValueGet(CQ_Content content, string valuename);
+        bool StaticValueSet(CQ_Content content, string valuename, object value);
         
 		bool HasFunction(string key);
-		CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string func, IList<CQ_Content.Value> _params);
-		IEnumerator CoroutineCall(CQ_Content enviroment, object object_this, string func, IList<CQ_Content.Value> _params, ICoroutine coroutin);
-        CQ_Content.Value MemberCall(CQ_Content environment, object object_this, string func, IList<CQ_Content.Value> _params, MethodCache cache);
-		CQ_Content.Value MemberCallCache(CQ_Content environment, object object_this, IList<CQ_Content.Value> _params, MethodCache cache);
+        CQ_Content.Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params);
+        IEnumerator CoroutineCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params, ICoroutine coroutin);
+        CQ_Content.Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params, MethodCache cache);
+        CQ_Content.Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Content.Value> _params, MethodCache cache);
 
-		CQ_Content.Value MemberValueGet(CQ_Content environment, object object_this, string valuename);
-        bool MemberValueSet(CQ_Content environment, object object_this, string valuename, object value);
+        CQ_Content.Value MemberValueGet(CQ_Content content, object object_this, string valuename);
+        bool MemberValueSet(CQ_Content content, object object_this, string valuename, object value);
 
-        CQ_Content.Value IndexGet(CQ_Content environment, object object_this, object key);
-        void IndexSet(CQ_Content environment, object object_this, object key, object value);
+        CQ_Content.Value IndexGet(CQ_Content content, object object_this, object key);
+        void IndexSet(CQ_Content content, object object_this, object key, object value);
     }
     public class CQType
     {
@@ -151,13 +151,13 @@ namespace CQuark
 
         ICQ_Value MakeValue(object value);
         //自动转型能力
-        object ConvertTo(CQ_Content env, object src, CQType targetType);
+        object ConvertTo(CQ_Content content, object src, CQType targetType);
 
         //数学计算能力
-        object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype);
+        object Math2Value(CQ_Content content, char code, object left, CQ_Content.Value right, out CQType returntype);
 
         //逻辑计算能力
-        bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right);
+        bool MathLogic(CQ_Content content, logictoken code, object left, CQ_Content.Value right);
 
         ICQ_TypeFunction function
         {

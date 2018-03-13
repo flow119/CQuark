@@ -15,8 +15,6 @@ namespace CQuark
 		Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
 		//Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
 
-		//public ICQ_Debugger debugger;
-
         CQ_Expression_Compiler compiler = null;
 
         public CQ_Environment()
