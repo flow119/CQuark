@@ -5,24 +5,6 @@ using System.Text;
 using CQuark;
 using System.Collections;
 
-class ScriptLogger : ICQ_Logger
-{
-    public void Log(string str)
-    {
-        UnityEngine.Debug.Log(str);
-    }
-
-    public void Log_Error(string str)
-    {
-		UnityEngine.Debug.LogError(str);
-    }
-
-    public void Log_Warn(string str)
-    {
-		UnityEngine.Debug.LogWarning(str);
-    }
-}
-
 
 public class CQuarkClass
 {
@@ -45,7 +27,7 @@ public class CQuarkClass
 
 	
 	public void Reset(){
-		env = new CQ_Environment (new ScriptLogger ());
+		env = new CQ_Environment ();
 //		env.logger.Log("CQuark Inited.Ver = "+ env.version);
 	}
 //	/// <summary>

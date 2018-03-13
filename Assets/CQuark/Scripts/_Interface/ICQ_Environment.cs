@@ -12,11 +12,6 @@ namespace CQuark
 		//    get;
 		//}
 
-		ICQ_Logger logger
-		{
-			get;
-		}
-		//public ICQ_Debugger debugger;
 
 		void RegType(ICQ_Type type);
 		//void RegDeleType(ICQ_Type_Dele type);

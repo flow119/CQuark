@@ -87,20 +87,20 @@ namespace CQuark
                     int iend = FindBlock(env, tokens, ibegin);
                     if (iend == -1)
                     {
-                        env.logger.Log_Error("查找文件尾失败。");
+                        DebugUtil.LogError("查找文件尾失败。");
                         return null;
                     }
                     if (bJumpClass)
                     {
-                        env.logger.Log("(NotScript)findclass:" + name + "(" + ibegin + "," + iend + ")");
+                        DebugUtil.Log("(NotScript)findclass:" + name + "(" + ibegin + "," + iend + ")");
                     }
                     else if (onlyGotType)
                     {
-                        env.logger.Log("(scriptPreParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
+                        DebugUtil.Log("(scriptPreParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
                     }
                     else
                     {
-                        env.logger.Log("(scriptParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
+                        DebugUtil.Log("(scriptParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
                     }
                     if (bJumpClass)
                     {//忽略这个Class
@@ -269,7 +269,7 @@ namespace CQuark
                         string idname = tokens[i + 1].text;
                         if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && tokens[i + 2].text == "(")//参数开始,这是函数
                         {
-                            logger.Log("发现函数:" + idname);
+                            DebugUtil.Log("发现函数:" + idname);
                             SType.Function func = new SType.Function();
                             func.bStatic = bStatic;
                             func.bPublic = bPublic;
@@ -311,7 +311,7 @@ namespace CQuark
                                 this.Compiler_Expression_Block(tokens, env, funcbegin, funcend, out func.expr_runtime);
                                 if (func.expr_runtime == null)
                                 {
-                                    logger.Log_Warn("警告，该函数编译为null，请检查");
+                                    DebugUtil.LogWarning("警告，该函数编译为null，请检查");
                                 }
                                 (stype.function as SType).functions.Add(idname, func);
 
@@ -361,7 +361,7 @@ namespace CQuark
                             member.bPublic = bPublic;
                             member.bReadOnly = !(haveset && setpublic);
                             member.type = idtype;
-                            logger.Log("发现Get/Set:" + idname);
+                            DebugUtil.Log("发现Get/Set:" + idname);
                             //ICQ_Expression expr = null;
 
                             if (tokens[i + 2].text == "=")
@@ -372,7 +372,7 @@ namespace CQuark
 
                                 if (!Compiler_Expression(tokens, env, jbegin, jend, out member.expr_defvalue))
                                 {
-                                    logger.Log_Error("Get/Set定义错误");
+                                    DebugUtil.LogError("Get/Set定义错误");
                                 }
                                 i = jend;
                             }
@@ -380,7 +380,7 @@ namespace CQuark
                         }
                         else if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && (tokens[i + 2].text == "=" || tokens[i + 2].text == ";"))//这是成员定义
                         {
-                            logger.Log("发现成员定义:" + idname);
+                            DebugUtil.Log("发现成员定义:" + idname);
 
                             var member = new SType.Member();
                             member.bStatic = bStatic;
@@ -412,7 +412,7 @@ namespace CQuark
                                 }
                                 if (!Compiler_Expression(tokens, env, jbegin, jend, out member.expr_defvalue))
                                 {
-                                    logger.Log_Error("成员定义错误");
+                                    DebugUtil.LogError("成员定义错误");
                                 }
                                 i = jend;
                             }
@@ -455,7 +455,7 @@ namespace CQuark
         {
             if (tokens[start].type != CQuark.TokenType.PUNCTUATION)
             {
-                env.logger.Log_Error("(script)FindBlock 没有从符号开始");
+                DebugUtil.LogError("(script)FindBlock 没有从符号开始");
             }
             string left = tokens[start].text;
             string right = "}";

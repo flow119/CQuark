@@ -15,25 +15,20 @@ namespace CQuark
 		Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
 		//Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
 
-		public ICQ_Logger logger
-		{
-			get;
-			private set;
-		}
 		//public ICQ_Debugger debugger;
 
 		ICQ_Expression_Compiler compiler = null;
 
-        public CQ_Environment(ICQ_Logger logger)
+        public CQ_Environment()
         {
             //if(useNamespace==true)
             //{
             //    throw new Exception("使用命名空间还不能完全兼容，建议关闭");
             //}
-            this.logger = logger;
+
             //this.useNamespace = useNamespace;
 
-            compiler = new CQ_Expression_Compiler(logger);
+            compiler = new CQ_Expression_Compiler();
             RegType(new CQ_Type_Int());
             RegType(new CQ_Type_UInt());
             RegType(new CQ_Type_Float());
@@ -108,7 +103,7 @@ namespace CQuark
             ICQ_Type ret = null;
             if (types.TryGetValue(type, out ret) == false)
             {
-                logger.Log_Warn("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
+                DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
                 ret = RegHelper_Type.MakeType(type, "");
                 RegType(ret);
             }
@@ -192,7 +187,7 @@ namespace CQuark
                         }
                     }
                 }
-                logger.Log_Error("(CQcript)类型未注册:" + keyword);
+                DebugUtil.LogError("(CQcript)类型未注册:" + keyword);
             }
 
             return ret;
@@ -249,7 +244,7 @@ namespace CQuark
 
 			IList<Token> tokens = CQ_TokenParser.Parse(code);
 			if (tokens == null)
-				logger.Log_Warn ("没有解析到代码");
+				DebugUtil.LogWarning ("没有解析到代码");
 
 			return tokens;
 		}
@@ -333,7 +328,7 @@ namespace CQuark
         }
         public void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken)
         {
-            logger.Log("File_CompilerToken:" + filename);
+            DebugUtil.Log("File_CompilerToken:" + filename);
             IList<ICQ_Type> types = compiler.FileCompile(this, filename, listToken, embDebugToken);
             foreach (var type in types)
             {

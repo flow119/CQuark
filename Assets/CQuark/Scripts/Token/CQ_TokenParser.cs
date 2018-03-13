@@ -602,7 +602,7 @@ namespace CQuark
         {
             if (_parseCache.ContainsKey(lines))
             {
-                UnityEngine.Debug.Log("已使用缓存");
+                //UnityEngine.Debug.Log("已使用缓存");
                 return _parseCache[lines];
             }
 

@@ -27,7 +27,7 @@ namespace CQuark
                 if (p.value == null) output += "null";
                 else output += p.value.ToString();
             }
-            content.environment.logger.Log(output);
+            DebugUtil.Log(output);
             return CQ_Content.Value.Void;
         }
         

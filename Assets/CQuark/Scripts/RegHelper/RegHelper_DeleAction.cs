@@ -127,7 +127,7 @@ namespace CQuark
                         if (_func.calltype != null) errinfo += _func.calltype.Name + "::";
                         if (_func.function != null) errinfo += _func.function;
                         errinfo += "\n";
-                        env.logger.Log(errinfo + content.Dump());
+                        DebugUtil.Log(errinfo + content.Dump());
                         throw err;
                     }
                 }
@@ -171,7 +171,7 @@ namespace CQuark
                         if (content.CallType != null) errinfo += content.CallType.Name + "::";
                         if (content.function != null) errinfo += content.function;
                         errinfo += "\n";
-                        env.logger.Log(errinfo + content.Dump());
+                        DebugUtil.Log(errinfo + content.Dump());
                     }
                 }
             };

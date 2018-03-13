@@ -78,7 +78,7 @@ namespace CQuark
             }
             else
             {
-                logger.Log_Error("无法识别的简单表达式" + value);
+                DebugUtil.LogError("无法识别的简单表达式" + value);
                 return null;
             }
         }
@@ -120,7 +120,7 @@ namespace CQuark
             }
             else
             {
-                logger.Log_Error("无法识别的简单表达式" + value);
+                DebugUtil.LogError("无法识别的简单表达式" + value);
                 return null;
             }
         }

@@ -12,7 +12,7 @@ namespace CQuark
             {
                 str += tlist[i].text + " ";
             }
-            logger.Log_Error(text+":" + str + "(" + pos + "-" + posend + ")");
+            DebugUtil.LogError(text+":" + str + "(" + pos + "-" + posend + ")");
         }
         //可以搞出Block
         public bool Compiler_Expression_Block(IList<Token> tlist, ICQ_Environment content, int pos, int posend, out ICQ_Expression value)

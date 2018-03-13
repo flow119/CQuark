@@ -5,11 +5,6 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
-        ICQ_Logger logger;
-        public CQ_Expression_Compiler(ICQ_Logger logger)
-		{
-			this.logger = logger;
-		}
 
         public ICQ_Expression Compile(IList<Token> tlist, ICQ_Environment content)
         {
@@ -27,7 +22,7 @@ namespace CQuark
             {
                 if (value == null)
                 {
-                    logger.Log_Warn("编译为null:");
+                    DebugUtil.LogWarning("编译为null:");
                 }
                 return value;
 
@@ -49,7 +44,7 @@ namespace CQuark
             {
                 if (value == null)
                 {
-                    logger.Log_Warn("编译为null:");
+                    DebugUtil.LogWarning("编译为null:");
                 }
                 return value;
             }
