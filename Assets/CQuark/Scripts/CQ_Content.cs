@@ -6,6 +6,22 @@ namespace CQuark
 {
     public class CQ_Content
     {
+        public CQ_Content(CQ_Environment environment)
+        {
+            this.environment = environment;
+            this.useDebug = false;
+        }
+        public CQ_Content(CQ_Environment environment, bool useDebug)
+        {
+            this.environment = environment;
+            this.useDebug = useDebug;
+            if (useDebug)
+            {
+                stackExpr = new Stack<ICQ_Expression>();
+                stackContent = new Stack<CQ_Content>();
+            }
+        }
+
         public CQ_Content Clone()
         {
             CQ_Content con = new CQ_Content(environment,useDebug);
@@ -23,21 +39,7 @@ namespace CQuark
             get;
             private set;
         }
-        public CQ_Content(CQ_Environment environment)
-        {
-            this.environment = environment;
-            this.useDebug = false;
-        }
-        public CQ_Content(CQ_Environment environment,bool useDebug)
-        {
-            this.environment = environment;
-            this.useDebug = useDebug;
-            if(useDebug)
-            {
-                stackExpr = new Stack<ICQ_Expression>();
-                stackContent = new Stack<CQ_Content>();
-            }
-        }
+        
         public string function
         {
             get;

@@ -104,17 +104,6 @@ namespace CQuark
             }
             return ret;
         }
-        //public ICQ_Type_Dele GetDeleTypeBySign(string sign)
-        //{
-        //    if (deleTypes.ContainsKey(sign) == false)
-        //    {
-        //        return null;
-        //        //logger.Log_Error("(CQcript)类型未注册:" + sign);
-
-        //    }
-        //    return deleTypes[sign];
-
-        //}
         public ICQ_Type GetTypeByKeyword(string keyword)
         {
             ICQ_Type ret = null;

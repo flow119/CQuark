@@ -160,16 +160,17 @@ public class CQuarkClass
 
 	public void BuildProject(string path, string pattern)
 	{
-		#if UNITY_STANDALONE
 		string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
 		Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
-		foreach (var v in files)
+		foreach (var file in files)
 		{
-			var tokens = CQ_TokenParser.Parse(System.IO.File.ReadAllText(v));
-			project.Add(v, tokens);
+            if (project.ContainsKey(file))
+                continue;
+            string text = System.IO.File.ReadAllText(file);
+			var tokens = CQ_TokenParser.Parse(text);
+            project.Add(file, tokens);
 		}
 		env.Project_Compile(project, true);
-		#endif
 	}
 	//TODO 编译单个文件
 //	public IList<Token> BuildTextAsset(TextAsset ta)
