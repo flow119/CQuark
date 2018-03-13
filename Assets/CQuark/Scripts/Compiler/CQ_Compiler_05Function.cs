@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
-        public ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);
 
@@ -19,7 +19,7 @@ namespace CQuark
                 do
                 {
                     ICQ_Expression param;
-                    bool succ = Compiler_Expression(tlist, content, begin, end, out param);
+                    bool succ = Compiler_Expression(tlist, env, begin, end, out param);
                     if (succ && param != null)
                     {
                         func.listParam.Add(param);
@@ -38,10 +38,10 @@ namespace CQuark
             //一般函数
             return null;
         }
-        public ICQ_Expression Compiler_Expression_FunctionTrace(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionTrace(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")
-                return Compiler_Expression_Function(tlist, content, pos, posend);
+                return Compiler_Expression_Function(tlist, env, pos, posend);
             int begin = pos + 1;
             int dep;
             int end = FindCodeAnyInFunc(tlist, ref begin, out dep);
@@ -55,7 +55,7 @@ namespace CQuark
             do
             {
                 ICQ_Expression param;
-                bool succ = Compiler_Expression(tlist, content, begin, end, out param);
+                bool succ = Compiler_Expression(tlist, env, begin, end, out param);
                 if (succ && param != null)
                 {
                     func.listParam.Add(param);
@@ -81,12 +81,12 @@ namespace CQuark
 
             //return null;
         }
-        public ICQ_Expression Compiler_Expression_FunctionThrow(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionThrow(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             CQ_Expression_Throw func = new CQ_Expression_Throw(pos, posend, tlist[pos].line, tlist[posend].line);
 
             ICQ_Expression subvalue;
-            bool succ = Compiler_Expression(tlist, content, pos + 1, posend, out subvalue);
+            bool succ = Compiler_Expression(tlist, env, pos + 1, posend, out subvalue);
             if (succ)
             {
                 func.listParam.Add(subvalue);
@@ -99,7 +99,7 @@ namespace CQuark
             //return null;
         }
 
-        public ICQ_Expression Compiler_Expression_FunctionNew(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionNew(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int begin = pos + 3;
             int dep;
@@ -109,12 +109,12 @@ namespace CQuark
             {
                 //一般函数
                 CQ_Expression_FunctionNew func = new CQ_Expression_FunctionNew(pos, posend, tlist[pos].line, tlist[posend].line);
-                func.type = content.GetTypeByKeyword(tlist[pos + 1].text);
+                func.type = env.GetTypeByKeyword(tlist[pos + 1].text);
 
                 do
                 {
                     ICQ_Expression param;
-                    bool succ = Compiler_Expression(tlist, content, begin, end, out param);
+                    bool succ = Compiler_Expression(tlist, env, begin, end, out param);
                     if (succ && param != null)
                     {
                         func.listParam.Add(param);
@@ -131,7 +131,7 @@ namespace CQuark
             else if (tlist[pos + 2].type == TokenType.PUNCTUATION && tlist[pos + 2].text == "[")//数组实例化表达式
             {
                 CQ_Expression_FunctionNewArray func = new CQ_Expression_FunctionNewArray(pos, posend, tlist[pos].line, tlist[posend].line);
-                func.type = content.GetTypeByKeyword(tlist[pos + 1].text + "[]");
+                func.type = env.GetTypeByKeyword(tlist[pos + 1].text + "[]");
 
                 int valuebegin = 0;
                 ICQ_Expression count = null;
@@ -145,7 +145,7 @@ namespace CQuark
                     int dep2;
                     int end2 = FindCodeAny(tlist, ref nbegin, out dep2);
 
-                    bool succ = Compiler_Expression(tlist, content, nbegin, end2, out count);
+                    bool succ = Compiler_Expression(tlist, env, nbegin, end2, out count);
                     if (!succ)
                     {
                         throw new Exception("数组数量无法识别:" + tlist[pos].ToString() + tlist[pos].SourcePos());
@@ -161,7 +161,7 @@ namespace CQuark
                         int dep2;
                         int nend = FindCodeAny(tlist, ref nbegin, out dep2);
                         ICQ_Expression valueI;
-                        bool succ = Compiler_Expression(tlist, content, nbegin, nend, out valueI);
+                        bool succ = Compiler_Expression(tlist, env, nbegin, nend, out valueI);
                         if (!succ)
                         {
                             //throw new Exception("数组初始值无法识别");
@@ -181,7 +181,7 @@ namespace CQuark
             return null;
         }
 
-        public ICQ_Expression Compiler_Expression_FunctionStatic(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionStatic(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);
             func.funcname = tlist[pos].text;
@@ -194,7 +194,7 @@ namespace CQuark
                 do
                 {
                     ICQ_Expression param;
-                    bool succ = Compiler_Expression(tlist, content, begin, end, out param);
+                    bool succ = Compiler_Expression(tlist, env, begin, end, out param);
                     if (succ && param != null)
                     {
                         func.listParam.Add(param);
@@ -215,11 +215,11 @@ namespace CQuark
         }
 
 
-        public ICQ_Expression Compiler_Expression_IndexFind(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_IndexFind(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             CQ_Expression_IndexFind func = new CQ_Expression_IndexFind(pos, posend, tlist[pos].line, tlist[posend].line);
             ICQ_Expression lefv;
-            bool b = Compiler_Expression(tlist, content, pos, pos, out lefv);
+            bool b = Compiler_Expression(tlist, env, pos, pos, out lefv);
             if (b) 
             {
                 func.listParam.Add(lefv);
@@ -234,7 +234,7 @@ namespace CQuark
                 do
                 {
                     ICQ_Expression param;
-                    bool succ = Compiler_Expression(tlist, content, begin, end, out param);
+                    bool succ = Compiler_Expression(tlist, env, begin, end, out param);
                     if (succ && param != null)
                     {
                         func.tokenEnd = end;

@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
 
-        public ICQ_Expression Compiler_Expression_Math(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Math(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             IList<int> sps = SplitExpressionWithOp(tlist, pos, posend);
             int oppos = GetLowestMathOp(tlist, sps);
@@ -32,11 +32,11 @@ namespace CQuark
                 //}
                 if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")//函数表达式
                 {
-					if(content.IsCoroutine(tlist[pos].text))
+					if(env.IsCoroutine(tlist[pos].text))
 //					if(tlist[pos].text == "YieldWaitForSecond")
-						return Compiler_Expression_Coroutine(tlist, content, pos, posend);
+						return Compiler_Expression_Coroutine(tlist, env, pos, posend);
 					else
-	                    return Compiler_Expression_Function(tlist, content, pos, posend);
+	                    return Compiler_Expression_Function(tlist, env, pos, posend);
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace CQuark
             if (tkCur.text == "=>")
             {
 				//lambda
-                return Compiler_Expression_Lambda(tlist, content, pos, posend);
+                return Compiler_Expression_Lambda(tlist, env, pos, posend);
             }
             else if (tkCur.text == "." && pos == oppos - 1 && tlist[pos].type == TokenType.TYPE)
             {
@@ -63,7 +63,7 @@ namespace CQuark
                 int rightend = posend;
 
                 ICQ_Expression valueright;
-                bool succ2 = Compiler_Expression(tlist, content, right, rightend, out valueright);
+                bool succ2 = Compiler_Expression(tlist, env, right, rightend, out valueright);
                 if (succ2)
                 {
                     CQ_Expression_GetValue vg = valueright as CQ_Expression_GetValue;
@@ -72,14 +72,14 @@ namespace CQuark
                     {
                         CQ_Expression_StaticFind value = new CQ_Expression_StaticFind(pos, rightend, tlist[pos].line, tlist[rightend].line);
                         value.staticmembername = vg.value_name;
-                        value.type = content.GetTypeByKeyword(tlist[pos].text);
+                        value.type = env.GetTypeByKeyword(tlist[pos].text);
                         return value;
                     }
                     else if (vf != null)
                     {
                         CQ_Expression_StaticFunction value = new CQ_Expression_StaticFunction(pos, rightend, tlist[pos].line, tlist[rightend].line);
                         value.functionName = vf.funcname;
-                        value.type = content.GetTypeByKeyword(tlist[pos].text);
+                        value.type = env.GetTypeByKeyword(tlist[pos].text);
                         //value.listParam.Add(valueleft);
                         value.listParam.AddRange(vf.listParam.ToArray());
                         return value;
@@ -89,7 +89,7 @@ namespace CQuark
                         CQ_Expression_SelfOp vr = valueright as CQ_Expression_SelfOp;
 
                         CQ_Expression_StaticMath value = new CQ_Expression_StaticMath(pos, rightend, tlist[pos].line, tlist[rightend].line);
-                        value.type = content.GetTypeByKeyword(tlist[pos].text);
+                        value.type = env.GetTypeByKeyword(tlist[pos].text);
                         value.staticmembername = vr.value_name;
                         value.mathop = vr.mathop;
                         return value;
@@ -113,24 +113,24 @@ namespace CQuark
                 if (tkCur.text == "(")
                 {
                     ICQ_Expression v;
-                    if (!Compiler_Expression(tlist, content, oppos + 3, posend, out v))
+                    if (!Compiler_Expression(tlist, env, oppos + 3, posend, out v))
                     {
                         LogError(tlist, "编译表达式失败", right, rightend);
                         return null;
                     }
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(pos, posend, tlist[pos].line, tlist[posend].line);
                     convert.listParam.Add(v);
-                    convert.targettype = content.GetTypeByKeyword(tlist[oppos + 1].text).type;
+                    convert.targettype = env.GetTypeByKeyword(tlist[oppos + 1].text).type;
 
                     return convert;
                 }
                 ICQ_Expression valueleft;
-                bool succ1 = Compiler_Expression(tlist, content, left, leftend, out valueleft);
+                bool succ1 = Compiler_Expression(tlist, env, left, leftend, out valueleft);
                 ICQ_Expression valueright;
                 if (tkCur.text == "[")
                 {
                     rightend--;
-                    if (!Compiler_Expression(tlist, content, right, rightend, out valueright))
+                    if (!Compiler_Expression(tlist, env, right, rightend, out valueright))
                     {
                         LogError(tlist, "编译表达式失败", right, rightend);
                         return null;
@@ -144,7 +144,7 @@ namespace CQuark
                 {
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     convert.listParam.Add(valueleft);
-                    convert.targettype = content.GetTypeByKeyword(tlist[oppos + 1].text).type;
+                    convert.targettype = env.GetTypeByKeyword(tlist[oppos + 1].text).type;
 
 
                     return convert;
@@ -153,12 +153,12 @@ namespace CQuark
                 {
                     CQ_Expression_TypeCheck check = new CQ_Expression_TypeCheck(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     check.listParam.Add(valueleft);
-                    check.targettype = content.GetTypeByKeyword(tlist[oppos + 1].text).type;
+                    check.targettype = env.GetTypeByKeyword(tlist[oppos + 1].text).type;
 
 
                     return check;
                 }
-                bool succ2 = Compiler_Expression(tlist, content, right, rightend, out valueright);
+                bool succ2 = Compiler_Expression(tlist, env, right, rightend, out valueright);
                 if (succ1 && succ2 && valueright != null && valueleft != null)
                 {
                     if (tkCur.text == "=")

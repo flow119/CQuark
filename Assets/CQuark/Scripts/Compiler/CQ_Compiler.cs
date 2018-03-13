@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
 
-        public ICQ_Expression Compile(IList<Token> tlist, CQ_Environment content)
+        public ICQ_Expression Compile(IList<Token> tlist, CQ_Environment env)
         {
             ICQ_Expression value;
 
@@ -17,7 +17,7 @@ namespace CQuark
                 LogError(tlist, "CodeBlock 识别问题,异常结尾", expbegin, expend);
                 return null;
             }
-            bool succ = Compiler_Expression_Block(tlist, content, expbegin, expend, out value);
+            bool succ = Compiler_Expression_Block(tlist, env, expbegin, expend, out value);
             if (succ)
             {
                 if (value == null)
@@ -34,12 +34,12 @@ namespace CQuark
             }
         }
 
-        public ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment content)
+        public ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment env)
         {
             ICQ_Expression value;
             int expbegin = 0;
             int expend = tlist.Count - 1;
-            bool succ = Compiler_Expression(tlist, content, expbegin, expend, out value);
+            bool succ = Compiler_Expression(tlist, env, expbegin, expend, out value);
             if (succ)
             {
                 if (value == null)

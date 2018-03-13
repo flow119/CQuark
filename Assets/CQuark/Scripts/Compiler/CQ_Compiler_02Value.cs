@@ -124,7 +124,7 @@ namespace CQuark
                 return null;
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;
@@ -137,7 +137,7 @@ namespace CQuark
             else
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, content, expbegin, expend2, out subvalue);
+                bool succ = Compiler_Expression(tlist, env, expbegin, expend2, out subvalue);
                 if (succ && subvalue != null)
                 {
                     CQ_Expression_NegativeValue v = new CQ_Expression_NegativeValue(pos, expend2, tlist[pos].line, tlist[expend2].line);
@@ -151,7 +151,7 @@ namespace CQuark
                 }
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, CQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;
@@ -165,7 +165,7 @@ namespace CQuark
             //else
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, content, expbegin, expend2, out subvalue);
+                bool succ = Compiler_Expression(tlist, env, expbegin, expend2, out subvalue);
                 if (succ && subvalue != null)
                 {
                     if (subvalue is CQ_Expression_Math2Value || subvalue is CQ_Expression_Math2ValueAndOr || subvalue is CQ_Expression_Math2ValueLogic)

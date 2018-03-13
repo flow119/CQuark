@@ -15,7 +15,7 @@ namespace CQuark
             DebugUtil.LogError(text+":" + str + "(" + pos + "-" + posend + ")");
         }
         //可以搞出Block
-        public bool Compiler_Expression_Block(IList<Token> tlist, CQ_Environment content, int pos, int posend, out ICQ_Expression value)
+        public bool Compiler_Expression_Block(IList<Token> tlist, CQ_Environment env, int pos, int posend, out ICQ_Expression value)
         {
             int begin = pos;
             value = null;
@@ -53,7 +53,7 @@ namespace CQuark
                     expbegin++;
                     expend--;
                     ICQ_Expression subvalue;
-                    bool bsucc = Compiler_Expression_Block(tlist,content, expbegin, expend, out subvalue);
+                    bool bsucc = Compiler_Expression_Block(tlist,env, expbegin, expend, out subvalue);
                     if (bsucc)
                     {
                         if (subvalue != null)
@@ -68,7 +68,7 @@ namespace CQuark
                 else
                 {
                     ICQ_Expression subvalue;
-                    bool bsucc = Compiler_Expression(tlist, content,expbegin, expend, out subvalue);
+                    bool bsucc = Compiler_Expression(tlist, env,expbegin, expend, out subvalue);
                     if (bsucc)
                     {
                         if (subvalue != null)
@@ -102,7 +102,7 @@ namespace CQuark
         }
 
         //不出Block,必须一次解析完,括号为优先级
-        public bool Compiler_Expression(IList<Token> tlist, CQ_Environment content, int pos, int posend, out ICQ_Expression value)
+        public bool Compiler_Expression(IList<Token> tlist, CQ_Environment env, int pos, int posend, out ICQ_Expression value)
         {
             if(pos>posend)
             {
@@ -147,7 +147,7 @@ namespace CQuark
                     {
                         end = posend;
                         //如果表达式一次搞不完，那肯定是优先级问题
-                        value = Compiler_Expression_Math(tlist,content, begin, posend);
+                        value = Compiler_Expression_Math(tlist,env, begin, posend);
                         return true;
                     }
                 }
@@ -169,7 +169,7 @@ namespace CQuark
                     {
                         if (tlist[expbegin].text == "return")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_Return(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_Return(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "表达式编译失败", expbegin, expend);
@@ -229,7 +229,7 @@ namespace CQuark
                     expbegin++;
                     expend--;
                     ICQ_Expression subvalue;
-                    bool bsucc = Compiler_Expression(tlist,content, expbegin, expend, out subvalue);
+                    bool bsucc = Compiler_Expression(tlist,env, expbegin, expend, out subvalue);
                     if (bsucc)
                     {
                         if (subvalue != null)
@@ -261,7 +261,7 @@ namespace CQuark
                             }
                             else
                             {
-                                ICQ_Expression subvalue = Compiler_Expression_Math(tlist, content, begin, posend);
+                                ICQ_Expression subvalue = Compiler_Expression_Math(tlist, env, begin, posend);
                                 if (null == subvalue)
                                 {
                                     LogError(tlist, "表达式编译失败", begin, posend);
@@ -274,7 +274,7 @@ namespace CQuark
                         else
                         {//负数表达式
 
-                            ICQ_Expression subvalue = Compiler_Expression_NegativeValue(tlist, content, expbegin + 1, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_NegativeValue(tlist, env, expbegin + 1, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "表达式编译失败", expbegin + 1, expend);
@@ -288,7 +288,7 @@ namespace CQuark
                     }
                     if (tlist[expbegin].type == TokenType.PUNCTUATION && tlist[expbegin].text == "!")
                     {//逻辑反表达式
-                        ICQ_Expression subvalue = Compiler_Expression_NegativeLogic(tlist, content, expbegin + 1, expend);
+                        ICQ_Expression subvalue = Compiler_Expression_NegativeLogic(tlist, env, expbegin + 1, expend);
                         if (null == subvalue)
                         {
                             LogError(tlist, "表达式编译失败", expbegin + 1, expend);
@@ -305,7 +305,7 @@ namespace CQuark
                         {
                             if (expend == expbegin + 1)//定义表达式
                             {
-                                ICQ_Expression subvalue = Compiler_Expression_Define(tlist, content, expbegin, expend);
+                                ICQ_Expression subvalue = Compiler_Expression_Define(tlist, env, expbegin, expend);
                                 if (null == subvalue)
                                     return false;
                                 else
@@ -314,7 +314,7 @@ namespace CQuark
                             }
                             else if (expend > expbegin + 2 && tlist[expbegin + 2].type == TokenType.PUNCTUATION && tlist[expbegin + 2].text == "=")
                             {//定义并赋值表达式
-                                ICQ_Expression subvalue = Compiler_Expression_DefineAndSet(tlist, content, expbegin, expend);
+                                ICQ_Expression subvalue = Compiler_Expression_DefineAndSet(tlist, env, expbegin, expend);
                                 if (null == subvalue)
                                     return false;
                                 else
@@ -331,7 +331,7 @@ namespace CQuark
                         {
                             if (expend == expbegin + 3)//定义表达式
                             {
-                                ICQ_Expression subvalue = Compiler_Expression_DefineArray(tlist, content, expbegin, expend);
+                                ICQ_Expression subvalue = Compiler_Expression_DefineArray(tlist, env, expbegin, expend);
                                 if (null == subvalue)
                                 {
                                     LogError(tlist, "无法识别的数组:", expbegin, expend);
@@ -343,7 +343,7 @@ namespace CQuark
                             }
                             else if (expend > expbegin + 4 && tlist[expbegin + 4].type == TokenType.PUNCTUATION && tlist[expbegin + 4].text == "=")
                             {//定义并赋值表达式
-                                ICQ_Expression subvalue = Compiler_Expression_DefineAndSetArray(tlist, content, expbegin, expend);
+                                ICQ_Expression subvalue = Compiler_Expression_DefineAndSetArray(tlist, env, expbegin, expend);
                                 if (null == subvalue)
                                 {
                                     LogError(tlist, "无法识别的数组:", expbegin, expend);
@@ -363,7 +363,7 @@ namespace CQuark
                         {//静态调用表达式
                             //if (expend - expbegin > 2)
                             {
-                                ICQ_Expression subvalue = Compiler_Expression_Math(tlist, content, expbegin, expend);
+                                ICQ_Expression subvalue = Compiler_Expression_Math(tlist, env, expbegin, expend);
                                 if (subvalue != null)
                                 {
                                     //subvalue.listParam.Add(subparam);
@@ -394,7 +394,7 @@ namespace CQuark
                         }
                         if (!bTest && tlist[expbegin + 1].type == TokenType.PUNCTUATION && tlist[expbegin + 1].text == "=")//赋值表达式
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Set(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Set(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "无法识别的表达式:", expbegin, expend);
@@ -425,7 +425,7 @@ namespace CQuark
                     if (!bTest && (tlist[expbegin].type == TokenType.IDENTIFIER || tlist[expbegin].type == TokenType.VALUE || tlist[expbegin].type == TokenType.STRING))
                     {
                         //算数表达式
-                        ICQ_Expression subvalue = Compiler_Expression_Math(tlist,content, expbegin, expend);
+                        ICQ_Expression subvalue = Compiler_Expression_Math(tlist,env, expbegin, expend);
                         if (null != subvalue)
                         {
                             values.Add(subvalue);
@@ -436,7 +436,7 @@ namespace CQuark
                     {
                         if (tlist[expbegin].text == "for")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_For(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_For(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "不可识别的For头:", expbegin, expend);
@@ -448,7 +448,7 @@ namespace CQuark
                         }
 						else if(tlist[expbegin].text == "switch"){
 //							UnityEngine.Debug.Log("SwitchCase : " + GetCodeKeyString(tlist, expbegin, expend));
-							ICQ_Expression subvalue = Compiler_Expression_Loop_SwitchCase(tlist, content, expbegin, expend);
+							ICQ_Expression subvalue = Compiler_Expression_Loop_SwitchCase(tlist, env, expbegin, expend);
 							if(null == subvalue){
 								LogError(tlist, "不可识别的switch case：", expbegin, expend);
 								return false;
@@ -459,7 +459,7 @@ namespace CQuark
 						}
                         else if (tlist[expbegin].text == "foreach")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_ForEach(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_ForEach(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "不可识别的ForEach头:", expbegin, expend);
@@ -471,7 +471,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "while")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_While(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_While(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "不可识别的while头:", expbegin, expend);
@@ -483,7 +483,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "do")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_Dowhile(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_Dowhile(tlist, env, expbegin, expend);
                             if (null == subvalue) return false;
                             else
                                 values.Add(subvalue);
@@ -491,7 +491,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "if")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_If(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_If(tlist, env, expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "不可识别的if判断:", expbegin, expend);
@@ -503,7 +503,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "try")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_Try(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_Try(tlist, env, expbegin, expend);
                             if (null == subvalue) return false;
                             else
                                 values.Add(subvalue);
@@ -511,7 +511,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "return")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_Loop_Return(tlist, content,expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Loop_Return(tlist, env,expbegin, expend);
                             if (null == subvalue)
                             {
                                 LogError(tlist, "不可识别的return:", expbegin, expend);
@@ -523,7 +523,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "trace")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_FunctionTrace(tlist,content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_FunctionTrace(tlist,env, expbegin, expend);
                             if (null == subvalue) return false;
                             else
                                 values.Add(subvalue);
@@ -531,7 +531,7 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "throw")
                         {
-                            ICQ_Expression subvalue = Compiler_Expression_FunctionThrow(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_FunctionThrow(tlist, env, expbegin, expend);
                             if (null == subvalue) return false;
                             else
                                 values.Add(subvalue);
@@ -540,7 +540,7 @@ namespace CQuark
                         else if(tlist[expbegin].text=="true"||tlist[expbegin].text=="false"||tlist[expbegin].text=="null")
                         {
                             //算数表达式
-                            ICQ_Expression subvalue = Compiler_Expression_Math(tlist, content, expbegin, expend);
+                            ICQ_Expression subvalue = Compiler_Expression_Math(tlist, env, expbegin, expend);
                             if (null != subvalue)
                             {
                                 values.Add(subvalue);
@@ -552,7 +552,7 @@ namespace CQuark
                             //new 表达式
                             if (tlist[expbegin + 1].type == TokenType.TYPE)
                             {
-                                ICQ_Expression subvalue = Compiler_Expression_FunctionNew(tlist, content, pos, posend);
+                                ICQ_Expression subvalue = Compiler_Expression_FunctionNew(tlist, env, pos, posend);
                                 values.Add(subvalue);
                                 bTest = true;
                             }
