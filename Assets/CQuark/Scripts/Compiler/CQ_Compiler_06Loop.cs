@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler {
 
-        public ICQ_Expression Compiler_Expression_Loop_For(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_For(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -60,7 +60,7 @@ namespace CQuark
             return null;
         }
 
-        public ICQ_Expression Compiler_Expression_Loop_SwitchCase(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_SwitchCase(IList<Token> tlist, CQ_Environment env, int pos, int posend)
 		{
 //			UnityEngine.Debug.Log("CompilerLoop : " + GetCodeKeyString(tlist, pos, posend));
 			int b1;
@@ -149,7 +149,7 @@ namespace CQuark
 			return value;
 		}
 
-        public ICQ_Expression Compiler_Expression_Loop_ForEach(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_ForEach(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
 
             int b1;
@@ -205,7 +205,7 @@ namespace CQuark
             }
             return null;
         }
-        public ICQ_Expression Compiler_Expression_Loop_While(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_While(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -250,7 +250,7 @@ namespace CQuark
             }
             return value;
         }
-        public ICQ_Expression Compiler_Expression_Loop_Dowhile(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Dowhile(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -295,7 +295,7 @@ namespace CQuark
             return value;
         }
 
-        public ICQ_Expression Compiler_Expression_Loop_If(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_If(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
 
             CQ_Expression_LoopIf value = new CQ_Expression_LoopIf(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -370,7 +370,7 @@ namespace CQuark
 
             return value;
         }
-        public ICQ_Expression Compiler_Expression_Loop_Try(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Try(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
 
             CQ_Expression_LoopTry value = new CQ_Expression_LoopTry(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -453,7 +453,7 @@ namespace CQuark
 
             return value;
         }
-        public ICQ_Expression Compiler_Expression_Loop_Return(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Return(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             CQ_Expression_LoopReturn value = new CQ_Expression_LoopReturn(pos, posend, tlist[pos].line, tlist[posend].line);
 
@@ -466,12 +466,12 @@ namespace CQuark
 
             return value;
         }
-        public ICQ_Expression Compiler_Expression_Loop_Break(IList<Token> tlist, int pos)
+        public static ICQ_Expression Compiler_Expression_Loop_Break(IList<Token> tlist, int pos)
         {
             CQ_Expression_LoopBreak value = new CQ_Expression_LoopBreak(pos, pos, tlist[pos].line, tlist[pos].line);
             return value;
         }
-        public ICQ_Expression Compiler_Expression_Loop_Continue(IList<Token> tlist, int pos)
+        public static ICQ_Expression Compiler_Expression_Loop_Continue(IList<Token> tlist, int pos)
         {
             CQ_Expression_LoopContinue value = new CQ_Expression_LoopContinue(pos, pos, tlist[pos].line, tlist[pos].line);
             return value;

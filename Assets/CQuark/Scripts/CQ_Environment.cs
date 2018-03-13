@@ -15,8 +15,6 @@ namespace CQuark
 		Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
 		//Dictionary<string, ICQ_Type_Dele> deleTypes = new Dictionary<string, ICQ_Type_Dele>();
 
-        CQ_Expression_Compiler compiler = null;
-
         public CQ_Environment()
         {
             //if(useNamespace==true)
@@ -26,7 +24,6 @@ namespace CQuark
 
             //this.useNamespace = useNamespace;
 
-            compiler = new CQ_Expression_Compiler();
             RegType(new CQ_Type_Int());
             RegType(new CQ_Type_UInt());
             RegType(new CQ_Type_Float());
@@ -248,12 +245,12 @@ namespace CQuark
 		}
         public ICQ_Expression Expr_CompileToken(IList<Token> listToken)
         {
-            return compiler.Compile(listToken, this);
+            return CQ_Expression_Compiler.Compile(listToken, this);
         }
 
         public ICQ_Expression Expr_CompileToken(IList<Token> listToken, bool SimpleExpression)
         {
-            return SimpleExpression ? compiler.Compile_NoBlock(listToken, this) : compiler.Compile(listToken, this);
+            return SimpleExpression ? CQ_Expression_Compiler.Compile_NoBlock(listToken, this) : CQ_Expression_Compiler.Compile(listToken, this);
         }
        
         //CQ_Content contentGloabl = null;
@@ -309,7 +306,7 @@ namespace CQuark
         }
         public void File_PreCompileToken(string filename, IList<Token> listToken)
         {
-            IList<ICQ_Type> types = compiler.FilePreCompile(this, filename, listToken);
+            IList<ICQ_Type> types = CQ_Expression_Compiler.FilePreCompile(this, filename, listToken);
             foreach (var type in types)
             {
                 this.RegType(type);
@@ -318,7 +315,7 @@ namespace CQuark
         public void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken)
         {
             DebugUtil.Log("File_CompilerToken:" + filename);
-            IList<ICQ_Type> types = compiler.FileCompile(this, filename, listToken, embDebugToken);
+            IList<ICQ_Type> types = CQ_Expression_Compiler.FileCompile(this, filename, listToken, embDebugToken);
             foreach (var type in types)
             {
                 if (this.GetTypeByKeywordQuiet(type.keyword) == null)

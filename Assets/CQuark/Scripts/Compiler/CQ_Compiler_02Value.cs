@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler
     {
 
-        public ICQ_Expression Compiler_Expression_Value(Token value, int pos)
+        public static ICQ_Expression Compiler_Expression_Value(Token value, int pos)
         {
             if (value.type == TokenType.VALUE)
             {
@@ -83,7 +83,7 @@ namespace CQuark
             }
         }
 
-        public ICQ_Expression Compiler_Expression_SubValue(Token value)
+        public static ICQ_Expression Compiler_Expression_SubValue(Token value)
         {
             if (value.type == TokenType.VALUE)
             {
@@ -124,7 +124,7 @@ namespace CQuark
                 return null;
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;
@@ -151,7 +151,7 @@ namespace CQuark
                 }
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;

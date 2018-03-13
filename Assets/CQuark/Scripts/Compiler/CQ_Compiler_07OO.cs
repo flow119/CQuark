@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark
 {
-    public class NotScipt : Attribute
-    {
-
-    }
     public partial class CQ_Expression_Compiler 
     {
 
-        IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, CQ_Environment env, bool onlyGotType)
+        static IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, CQ_Environment env, bool onlyGotType)
         {
             List<ICQ_Type> typelist = new List<ICQ_Type>();
 
@@ -122,7 +118,7 @@ namespace CQuark
 
             return typelist;
         }
-        ICQ_Type Compiler_Class(CQ_Environment env, string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
+        static ICQ_Type Compiler_Class(CQ_Environment env, string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
         {
 
             CQ_Type_Class stype = env.GetTypeByKeywordQuiet(classname) as CQ_Type_Class;
@@ -308,7 +304,7 @@ namespace CQuark
                             if (tokens[funcbegin].text == "{")
                             {
                                 int funcend = FindBlock(env, tokens, funcbegin);
-                                this.Compiler_Expression_Block(tokens, env, funcbegin, funcend, out func.expr_runtime);
+                                Compiler_Expression_Block(tokens, env, funcbegin, funcend, out func.expr_runtime);
                                 if (func.expr_runtime == null)
                                 {
                                     DebugUtil.LogWarning("警告，该函数编译为null，请检查");
@@ -434,7 +430,7 @@ namespace CQuark
             return stype;
         }
 
-        List<string> Compiler_Using(IList<Token> tokens, CQ_Environment env, int pos, int posend)
+        static List<string> Compiler_Using(IList<Token> tokens, CQ_Environment env, int pos, int posend)
         {
             List<string> _namespace = new List<string>();
 
@@ -449,9 +445,7 @@ namespace CQuark
         }
         //Dictionary<string, functioninfo> funcs = new Dictionary<string, functioninfo>();
 
-
-
-        int FindBlock(CQ_Environment env, IList<CQuark.Token> tokens, int start)
+        static int FindBlock(CQ_Environment env, IList<CQuark.Token> tokens, int start)
         {
             if (tokens[start].type != CQuark.TokenType.PUNCTUATION)
             {

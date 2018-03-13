@@ -5,233 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler
     {
-        //计算最长的类型
-        int GetLongType(IList<Token> tokens, int pos)
-        {
-            int npos = -1;
-            for (int i = pos; i < tokens.Count; i += 2)
-            {
-                if (tokens[i].type == TokenType.TYPE && i + 1 < tokens.Count)
-                {
-                    if (tokens[i + 1].type == TokenType.PUNCTUATION && tokens[i + 1].text == ".")
-                    {
-                    }
-                    else
-                    {
-                        npos = i + 1;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return npos;
-        }
-        int GetLongName(IList<Token> tokens, int pos)
-        {
-            int npos = -1;
-            int nstate = 0;//type name
-            for (int i = pos; i < tokens.Count; i += 2)
-            {
-                if (nstate == 0 && tokens[i].type == TokenType.TYPE && i + 1 < tokens.Count)
-                {
-                    if (tokens[i + 1].type == TokenType.PUNCTUATION && tokens[i + 1].text == ".")
-                    {
-                    }
-                    else
-                    {
-                        npos = i;
-                    }
-                }
-                else if (tokens[i].type == TokenType.IDENTIFIER && i + 1 < tokens.Count)
-                {
-                    if (tokens[i + 1].type == TokenType.PUNCTUATION && tokens[i + 1].text == ".")
-                    {
-                    }
-                    else
-                    {
-                        npos = i;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-
-            }
-
-            if (npos < pos || tokens[npos].type != TokenType.IDENTIFIER)
-				return -1;
-            return npos;
-        }
-        //得到完整的表达式
-        int FindFullExpression(IList<Token> tokens, int pos, out bool bdepstart)
-        {
-            int dep = 0;
-            bdepstart = false;
-            for (int i = pos; i < tokens.Count; i++)
-            {
-
-                if (tokens[i].type == TokenType.PUNCTUATION)
-                {
-                    if (tokens[i].text == "(" && i == pos)
-                    {
-                        dep++;
-                        bdepstart = true;
-                    }
-                    if (tokens[i].text == ")")
-                    {
-                        dep--;
-                        if (dep == 0 && bdepstart)//括号开始的表达式，括号结束
-                            return i;
-                        else if (dep < 0)
-                            return i - 1;
-                    }
-                    if (tokens[i].text == ",")//，结束的表达式
-                    {
-                        if (dep == 0 && !bdepstart)
-                            return i - 1;
-                    }
-                    if (tokens[i].text == ";")
-                    {
-                        if (dep == 0)
-                            return i - 1;
-                        else
-                            return -1;
-                    }
-                }
-            }
-            return -1;
-        }
-        int GetExpressionOp(IList<Token> tokens, int pos, int posend)
-        {
-            List<int> oppos = new List<int>();
-            int state = 0;//0 表达式 //1 符号
-            for (int i = posend; i >= pos; )
-            {
-                if (state == 0)
-                {
-                    if (tokens[i].type == TokenType.PUNCTUATION)
-                    {
-                        if (tokens[i].text == ")" && i > pos)
-                        {
-                            int dep = 0;
-                            for (int j = i - 1; j >= pos; j--)
-                            {
-                                if (tokens[j].type == TokenType.PUNCTUATION && tokens[j].text == ")")
-                                {
-                                    dep++;
-                                }
-                                else if (tokens[j].type == TokenType.PUNCTUATION && tokens[j].text == "(")
-                                {
-                                    dep--;
-                                    if (dep < 0)
-                                    {
-                                        if (j - 1 > pos && (tokens[j - 1].type == TokenType.IDENTIFIER || tokens[j - 1].type == TokenType.TYPE))
-                                        {
-                                            i = j - 2;//函数
-                                        }
-                                        else
-                                        {
-                                            i = j - 1;
-                                        }
-                                        break;
-                                    }
-                                }
-
-                            }
-                        }
-                        else
-                        {
-                            return -1;
-                        }
-                    }
-                    else if (tokens[i].type == TokenType.VALUE)
-                    {
-                        i--;
-                        //需要考虑负号的问题
-                        if (i == pos || tokens[i - 1].type == TokenType.PUNCTUATION)
-                        {
-                            i--;
-                        }
-                    }
-                    else if (tokens[i].type == TokenType.STRING || tokens[i].type == TokenType.IDENTIFIER)
-                    {
-                        i--;
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                    state = 1;
-                }
-                else
-                {
-                    if (tokens[i].type != TokenType.PUNCTUATION)
-						return -1;
-                    oppos.Add(i);
-                    state = 0;
-                    i--;
-                }
-            }
-            if (state == 0) 
-				return -1;
-            //找出优先级最低的操作符
-            int nmax = 0;//优先级
-            int npos = -1;//字符
-            foreach (int i in oppos)
-            {
-                int max = 0;
-                switch (tokens[i].text)
-                {
-                    case "<":
-                        max = 6;
-                        break;
-                    case ">":
-                        max = 6;
-                        break;
-                    case "<=":
-                        max = 6;
-                        break;
-                    case ">=":
-                        max = 6;
-                        break;
-                    case "&&":
-                        max = 5;
-                        break;
-                    case "||":
-                        max = 5;
-                        break;
-                    case "==":
-                        max = 4;
-                        break;
-                    case "!=":
-                        max = 4;
-                        break;
-                    case "*":
-                        max = 3;
-                        break;
-                    case "/":
-                        max = 3;
-                        break;
-                    case "+":
-                        max = 2;
-                        break;
-                    case "-":
-                        max = 2;
-                        break;
-                }
-                if (max > nmax)
-                {
-                    nmax = max;
-                    npos = i;
-                }
-            }
-            return npos;
-        }
-
-        int FindCodeBlock(IList<Token> tokens, int pos)
+        static int FindCodeBlock(IList<Token> tokens, int pos)
         {
             int dep = 0;
             for (int i = pos; i < tokens.Count; i++)
@@ -257,7 +31,7 @@ namespace CQuark
                 return tokens.Count - 1;
         }
 
-        int FindCodeAny(IList<Token> tokens, ref int pos, out int depstyle)
+        static int FindCodeAny(IList<Token> tokens, ref int pos, out int depstyle)
         {
             int dep = 0;
             Token? start = null;
@@ -389,7 +163,7 @@ namespace CQuark
                 return tokens.Count - 1;
         }
 
-        int FindCodeInBlock(IList<Token> tokens, ref int pos, out int depstyle)
+        static int FindCodeInBlock(IList<Token> tokens, ref int pos, out int depstyle)
         {
             int dep = 0;
             Token? start = null;
@@ -522,7 +296,7 @@ namespace CQuark
                 return tokens.Count - 1;
         }
 
-        int FindCodeAnyInFunc(IList<Token> tokens, ref int pos, out int depstyle)
+        static int FindCodeAnyInFunc(IList<Token> tokens, ref int pos, out int depstyle)
         {
             int dep = 0;
             Token? start = null;
@@ -650,7 +424,8 @@ namespace CQuark
                 return tokens.Count - 1;
         }
 
-		int FindCodeAnyOnlyKeyword(Token start, IList<Token> tokens, int startPos){
+        static int FindCodeAnyOnlyKeyword(Token start, IList<Token> tokens, int startPos)
+        {
 			if (start.text == "for")
 			{
 				return FindCodeKeyWord_For(tokens, startPos);
@@ -682,7 +457,7 @@ namespace CQuark
 			return -1;
 		}
 
-        int FindCodeAnyWithoutKeyword(IList<Token> tokens, ref int pos, out int depstyle)
+        static int FindCodeAnyWithoutKeyword(IList<Token> tokens, ref int pos, out int depstyle)
         {
             int dep = 0;
             Token? start = null;
@@ -762,7 +537,7 @@ namespace CQuark
                 return tokens.Count - 1;
         }
 
-        int FindCodeKeyWord_For(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_For(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 1;
@@ -773,7 +548,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tokens, ref fs2, out b2);
             return fe2;
         }
-        int FindCodeKeyWord_New(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_New(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 2;
@@ -785,7 +560,7 @@ namespace CQuark
             }
             return fe1;
         }
-        int FindCodeKeyWord_ForEach(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_ForEach(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 1;
@@ -796,7 +571,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tokens, ref fs2, out b2);
             return fe2;
         }
-        int FindCodeKeyWord_While(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_While(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 1;
@@ -807,7 +582,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tokens, ref fs2, out b2);
             return fe2;
         }
-        int FindCodeKeyWord_Dowhile(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_Dowhile(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 1;
@@ -818,7 +593,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tokens, ref fs2, out b2);
             return fe2;
         }
-        int FindCodeKeyWord_If(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_If(IList<Token> tokens, int pos)
         {
             int b1;
             int fs1 = pos + 1;
@@ -854,7 +629,7 @@ namespace CQuark
 				return fe2;
 			}
         }
-		int FindCodeKeyWord_SwitchCase(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_SwitchCase(IList<Token> tokens, int pos)
 		{
 			int braceDepth = 0;
 			for(int i = pos; i < tokens.Count; i ++){
@@ -875,7 +650,7 @@ namespace CQuark
 			}
 			return tokens.Count - 1;
 		}
-        int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
+        static int FindCodeKeyWord_Return(IList<Token> tokens, int pos)
         {
             int fs = pos + 1;
             if (tokens[fs].type == TokenType.PUNCTUATION && tokens[fs].text == ";")
@@ -885,7 +660,7 @@ namespace CQuark
             int fe = FindCodeAnyWithoutKeyword(tokens, ref fs, out b);
             return fe;
         }
-        IList<int> SplitExpressionWithOp(IList<Token> tokens, int pos, int posend)
+        static IList<int> SplitExpressionWithOp(IList<Token> tokens, int pos, int posend)
         {
             List<int> list = new List<int>();
             List<int> listt = new List<int>();
@@ -951,7 +726,7 @@ namespace CQuark
             return list.Count > 0 ? list : listt;
         }
 
-        int GetLowestMathOp(IList<Token> tokens, IList<int> list)
+        static int GetLowestMathOp(IList<Token> tokens, IList<int> list)
         {
             int nmax = int.MaxValue;//优先级
             int npos = -1;//字符
@@ -1035,13 +810,5 @@ namespace CQuark
 
             return npos;
         }
-		//调试用
-		static string GetCodeKeyString(IList<Token> tokens, int start, int end){
-			string ret = "";
-			for(int i = start; i <= end; i++){
-				ret += tokens[i].text;
-			}
-			return ret;
-		}
     }
 }

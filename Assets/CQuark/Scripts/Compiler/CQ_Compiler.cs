@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler 
     {
 
-        public ICQ_Expression Compile(IList<Token> tlist, CQ_Environment env)
+        public static ICQ_Expression Compile(IList<Token> tlist, CQ_Environment env)
         {
             ICQ_Expression value;
 
@@ -34,7 +34,7 @@ namespace CQuark
             }
         }
 
-        public ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment env)
+        public static ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment env)
         {
             ICQ_Expression value;
             int expbegin = 0;
@@ -54,13 +54,13 @@ namespace CQuark
                 return null;
             }
         }
-			
-        public IList<ICQ_Type> FileCompile(CQ_Environment env,string filename,IList<Token> tlist, bool embDebugToken)
+
+        public static IList<ICQ_Type> FileCompile(CQ_Environment env, string filename, IList<Token> tlist, bool embDebugToken)
         {
             return _FileCompiler(filename, tlist, embDebugToken, env, false);
         }
 
-        public IList<ICQ_Type> FilePreCompile(CQ_Environment env, string filename, IList<Token> tlist)
+        public static IList<ICQ_Type> FilePreCompile(CQ_Environment env, string filename, IList<Token> tlist)
         {
             return _FileCompiler(filename, tlist, false, env, true);
         }
