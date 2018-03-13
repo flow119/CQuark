@@ -124,7 +124,7 @@ namespace CQuark
                 return null;
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_NegativeValue(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;
@@ -151,7 +151,7 @@ namespace CQuark
                 }
             }
         }
-        public ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_NegativeLogic(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int expbegin = pos;
             int bdep;

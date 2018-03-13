@@ -12,7 +12,7 @@ public class CQuarkClass
 		Reset ();
 	}
 	public CQ_Environment env {get; private set; }
-	public CQuark.CQ_Content content = null;
+	public CQ_Content content = null;
 
 
 	public static CQuarkClass Instance{

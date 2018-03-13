@@ -18,17 +18,17 @@ namespace CQuark
 
             return con;
         }
-        public ICQ_Environment environment
+        public CQ_Environment environment
         {
             get;
             private set;
         }
-        public CQ_Content(ICQ_Environment environment)
+        public CQ_Content(CQ_Environment environment)
         {
             this.environment = environment;
             this.useDebug = false;
         }
-        public CQ_Content(ICQ_Environment environment,bool useDebug)
+        public CQ_Content(CQ_Environment environment,bool useDebug)
         {
             this.environment = environment;
             this.useDebug = useDebug;

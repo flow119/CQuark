@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
-        public ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);
 
@@ -38,7 +38,7 @@ namespace CQuark
             //一般函数
             return null;
         }
-        public ICQ_Expression Compiler_Expression_FunctionTrace(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionTrace(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")
                 return Compiler_Expression_Function(tlist, content, pos, posend);
@@ -81,7 +81,7 @@ namespace CQuark
 
             //return null;
         }
-        public ICQ_Expression Compiler_Expression_FunctionThrow(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionThrow(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Throw func = new CQ_Expression_Throw(pos, posend, tlist[pos].line, tlist[posend].line);
 
@@ -99,7 +99,7 @@ namespace CQuark
             //return null;
         }
 
-        public ICQ_Expression Compiler_Expression_FunctionNew(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionNew(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int begin = pos + 3;
             int dep;
@@ -181,7 +181,7 @@ namespace CQuark
             return null;
         }
 
-        public ICQ_Expression Compiler_Expression_FunctionStatic(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_FunctionStatic(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);
             func.funcname = tlist[pos].text;
@@ -215,7 +215,7 @@ namespace CQuark
         }
 
 
-        public ICQ_Expression Compiler_Expression_IndexFind(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_IndexFind(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_IndexFind func = new CQ_Expression_IndexFind(pos, posend, tlist[pos].line, tlist[posend].line);
             ICQ_Expression lefv;

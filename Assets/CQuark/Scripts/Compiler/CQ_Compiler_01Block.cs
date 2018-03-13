@@ -15,7 +15,7 @@ namespace CQuark
             DebugUtil.LogError(text+":" + str + "(" + pos + "-" + posend + ")");
         }
         //可以搞出Block
-        public bool Compiler_Expression_Block(IList<Token> tlist, ICQ_Environment content, int pos, int posend, out ICQ_Expression value)
+        public bool Compiler_Expression_Block(IList<Token> tlist, CQ_Environment content, int pos, int posend, out ICQ_Expression value)
         {
             int begin = pos;
             value = null;
@@ -102,7 +102,7 @@ namespace CQuark
         }
 
         //不出Block,必须一次解析完,括号为优先级
-        public bool Compiler_Expression(IList<Token> tlist, ICQ_Environment content, int pos, int posend, out ICQ_Expression value)
+        public bool Compiler_Expression(IList<Token> tlist, CQ_Environment content, int pos, int posend, out ICQ_Expression value)
         {
             if(pos>posend)
             {

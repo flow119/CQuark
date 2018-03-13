@@ -111,7 +111,7 @@ namespace CQuark
             }
             return CQ_Content.Value.FromICQ_Value(sv);
         }
-        void NewStatic(ICQ_Environment env)
+        void NewStatic(CQ_Environment env)
         {
             if (contentMemberCalc == null)
                 contentMemberCalc = new CQ_Content(env);

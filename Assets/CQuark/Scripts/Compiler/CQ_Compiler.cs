@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
 
-        public ICQ_Expression Compile(IList<Token> tlist, ICQ_Environment content)
+        public ICQ_Expression Compile(IList<Token> tlist, CQ_Environment content)
         {
             ICQ_Expression value;
 
@@ -34,7 +34,7 @@ namespace CQuark
             }
         }
 
-        public ICQ_Expression Compile_NoBlock(IList<Token> tlist, ICQ_Environment content)
+        public ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment content)
         {
             ICQ_Expression value;
             int expbegin = 0;
@@ -54,7 +54,7 @@ namespace CQuark
                 return null;
             }
         }
-        public ICQ_Expression Optimize(ICQ_Expression value, ICQ_Environment env)
+        public ICQ_Expression Optimize(ICQ_Expression value, CQ_Environment env)
         {
             ICQ_Expression expr = value as ICQ_Expression;
             if (expr == null) 
@@ -125,12 +125,12 @@ namespace CQuark
             return expr;
         }
 			
-        public IList<ICQ_Type> FileCompile(ICQ_Environment env,string filename,IList<Token> tlist, bool embDebugToken)
+        public IList<ICQ_Type> FileCompile(CQ_Environment env,string filename,IList<Token> tlist, bool embDebugToken)
         {
             return _FileCompiler(filename, tlist, embDebugToken, env, false);
         }
 
-        public IList<ICQ_Type> FilePreCompile(ICQ_Environment env, string filename, IList<Token> tlist)
+        public IList<ICQ_Type> FilePreCompile(CQ_Environment env, string filename, IList<Token> tlist)
         {
             return _FileCompiler(filename, tlist, false, env, true);
         }

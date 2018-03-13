@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
-        public ICQ_Expression Compiler_Expression_Define(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Define(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             if (tlist[pos].text == "bool")
@@ -21,7 +21,7 @@ namespace CQuark
             return define;
         }
 
-        public ICQ_Expression Compiler_Expression_DefineArray(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_DefineArray(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             {
@@ -31,7 +31,7 @@ namespace CQuark
             define.value_name = tlist[pos + 3].text;
             return define;
         }
-        public ICQ_Expression Compiler_Expression_Lambda(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Lambda(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int b1;
             int fs1 = pos;
@@ -84,7 +84,7 @@ namespace CQuark
             }
             return null;
         }
-        public ICQ_Expression Compiler_Expression_DefineAndSet(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_DefineAndSet(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int expbegin =pos+3;
             int bdep;
@@ -114,7 +114,7 @@ namespace CQuark
             LogError(tlist,"不正确的定义表达式:" , pos,posend);
             return null;
         }
-        public ICQ_Expression Compiler_Expression_DefineAndSetArray(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_DefineAndSetArray(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int expbegin = pos + 5;
             int bdep;
@@ -139,7 +139,7 @@ namespace CQuark
             LogError(tlist, "不正确的定义表达式:", pos, posend);
             return null;
         }
-        public ICQ_Expression Compiler_Expression_Set(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Set(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             int expbegin = pos + 2;
             int bdep;

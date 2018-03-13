@@ -73,11 +73,11 @@ namespace CQuark
 
     public interface ICQ_Expression_Compiler
     {
-        ICQ_Expression Compile(IList<Token> tlist, ICQ_Environment content);//语句
-        ICQ_Expression Compile_NoBlock(IList<Token> tlist, ICQ_Environment content);//表达式，一条语句
-        ICQ_Expression Optimize(ICQ_Expression value, ICQ_Environment content);
+        ICQ_Expression Compile(IList<Token> tlist, CQ_Environment content);//语句
+        ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment content);//表达式，一条语句
+        ICQ_Expression Optimize(ICQ_Expression value, CQ_Environment content);
 
-        IList<ICQ_Type> FileCompile(ICQ_Environment env, string filename, IList<Token> tlist, bool embDebugToken);
-        IList<ICQ_Type> FilePreCompile(ICQ_Environment env, string filename, IList<Token> tlist);
+        IList<ICQ_Type> FileCompile(CQ_Environment env, string filename, IList<Token> tlist, bool embDebugToken);
+        IList<ICQ_Type> FilePreCompile(CQ_Environment env, string filename, IList<Token> tlist);
     }
 }

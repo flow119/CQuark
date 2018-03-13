@@ -176,8 +176,8 @@ namespace CQuark
         //string GetParamSign(ICQ_Environment env);
         //Delegate CreateDelegate(ICQ_Environment env, SType calltype, SInstance callthis, string function);
 
-        Delegate CreateDelegate(ICQ_Environment env, DeleFunction lambda);
+        Delegate CreateDelegate(CQ_Environment env, DeleFunction lambda);
 
-        Delegate CreateDelegate(ICQ_Environment env, DeleLambda lambda);
+        Delegate CreateDelegate(CQ_Environment env, DeleLambda lambda);
     }
 }

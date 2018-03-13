@@ -97,7 +97,7 @@ namespace CQuark
             }
             return new NotSupportedException();
         }
-        public Delegate CreateDelegate(ICQ_Environment env, DeleFunction delefunc)
+        public Delegate CreateDelegate(CQ_Environment env, DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -146,7 +146,7 @@ namespace CQuark
         }
 
 
-        public Delegate CreateDelegate(ICQ_Environment env, DeleLambda lambda)
+        public Delegate CreateDelegate(CQ_Environment env, DeleLambda lambda)
         {
             CQ_Content content = lambda.content.Clone();
             var pnames = lambda.paramNames;

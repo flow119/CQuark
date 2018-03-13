@@ -7,7 +7,7 @@ namespace CQuark
 {
     //环境 增加本地代码的管理
     //环境 增加运行中的表达式查询
-    public class CQ_Environment : ICQ_Environment, ICQ_Environment_Compiler
+    public class CQ_Environment 
     {
 		Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
 		Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
@@ -17,7 +17,7 @@ namespace CQuark
 
 		//public ICQ_Debugger debugger;
 
-		ICQ_Expression_Compiler compiler = null;
+        CQ_Expression_Compiler compiler = null;
 
         public CQ_Environment()
         {

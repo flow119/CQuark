@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
     {
 
-        public ICQ_Expression Compiler_Expression_Math(IList<Token> tlist, ICQ_Environment content, int pos, int posend)
+        public ICQ_Expression Compiler_Expression_Math(IList<Token> tlist, CQ_Environment content, int pos, int posend)
         {
             IList<int> sps = SplitExpressionWithOp(tlist, pos, posend);
             int oppos = GetLowestMathOp(tlist, sps);
