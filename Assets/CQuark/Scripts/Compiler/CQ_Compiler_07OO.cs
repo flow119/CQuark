@@ -7,7 +7,7 @@ namespace CQuark
     {
 
     }
-    public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
+    public partial class CQ_Expression_Compiler 
     {
 
         IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, CQ_Environment env, bool onlyGotType)

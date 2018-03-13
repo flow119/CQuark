@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark
 {
-    public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
-    {
+    public partial class CQ_Expression_Compiler {
 
         public ICQ_Expression Compiler_Expression_Loop_For(IList<Token> tlist, CQ_Environment env, int pos, int posend)
         {

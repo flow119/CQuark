@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark
 {
-    public partial class CQ_Expression_Compiler : ICQ_Expression_Compiler
+    public partial class CQ_Expression_Compiler
     {
         //计算最长的类型
         int GetLongType(IList<Token> tokens, int pos)
