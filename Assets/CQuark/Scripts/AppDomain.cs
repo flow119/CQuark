@@ -7,7 +7,7 @@ using CQuark;
 namespace CQuark{
 	//参考了ILRuntime，把以前Environment和Content整合到了一起。
 	//整个项目只需要一个AppDomain,所以改成了全部静态
-	public class AppDomain {
+	public static class AppDomain {
 
 		static Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
 		static Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
