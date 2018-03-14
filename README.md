@@ -5,7 +5,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 * 西瓜的前身是疯光无线前辈写的C#LightEvil和自己曾经写的一个脚本语言。
 
-项目最新地址：    	https://github.com/flow119/CQuark
+项目最新地址：        https://github.com/flow119/CQuark
 
 疯光无线前辈的项目地址：https://github.com/lightszero/cslightcore
 
@@ -24,6 +24,10 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 
 ## 版本更新记录
+
+2018-03-14 v0.7.8
+
+    environment改名叫AppDomain，不再作为content的成员，只包含静态方法
 
 2018-03-13 v0.7.7
     
@@ -72,12 +76,31 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 
 ## TODO
+
 下个版本
-* 优化编译速度，减少gc alloc以及重复的GetCodeKey
-* 执行效率测试，主要看反射在iOS上的速度
+
+* 重写MonoBehaviour//参考ILRuntime
+* 0 西瓜脚本继承自MonoBehaviour（而不是IScriptBehaviour）
+* 1 使用一个Adoptor接受
+* 2 劫持GetComponent和AddComponent，重写
+* 3 gameObject,transform不要再声明一次
+
+* 不再支持非class型的代码（所有代码全部先编译）
+
 
 下下个版本
+
+* 参考ILRuntime和L#，看看西瓜还有哪些不足，补足缺陷
+
+* 把每帧都容易获取的内容存下来（比如Time.deltaTime）
+
+* 优化编译速度，减少gc alloc以及重复的GetCodeKey
+
+下下下个版本
+
 * 类似XLua和Bridge，把项目里的cs文件转换成可以动态替换为西瓜的脚本
+
+* 执行效率测试，主要看反射在iOS上的速度
 
 
 ## 联系我
