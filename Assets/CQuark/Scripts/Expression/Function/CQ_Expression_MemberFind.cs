@@ -60,7 +60,7 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
             }
-            ICQ_TypeFunction typefunction = content.environment.GetType(parent.type).function;
+            ICQ_TypeFunction typefunction = CQuark.AppDomain.GetType(parent.type).function;
             if(parent.type is object)
             {
                 SInstance s =parent.value as SInstance;
@@ -69,7 +69,7 @@ namespace CQuark
                     typefunction = s.type;
                 }
             }
-            //var type = content.environment.GetType(parent.type);
+            //var type = CQuark.AppDomain.GetType(parent.type);
             var value=typefunction.MemberValueGet(content, parent.value, membername);
             content.OutStack(this);
             return value;

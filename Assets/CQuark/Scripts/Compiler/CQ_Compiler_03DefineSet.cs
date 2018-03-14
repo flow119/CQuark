@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler 
     {
-        public static ICQ_Expression Compiler_Expression_Define(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Define(IList<Token> tlist, int pos, int posend)
         {
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             if (tlist[pos].text == "bool")
@@ -14,24 +14,24 @@ namespace CQuark
             }
             else
             {
-                ICQ_Type type = env.GetTypeByKeyword(tlist[pos].text);
+				ICQ_Type type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
                 define.value_type = type.type;
             }
             define.value_name = tlist[pos+1].text;
             return define;
         }
 
-        public static ICQ_Expression Compiler_Expression_DefineArray(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_DefineArray(IList<Token> tlist, int pos, int posend)
         {
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             {
-                ICQ_Type type = env.GetTypeByKeyword(tlist[pos].text + "[]");
+				ICQ_Type type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text + "[]");
                 define.value_type = type.type;
             }
             define.value_name = tlist[pos + 3].text;
             return define;
         }
-        public static ICQ_Expression Compiler_Expression_Lambda(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Lambda(IList<Token> tlist, int pos, int posend)
         {
             int b1;
             int fs1 = pos;
@@ -52,7 +52,7 @@ namespace CQuark
 
 
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, env, testbegin, fe2, out subvalue);
+                bool succ = Compiler_Expression(tlist, testbegin, fe2, out subvalue);
                 if (!succ) break;
                 if (subvalue != null)
                 {
@@ -74,7 +74,7 @@ namespace CQuark
             int b2;
             int fs2 = fe1 + 2;
             int fecode = FindCodeAny(tlist, ref fs2, out b2);
-            bool succ2 = Compiler_Expression_Block(tlist, env, fs2, fecode, out subvalueblock);
+            bool succ2 = Compiler_Expression_Block(tlist, fs2, fecode, out subvalueblock);
             if (succ2)
             {
                 //value.tokenEnd = fecode;
@@ -84,7 +84,7 @@ namespace CQuark
             }
             return null;
         }
-        public static ICQ_Expression Compiler_Expression_DefineAndSet(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_DefineAndSet(IList<Token> tlist, int pos, int posend)
         {
             int expbegin =pos+3;
             int bdep;
@@ -94,7 +94,7 @@ namespace CQuark
                 expend = posend;
             }
             ICQ_Expression v;
-            bool succ = Compiler_Expression(tlist, env, expbegin, expend, out v);
+            bool succ = Compiler_Expression(tlist, expbegin, expend, out v);
             if(succ&&v!=null)
             {
                 CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -104,7 +104,7 @@ namespace CQuark
                 }
                 else
                 {
-                    ICQ_Type type = env.GetTypeByKeyword(tlist[pos].text);
+					ICQ_Type type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
                     define.value_type = type.type;
                 }
                 define.value_name = tlist[pos + 1].text;
@@ -114,7 +114,7 @@ namespace CQuark
             LogError(tlist,"不正确的定义表达式:" , pos,posend);
             return null;
         }
-        public static ICQ_Expression Compiler_Expression_DefineAndSetArray(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_DefineAndSetArray(IList<Token> tlist, int pos, int posend)
         {
             int expbegin = pos + 5;
             int bdep;
@@ -124,12 +124,12 @@ namespace CQuark
                 expend = posend;
             }
             ICQ_Expression v;
-            bool succ = Compiler_Expression(tlist, env, expbegin, expend, out v);
+            bool succ = Compiler_Expression(tlist, expbegin, expend, out v);
             if (succ && v != null)
             {
                 CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
                 {
-                    ICQ_Type type = env.GetTypeByKeyword(tlist[pos].text+"[]");
+					ICQ_Type type = AppDomain.GetTypeByKeyword(tlist[pos].text+"[]");
                     define.value_type = type.type;
                 }
                 define.value_name = tlist[pos + 3].text;
@@ -139,7 +139,7 @@ namespace CQuark
             LogError(tlist, "不正确的定义表达式:", pos, posend);
             return null;
         }
-        public static ICQ_Expression Compiler_Expression_Set(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Set(IList<Token> tlist, int pos, int posend)
         {
             int expbegin = pos + 2;
             int bdep;
@@ -150,7 +150,7 @@ namespace CQuark
                 expend = posend;
             }
             ICQ_Expression v;
-            bool succ = Compiler_Expression(tlist,env, expbegin, expend, out v);
+            bool succ = Compiler_Expression(tlist, expbegin, expend, out v);
             if (succ && v != null)
             {
                 CQ_Expression_SetValue define = new CQ_Expression_SetValue(pos, expend, tlist[pos].line, tlist[expend].line);

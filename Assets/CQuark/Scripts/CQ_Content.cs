@@ -6,14 +6,12 @@ namespace CQuark
 {
     public class CQ_Content
     {
-        public CQ_Content(CQ_Environment environment)
+        public CQ_Content()
         {
-            this.environment = environment;
             this.useDebug = false;
         }
-        public CQ_Content(CQ_Environment environment, bool useDebug)
+        public CQ_Content(bool useDebug)
         {
-            this.environment = environment;
             this.useDebug = useDebug;
             if (useDebug)
             {
@@ -24,7 +22,7 @@ namespace CQuark
 
         public CQ_Content Clone()
         {
-            CQ_Content con = new CQ_Content(environment,useDebug);
+            CQ_Content con = new CQ_Content(useDebug);
             foreach(var c in this.values)
             {
                 con.values.Add(c.Key, c.Value);
@@ -33,11 +31,6 @@ namespace CQuark
             con.CallType = this.CallType;
 
             return con;
-        }
-        public CQ_Environment environment
-        {
-            get;
-            private set;
         }
         
         public string function

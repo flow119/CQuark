@@ -63,7 +63,7 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
             }
-            var typefunction = content.environment.GetType(parent.type).function;
+            var typefunction = CQuark.AppDomain.GetType(parent.type).function;
             if(parent.type is object)
             {
                 SInstance s = parent.value as SInstance;

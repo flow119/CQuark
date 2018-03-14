@@ -26,8 +26,8 @@ namespace CQuark
                 Delegate calldele = null;
 
                 //!--exist bug.
-                /*if (right.value is DeleFunction) calldele = CreateDelegate(env.environment, right.value as DeleFunction);
-                else if (right.value is DeleLambda) calldele = CreateDelegate(env.environment, right.value as DeleLambda);
+                /*if (right.value is DeleFunction) calldele = CreateDelegate(right.value as DeleFunction);
+                else if (right.value is DeleLambda) calldele = CreateDelegate(right.value as DeleLambda);
                 else if (right.value is Delegate) calldele = right.value as Delegate;*/
 
                 object rightValue = right.value;
@@ -35,22 +35,22 @@ namespace CQuark
                 {
                     if (code == '+')
                     {
-                        calldele = CreateDelegate(env.environment, rightValue as DeleFunction);
+                        calldele = CreateDelegate(rightValue as DeleFunction);
                     }
                     else if (code == '-')
                     {
-                        calldele = CreateDelegate(env.environment, rightValue as DeleFunction);
+                        calldele = CreateDelegate(rightValue as DeleFunction);
                     }
                 }
                 else if (rightValue is DeleLambda)
                 {
                     if (code == '+')
                     {
-                        calldele = CreateDelegate(env.environment, rightValue as DeleLambda);
+                        calldele = CreateDelegate(rightValue as DeleLambda);
                     }
                     else if (code == '-')
                     {
-                        calldele = CreateDelegate(env.environment, rightValue as DeleLambda);
+                        calldele = CreateDelegate(rightValue as DeleLambda);
                     }
                 }
                 else if (rightValue is Delegate)
@@ -81,9 +81,9 @@ namespace CQuark
                 Delegate info = left as Delegate;
                 Delegate calldele = null;
                 if (right.value is DeleFunction)
-                    calldele = CreateDelegate(env.environment, right.value as DeleFunction);
+                    calldele = CreateDelegate(right.value as DeleFunction);
                 else if (right.value is DeleLambda)
-                    calldele = CreateDelegate(env.environment, right.value as DeleLambda);
+                    calldele = CreateDelegate(right.value as DeleLambda);
                 else if (right.value is Delegate)
                     calldele = right.value as Delegate;
                 if (code == '+')
@@ -97,7 +97,7 @@ namespace CQuark
             }
             return new NotSupportedException();
         }
-        public Delegate CreateDelegate(CQ_Environment env, DeleFunction delefunc)
+        public Delegate CreateDelegate(DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -108,7 +108,7 @@ namespace CQuark
 
                 if (func.expr_runtime != null)
                 {
-                    CQ_Content content = new CQ_Content(env, true);
+                    CQ_Content content = new CQ_Content(true);
                     try
                     {
                         content.DepthAdd();
@@ -146,7 +146,7 @@ namespace CQuark
         }
 
 
-        public Delegate CreateDelegate(CQ_Environment env, DeleLambda lambda)
+        public Delegate CreateDelegate(DeleLambda lambda)
         {
             CQ_Content content = lambda.content.Clone();
             var pnames = lambda.paramNames;

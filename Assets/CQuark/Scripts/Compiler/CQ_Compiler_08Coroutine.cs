@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler
     {
-        public static ICQ_Expression Compiler_Expression_Coroutine(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Coroutine(IList<Token> tlist, int pos, int posend)
         {
 			CQ_Expression_Coroutine func = new CQ_Expression_Coroutine(pos, posend, tlist[pos].line, tlist[posend].line);
 
@@ -19,7 +19,7 @@ namespace CQuark
                 do
                 {
                     ICQ_Expression param;
-                    bool succ = Compiler_Expression(tlist, env, begin, end, out param);
+                    bool succ = Compiler_Expression(tlist, begin, end, out param);
                     if (succ && param != null)
                     {
                         func.listParam.Add(param);

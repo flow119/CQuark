@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler 
     {
 
-        static IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, CQ_Environment env, bool onlyGotType)
+        static IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, bool onlyGotType)
         {
             List<ICQ_Type> typelist = new List<ICQ_Type>();
 
@@ -27,7 +27,7 @@ namespace CQuark
                     int dep;
                     int pos = i;
                     int iend = FindCodeAny(tokens, ref pos, out dep);
-                    List<string> list = Compiler_Using(tokens, env, pos, iend);
+                    List<string> list = Compiler_Using(tokens, pos, iend);
                     string useText = "";
                     for (int j = 0; j < list.Count; j++)
                     {
@@ -80,7 +80,7 @@ namespace CQuark
                             ibegin++;
                         }
                     }
-                    int iend = FindBlock(env, tokens, ibegin);
+                    int iend = FindBlock(tokens, ibegin);
                     if (iend == -1)
                     {
                         DebugUtil.LogError("查找文件尾失败。");
@@ -105,7 +105,7 @@ namespace CQuark
                     }
                     else
                     {
-                        ICQ_Type type = Compiler_Class(env, name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, embDeubgToken, onlyGotType, usingList);
+                        ICQ_Type type = Compiler_Class(name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, embDeubgToken, onlyGotType, usingList);
                         if (type != null)
                         {
                             typelist.Add(type);
@@ -118,10 +118,10 @@ namespace CQuark
 
             return typelist;
         }
-        static ICQ_Type Compiler_Class(CQ_Environment env, string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
+        static ICQ_Type Compiler_Class(string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
         {
 
-            CQ_Type_Class stype = env.GetTypeByKeywordQuiet(classname) as CQ_Type_Class;
+			CQ_Type_Class stype = CQuark.AppDomain.GetTypeByKeywordQuiet(classname) as CQ_Type_Class;
 
             if (stype == null)
                 stype = new CQ_Type_Class(classname, bInterface, filename);
@@ -131,7 +131,7 @@ namespace CQuark
                 List<ICQ_Type> basetypess = new List<ICQ_Type>();
                 foreach (string t in basetype)
                 {
-                    ICQ_Type type = env.GetTypeByKeyword(t);
+					ICQ_Type type = CQuark.AppDomain.GetTypeByKeyword(t);
                     basetypess.Add(type);
                 }
                 stype.SetBaseType(basetypess);
@@ -235,7 +235,7 @@ namespace CQuark
                 else if (tokens[i].type == TokenType.TYPE || (tokens[i].type == TokenType.IDENTIFIER && tokens[i].text == classname))//发现类型
                 {
 
-                    ICQ_Type idtype = env.GetTypeByKeyword("null");
+					ICQ_Type idtype = CQuark.AppDomain.GetTypeByKeyword("null");
                     bool bctor = false;
                     if (tokens[i].type == TokenType.TYPE)//类型
                     {
@@ -247,7 +247,7 @@ namespace CQuark
                         }
                         else if (tokens[i + 1].text == "[" && tokens[i + 2].text == "]")
                         {
-                            idtype = env.GetTypeByKeyword(tokens[i].text + "[]");
+							idtype = CQuark.AppDomain.GetTypeByKeyword(tokens[i].text + "[]");
                             i += 2;
                         }
 						else if (tokens[i].text == "void")
@@ -256,7 +256,7 @@ namespace CQuark
                         }
                         else
                         {
-                            idtype = env.GetTypeByKeyword(tokens[i].text);
+							idtype = CQuark.AppDomain.GetTypeByKeyword(tokens[i].text);
                         }
                     }
 
@@ -271,7 +271,7 @@ namespace CQuark
                             func.bPublic = bPublic;
 
                             int funcparambegin = i + 2;
-                            int funcparamend = FindBlock(env, tokens, funcparambegin);
+                            int funcparamend = FindBlock(tokens, funcparambegin);
                             if (funcparamend - funcparambegin > 1)
                             {
 
@@ -286,7 +286,7 @@ namespace CQuark
                                         for (int k = start; k <= j - 2; k++)
                                             ptype += tokens[k].text;
                                         var pid = tokens[j - 1].text;
-                                        var type = env.GetTypeByKeyword(ptype);
+										var type = CQuark.AppDomain.GetTypeByKeyword(ptype);
                                         // _params[pid] = type;
                                         //func._params.Add(pid, type);
                                         if (type == null)
@@ -303,8 +303,8 @@ namespace CQuark
                             int funcbegin = funcparamend + 1;
                             if (tokens[funcbegin].text == "{")
                             {
-                                int funcend = FindBlock(env, tokens, funcbegin);
-                                Compiler_Expression_Block(tokens, env, funcbegin, funcend, out func.expr_runtime);
+                                int funcend = FindBlock(tokens, funcbegin);
+                                Compiler_Expression_Block(tokens, funcbegin, funcend, out func.expr_runtime);
                                 if (func.expr_runtime == null)
                                 {
                                     DebugUtil.LogWarning("警告，该函数编译为null，请检查");
@@ -366,7 +366,7 @@ namespace CQuark
                                 int jdep;
                                 int jend = FindCodeAny(tokens, ref jbegin, out jdep);
 
-                                if (!Compiler_Expression(tokens, env, jbegin, jend, out member.expr_defvalue))
+                                if (!Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue))
                                 {
                                     DebugUtil.LogError("Get/Set定义错误");
                                 }
@@ -406,7 +406,7 @@ namespace CQuark
                                 {
                                     jend = posend;
                                 }
-                                if (!Compiler_Expression(tokens, env, jbegin, jend, out member.expr_defvalue))
+                                if (!Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue))
                                 {
                                     DebugUtil.LogError("成员定义错误");
                                 }
@@ -430,7 +430,7 @@ namespace CQuark
             return stype;
         }
 
-        static List<string> Compiler_Using(IList<Token> tokens, CQ_Environment env, int pos, int posend)
+        static List<string> Compiler_Using(IList<Token> tokens, int pos, int posend)
         {
             List<string> _namespace = new List<string>();
 
@@ -445,7 +445,7 @@ namespace CQuark
         }
         //Dictionary<string, functioninfo> funcs = new Dictionary<string, functioninfo>();
 
-        static int FindBlock(CQ_Environment env, IList<CQuark.Token> tokens, int start)
+        static int FindBlock(IList<CQuark.Token> tokens, int start)
         {
             if (tokens[start].type != CQuark.TokenType.PUNCTUATION)
             {

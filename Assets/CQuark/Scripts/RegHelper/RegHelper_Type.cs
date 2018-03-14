@@ -82,7 +82,7 @@ namespace CQuark
                     Type[] gtypes = new Type[sf.Length];
                     for (int i = 0; i < sf.Length; i++)
                     {
-                        gtypes[i] = content.environment.GetTypeByKeyword(sf[i]).type;
+                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).type;
                     }
                     targetop = FindTMethod(type, tfunc, _params, gtypes);
 
@@ -94,7 +94,7 @@ namespace CQuark
                     {
                         targetop = ptype.GetMethod(function, types.ToArray());
                         if (targetop != null) break;
-                        var t = content.environment.GetType(ptype);
+                        var t = CQuark.AppDomain.GetType(ptype);
                         try
                         {
                             return t.function.StaticCall(content, function, _params, cache);
@@ -162,7 +162,7 @@ namespace CQuark
                     {
                         if (pp[i].ParameterType != (Type)_params[i].type)
                         {
-                            _oparams[i] = content.environment.GetType(_params[i].type).ConvertTo(content, _oparams[i], pp[i].ParameterType);
+                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(content, _oparams[i], pp[i].ParameterType);
                         }
                     }
                 }
@@ -180,7 +180,7 @@ namespace CQuark
             {
                 if (type.BaseType != null)
                 {
-                    return content.environment.GetType(type.BaseType).function.StaticValueGet(content, valuename);
+                    return CQuark.AppDomain.GetType(type.BaseType).function.StaticValueGet(content, valuename);
                 }
                 else
                 {
@@ -248,7 +248,7 @@ namespace CQuark
             {
                 if (type.BaseType != null)
                 {
-                    content.environment.GetType(type.BaseType).function.StaticValueSet(content, valuename, value);
+                    CQuark.AppDomain.GetType(type.BaseType).function.StaticValueSet(content, valuename, value);
                     return true;
                 }
                 else
@@ -366,7 +366,7 @@ namespace CQuark
                     Type[] gtypes = new Type[sf.Length];
                     for (int i = 0; i < sf.Length; i++)
                     {
-                        gtypes[i] = content.environment.GetTypeByKeyword(sf[i]).type;
+                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).type;
                     }
                     targetop = FindTMethod(type, tfunc, _params, gtypes);
                     var ps = targetop.GetParameters();
@@ -375,7 +375,7 @@ namespace CQuark
                         if(ps[i].ParameterType!=(Type)_params[i].type)
                         {
 
-                            _oparams[i] = content.environment.GetType(_params[i].type).ConvertTo(content, _oparams[i], ps[i].ParameterType);
+                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(content, _oparams[i], ps[i].ParameterType);
                         }
                     }
                 }
@@ -486,7 +486,7 @@ namespace CQuark
                             {
                                 continue;
                             }
-                            myparams[i] = content.environment.GetType(types[i]).ConvertTo(content, _params[i], pp[i].ParameterType);
+                            myparams[i] = CQuark.AppDomain.GetType(types[i]).ConvertTo(content, _params[i], pp[i].ParameterType);
                             if (myparams[i] == null)
                             {
                                 match = false;
@@ -564,7 +564,7 @@ namespace CQuark
                     {
                         if (pp[i].ParameterType != (Type)_params[i].type)
                         {
-                            _oparams[i] = content.environment.GetType(_params[i].type).ConvertTo(content, _oparams[i], pp[i].ParameterType);
+                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(content, _oparams[i], pp[i].ParameterType);
                         }
                     }
                 }
@@ -740,7 +740,7 @@ namespace CQuark
                 if (value != null && value.GetType() != c.finfo.FieldType)
                 {
 
-                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, c.finfo.FieldType);
+                    value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, c.finfo.FieldType);
                 }
                 c.finfo.SetValue(object_this, value);
             }
@@ -750,7 +750,7 @@ namespace CQuark
                 if (value != null && value.GetType() != ptype)
                 {
 
-                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, ptype);
+                    value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, ptype);
                 }
                 c.minfo.Invoke(object_this, new object[] { value });
             }
@@ -762,7 +762,7 @@ namespace CQuark
             //    if (value != null && value.GetType() != targetf.FieldType)
             //    {
 
-            //        value = content.environment.GetType(value.GetType()).ConvertTo(content, value, targetf.FieldType);
+            //        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, targetf.FieldType);
             //    }
             //    targetf.SetValue(object_this, value);
             //    return;
@@ -776,7 +776,7 @@ namespace CQuark
             //        if (value != null && value.GetType() != ptype)
             //        {
 
-            //            value = content.environment.GetType(value.GetType()).ConvertTo(content, value, ptype);
+            //            value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, ptype);
             //        }
             //        methodf.Invoke(object_this, new object[] { value });
 
@@ -844,7 +844,7 @@ namespace CQuark
                 CQ_Content.Value v = new CQ_Content.Value();
                 v.type = indexGetCacheType;
                 if (key != null && key.GetType() != indexGetCachetypeindex)
-                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexGetCachetypeindex);
+                    key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexGetCachetypeindex);
                 v.value = indexGetCache.Invoke(object_this, new object[] { key });
                 return v;
             }
@@ -876,17 +876,17 @@ namespace CQuark
             {
 
                 if (key != null && key.GetType() != indexSetCachetype1)
-                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype1);
+                    key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype1);
                 if (value != null && value.GetType() != indexSetCachetype2)
-                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype2);
+                    value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype2);
                 indexSetCache.Invoke(object_this, new object[] { key, value });
             }
             else
             {
                 if (value != null && value.GetType() != indexSetCachetype1)
-                    value = content.environment.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype1);
+                    value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, (CQuark.CQType)indexSetCachetype1);
                 if (key != null && key.GetType() != indexSetCachetype2)
-                    key = content.environment.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype2);
+                    key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(content, key, (CQuark.CQType)indexSetCachetype2);
 
                 indexSetCache.Invoke(object_this, new object[] { value, key });
             }

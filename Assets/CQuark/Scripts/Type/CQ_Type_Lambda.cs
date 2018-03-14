@@ -32,8 +32,8 @@ namespace CQuark
 
         public object ConvertTo(CQ_Content env, object src, CQType targetType)
         {
-            ICQ_Type_Dele dele =  env.environment.GetType(targetType) as ICQ_Type_Dele;
-            return dele.CreateDelegate(env.environment, src as DeleLambda);
+			ICQ_Type_Dele dele =  CQuark.AppDomain.GetType(targetType) as ICQ_Type_Dele;
+            return dele.CreateDelegate(src as DeleLambda);
             //throw new NotImplementedException();
         }
 

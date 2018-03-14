@@ -61,7 +61,7 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
             }
-            var type = content.environment.GetType(parent.type);
+            var type = CQuark.AppDomain.GetType(parent.type);
             //string membername=null;
 
 
@@ -73,7 +73,7 @@ namespace CQuark
                 vright = listParam[1].ComputeValue(content);
             }
             CQ_Content.Value vout =new CQ_Content.Value();
-            var mtype = content.environment.GetType(getvalue.type);
+            var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(content, mathop, getvalue.value, vright, out vout.type);
 
             type.function.MemberValueSet(content, parent.value, membername, vout.value);

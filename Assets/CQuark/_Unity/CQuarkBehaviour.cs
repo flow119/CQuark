@@ -139,24 +139,27 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 		}
 	}
 
+	static bool appDomainInit = false;
 	public void Initialize(){
-		m_script.Reset ();
-		m_script.RegTypes ();
-		m_script.env.RegFunction ((eDelay)Wait);
+		if(!appDomainInit){
+			appDomainInit = true;
+			AppDomain.Reset();
+		}
+		CQuark.AppDomain.RegFunction ((eDelay)Wait);
 
 		if (m_codeType != ECodeType.FunctionsText) {
 			switch(m_codeType){
 			case ECodeType.FileName:
 				if(!s_projectBuilded){
-					CQuarkClass.Instance.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
+					AppDomain.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
 					s_projectBuilded = true;
 				}
 				break;
 			case ECodeType.TextAsset:
-				CQuarkClass.Instance.BuildFile(m_className, m_ta.text);
+				AppDomain.BuildFile(m_className, m_ta.text);
 				break;
 			case ECodeType.Text:
-				CQuarkClass.Instance.BuildFile(m_className, m_codeText);
+				AppDomain.BuildFile(m_className, m_codeText);
 				break;
 			}
 			inst = new ScriptInstanceHelper(m_className);
@@ -170,7 +173,7 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 			BuildBlock ("Update", m_Update);
 			BuildBlock ("FixedUpdate", m_FixedUpdate);
 			BuildBlock ("OnDestroy", m_OnDestroy);
-			content = m_script.env.CreateContent ();//创建上下文，并设置变量给脚本访问
+			content = CQuark.AppDomain.CreateContent ();//创建上下文，并设置变量给脚本访问
 			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 			content.DefineAndSet ("transform", typeof(Transform), this.transform);
             
@@ -184,12 +187,12 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 		CQuark.CQ_Content content;//操作上下文
 		
 		public ScriptInstanceHelper(string scriptTypeName){
-			type = CQuarkClass.Instance.env.GetTypeByKeywordQuiet(scriptTypeName);
+			type = CQuark.AppDomain.GetTypeByKeywordQuiet(scriptTypeName);
 			if(type == null){
 				Debug.LogError("Type:" + scriptTypeName + "不存在与脚本项目中");
 				return;
 			}
-			content = CQuarkClass.Instance.env.CreateContent();
+			content = CQuark.AppDomain.CreateContent();
 			inst = type.function.New(content, null).value as CQuark.SInstance;
 			content.CallType = inst.type;
 			content.CallThis = inst;
@@ -235,8 +238,8 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 		if (string.IsNullOrEmpty (code))
 			return;
 		try{
-			var token = m_script.env.ParserToken(code);
-			var expr = m_script.env.Expr_CompileToken(token);
+			var token = CQuark.AppDomain.ParserToken(code);
+			var expr = CQuark.AppDomain.Expr_CompileToken(token);
 			dictExpr[key] = expr;
 		}catch(System.Exception e){
 			Debug.LogError("BuildScript:" + key + " err\n" + e.ToString());

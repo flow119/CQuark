@@ -65,10 +65,10 @@ namespace CQuark
             object setv=value.value;
             //if(value.type!=parent.type)
             //{
-            //    var vtype = content.environment.GetType(value.type);
-            //    setv = vtype.ConvertTo(content.environment, setv, parent.type);
+            //    var vtype = CQuark.AppDomain.GetType(value.type);
+            //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
             //}
-            var typefunction = content.environment.GetType(parent.type).function;
+            var typefunction = CQuark.AppDomain.GetType(parent.type).function;
             if(parent.type is object)
             {
                 SInstance s = parent.value as SInstance;

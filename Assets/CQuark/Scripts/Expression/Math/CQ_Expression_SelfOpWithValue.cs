@@ -60,7 +60,7 @@ namespace CQuark
 
             var left = listParam[0].ComputeValue(content);
             var right = listParam[1].ComputeValue(content);
-            ICQ_Type type = content.environment.GetType(left.type);
+            ICQ_Type type = CQuark.AppDomain.GetType(left.type);
             //if (mathop == "+=")
 
             {
@@ -90,7 +90,7 @@ namespace CQuark
                         {
                             throw new Exception("调用空对象的方法:" + f.listParam[0].ToString() + ":" + ToString());
                         }
-                        var ptype = content.environment.GetType(parent.type);
+                        var ptype = CQuark.AppDomain.GetType(parent.type);
                         ptype.function.MemberValueSet(content, parent.value, f.membername, value);
                     }
                     if (listParam[0] is CQ_Expression_StaticFind)

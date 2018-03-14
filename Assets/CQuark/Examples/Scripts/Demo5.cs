@@ -7,9 +7,9 @@ public class Demo5 : MonoBehaviour,ICoroutine {
 
 	CQuarkClass script = new CQuarkClass();
 	void Start(){
-		script.RegTypes ();
-		script.env.RegFunction ((eDelay)Wait);
-		script.env.RegFunction ((eDelay)YieldWaitForSecond);
+		CQuark.AppDomain.Reset();
+		CQuark.AppDomain.RegFunction ((eDelay)Wait);
+		CQuark.AppDomain.RegFunction ((eDelay)YieldWaitForSecond);
 		ExecuteFile ();
 	}
 

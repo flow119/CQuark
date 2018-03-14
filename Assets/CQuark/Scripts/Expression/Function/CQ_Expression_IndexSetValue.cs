@@ -66,10 +66,10 @@ namespace CQuark
             //object setv=value.value;
             //if(value.type!=parent.type)
             //{
-            //    var vtype = content.environment.GetType(value.type);
-            //    setv = vtype.ConvertTo(content.environment, setv, parent.type);
+            //    var vtype = CQuark.AppDomain.GetType(value.type);
+            //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
             //}
-            var type = content.environment.GetType(parent.type);
+            var type = CQuark.AppDomain.GetType(parent.type);
             type.function.IndexSet(content, parent.value, key.value, value.value);
             //做数学计算
             //从上下文取值

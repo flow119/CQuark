@@ -115,7 +115,7 @@ namespace CQuark
 //	                }
 //	                else
 //	                {
-//	                    v = content.environment.GetFunction(funcname).Call(content, list);
+//	                    v = CQuark.AppDomain.GetFunction(funcname).Call(content, list);
 //	                }
 //	            }
 //	            //操作变量之
@@ -140,7 +140,7 @@ namespace CQuark
 				}
 			}
 
-			ICQ_Function func = content.environment.GetFunction (funcname);
+			ICQ_Function func = CQuark.AppDomain.GetFunction (funcname);
 			yield return coroutine.StartNewCoroutine (func.Call(content, list).value as IEnumerator);
 			content.OutStack(this);
 //			if(funcname == "YieldWaitForSecond"){
@@ -208,7 +208,7 @@ namespace CQuark
 //					}
 //					else
 //					{
-//						v = content.environment.GetFunction(funcname).Call(content, list);
+//						v = CQuark.AppDomain.GetFunction(funcname).Call(content, list);
 //					}
 //				}
 //				//操作变量之

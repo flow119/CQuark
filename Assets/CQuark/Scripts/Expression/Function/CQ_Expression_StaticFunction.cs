@@ -58,7 +58,7 @@ namespace CQuark
         {
             content.InStack(this);
             //var parent = listParam[0].ComputeValue(content);
-            //var type = content.environment.GetType(parent.type);
+            //var type = CQuark.AppDomain.GetType(parent.type);
             List<CQ_Content.Value> _params = new List<CQ_Content.Value>();
             for (int i = 0; i < listParam.Count; i++)
             {

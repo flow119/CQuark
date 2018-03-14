@@ -69,7 +69,7 @@ namespace CQuark
                     }
                     else
                     {
-                        object conv = content.environment.GetType(param[i].type).ConvertTo(content, param[i].value, paramtype[i]);
+                        object conv = CQuark.AppDomain.GetType(param[i].type).ConvertTo(content, param[i].value, paramtype[i]);
                         objs.Add(conv);
                     }
                 }

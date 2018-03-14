@@ -13,13 +13,23 @@ class ClassB: IScriptBehaviour
     }
 
 	Transform trans;
+
+	private int a;
+	
     public void Start()
     {
 	Log();
 	ClassC c = new ClassC();
 	c.Log();
 	ClassD.Log();
+	a = Random.Range(0,100);
     }
+
+	public void Update(){
+		if(Input.GetKeyDown(KeyCode.Space)){
+			Debug.Log(a);
+		}
+	}
 
 	public void Log(){
 		Debug.Log("BBB");

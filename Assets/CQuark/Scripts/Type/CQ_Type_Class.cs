@@ -72,8 +72,8 @@ namespace CQuark
         public CQ_Content.Value New(CQ_Content content, IList<CQ_Content.Value> _params)
         {
             if (contentMemberCalc == null)
-                contentMemberCalc = new CQ_Content(content.environment);
-            NewStatic(content.environment);
+                contentMemberCalc = new CQ_Content();
+            NewStatic();
             CQ_Value_ScriptValue sv = new CQ_Value_ScriptValue();
             sv.value_type = this;
             sv.value_value = new SInstance();
@@ -95,7 +95,7 @@ namespace CQuark
                         {
                             sv.value_value.member[i.Key] = new CQ_Content.Value();
                             sv.value_value.member[i.Key].type = i.Value.type.type;
-                            sv.value_value.member[i.Key].value = content.environment.GetType(value.type).ConvertTo(content, value.value, i.Value.type.type);
+                            sv.value_value.member[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(content, value.value, i.Value.type.type);
                         }
                         else
                         {
@@ -111,10 +111,10 @@ namespace CQuark
             }
             return CQ_Content.Value.FromICQ_Value(sv);
         }
-        void NewStatic(CQ_Environment env)
+        void NewStatic()
         {
             if (contentMemberCalc == null)
-                contentMemberCalc = new CQ_Content(env);
+                contentMemberCalc = new CQ_Content();
             if (this.staticMemberInstance == null)
             {
                 staticMemberInstance = new Dictionary<string, CQ_Content.Value>();
@@ -136,7 +136,7 @@ namespace CQuark
                             {
                                 staticMemberInstance[i.Key] = new CQ_Content.Value();
                                 staticMemberInstance[i.Key].type = i.Value.type.type;
-                                staticMemberInstance[i.Key].value = env.GetType(value.type).ConvertTo(contentMemberCalc, value.value, i.Value.type.type);
+								staticMemberInstance[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(contentMemberCalc, value.value, i.Value.type.type);
                             }
                             else
                             {
@@ -159,12 +159,12 @@ namespace CQuark
             {
                 cache.cachefail = true;
             }
-            NewStatic(contentParent.environment);
+            NewStatic();
             if (this.functions.ContainsKey(function))
             {
                 if (this.functions[function].bStatic == true)
                 {
-                    CQ_Content content = new CQ_Content(contentParent.environment, true);
+                    CQ_Content content = new CQ_Content(true);
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
@@ -222,7 +222,7 @@ namespace CQuark
 
         public CQ_Content.Value StaticValueGet(CQ_Content content, string valuename)
         {
-            NewStatic(content.environment);
+            NewStatic();
 
             if (this.staticMemberInstance.ContainsKey(valuename))
             {
@@ -236,7 +236,7 @@ namespace CQuark
 
         public bool StaticValueSet(CQ_Content content, string valuename, object value)
         {
-            NewStatic(content.environment);
+            NewStatic();
             if (this.staticMemberInstance.ContainsKey(valuename))
             {
                 if (value != null && value.GetType() != (Type)this.members[valuename].type.type)
@@ -245,7 +245,7 @@ namespace CQuark
                     {
                         if ((value as SInstance).type != (SType)this.members[valuename].type.type)
                         {
-                            value = content.environment.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
+                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
                         }
                     }
                     else if (value is DeleEvent)
@@ -254,7 +254,7 @@ namespace CQuark
                     }
                     else
                     {
-                        value = content.environment.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
+                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
                     }
                 }
                 this.staticMemberInstance[valuename].value = value;
@@ -276,7 +276,7 @@ namespace CQuark
             {
                 if (this.functions[func].bStatic == false)
                 {
-                    CQ_Content content = new CQ_Content(contentParent.environment, true);
+                    CQ_Content content = new CQ_Content(true);
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
@@ -343,7 +343,7 @@ namespace CQuark
 			{
 				if (this.functions[func].bStatic == false)
 				{
-					CQ_Content content = new CQ_Content(contentParent.environment, true);
+					CQ_Content content = new CQ_Content(true);
 					
 					contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 					content.CallType = this;
@@ -402,7 +402,7 @@ namespace CQuark
                     {
                         if ((value as SInstance).type != (SType)this.members[valuename].type.type)
                         {
-                            value = content.environment.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
+                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
                         }
                     }
                     else if (value is DeleEvent)
@@ -411,7 +411,7 @@ namespace CQuark
                     }
                     else
                     {
-                        value = content.environment.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
+                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
                     }
                 }
                 sin.member[valuename].value = value;
@@ -538,7 +538,7 @@ namespace CQuark
         public object ConvertTo(CQ_Content env, object src, CQType targetType)
         {
            
-            var type = env.environment.GetType(targetType);
+			var type = CQuark.AppDomain.GetType(targetType);
             if (this.type == type||(Type)targetType==typeof(object)) return src;
             if (this.types.Contains(type))
             {

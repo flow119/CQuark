@@ -5,7 +5,7 @@ namespace CQuark
 {
     public partial class CQ_Expression_Compiler {
 
-        public static ICQ_Expression Compiler_Expression_Loop_For(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_For(IList<Token> tlist, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -25,7 +25,7 @@ namespace CQuark
 
                 ICQ_Expression subvalue;
 //                bool succ = Compiler_Expression(tlist, content, testbegin, fe2, out subvalue);
-				Compiler_Expression(tlist, env, testbegin, fe2, out subvalue);
+				Compiler_Expression(tlist, testbegin, fe2, out subvalue);
                 //if (!succ) return null;
 //                if (subvalue != null)
 //                {
@@ -49,7 +49,7 @@ namespace CQuark
             int b2;
             int fs2 = fe1 + 1;
             int fecode = FindCodeAny(tlist, ref fs2, out b2);
-            bool succ2 = Compiler_Expression_Block(tlist, env, fs2, fecode, out subvalueblock);
+            bool succ2 = Compiler_Expression_Block(tlist, fs2, fecode, out subvalueblock);
             if (succ2)
             {
                 value.tokenEnd = fecode;
@@ -60,7 +60,7 @@ namespace CQuark
             return null;
         }
 
-        public static ICQ_Expression Compiler_Expression_Loop_SwitchCase(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_SwitchCase(IList<Token> tlist, int pos, int posend)
 		{
 //			UnityEngine.Debug.Log("CompilerLoop : " + GetCodeKeyString(tlist, pos, posend));
 			int b1;
@@ -71,7 +71,7 @@ namespace CQuark
 //			UnityEngine.Debug.Log("switch : " + GetCodeKeyString(tlist,pos, fe1));
 			//switch(xxx)
 			ICQ_Expression subvalueblock;
-            bool succ = Compiler_Expression_Block(tlist, env, fs1, fe1, out subvalueblock);
+            bool succ = Compiler_Expression_Block(tlist, fs1, fe1, out subvalueblock);
 			if(!succ)
 				return null;
 
@@ -92,7 +92,7 @@ namespace CQuark
 						//case xxx:
 						caseBegin ++;
 //						UnityEngine.Debug.Log(GetCodeKeyString(tlist,caseBegin, poscolon - 1));
-                        bool succ2 = Compiler_Expression_Block(tlist, env, caseBegin, poscolon - 1, out subvalueblock);
+                        bool succ2 = Compiler_Expression_Block(tlist, caseBegin, poscolon - 1, out subvalueblock);
 						if(succ2){
 							value.listParam.Add(subvalueblock);
 							sexpr = poscolon + 1;
@@ -134,7 +134,7 @@ namespace CQuark
 							}
 						}
 //						UnityEngine.Debug.Log("case do ~ break" + GetCodeKeyString(tlist, sexpr, eexpr - 1));
-                        bool succ3 = Compiler_Expression_Block(tlist, env, sexpr, eexpr - 1, out subvalueblock);
+                        bool succ3 = Compiler_Expression_Block(tlist, sexpr, eexpr - 1, out subvalueblock);
 						if(succ3){
 							value.listParam.Add(subvalueblock);
 							caseBegin = eexpr;
@@ -149,7 +149,7 @@ namespace CQuark
 			return value;
 		}
 
-        public static ICQ_Expression Compiler_Expression_Loop_ForEach(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_ForEach(IList<Token> tlist, int pos, int posend)
         {
 
             int b1;
@@ -168,7 +168,7 @@ namespace CQuark
                     //添加 foreach 定义变量部分
                     {
                         ICQ_Expression subvalue;
-                        bool succ = Compiler_Expression(tlist, env, fs1 + 1, i - 1, out subvalue);
+                        bool succ = Compiler_Expression(tlist, fs1 + 1, i - 1, out subvalue);
                         if (!succ) return null;
                         if (subvalue != null)
                         {
@@ -178,7 +178,7 @@ namespace CQuark
                     //添加 foreach 列表部分
                     {
                         ICQ_Expression subvalue;
-                        bool succ = Compiler_Expression(tlist, env, i + 1, fe1 - 1, out subvalue);
+                        bool succ = Compiler_Expression(tlist, i + 1, fe1 - 1, out subvalue);
                         if (!succ) return null;
                         if (subvalue != null)
                         {
@@ -195,7 +195,7 @@ namespace CQuark
             int b2;
             int fs2 = fe1 + 1;
             int fecode = FindCodeAny(tlist, ref fs2, out b2);
-            bool succ2 = Compiler_Expression_Block(tlist, env, fs2, fecode, out subvalueblock);
+            bool succ2 = Compiler_Expression_Block(tlist, fs2, fecode, out subvalueblock);
             if (succ2)
             {
                 value.tokenEnd = fecode;
@@ -205,7 +205,7 @@ namespace CQuark
             }
             return null;
         }
-        public static ICQ_Expression Compiler_Expression_Loop_While(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_While(IList<Token> tlist, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -216,7 +216,7 @@ namespace CQuark
             //while(xxx)
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, env, fs1, fe1, out subvalue);
+                bool succ = Compiler_Expression(tlist, fs1, fe1, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe1;
@@ -236,7 +236,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tlist, ref fs2, out b2);
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression_Block(tlist, env, fs2, fe2, out subvalue);
+                bool succ = Compiler_Expression_Block(tlist, fs2, fe2, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe2;
@@ -250,7 +250,7 @@ namespace CQuark
             }
             return value;
         }
-        public static ICQ_Expression Compiler_Expression_Loop_Dowhile(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Dowhile(IList<Token> tlist, int pos, int posend)
         {
             int b1;
             int fs1 = pos + 1;
@@ -260,7 +260,7 @@ namespace CQuark
             //do(xxx)while(...)
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression_Block(tlist, env, fs1, fe1, out subvalue);
+                bool succ = Compiler_Expression_Block(tlist, fs1, fe1, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe1;
@@ -280,7 +280,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tlist, ref fs2, out b2);
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, env, fs2, fe2, out subvalue);
+                bool succ = Compiler_Expression(tlist, fs2, fe2, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe2;
@@ -295,7 +295,7 @@ namespace CQuark
             return value;
         }
 
-        public static ICQ_Expression Compiler_Expression_Loop_If(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_If(IList<Token> tlist, int pos, int posend)
         {
 
             CQ_Expression_LoopIf value = new CQ_Expression_LoopIf(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -310,7 +310,7 @@ namespace CQuark
             //if(xxx)
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression(tlist, env, fs1, fe1, out subvalue);
+                bool succ = Compiler_Expression(tlist, fs1, fe1, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe1;
@@ -329,7 +329,7 @@ namespace CQuark
             int fe2 = FindCodeAny(tlist, ref fs2, out b2);
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression_Block(tlist, env, fs2, fe2, out subvalue);
+                bool succ = Compiler_Expression_Block(tlist, fs2, fe2, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe2;
@@ -353,7 +353,7 @@ namespace CQuark
                     int fs3 = nelse + 1;
                     int fe3 = FindCodeAny(tlist, ref fs3, out b3);
                     ICQ_Expression subvalue;
-                    bool succ = Compiler_Expression_Block(tlist, env, fs3, fe3, out subvalue);
+                    bool succ = Compiler_Expression_Block(tlist, fs3, fe3, out subvalue);
                     if (succ)
                     {
                         value.tokenEnd = fe3;
@@ -370,7 +370,7 @@ namespace CQuark
 
             return value;
         }
-        public static ICQ_Expression Compiler_Expression_Loop_Try(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Try(IList<Token> tlist, int pos, int posend)
         {
 
             CQ_Expression_LoopTry value = new CQ_Expression_LoopTry(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -385,7 +385,7 @@ namespace CQuark
             //try
             {
                 ICQ_Expression subvalue;
-                bool succ = Compiler_Expression_Block(tlist, env, fs1, fe1, out subvalue);
+                bool succ = Compiler_Expression_Block(tlist, fs1, fe1, out subvalue);
                 if (succ)
                 {
                     value.tokenEnd = fe1;
@@ -411,7 +411,7 @@ namespace CQuark
                         return null;
                     }
                     ICQ_Expression subvalue;
-                    bool succ = Compiler_Expression(tlist, env, fs2, fe2, out subvalue);
+                    bool succ = Compiler_Expression(tlist, fs2, fe2, out subvalue);
                     if (succ)
                     {
                         value.tokenEnd = fe2;
@@ -435,7 +435,7 @@ namespace CQuark
                     }
 
                     ICQ_Expression subvalue;
-                    bool succ = Compiler_Expression_Block(tlist, env, fs3, fe3, out subvalue);
+                    bool succ = Compiler_Expression_Block(tlist, fs3, fe3, out subvalue);
                     if (succ)
                     {
                         value.tokenEnd = fe3;
@@ -453,12 +453,12 @@ namespace CQuark
 
             return value;
         }
-        public static ICQ_Expression Compiler_Expression_Loop_Return(IList<Token> tlist, CQ_Environment env, int pos, int posend)
+        public static ICQ_Expression Compiler_Expression_Loop_Return(IList<Token> tlist, int pos, int posend)
         {
             CQ_Expression_LoopReturn value = new CQ_Expression_LoopReturn(pos, posend, tlist[pos].line, tlist[posend].line);
 
             ICQ_Expression subvalue;
-            bool succ = Compiler_Expression(tlist, env, pos + 1, posend, out subvalue);
+            bool succ = Compiler_Expression(tlist, pos + 1, posend, out subvalue);
             if (succ)
             {
                 value.listParam.Add(subvalue);

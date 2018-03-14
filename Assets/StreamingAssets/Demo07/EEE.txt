@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Text;
+
+class ClassE: IScriptBehaviour
+{
+
+	public GameObject gameObject{
+        	get;
+        	private set;
+	}
+
+	Transform trans;
+
+	Vector3 pos;
+	void Start(){
+		pos = trans.localPosition;
+	}
+    
+	void Update(){
+		if(Input.GetKeyDown(KeyCode.Space))
+			Log();
+	}
+
+	public void Log(){
+		Debug.Log("Pos = " + pos.ToString());
+	}
+
+}

@@ -8,10 +8,6 @@ using System.Collections;
 
 public class CQuarkClass
 {
-	public CQuarkClass(){
-		Reset ();
-	}
-	public CQ_Environment env {get; private set; }
 	public CQ_Content content = null;
 
 
@@ -19,129 +15,45 @@ public class CQuarkClass
 		get{
 			if(_instance == null)
 				_instance = new CQuarkClass();
-			_instance.RegTypes();
+			CQuark.AppDomain.RegDefaultType();
 			return _instance;
 		}
 	}
 	static CQuarkClass _instance;
 
-	
-	public void Reset(){
-		env = new CQ_Environment ();
-//		env.logger.Log("CQuark Inited.Ver = "+ env.version);
-	}
-//	/// <summary>
-//	/// 这里注册脚本有权访问的类型，大部分类型用RegHelper_Type提供即可
-//	/// </summary>
-	public void RegTypes(){
-		env.RegType(typeof(UnityEngine.Object), "Object");
-		env.RegType(typeof(object), "object");
-
-		//大部分类型用RegHelper_Type提供即可
-		env.RegType (typeof(System.DateTime), "DateTime");
-		env.RegType (typeof(AssetBundle), "AssetBundle");
-		env.RegType (typeof(Animation), "Animation");
-		env.RegType (typeof(AnimationCurve), "AnimationCurve");
-		env.RegType (typeof(AnimationClip), "AnimationClip");
-		env.RegType (typeof(Animator), "Animator");
-		env.RegType (typeof(Application), "Application");
-		env.RegType (typeof(AudioSource), "AudioSource");
-		env.RegType (typeof(AudioClip), "AudioClip");
-		env.RegType (typeof(AudioListener), "AudioListener");
-
-		env.RegType (typeof(Camera), "Camera");
-		env.RegType (typeof(Component), "Component");
-		env.RegType (typeof(Color), "Color");
-		env.RegType (typeof(Debug), "Debug");
-		env.RegType (typeof(GameObject), "GameObject");
-		env.RegType (typeof(Input), "Input");
-
-		env.RegType (typeof(Light), "Light");
-		env.RegType (typeof(Mathf), "Mathf");
-		env.RegType (typeof(Material), "Material");
-		env.RegType (typeof(Mesh), "Mesh");
-		env.RegType (typeof(MeshFilter), "MeshFilter");
-		env.RegType (typeof(Renderer), "Renderer");
-		env.RegType (typeof(UnityEngine.Random), "Random");
-
-		env.RegType (typeof(ParticleSystem), "ParticleSystem");
-		env.RegType (typeof(PlayerPrefs), "PlayerPrefs");
-		env.RegType (typeof(Ray), "Ray");
-		env.RegType (typeof(Resources), "Resources");
-
-		env.RegType (typeof(Screen), "Screen");
-		env.RegType (typeof(Shader), "Shader");
-		env.RegType (typeof(Texture), "Texture");
-		env.RegType (typeof(Transform), "Transform");
-		env.RegType (typeof(UnityEngine.Time), "Time");
-
-		env.RegType (typeof(Vector2), "Vector2");
-		env.RegType (typeof(Vector3), "Vector3");
-		env.RegType (typeof(Vector4), "Vector4");
-		env.RegType (typeof(Quaternion), "Quaternion");
-		env.RegType (typeof(WWW), "WWW");
-		env.RegType (typeof(WWWForm), "WWWForm");
-
-		//对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
-		env.RegType(typeof(int[]), "int[]");	//数组要独立注册
-		env.RegType(typeof(string[]), "string[]");	
-		env.RegType(typeof(float[]), "float[]");	
-		env.RegType(typeof(bool[]), "bool[]");	
-		env.RegType (typeof(byte[]), "byte[]");
-
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector2)));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector3)));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Vector4)));
-//
-//
-//		env.RegType(new CQuark.RegHelper_Type(typeof(GameObject)));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Transform)));
-//
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Component)));
-//
-//		env.RegType(new CQuark.RegHelper_Type(typeof(Debug)));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(UnityEngine.Object)));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(UnityEngine.Time)));
-//
-//
-//		env.RegType(new CQuark.RegHelper_Type(typeof(int[]),"int[]"));
-//		env.RegType(new CQuark.RegHelper_Type(typeof(List<int>), "List<int>"));
-	}
-
-	
     public object Eval(string script){
-		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompileToken(token, true);//语法分析,简单表达式，一句话
-		var value = env.Expr_Execute(expr, content);//执行表达式
+		var token = CQuark.AppDomain.ParserToken(script);//词法分析
+		var expr = CQuark.AppDomain.Expr_CompileToken(token, true);//语法分析,简单表达式，一句话
+		var value = CQuark.AppDomain.Expr_Execute(expr, content);//执行表达式
         if (value == null)
 			return null;
         return value.value;
     }
 	
     public object Execute(string script){
-		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompileToken(token, false);//语法分析，语法块
-		var value = env.Expr_Execute(expr, content);//执行表达式
+		var token = CQuark.AppDomain.ParserToken(script);//词法分析
+		var expr = CQuark.AppDomain.Expr_CompileToken(token, false);//语法分析，语法块
+		var value = CQuark.AppDomain.Expr_Execute(expr, content);//执行表达式
         if (value == null) return null;
         return value.value;
     }
 
 	public IEnumerator StartCoroutine(string script, ICoroutine coroutine){
-		var token = env.ParserToken(script);//词法分析
-		var expr = env.Expr_CompileToken(token, false);//语法分析，语法块
-		yield return coroutine.StartNewCoroutine(env.Expr_Coroutine (expr, content, coroutine));
+		var token = CQuark.AppDomain.ParserToken(script);//词法分析
+		var expr = CQuark.AppDomain.Expr_CompileToken(token, false);//语法分析，语法块
+		yield return coroutine.StartNewCoroutine(CQuark.AppDomain.Expr_Coroutine (expr, content, coroutine));
 	}
 
 	public CQ_Content.Value GetValue(string name){
 		if (content == null)
-			content = env.CreateContent();
+			content = CQuark.AppDomain.CreateContent();
 		return content.Get(name);
 	}
 
 	public void SetValue(string name, object v)
     {
         if (content == null)
-			content = env.CreateContent();
+			content = CQuark.AppDomain.CreateContent();
         content.DefineAndSet(name, v.GetType(), v);
     }
 
@@ -149,29 +61,7 @@ public class CQuarkClass
         content = null;
     }
 
-	/// <summary>
-	/// 这里的filename只是为了编译时报错可以看到出错文件
-	/// </summary>
-	public void BuildFile(string filename, string code){
-		var token = env.ParserToken(code);//词法分析
-		env.File_CompileToken(filename, token, false);
-	}
 
-
-	public void BuildProject(string path, string pattern)
-	{
-		string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
-		Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
-		foreach (var file in files)
-		{
-            if (project.ContainsKey(file))
-                continue;
-            string text = System.IO.File.ReadAllText(file);
-			var tokens = CQ_TokenParser.Parse(text);
-            project.Add(file, tokens);
-		}
-		env.Project_Compile(project, true);
-	}
 	//TODO 编译单个文件
 //	public IList<Token> BuildTextAsset(TextAsset ta)
 //	{

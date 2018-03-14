@@ -67,7 +67,7 @@ namespace CQuark
                 vright = listParam[0].ComputeValue(content);
             }
             CQ_Content.Value vout = new CQ_Content.Value();
-            var mtype = content.environment.GetType(getvalue.type);
+            var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(content, mathop, getvalue.value, vright, out vout.type);
 
             type.function.StaticValueSet(content, staticmembername, vout.value);

@@ -8,11 +8,11 @@ public class Demo4 : MonoBehaviour {
 	public string m_blockFilePath;
 	void Start()
 	{
-		CQuarkClass.Instance.env.RegType (typeof(System.DateTime),"DateTime");
-		CQuarkClass.Instance.env.RegType (typeof(System.DayOfWeek),"DayOfWeek");
+		CQuark.AppDomain.RegType (typeof(System.DateTime),"DateTime");
+		CQuark.AppDomain.RegType (typeof(System.DayOfWeek),"DayOfWeek");
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		CQuarkClass.Instance.BuildFile(m_blockFilePath, text);
+		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
 	}
 
 	string result = "";
@@ -32,9 +32,9 @@ public class Demo4 : MonoBehaviour {
 		if (GUI.Button(new Rect(200, 0, 200, 50), "Eval use Code"))
 		{
 			CQuarkClass.Instance.ClearValue();
-			CQuark.CQ_Content content = new CQuark.CQ_Content(CQuarkClass.Instance.env);
+			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//得到脚本类型
-			var typeOfScript = CQuarkClass.Instance.env.GetTypeByKeyword("ScriptClass4");
+			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword("ScriptClass4");
 			//调用脚本类构造创造一个实例
 			var thisOfScript = typeOfScript.function.New(content, null).value;
 			//调用脚本类成员变量赋值

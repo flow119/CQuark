@@ -62,7 +62,7 @@ namespace CQuark
                 throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
             }
             var key = listParam[1].ComputeValue(content);
-            var type = content.environment.GetType(parent.type);
+            var type = CQuark.AppDomain.GetType(parent.type);
 
             var value = type.function.IndexGet(content, parent.value, key.value);
             content.OutStack(this);
@@ -72,7 +72,7 @@ namespace CQuark
             //value.type = value.value.GetType();
 
             return value;
-            //return type.function.MemberValueGet(content.environment, parent.value, membername);
+            //return type.function.MemberValueGet(CQuark.AppDomain, parent.value, membername);
             //做数学计算
             //从上下文取值
             //_value = null;

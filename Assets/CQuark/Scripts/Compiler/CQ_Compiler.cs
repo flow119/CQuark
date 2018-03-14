@@ -6,7 +6,7 @@ namespace CQuark
     public partial class CQ_Expression_Compiler 
     {
 
-        public static ICQ_Expression Compile(IList<Token> tlist, CQ_Environment env)
+        public static ICQ_Expression Compile(IList<Token> tlist)
         {
             ICQ_Expression value;
 
@@ -17,7 +17,7 @@ namespace CQuark
                 LogError(tlist, "CodeBlock 识别问题,异常结尾", expbegin, expend);
                 return null;
             }
-            bool succ = Compiler_Expression_Block(tlist, env, expbegin, expend, out value);
+            bool succ = Compiler_Expression_Block(tlist, expbegin, expend, out value);
             if (succ)
             {
                 if (value == null)
@@ -34,12 +34,12 @@ namespace CQuark
             }
         }
 
-        public static ICQ_Expression Compile_NoBlock(IList<Token> tlist, CQ_Environment env)
+        public static ICQ_Expression Compile_NoBlock(IList<Token> tlist)
         {
             ICQ_Expression value;
             int expbegin = 0;
             int expend = tlist.Count - 1;
-            bool succ = Compiler_Expression(tlist, env, expbegin, expend, out value);
+            bool succ = Compiler_Expression(tlist, expbegin, expend, out value);
             if (succ)
             {
                 if (value == null)
@@ -55,14 +55,14 @@ namespace CQuark
             }
         }
 
-        public static IList<ICQ_Type> FileCompile(CQ_Environment env, string filename, IList<Token> tlist, bool embDebugToken)
+        public static IList<ICQ_Type> FileCompile(string filename, IList<Token> tlist, bool embDebugToken)
         {
-            return _FileCompiler(filename, tlist, embDebugToken, env, false);
+            return _FileCompiler(filename, tlist, embDebugToken, false);
         }
 
-        public static IList<ICQ_Type> FilePreCompile(CQ_Environment env, string filename, IList<Token> tlist)
+        public static IList<ICQ_Type> FilePreCompile(string filename, IList<Token> tlist)
         {
-            return _FileCompiler(filename, tlist, false, env, true);
+            return _FileCompiler(filename, tlist, false, true);
         }
     }
 }

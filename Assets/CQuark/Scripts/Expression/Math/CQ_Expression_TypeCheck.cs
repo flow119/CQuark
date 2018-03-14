@@ -58,7 +58,7 @@ namespace CQuark
             content.InStack(this);
 
             var right = listParam[0].ComputeValue(content);
-            ICQ_Type type = content.environment.GetType(right.type);
+            ICQ_Type type = CQuark.AppDomain.GetType(right.type);
             CQ_Content.Value value = new CQ_Content.Value();
             value.type = typeof(bool);
             value.value = type.ConvertTo(content, right.value, targettype) != null;
