@@ -6,10 +6,6 @@ namespace CQuark
 {
     public class CQ_Type_Bool : ICQ_Type
     {
-        public class var
-        {
-
-        }
         public string keyword
         {
             get { return "bool"; }
