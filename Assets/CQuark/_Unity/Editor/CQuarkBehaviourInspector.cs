@@ -43,24 +43,6 @@ public class ScriptMonoInspector : Editor {
 			_script.m_className = EditorGUILayout.TextField("类名", _script.m_className);
 			_script.m_codeText = EditorGUILayout.TextArea(_script.m_codeText);
 			break;
-
-		case CQuarkBehaviour.ECodeType.FunctionsText:
-			GUILayout.Label("文本作为函数块");
-			GUILayout.Space(5);
-			_script.m_Start 		= EditorGUILayout.TextField("Start", _script.m_Start);
-			_script.m_OnEnable 		= EditorGUILayout.TextField("OnEnable", _script.m_OnEnable);
-			_script.m_OnDisable 	= EditorGUILayout.TextField("OnDisable", _script.m_OnDisable);
-			_script.m_Start 		= EditorGUILayout.TextField("Start", _script.m_Start);
-			_script.m_Update 		= EditorGUILayout.TextField("Update", _script.m_Update);
-			_script.m_FixedUpdate 	= EditorGUILayout.TextField("FixedUpdate", _script.m_FixedUpdate);
-			_script.m_OnDestroy 	= EditorGUILayout.TextField("OnDestroy", _script.m_OnDestroy);
-
-			if(Application.isPlaying){
-				if(GUILayout.Button("重新编译文本")){
-
-				}
-			}
-			break;
 		}
 	}
 }

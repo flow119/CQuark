@@ -6,6 +6,11 @@ namespace CQuark
 {
     public class CQ_Content
     {
+		public Stack<List<string>> tvalues = new Stack<List<string>>();
+		public SType CallType;
+		public SInstance CallThis;
+		public Dictionary<string, Value> values = new Dictionary<string, Value>();
+
         public CQ_Content()
         {
             this.useDebug = false;
@@ -271,7 +276,6 @@ namespace CQuark
             }
         }
 
-        public Dictionary<string, Value> values = new Dictionary<string, Value>();
         public void Define(string name,CQType type)
         {
             if (values.ContainsKey(name)) throw new Exception("已经定义过");
@@ -389,7 +393,7 @@ namespace CQuark
             }
             return null;
         }
-        public Stack<List<string>> tvalues = new Stack<List<string>>();
+
         public void DepthAdd()//控制变量作用域，深一层
         {
             tvalues.Push(new List<string>());
@@ -404,9 +408,5 @@ namespace CQuark
                 values.Remove(v);
             }
         }
-
-        public SType CallType;
-        public SInstance CallThis;
-           
     }
 }

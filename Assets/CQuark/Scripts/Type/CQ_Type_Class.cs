@@ -482,6 +482,7 @@ namespace CQuark
 
     }
 
+	//脚本实例
     public class SInstance
     {
         public SType type;
