@@ -18,18 +18,23 @@ namespace CQuark
         {
             this.stype = type;
         }
+
         public static implicit operator Type(CQType m)
         {
-            if (m == null) return null;
+            if (m == null)
+                return null;
 
             return m.type;
         }
+
         public static implicit operator SType(CQType m)
         {
-            if (m == null) return null;
+            if (m == null) 
+                return null;
 
             return m.stype;
         }
+
         static Dictionary<Type, CQType> types = new Dictionary<Type, CQType>();
         static Dictionary<SType, CQType> stypes = new Dictionary<SType, CQType>();
 

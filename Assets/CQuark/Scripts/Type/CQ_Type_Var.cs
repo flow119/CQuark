@@ -28,17 +28,17 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public object ConvertTo(CQ_Content env, object src, CQType targetType)
+        public object ConvertTo(object src, CQType targetType)
         {
             throw new NotImplementedException();
         }
 
-        public object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
+        public bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             throw new NotImplementedException();
         }

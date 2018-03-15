@@ -8,8 +8,8 @@ public class Demo5 : MonoBehaviour,ICoroutine {
 	CQuarkClass script = new CQuarkClass();
 	void Start(){
 		CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegFunction ((eDelay)Wait);
-		CQuark.AppDomain.RegFunction ((eDelay)YieldWaitForSecond);
+		CQuark.AppDomain.RegisterFunction ((eDelay)Wait);
+		CQuark.AppDomain.RegisterFunction ((eDelay)YieldWaitForSecond);
 		ExecuteFile ();
 	}
 

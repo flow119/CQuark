@@ -55,8 +55,8 @@ namespace CQuark
             var v = content.Get(value_name);
             ICQ_Type type = CQuark.AppDomain.GetType(v.type);
             CQType returntype;
-            object value = type.Math2Value(content,mathop, v.value, CQ_Content.Value.One, out returntype);
-            value = type.ConvertTo(content, value, v.type);
+            object value = type.Math2Value(mathop, v.value, CQ_Content.Value.One, out returntype);
+            value = type.ConvertTo( value, v.type);
             content.Set(value_name, value);
 
             //操作变量之

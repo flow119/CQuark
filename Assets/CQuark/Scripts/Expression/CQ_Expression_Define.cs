@@ -77,7 +77,7 @@ namespace CQuark
                 }
                 else if (v.type != value_type)
                 {
-					val = CQuark.AppDomain.GetType(v.type).ConvertTo(content, v.value, value_type);
+					val = CQuark.AppDomain.GetType(v.type).ConvertTo(v.value, value_type);
                    
                 }
 
@@ -111,7 +111,7 @@ namespace CQuark
 					}
 					else if (v.type != value_type)
 					{
-						val = CQuark.AppDomain.GetType(v.type).ConvertTo(content, v.value, value_type);
+						val = CQuark.AppDomain.GetType(v.type).ConvertTo(v.value, value_type);
 						
 					}
 					

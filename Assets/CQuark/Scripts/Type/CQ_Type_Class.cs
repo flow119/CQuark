@@ -95,7 +95,7 @@ namespace CQuark
                         {
                             sv.value_value.member[i.Key] = new CQ_Content.Value();
                             sv.value_value.member[i.Key].type = i.Value.type.type;
-                            sv.value_value.member[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(content, value.value, i.Value.type.type);
+                            sv.value_value.member[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(value.value, i.Value.type.type);
                         }
                         else
                         {
@@ -136,7 +136,7 @@ namespace CQuark
                             {
                                 staticMemberInstance[i.Key] = new CQ_Content.Value();
                                 staticMemberInstance[i.Key].type = i.Value.type.type;
-								staticMemberInstance[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(contentMemberCalc, value.value, i.Value.type.type);
+								staticMemberInstance[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(value.value, i.Value.type.type);
                             }
                             else
                             {
@@ -245,7 +245,7 @@ namespace CQuark
                     {
                         if ((value as SInstance).type != (SType)this.members[valuename].type.type)
                         {
-                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
+                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo( value, this.members[valuename].type.type);
                         }
                     }
                     else if (value is DeleEvent)
@@ -254,7 +254,7 @@ namespace CQuark
                     }
                     else
                     {
-                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
+                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, this.members[valuename].type.type);
                     }
                 }
                 this.staticMemberInstance[valuename].value = value;
@@ -356,7 +356,7 @@ namespace CQuark
 						content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].type, _params[i].value);
 						//i++;
 					}
-					CQ_Content.Value value = null;
+                    //CQ_Content.Value value = null;
 					var funcobj = this.functions[func];
 					if (this.bInterface)
 					{
@@ -402,7 +402,7 @@ namespace CQuark
                     {
                         if ((value as SInstance).type != (SType)this.members[valuename].type.type)
                         {
-                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(content, value, this.members[valuename].type.type);
+                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo( value, this.members[valuename].type.type);
                         }
                     }
                     else if (value is DeleEvent)
@@ -411,7 +411,7 @@ namespace CQuark
                     }
                     else
                     {
-                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(content, value, this.members[valuename].type.type);
+                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, this.members[valuename].type.type);
                     }
                 }
                 sin.member[valuename].value = value;
@@ -489,7 +489,7 @@ namespace CQuark
         public Dictionary<string, CQ_Content.Value> member = new Dictionary<string, CQ_Content.Value>();//成员
         public Dictionary<string, Dictionary<Type, Delegate>> deles = new Dictionary<string, Dictionary<Type, Delegate>>();
     }
-    public class CQ_Type_Class : ICQ_Type_WithBase
+    public class CQ_Type_Class : ICQ_Type
     {
         public CQ_Type_Class(string keyword, bool bInterface, string filename)
         {
@@ -536,7 +536,7 @@ namespace CQuark
             return svalue;
         }
 
-        public object ConvertTo(CQ_Content env, object src, CQType targetType)
+        public object ConvertTo(object src, CQType targetType)
         {
            
 			var type = CQuark.AppDomain.GetType(targetType);
@@ -549,12 +549,12 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
+        public bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {

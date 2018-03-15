@@ -109,7 +109,7 @@ namespace CQuark
             return rvalue;
         }
 
-        public virtual object ConvertTo(CQ_Content content, object src, CQType targetType)
+        public virtual object ConvertTo(object src, CQType targetType)
         {
             Type targettype = (Type)targetType;
             if (this._type == targettype) return src;
@@ -159,7 +159,7 @@ namespace CQuark
             return null;
         }
 
-		public virtual object Math2Value(CQ_Content content, char code, object left, CQ_Content.Value right, out CQType returntype)
+		public virtual object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = type;
             System.Reflection.MethodInfo call = null;
@@ -187,7 +187,7 @@ namespace CQuark
             return obj;
         }
 
-		public virtual bool MathLogic(CQ_Content content, LogicToken code, object left, CQ_Content.Value right)
+		public virtual bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             System.Reflection.MethodInfo call = null;
 
@@ -238,6 +238,16 @@ namespace CQuark
         public virtual object DefValue
         {
             get { return null; }
+        }
+
+        public virtual Delegate CreateDelegate(DeleFunction lambda)
+        {
+            throw new Exception("");
+        }
+
+        public virtual Delegate CreateDelegate(DeleLambda lambda)
+        {
+            throw new Exception("");
         }
     }
 }

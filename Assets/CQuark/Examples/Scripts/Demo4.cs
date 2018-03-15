@@ -8,6 +8,7 @@ public class Demo4 : MonoBehaviour {
 	public string m_blockFilePath;
 	void Start()
 	{
+        CQuark.AppDomain.Reset();
 		CQuark.AppDomain.RegType (typeof(System.DateTime),"DateTime");
 		CQuark.AppDomain.RegType (typeof(System.DayOfWeek),"DayOfWeek");
 

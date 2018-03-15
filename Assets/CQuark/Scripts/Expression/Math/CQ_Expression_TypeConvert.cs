@@ -61,7 +61,7 @@ namespace CQuark
             ICQ_Type type = CQuark.AppDomain.GetType(right.type);
             CQ_Content.Value value = new CQ_Content.Value();
             value.type = targettype;
-            value.value = type.ConvertTo(content, right.value, targettype);
+            value.value = type.ConvertTo( right.value, targettype);
 
             //操作变量之
             //做数学计算

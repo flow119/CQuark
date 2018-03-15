@@ -15,7 +15,7 @@ public class Demo3 : MonoBehaviour {
 //		Type t = Type.GetType ("UnityEngine.GameObject");
 
 		//将函数Today()注册给脚本使用
-		CQuark.AppDomain.RegFunction ((deleToday)Today);
+		CQuark.AppDomain.RegisterFunction ((deleToday)Today);
 	
 		ExecuteFile ();
 	}

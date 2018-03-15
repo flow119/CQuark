@@ -95,7 +95,7 @@ namespace CQuark
                 else
                 {
 
-                    result.value = CQuark.AppDomain.GetType(left.type).MathLogic(content, mathop, left.value, right);
+                    result.value = CQuark.AppDomain.GetType(left.type).MathLogic(mathop, left.value, right);
 
                 }
             }

@@ -54,7 +54,7 @@ namespace CQuark{
 			//contentGloabl = CreateContent();
 			//if (!useNamespace)//命名空间模式不能直接用函数
 			{
-				RegFunction(new FunctionTrace());
+				RegisterFunction(new FunctionTrace());
 			}
 
 			RegType(typeof(object), "object");
@@ -237,7 +237,7 @@ namespace CQuark{
 			}
 			return ret;
 		}
-		public static void RegFunction(ICQ_Function func)
+		public static void RegisterFunction(ICQ_Function func)
 		{
 			//if (useNamespace)
 			//{
@@ -248,9 +248,9 @@ namespace CQuark{
 			else
 				calls[func.keyword] = func;
 		}
-		public static void RegFunction(Delegate dele)
+		public static void RegisterFunction(Delegate dele)
 		{
-			RegFunction(new RegHelper_Function (dele));
+			RegisterFunction(new RegHelper_Function (dele));
 		}
 
 		public static ICQ_Function GetFunction(string name)

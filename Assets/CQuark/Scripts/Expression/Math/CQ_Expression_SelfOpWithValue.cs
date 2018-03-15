@@ -65,8 +65,8 @@ namespace CQuark
 
             {
                 CQType returntype;
-                object value = type.Math2Value(content, mathop, left.value, right, out returntype);
-                value = type.ConvertTo(content, value, left.type);
+                object value = type.Math2Value(mathop, left.value, right, out returntype);
+                value = type.ConvertTo( value, left.type);
                 left.value = value;
 
 //                Type t = right.type;

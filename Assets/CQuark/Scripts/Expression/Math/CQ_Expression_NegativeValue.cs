@@ -60,7 +60,7 @@ namespace CQuark
             CQ_Content.Value r = listParam[0].ComputeValue(content);
             ICQ_Type type =CQuark.AppDomain.GetType(r.type);
             
-            r.value= type.Math2Value(content, '*', r.value, CQ_Content.Value.OneMinus, out r.type);
+            r.value= type.Math2Value('*', r.value, CQ_Content.Value.OneMinus, out r.type);
             content.OutStack(this);
 
             return r;

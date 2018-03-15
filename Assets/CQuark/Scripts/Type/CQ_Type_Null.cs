@@ -27,12 +27,12 @@ namespace CQuark
 
         }
 
-        public object ConvertTo(CQ_Content env, object src, CQType targetType)
+        public object ConvertTo(object src, CQType targetType)
         {
             return null;
         }
 
-        public object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
            
             if ((Type)right.type == typeof(string))
@@ -43,7 +43,7 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
+        public bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             if (code == LogicToken.equal)
             {

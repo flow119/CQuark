@@ -15,7 +15,7 @@ namespace CQuark
     ///    那么注册方式如下：
     ///    env.RegType(new RegHelper_DeleNonVoidAction<bool, int, int, int>(typeof(Class.BoolParam3Delegate), "Class.BoolParam3Delegate"));
     /// </summary>
-    public class RegHelper_DeleNonVoidAction<ReturnType, T, T1, T2> : RegHelper_Type, ICQ_Type_Dele
+    public class RegHelper_DeleNonVoidAction<ReturnType, T, T1, T2> : RegHelper_Type
     {
         /// <summary>
         /// 有返回值,同时带 3 个 参数的委托.
@@ -29,7 +29,7 @@ namespace CQuark
 
         }
 
-        public override object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = null;
 
@@ -110,7 +110,7 @@ namespace CQuark
             }
             return new NotSupportedException();
         }
-        public Delegate CreateDelegate(DeleFunction delefunc)
+        public override Delegate CreateDelegate(DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -154,7 +154,7 @@ namespace CQuark
             return delefunc.cacheFunction(this._type, _dele);
         }
 
-        public Delegate CreateDelegate(DeleLambda lambda)
+        public override Delegate CreateDelegate(DeleLambda lambda)
         {
             CQ_Content content = lambda.content.Clone();
             var pnames = lambda.paramNames;

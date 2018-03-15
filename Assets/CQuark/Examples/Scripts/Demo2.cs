@@ -11,7 +11,7 @@ public class Demo2 : MonoBehaviour {
 		Execute1 ();
 
 		//将函数Today()注册给脚本使用
-		CQuark.AppDomain.RegFunction ((deleToday)Today);
+		CQuark.AppDomain.RegisterFunction ((deleToday)Today);
 		Execute2 ();
 	}
 

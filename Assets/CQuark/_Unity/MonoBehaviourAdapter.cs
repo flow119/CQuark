@@ -14,7 +14,7 @@ namespace CQuark{
 			if(!appDomainInit){
 				appDomainInit = true;
 				AppDomain.Reset();
-				CQuark.AppDomain.RegFunction ((eDelay)Wait);
+				CQuark.AppDomain.RegisterFunction ((eDelay)Wait);
 			}
 		}
 

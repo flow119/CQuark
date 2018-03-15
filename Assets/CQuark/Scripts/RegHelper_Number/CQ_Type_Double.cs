@@ -13,7 +13,7 @@ namespace CQuark
             //function = new RegHelper_TypeFunction(typeof(double));
         }
   
-        public override object ConvertTo(CQ_Content env, object src, CQType targetType)
+        public override object ConvertTo(object src, CQType targetType)
         {
             bool convertSuccess = false;
             object convertedObject = NumericTypeUtils.TryConvertTo<double>(src, targetType, out convertSuccess);
@@ -21,10 +21,10 @@ namespace CQuark
                 return convertedObject;
             }
 
-            return base.ConvertTo(env, src, targetType);
+            return base.ConvertTo(src, targetType);
         }
 
-        public override object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             bool math2ValueSuccess = false;
             object value = NumericTypeUtils.Math2Value<double>(code, left, right, out returntype, out math2ValueSuccess);
@@ -32,10 +32,10 @@ namespace CQuark
                 return value;
             }
 
-            return base.Math2Value(env, code, left, right, out returntype);
+            return base.Math2Value(code, left, right, out returntype);
         }
 
-        public override bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
+        public override bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             bool mathLogicSuccess = false;
             bool value = NumericTypeUtils.MathLogic<double>(code, left, right, out mathLogicSuccess);
@@ -43,7 +43,7 @@ namespace CQuark
                 return value;
             }
 
-            return base.MathLogic(env, code, left, right);
+            return base.MathLogic(code, left, right);
         }
 
         public override object DefValue

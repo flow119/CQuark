@@ -30,20 +30,20 @@ namespace CQuark
 
         }
 
-        public object ConvertTo(CQ_Content env, object src, CQType targetType)
+        public object ConvertTo(object src, CQType targetType)
         {
-			ICQ_Type_Dele dele =  CQuark.AppDomain.GetType(targetType) as ICQ_Type_Dele;
+            RegHelper_Type dele = CQuark.AppDomain.GetType(targetType) as RegHelper_Type;
             return dele.CreateDelegate(src as DeleLambda);
             //throw new NotImplementedException();
         }
 
-        public object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
 
             throw new NotImplementedException("code:"+code +" right:+"+right.type.ToString()+"="+ right.value);
         }
 
-        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
+        public bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
 
             throw new NotImplementedException();

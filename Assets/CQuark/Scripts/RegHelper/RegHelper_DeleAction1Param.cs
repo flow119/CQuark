@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class RegHelper_DeleAction<T> : RegHelper_Type, ICQ_Type_Dele
+    public class RegHelper_DeleAction<T> : RegHelper_Type
     {
         public RegHelper_DeleAction(Type type, string setkeyword)
             : base(type, setkeyword, true)
@@ -13,7 +13,7 @@ namespace CQuark
 
         }
 
-        public override object Math2Value(CQ_Content env, char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
         {
             returntype = null;
 
@@ -96,7 +96,7 @@ namespace CQuark
         }
 
 
-        public Delegate CreateDelegate(DeleFunction delefunc)
+        public override Delegate CreateDelegate(DeleFunction delefunc)
         {
             DeleFunction _func = delefunc;
             Delegate _dele = delefunc.cacheFunction(this._type, null);
@@ -143,7 +143,7 @@ namespace CQuark
         }
 
 
-        public Delegate CreateDelegate(DeleLambda lambda)
+        public override Delegate CreateDelegate(DeleLambda lambda)
         {
             CQ_Content content = lambda.content.Clone();
             var pnames = lambda.paramNames;

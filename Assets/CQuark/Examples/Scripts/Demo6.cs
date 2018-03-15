@@ -5,11 +5,12 @@ using System;
 public class Demo6 : MonoBehaviour, ICoroutine {
 
 	public string m_blockFilePath;
+    public string m_className = "ScriptClass6B";
 
 	// Use this for initialization
 	void Start () {
 		CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegFunction ((eDelay)Wait);
+		CQuark.AppDomain.RegisterFunction ((eDelay)Wait);
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
@@ -31,7 +32,7 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 			CQuarkClass.Instance.ClearValue();
 			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//得到脚本类型
-			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword("ScriptClass6");
+			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword(m_className);
 			//调用脚本类构造创造一个实例
 			var thisOfScript = typeOfScript.function.New(content, null).value;
 
