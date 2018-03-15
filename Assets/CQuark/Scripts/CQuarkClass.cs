@@ -46,14 +46,14 @@ public class CQuarkClass
 
 	public CQ_Content.Value GetValue(string name){
 		if (content == null)
-			content = CQuark.AppDomain.CreateContent();
+			content = new CQ_Content ();
 		return content.Get(name);
 	}
 
 	public void SetValue(string name, object v)
     {
-        if (content == null)
-			content = CQuark.AppDomain.CreateContent();
+		if (content == null)
+			content = new CQ_Content ();
         content.DefineAndSet(name, v.GetType(), v);
     }
 

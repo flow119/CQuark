@@ -173,7 +173,7 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 			BuildBlock ("Update", m_Update);
 			BuildBlock ("FixedUpdate", m_FixedUpdate);
 			BuildBlock ("OnDestroy", m_OnDestroy);
-			content = CQuark.AppDomain.CreateContent ();//创建上下文，并设置变量给脚本访问
+			content = new CQ_Content();//创建上下文，并设置变量给脚本访问
 			content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 			content.DefineAndSet ("transform", typeof(Transform), this.transform);
             
@@ -192,7 +192,7 @@ public class CQuarkBehaviour : MonoBehaviour, ICoroutine {
 				Debug.LogError("Type:" + scriptTypeName + "不存在与脚本项目中");
 				return;
 			}
-			content = CQuark.AppDomain.CreateContent();
+			content = new CQ_Content();
 			inst = type.function.New(content, null).value as CQuark.SInstance;
 			content.CallType = inst.type;
 			content.CallThis = inst;

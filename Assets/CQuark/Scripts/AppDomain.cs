@@ -297,25 +297,21 @@ namespace CQuark{
 
 		//CQ_Content contentGloabl = null;
 
-		public static CQ_Content CreateContent()
-		{
-			return new CQ_Content(true);
-		}
-
 		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr)
 		{
-			CQ_Content content = CreateContent();
+			CQ_Content content = new CQ_Content ();
 			return expr.ComputeValue(content);
 		}
 		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr, CQ_Content content)
 		{
-			if (content == null) content = CreateContent();
+			if (content == null)
+				content = new CQ_Content ();
 			return expr.ComputeValue(content);
 		}
 		public static IEnumerator Expr_Coroutine(ICQ_Expression expr, CQ_Content content, ICoroutine coroutine)
 		{
 			if (content == null)
-				content = CreateContent();
+				content = new CQ_Content ();
 			yield return coroutine.StartNewCoroutine(expr.CoroutineCompute(content, coroutine));
 		}
 
