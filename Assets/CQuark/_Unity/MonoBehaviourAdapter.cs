@@ -4,8 +4,11 @@ using CQuark;
 
 namespace CQuark{
 	public class MonoBehaviourAdapter : MonoBehaviour, ICoroutine {
-		protected CQ_Content content;
+		
 		static bool appDomainInit = false;
+
+		protected CQ_Content content;
+//		protected MethodCache cache = new MethodCache();
 
 		protected virtual void Initialize(){
 			if(!appDomainInit){

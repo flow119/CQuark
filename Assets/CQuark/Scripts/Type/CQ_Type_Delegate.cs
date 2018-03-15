@@ -43,7 +43,7 @@ namespace CQuark
             throw new NotImplementedException("code:"+code +" right:+"+right.type.ToString()+"="+ right.value);
         }
 
-        public bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right)
+        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
         {
 
             throw new NotImplementedException();

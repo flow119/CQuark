@@ -554,9 +554,9 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right)
+        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
         {
-            if (code == logictoken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
+            if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if (left == null || right.type == null)
                 {
@@ -567,7 +567,7 @@ namespace CQuark
                     return left == right.value;
                 }
             }
-            else if (code == logictoken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
+            else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if (left == null || right.type == null)
                 {

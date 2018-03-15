@@ -6,7 +6,6 @@ namespace CQuark
 {
     public class RegHelper_DeleAction : RegHelper_Type, ICQ_Type_Dele
     {
-
         public RegHelper_DeleAction(Type type, string setkeyword)
             : base(type, setkeyword, true)
         {

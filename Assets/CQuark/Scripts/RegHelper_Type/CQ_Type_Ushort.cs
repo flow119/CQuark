@@ -34,7 +34,7 @@ namespace CQuark
             return base.Math2Value(env, code, left, right, out returntype);
         }
 
-        public override bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right)
+        public override bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
         {
             bool mathLogicSuccess = false;
             bool value = NumericTypeUtils.MathLogic<ushort>(code, left, right, out mathLogicSuccess);

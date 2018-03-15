@@ -64,13 +64,13 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(CQ_Content env, logictoken code, object left, CQ_Content.Value right)
+        public bool MathLogic(CQ_Content env, LogicToken code, object left, CQ_Content.Value right)
         {
-            if (code == logictoken.equal)
+            if (code == LogicToken.equal)
             {
                 return (string)left == (string)right.value;
             }
-            else if(code== logictoken.not_equal)
+            else if(code== LogicToken.not_equal)
             {
                 return (string)left != (string)right.value;
             }

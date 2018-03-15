@@ -280,30 +280,30 @@ namespace CQuark
                         CQ_Expression_Math2ValueLogic value = new CQ_Expression_Math2ValueLogic(left, rightend, tlist[left].line, tlist[rightend].line);
                         value.listParam.Add(valueleft);
                         value.listParam.Add(valueright);
-                        logictoken token = logictoken.not_equal;
+                        LogicToken token = LogicToken.not_equal;
                         if (tkCur.text == ">")
                         {
-                            token = logictoken.more;
+                            token = LogicToken.greater;
                         }
                         else if (tkCur.text == ">=")
                         {
-                            token = logictoken.more_equal;
+                            token = LogicToken.greater_equal;
                         }
                         else if (tkCur.text == "<")
                         {
-                            token = logictoken.less;
+                            token = LogicToken.less;
                         }
                         else if (tkCur.text == "<=")
                         {
-                            token = logictoken.less_equal;
+                            token = LogicToken.less_equal;
                         }
                         else if (tkCur.text == "==")
                         {
-                            token = logictoken.equal;
+                            token = LogicToken.equal;
                         }
                         else if (tkCur.text == "!=")
                         {
-                            token = logictoken.not_equal;
+                            token = LogicToken.not_equal;
                         }
                         value.mathop = token;
                         return value;

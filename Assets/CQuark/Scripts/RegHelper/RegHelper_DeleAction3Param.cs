@@ -4,8 +4,6 @@ using System.Text;
 
 namespace CQuark
 {
-
-
     public class RegHelper_DeleAction<T, T1, T2> : RegHelper_Type, ICQ_Type_Dele
     {
         public RegHelper_DeleAction(Type type, string setkeyword)

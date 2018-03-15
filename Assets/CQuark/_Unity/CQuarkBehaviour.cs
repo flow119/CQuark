@@ -53,6 +53,18 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		inst = type.function.New(content, null).value as CQuark.SInstance;
 		content.CallType = inst.type;
 		content.CallThis = inst;
+//		if (!inst.member.ContainsKey ("gameObject")){
+//			CQ_Content.Value val = new CQ_Content.Value ();
+//			val.type = typeof(GameObject);
+//			val.value = this.gameObject;
+//			inst.member.Add ("gameObject", val);
+//		}
+//		if (!inst.member.ContainsKey ("transform")) {
+//			CQ_Content.Value val = new CQ_Content.Value ();
+//			val.type = typeof(Transform);
+//			val.value = this.transform;
+//			inst.member.Add ("transform", val);
+//		}
 		inst.member["gameObject"].value = this.gameObject;
 //		inst.member ["transform"].value = this.transform;
 	}

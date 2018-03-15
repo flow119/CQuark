@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-class InstanceScript : MonoBehaviour
+class EfficencyTest : MonoBehaviour
 {
-    public GameObject gameObject
-   {
-        get;
-        private set;
-    }
 
-    protect Transform trans;
+	Transform trans;
     public void Start()
     {
 	trans = gameObject.transform;

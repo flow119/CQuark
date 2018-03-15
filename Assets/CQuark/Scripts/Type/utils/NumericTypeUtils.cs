@@ -90,7 +90,7 @@ namespace CQuark
             }
         }
 
-        public static bool MathLogic<LeftType>(logictoken logicCode, object left, CQ_Content.Value right, out bool mathLogicSuccess)
+        public static bool MathLogic<LeftType>(LogicToken logicCode, object left, CQ_Content.Value right, out bool mathLogicSuccess)
         {
 
             mathLogicSuccess = true;
@@ -102,17 +102,17 @@ namespace CQuark
 
                 switch (logicCode)
                 {
-                    case logictoken.equal:
+                    case LogicToken.equal:
                         return leftValue == rightValue;
-                    case logictoken.less:
+                    case LogicToken.less:
                         return leftValue < rightValue;
-                    case logictoken.less_equal:
+                    case LogicToken.less_equal:
                         return leftValue <= rightValue;
-                    case logictoken.more:
+                    case LogicToken.greater:
                         return leftValue > rightValue;
-                    case logictoken.more_equal:
+                    case LogicToken.greater_equal:
                         return leftValue >= rightValue;
-                    case logictoken.not_equal:
+                    case LogicToken.not_equal:
                         return leftValue != rightValue;
                     default:
                         throw new Exception("Invalid logic operation::logicCode = " + logicCode.ToString());

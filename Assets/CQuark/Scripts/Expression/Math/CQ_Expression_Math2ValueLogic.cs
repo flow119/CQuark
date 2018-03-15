@@ -66,23 +66,23 @@ namespace CQuark
                 var right = listParam[1].ComputeValue(content);
                 if(left.type==null||right.type==null)
                 {
-                    if (mathop == logictoken.equal)
+                    if (mathop == LogicToken.equal)
                     {
                         result.value = left.value == right.value;
                     }
-                    if(mathop== logictoken.not_equal)
+                    if(mathop== LogicToken.not_equal)
                     {
                         result.value = left.value != right.value;
                     }
                 }
                 else if ((Type)left.type == typeof(bool) && (Type)right.type == typeof(bool))
                 {
-                    if (mathop == logictoken.equal)
+                    if (mathop == LogicToken.equal)
                     {
                         result.value = (bool)left.value == (bool)right.value;
                         //return result;
                     }
-                    else if (mathop == logictoken.not_equal)
+                    else if (mathop == LogicToken.not_equal)
                     {
                         result.value = (bool)left.value != (bool)right.value;
                         //return result;
@@ -108,7 +108,7 @@ namespace CQuark
 			throw new Exception ("暂时不支持套用协程");
 		}
 
-        public logictoken mathop;
+        public LogicToken mathop;
 
         public override string ToString()
         {

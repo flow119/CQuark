@@ -5,45 +5,6 @@ using System.Collections;
 
 namespace CQuark
 {
-    public enum logictoken
-    {
-        less,           //<
-        less_equal,     //<=
-        more,           //>
-        more_equal,     //>=
-        equal,          //==
-        not_equal       //!=
-
-    }
-    public class MethodCache
-    {
-        public System.Reflection.MethodInfo info;
-        public bool cachefail = false;
-        public bool slow = false;
-    }
-    public interface ICQ_TypeFunction
-    {
-        CQ_Content.Value New(CQ_Content content, IList<CQ_Content.Value> _params);
-
-        CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params);
-        CQ_Content.Value StaticCall(CQ_Content content, string function, IList<CQ_Content.Value> _params, MethodCache cache);
-        CQ_Content.Value StaticCallCache(CQ_Content content, IList<CQ_Content.Value> _params, MethodCache cache);
-
-        CQ_Content.Value StaticValueGet(CQ_Content content, string valuename);
-        bool StaticValueSet(CQ_Content content, string valuename, object value);
-        
-		bool HasFunction(string key);
-        CQ_Content.Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params);
-        IEnumerator CoroutineCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params, ICoroutine coroutin);
-        CQ_Content.Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Content.Value> _params, MethodCache cache);
-        CQ_Content.Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Content.Value> _params, MethodCache cache);
-
-        CQ_Content.Value MemberValueGet(CQ_Content content, object object_this, string valuename);
-        bool MemberValueSet(CQ_Content content, object object_this, string valuename, object value);
-
-        CQ_Content.Value IndexGet(CQ_Content content, object object_this, object key);
-        void IndexSet(CQ_Content content, object object_this, object key, object value);
-    }
     public class CQType
     {
 		Type type;
@@ -129,55 +90,5 @@ namespace CQuark
                 else return stype.Namespace;
             }
         }
-    }
-    public interface ICQ_Type
-    {
-        string keyword
-        {
-            get;
-        }
-        string _namespace
-        {
-            get;
-        }
-        CQType type
-        {
-            get;
-        }
-        object DefValue
-        {
-            get;
-        }
-
-        ICQ_Value MakeValue(object value);
-        //自动转型能力
-        object ConvertTo(CQ_Content content, object src, CQType targetType);
-
-        //数学计算能力
-        object Math2Value(CQ_Content content, char code, object left, CQ_Content.Value right, out CQType returntype);
-
-        //逻辑计算能力
-        bool MathLogic(CQ_Content content, logictoken code, object left, CQ_Content.Value right);
-
-        ICQ_TypeFunction function
-        {
-            get;
-        }
-
-    }
-
-    public interface ICQ_Type_WithBase : ICQ_Type
-    {
-        void SetBaseType(IList<ICQ_Type> types);
-
-    }
-    public interface ICQ_Type_Dele : ICQ_Type
-    {
-        //string GetParamSign(ICQ_Environment env);
-        //Delegate CreateDelegate(ICQ_Environment env, SType calltype, SInstance callthis, string function);
-
-        Delegate CreateDelegate(DeleFunction lambda);
-
-        Delegate CreateDelegate(DeleLambda lambda);
     }
 }
