@@ -80,8 +80,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 下个版本
 
 * 重写MonoBehaviour//参考ILRuntime
-* 0 西瓜脚本继承自MonoBehaviour（而不是IScriptBehaviour）
-* 1 使用一个Adoptor接受
+* 0 西瓜脚本继承自MonoBehaviour（而不是IScriptBehaviour）改善Adapter
+* 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法
 * 2 劫持GetComponent和AddComponent，重写
 * 3 gameObject,transform不要再声明一次
 
