@@ -7,7 +7,7 @@ using CQuark;
 namespace CQuark{
 	//参考了ILRuntime，把以前Environment和Content整合到了一起。
 	//整个项目只需要一个AppDomain,所以改成了全部静态
-	public static class AppDomain {
+	public class AppDomain {
 
 		static Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
 		static Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
@@ -299,19 +299,19 @@ namespace CQuark{
 
 		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr)
 		{
-			CQ_Content content = new CQ_Content ();
+			CQ_Content content = new CQ_Content (true);
 			return expr.ComputeValue(content);
 		}
 		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr, CQ_Content content)
 		{
 			if (content == null)
-				content = new CQ_Content ();
+                content = new CQ_Content(true);
 			return expr.ComputeValue(content);
 		}
 		public static IEnumerator Expr_Coroutine(ICQ_Expression expr, CQ_Content content, ICoroutine coroutine)
 		{
 			if (content == null)
-				content = new CQ_Content ();
+                content = new CQ_Content(true);
 			yield return coroutine.StartNewCoroutine(expr.CoroutineCompute(content, coroutine));
 		}
 

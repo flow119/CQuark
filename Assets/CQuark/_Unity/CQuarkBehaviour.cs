@@ -49,7 +49,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			Debug.LogError("Type:" + m_className + "不存在与脚本项目中");
 			return;
 		}
-		content = new CQ_Content();
+		content = new CQ_Content(true);
 		inst = type.function.New(content, null).value as CQuark.SInstance;
 		content.CallType = inst.type;
 		content.CallThis = inst;
