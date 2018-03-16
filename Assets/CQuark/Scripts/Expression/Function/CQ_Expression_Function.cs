@@ -66,7 +66,7 @@ namespace CQuark
             }
 			CQ_Content.Value v = null;
 
-            SType.Function retFunc = null;
+            CQ_Type.Function retFunc = null;
             bool bFind = false;
             if (content.CallType != null)
                 bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);

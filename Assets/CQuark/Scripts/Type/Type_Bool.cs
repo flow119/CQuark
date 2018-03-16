@@ -4,36 +4,32 @@ using System.Text;
 
 namespace CQuark
 {
-    public class CQ_Type_Var : ICQ_Type
+    public class Type_Bool : IType
     {
-        public class var
-        {
-
-        }
         public string keyword
         {
-            get { return "var"; }
+            get { return "bool"; }
         }
         public string _namespace
         {
             get { return ""; }
         }
-        public CQType type
+        public TypeBridge typeBridge
         {
-            get { return (typeof(var)); }
+            get { return (typeof(bool)); }
         }
 
-        public ICQ_Value MakeValue(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object ConvertTo(object src, CQType targetType)
+        public IValue MakeValue(object value)
         {
             throw new NotImplementedException();
         }
 
-        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object ConvertTo(object src, TypeBridge targetType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
             throw new NotImplementedException();
         }
@@ -47,9 +43,9 @@ namespace CQuark
         {
             get { throw new NotImplementedException(); }
         }
-        public object DefValue
+        public object defaultValue
         {
-            get { return null; }
+            get { return false; }
         }
     }
 }

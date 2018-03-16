@@ -6,9 +6,9 @@ using System.Collections;
 namespace CQuark
 {
 	//类型
-	public interface ICQ_Value : ICQ_Expression
+	public interface IValue : ICQ_Expression
 	{
-		CQType type
+		TypeBridge type
 		{
 			get;
 		}

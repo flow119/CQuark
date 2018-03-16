@@ -49,7 +49,7 @@ namespace CQuark
 			foreach (CQ_Content.Value p in _params)
 			{
 				_oparams.Add(p.value);
-				if ((SType)p.type != null)
+				if ((CQ_Type)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -82,7 +82,7 @@ namespace CQuark
 					Type[] gtypes = new Type[sf.Length];
 					for (int i = 0; i < sf.Length; i++)
 					{
-						gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).type;
+						gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).typeBridge;
 					}
 					targetop = FindTMethod(type, tfunc, _params, gtypes);
 
@@ -139,7 +139,7 @@ namespace CQuark
 			foreach (var p in _params)
 			{
 				_oparams.Add(p.value);
-				if ((SType)p.type != null)
+				if ((CQ_Type)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -334,7 +334,7 @@ namespace CQuark
 				{
 					_oparams.Add(p.value);
 				}
-				if ((SType)p.type != null)
+				if ((CQ_Type)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -366,7 +366,7 @@ namespace CQuark
 					Type[] gtypes = new Type[sf.Length];
 					for (int i = 0; i < sf.Length; i++)
 					{
-						gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).type;
+						gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).typeBridge;
 					}
 					targetop = FindTMethod(type, tfunc, _params, gtypes);
 					var ps = targetop.GetParameters();
@@ -539,7 +539,7 @@ namespace CQuark
 				{
 					_oparams.Add(p.value);
 				}
-				if ((SType)p.type != null)
+				if ((CQ_Type)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -844,7 +844,7 @@ namespace CQuark
 				CQ_Content.Value v = new CQ_Content.Value();
 				v.type = indexGetCacheType;
 				if (key != null && key.GetType() != indexGetCachetypeindex)
-					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.CQType)indexGetCachetypeindex);
+					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.TypeBridge)indexGetCachetypeindex);
 				v.value = indexGetCache.Invoke(object_this, new object[] { key });
 				return v;
 			}
@@ -876,17 +876,17 @@ namespace CQuark
 			{
 
 				if (key != null && key.GetType() != indexSetCachetype1)
-					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.CQType)indexSetCachetype1);
+					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.TypeBridge)indexSetCachetype1);
 				if (value != null && value.GetType() != indexSetCachetype2)
-					value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(value, (CQuark.CQType)indexSetCachetype2);
+					value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(value, (CQuark.TypeBridge)indexSetCachetype2);
 				indexSetCache.Invoke(object_this, new object[] { key, value });
 			}
 			else
 			{
 				if (value != null && value.GetType() != indexSetCachetype1)
-					value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, (CQuark.CQType)indexSetCachetype1);
+					value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, (CQuark.TypeBridge)indexSetCachetype1);
 				if (key != null && key.GetType() != indexSetCachetype2)
-					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.CQType)indexSetCachetype2);
+					key = CQuark.AppDomain.GetType(key.GetType()).ConvertTo(key, (CQuark.TypeBridge)indexSetCachetype2);
 
 				indexSetCache.Invoke(object_this, new object[] { value, key });
 			}

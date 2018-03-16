@@ -55,12 +55,12 @@ namespace CQuark
             }
         }
 
-        public static IList<ICQ_Type> FileCompile(string filename, IList<Token> tlist, bool embDebugToken)
+        public static IList<IType> FileCompile(string filename, IList<Token> tlist, bool embDebugToken)
         {
             return _FileCompiler(filename, tlist, embDebugToken, false);
         }
 
-        public static IList<ICQ_Type> FilePreCompile(string filename, IList<Token> tlist)
+        public static IList<IType> FilePreCompile(string filename, IList<Token> tlist)
         {
             return _FileCompiler(filename, tlist, false, true);
         }

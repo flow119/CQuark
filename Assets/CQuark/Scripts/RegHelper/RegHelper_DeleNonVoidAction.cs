@@ -29,7 +29,7 @@ namespace CQuark
 
         }
 
-        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
             returntype = null;
 
@@ -144,7 +144,7 @@ namespace CQuark
                 }
                 return default(ReturnType);
             };
-            _dele = Delegate.CreateDelegate(this.type, dele.Target, dele.Method);
+            _dele = Delegate.CreateDelegate(this.typeBridge, dele.Target, dele.Method);
             return delefunc.cacheFunction(this._type, _dele);
         }
 
@@ -179,7 +179,7 @@ namespace CQuark
             };
 
             Delegate d = dele;
-            return Delegate.CreateDelegate(this.type, d.Target, d.Method);
+            return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
         }
     }
 }

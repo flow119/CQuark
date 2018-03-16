@@ -53,8 +53,8 @@ namespace CQuark
             content.InStack(this);
 
             var v = content.Get(value_name);
-            ICQ_Type type = CQuark.AppDomain.GetType(v.type);
-            CQType returntype;
+            IType type = CQuark.AppDomain.GetType(v.type);
+            TypeBridge returntype;
             object value = type.Math2Value(mathop, v.value, CQ_Content.Value.One, out returntype);
             value = type.ConvertTo( value, v.type);
             content.Set(value_name, value);

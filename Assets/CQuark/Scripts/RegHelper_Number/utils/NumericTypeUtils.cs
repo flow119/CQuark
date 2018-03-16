@@ -19,7 +19,7 @@ namespace CQuark
         /// <param name="src"></param>
         /// <param name="targetType"></param>
         /// <returns></returns>
-        public static object TryConvertTo<OriginalType>(object src, CQType targetType, out bool convertSuccess) where OriginalType : struct
+        public static object TryConvertTo<OriginalType>(object src, TypeBridge targetType, out bool convertSuccess) where OriginalType : struct
         {
 
             convertSuccess = true;
@@ -46,7 +46,7 @@ namespace CQuark
         /// <param name="returntype"></param>
         /// <param name="math2ValueSuccess"></param>
         /// <returns></returns>
-        public static object Math2Value<LeftType>(char opCode, object left, CQ_Content.Value right, out CQType returntype, out bool math2ValueSuccess) where LeftType : struct
+        public static object Math2Value<LeftType>(char opCode, object left, CQ_Content.Value right, out TypeBridge returntype, out bool math2ValueSuccess) where LeftType : struct
         {
 
             math2ValueSuccess = true;

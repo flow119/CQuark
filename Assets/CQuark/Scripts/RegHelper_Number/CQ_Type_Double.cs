@@ -13,7 +13,7 @@ namespace CQuark
             //function = new RegHelper_TypeFunction(typeof(double));
         }
   
-        public override object ConvertTo(object src, CQType targetType)
+        public override object ConvertTo(object src, TypeBridge targetType)
         {
             bool convertSuccess = false;
             object convertedObject = NumericTypeUtils.TryConvertTo<double>(src, targetType, out convertSuccess);
@@ -24,7 +24,7 @@ namespace CQuark
             return base.ConvertTo(src, targetType);
         }
 
-        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
             bool math2ValueSuccess = false;
             object value = NumericTypeUtils.Math2Value<double>(code, left, right, out returntype, out math2ValueSuccess);
@@ -46,7 +46,7 @@ namespace CQuark
             return base.MathLogic(code, left, right);
         }
 
-        public override object DefValue
+        public override object defaultValue
         {
             get { return (double)0; }
         }

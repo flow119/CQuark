@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CQuark
 {
-    class CQ_Type_Delegate: ICQ_Type
+    class Type_Delegate: IType
     {
-        public CQ_Type_Delegate()
+        public Type_Delegate()
         {
 
             function = null;
@@ -19,25 +19,25 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public CQType type
+        public TypeBridge typeBridge
         {
             get { return typeof(DeleFunction); }
         }
 
-        public ICQ_Value MakeValue(object value)
+        public IValue MakeValue(object value)
         {
             throw new NotSupportedException();
 
         }
 
-        public object ConvertTo(object src, CQType targetType)
+        public object ConvertTo(object src, TypeBridge targetType)
         {
             RegHelper_Type dele = CQuark.AppDomain.GetType(targetType) as RegHelper_Type;
             return dele.CreateDelegate(src as DeleFunction);
             //throw new NotImplementedException();
         }
 
-        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
 
             throw new NotImplementedException("code:"+code +" right:+"+right.type.ToString()+"="+ right.value);
@@ -56,7 +56,7 @@ namespace CQuark
             get;
             private set;
         }
-        public object DefValue
+        public object defaultValue
         {
             get { return null; }
         }

@@ -82,7 +82,7 @@ namespace CQuark
 		}
 
    
-        public ICQ_Type type;
+        public IType type;
         public string staticmembername;
         public char mathop;
         public override string ToString()

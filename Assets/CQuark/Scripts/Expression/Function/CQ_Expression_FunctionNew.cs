@@ -73,7 +73,7 @@ namespace CQuark
 		{
 			throw new Exception ("暂时不支持套用协程");
 		}
-        public CQuark.ICQ_Type type;
+        public CQuark.IType type;
   
         public override string ToString()
         {

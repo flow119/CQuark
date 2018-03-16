@@ -62,9 +62,9 @@ namespace CQuark
             {
                 bool bleft = false;
                 bool bright = false;
-                if (listParam[0] is ICQ_Value)
+                if (listParam[0] is IValue)
                 {
-                    bleft = (bool)((listParam[0] as ICQ_Value).value);
+                    bleft = (bool)((listParam[0] as IValue).value);
                 }
                 else
                 {
@@ -79,9 +79,9 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is ICQ_Value)
+                        if (listParam[1] is IValue)
                         {
-                            bright = (bool)((listParam[1] as ICQ_Value).value);
+                            bright = (bool)((listParam[1] as IValue).value);
                         }
                         else
                         {
@@ -98,9 +98,9 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is ICQ_Value)
+                        if (listParam[1] is IValue)
                         {
-                            bright = (bool)((listParam[1] as ICQ_Value).value);
+                            bright = (bool)((listParam[1] as IValue).value);
                         }
                         else
                         {

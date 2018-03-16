@@ -79,6 +79,4 @@ namespace CQuark
             return v;
         }
     }
-
-  
 }

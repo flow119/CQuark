@@ -87,7 +87,7 @@ namespace CQuark
 			throw new Exception ("暂时不支持套用协程");
 		}
 
-        public ICQ_Type type;
+        public IType type;
         public string functionName;
 
         public override string ToString()

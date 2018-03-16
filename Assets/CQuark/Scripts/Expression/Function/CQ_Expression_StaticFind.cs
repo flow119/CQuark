@@ -68,7 +68,7 @@ namespace CQuark
 		}
 
    
-        public ICQ_Type type;
+        public IType type;
         public string staticmembername;
   
         public override string ToString()

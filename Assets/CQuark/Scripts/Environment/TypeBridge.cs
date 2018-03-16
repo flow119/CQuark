@@ -5,31 +5,31 @@ using System.Collections;
 
 namespace CQuark
 {
-	//由System的Type或西瓜脚本的SType转过来
-    public class CQType
+	//把System的Type或西瓜脚本的SType统一管理的桥梁
+    public class TypeBridge
     {
 		#region Type
-		static Dictionary<Type, CQType> dicType_CQType = new Dictionary<Type, CQType>();
+		static Dictionary<Type, TypeBridge> dicType_CQType = new Dictionary<Type, TypeBridge>();
 		Type type;
-		private CQType(Type type)
+		private TypeBridge(Type type)
 		{
 			this.type = type;
 		}
-		public static implicit operator Type(CQType m)
+		public static implicit operator Type(TypeBridge m)
 		{
 			if (m == null)
 				return null;
 			return m.type;
 		}
-		public static implicit operator CQType(Type type)
+		public static implicit operator TypeBridge(Type type)
 		{
-			CQType retT = null;
+			TypeBridge retT = null;
 			bool bRet = dicType_CQType.TryGetValue(type, out retT);
 			if (bRet)
 				return retT;
 			else
 			{
-				var ct = new CQType(type);
+				var ct = new TypeBridge(type);
 				dicType_CQType[type] = ct;
 				return ct;
 			}
@@ -37,27 +37,27 @@ namespace CQuark
 		#endregion
 
 		#region SType
-		static Dictionary<SType, CQType> dicSType_CQType = new Dictionary<SType, CQType>();
-		SType stype = null;
-        private CQType(SType type)
+		static Dictionary<CQ_Type, TypeBridge> dicSType_CQType = new Dictionary<CQ_Type, TypeBridge>();
+		CQ_Type stype = null;
+        private TypeBridge(CQ_Type type)
         {
             this.stype = type;
         }
-        public static implicit operator SType(CQType m)
+        public static implicit operator CQ_Type(TypeBridge m)
         {
             if (m == null) 
                 return null;
             return m.stype;
         }
-        public static implicit operator CQType(SType type)
+        public static implicit operator TypeBridge(CQ_Type type)
         {
-            CQType retST = null;
+            TypeBridge retST = null;
             bool bRet = dicSType_CQType.TryGetValue(type, out retST);
             if (bRet)
                 return retST;
             else
             {
-                var ct = new CQType(type);
+                var ct = new TypeBridge(type);
                 dicSType_CQType[type] = ct;
                 return ct;
             }

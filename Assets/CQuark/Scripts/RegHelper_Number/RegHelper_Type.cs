@@ -5,70 +5,35 @@ using System.Text;
 
 namespace CQuark
 {
-    public class RegHelper_Type : ICQ_Type
+    public class RegHelper_Type : IType
     {
-        public static RegHelper_Type MakeType(Type type, string keyword)
+        public string keyword
         {
-            if (!type.IsSubclassOf(typeof(Delegate)))
-            {
-                return new RegHelper_Type(type, keyword, false);
-            }
-            var method = type.GetMethod("Invoke");
-            var pp = method.GetParameters();
-            if (method.ReturnType == typeof(void))
-            {
-                if (pp.Length == 0)
-                {
-                    return new RegHelper_DeleAction(type, keyword);
-                }
-                else if (pp.Length == 1)
-                {
-                    var gtype = typeof(RegHelper_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type;
-                }
-                else if (pp.Length == 2)
-                {
-                    var gtype = typeof(RegHelper_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
-                }
-                else if (pp.Length == 3)
-                {
-                    var gtype = typeof(RegHelper_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
-                }
-                else
-                {
-                    throw new Exception("还没有支持这么多参数的委托");
-                }
-            }
-            else
-            {
-                Type gtype = null;
-                if (pp.Length == 0)
-                {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
-                }
-                else if (pp.Length == 1)
-                {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
-                }
-                else if (pp.Length == 2)
-                {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
-                }
-                else if (pp.Length == 3)
-                {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                }
-                else
-                {
-                    throw new Exception("还没有支持这么多参数的委托");
-                }
-                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
-            }
+            get;
+            protected set;
         }
-        
-        protected RegHelper_Type(Type type, string setkeyword, bool dele)
+        public string _namespace
+        {
+            get { return typeBridge.NameSpace; }
+        }
+        public TypeBridge typeBridge
+        {
+            get;
+            protected set;
+        }
+        public virtual object defaultValue
+        {
+            get { return null; }
+        }
+        public ICQ_TypeFunction function
+        {
+            get;
+            protected set;
+        }
+
+        public Type _type;
+
+        public RegHelper_Type(Type type, string setkeyword, bool dele)
         {
             function = new RegHelper_TypeFunction(type);
             if (setkeyword != null)
@@ -79,37 +44,22 @@ namespace CQuark
             {
                 keyword = type.Name;
             }
-            this.type = type;
+            this.typeBridge = type;
             this._type = type;
         }
-        public string keyword
-        {
-            get;
-            protected set;
-        }
-        public string _namespace
-        {
-            get { return type.NameSpace; }
-        }
-        public CQType type
-        {
-            get;
-            protected set;
-        }
-        public Type _type;
 
-        public virtual ICQ_Value MakeValue(object value) //这个方法可能存在AOT陷阱
+
+        public virtual IValue MakeValue(object value) //这个方法可能存在AOT陷阱
         {
             //这个方法可能存在AOT陷阱
             //Type target = typeof(CQ_Value_Value<>).MakeGenericType(new Type[] { type }); 
             //return target.GetConstructor(new Type[] { }).Invoke(new object[0]) as ICQ_Value;
 
-            CQ_Value_Object rvalue = new CQ_Value_Object(type);
+            CQ_Value_Object rvalue = new CQ_Value_Object(typeBridge);
             rvalue.value_value = value;
             return rvalue;
         }
-
-        public virtual object ConvertTo(object src, CQType targetType)
+        public virtual object ConvertTo(object src, TypeBridge targetType)
         {
             Type targettype = (Type)targetType;
             if (this._type == targettype) return src;
@@ -158,10 +108,9 @@ namespace CQuark
 
             return null;
         }
-
-		public virtual object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+		public virtual object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
-            returntype = type;
+            returntype = typeBridge;
             System.Reflection.MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
             if (code == '+')
@@ -171,22 +120,21 @@ namespace CQuark
                     returntype = typeof(string);
                     return left.ToString() + right.value as string;
                 }
-                call = _type.GetMethod("op_Addition", new Type[] { this.type, right.type });
+                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, right.type });
             }
             else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Subtraction", new Type[] { this.type, right.type });
+                call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, right.type });
             else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Multiply", new Type[] { this.type, right.type });
+                call = _type.GetMethod("op_Multiply", new Type[] { this.typeBridge, right.type });
             else if (code == '/')//[3] = {CQcriptExt.Vector3 op_Division(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Division", new Type[] { this.type, right.type });
+                call = _type.GetMethod("op_Division", new Type[] { this.typeBridge, right.type });
             else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Modulus", new Type[] { this.type, right.type });
+                call = _type.GetMethod("op_Modulus", new Type[] { this.typeBridge, right.type });
 
             var obj = call.Invoke(null, new object[] { left, right.value });
             //function.StaticCall(env,"op_Addtion",new List<ICL>{})
             return obj;
         }
-
 		public virtual bool MathLogic(LogicToken code, object left, CQ_Content.Value right)
         {
             System.Reflection.MethodInfo call = null;
@@ -229,22 +177,11 @@ namespace CQuark
             return (bool)obj;
         }
 
-        public ICQ_TypeFunction function
-        {
-            get;
-            protected set;
-        }
-
-        public virtual object DefValue
-        {
-            get { return null; }
-        }
-
+        
         public virtual Delegate CreateDelegate(DeleFunction lambda)
         {
             throw new Exception("");
         }
-
         public virtual Delegate CreateDelegate(DeleLambda lambda)
         {
             throw new Exception("");

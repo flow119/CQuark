@@ -6,9 +6,9 @@ namespace CQuark
     public partial class CQ_Expression_Compiler 
     {
 
-        static IList<ICQ_Type> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, bool onlyGotType)
+        static IList<IType> _FileCompiler(string filename, IList<Token> tokens, bool embDeubgToken, bool onlyGotType)
         {
-            List<ICQ_Type> typelist = new List<ICQ_Type>();
+            List<IType> typelist = new List<IType>();
 
             List<string> usingList = new List<string>();
             //识别using
@@ -105,7 +105,7 @@ namespace CQuark
                     }
                     else
                     {
-                        ICQ_Type type = Compiler_Class(name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, embDeubgToken, onlyGotType, usingList);
+                        IType type = Compiler_Class(name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, embDeubgToken, onlyGotType, usingList);
                         if (type != null)
                         {
                             typelist.Add(type);
@@ -118,27 +118,27 @@ namespace CQuark
 
             return typelist;
         }
-        static ICQ_Type Compiler_Class(string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
+        static IType Compiler_Class(string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist)
         {
 
-			CQ_Type_Class stype = CQuark.AppDomain.GetTypeByKeywordQuiet(classname) as CQ_Type_Class;
+			Type_Class typeClass = CQuark.AppDomain.GetTypeByKeywordQuiet(classname) as Type_Class;
 
-            if (stype == null)
-                stype = new CQ_Type_Class(classname, bInterface, filename);
+            if (typeClass == null)
+                typeClass = new Type_Class(classname, bInterface, filename);
 
             if (basetype != null && basetype.Count != 0 && onlyGotType == false)
             {
-                List<ICQ_Type> basetypess = new List<ICQ_Type>();
+                List<IType> basetypess = new List<IType>();
                 foreach (string t in basetype)
                 {
-					ICQ_Type type = CQuark.AppDomain.GetTypeByKeyword(t);
+					IType type = CQuark.AppDomain.GetTypeByKeyword(t);
                     basetypess.Add(type);
                 }
-                stype.SetBaseType(basetypess);
+                typeClass.SetBaseType(basetypess);
             }
 
             if (onlyGotType) 
-				return stype;
+				return typeClass;
 
             //if (env.useNamespace && usinglist != null)
             //{//使用命名空间,替换token
@@ -201,9 +201,9 @@ namespace CQuark
             //    iend = tokens.Count - 1;
             //}
 
-            stype.compiled = false;
-            (stype.function as SType).functions.Clear();
-            (stype.function as SType).members.Clear();
+            typeClass.compiled = false;
+            (typeClass.function as CQ_Type).functions.Clear();
+            (typeClass.function as CQ_Type).members.Clear();
             //搜寻成员定义和函数
             //定义语法            //Type id[= expr];
             //函数语法            //Type id([Type id,]){block};
@@ -212,7 +212,7 @@ namespace CQuark
             bool bStatic = false;
             if (EmbDebugToken)//SType 嵌入Token
             {
-                stype.EmbDebugToken(tokens);
+                typeClass.EmbDebugToken(tokens);
             }
             for (int i = ibegin; i <= iend; i++)
             {
@@ -235,7 +235,7 @@ namespace CQuark
                 else if (tokens[i].type == TokenType.TYPE || (tokens[i].type == TokenType.IDENTIFIER && tokens[i].text == classname))//发现类型
                 {
 
-					ICQ_Type idtype = CQuark.AppDomain.GetTypeByKeyword("null");
+					IType idtype = CQuark.AppDomain.GetTypeByKeyword("null");
                     bool bctor = false;
                     if (tokens[i].type == TokenType.TYPE)//类型
                     {
@@ -266,7 +266,7 @@ namespace CQuark
                         if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && tokens[i + 2].text == "(")//参数开始,这是函数
                         {
                             DebugUtil.Log("发现函数:" + idname);
-                            SType.Function func = new SType.Function();
+                            CQ_Type.Function func = new CQ_Type.Function();
                             func.bStatic = bStatic;
                             func.bPublic = bPublic;
 
@@ -309,7 +309,7 @@ namespace CQuark
                                 {
                                     DebugUtil.LogWarning("警告，该函数编译为null，请检查");
                                 }
-                                (stype.function as SType).functions.Add(idname, func);
+                                (typeClass.function as CQ_Type).functions.Add(idname, func);
 
                                 i = funcend;
                             }
@@ -317,7 +317,7 @@ namespace CQuark
                             {
 
                                 func.expr_runtime = null;
-                                (stype.function as SType).functions.Add(idname, func);
+                                (typeClass.function as CQ_Type).functions.Add(idname, func);
                                 i = funcbegin;
                             }
                             else
@@ -352,7 +352,7 @@ namespace CQuark
                             }
 
 
-                            var member = new SType.Member();
+                            var member = new CQ_Type.Member();
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = !(haveset && setpublic);
@@ -372,13 +372,13 @@ namespace CQuark
                                 }
                                 i = jend;
                             }
-                            (stype.function as SType).members.Add(idname, member);
+                            (typeClass.function as CQ_Type).members.Add(idname, member);
                         }
                         else if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && (tokens[i + 2].text == "=" || tokens[i + 2].text == ";"))//这是成员定义
                         {
                             DebugUtil.Log("发现成员定义:" + idname);
 
-                            var member = new SType.Member();
+                            var member = new CQ_Type.Member();
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = false;
@@ -412,7 +412,7 @@ namespace CQuark
                                 }
                                 i = jend;
                             }
-                            (stype.function as SType).members.Add(idname, member);
+                            (typeClass.function as CQ_Type).members.Add(idname, member);
                         }
 
                         bPublic = false;
@@ -426,8 +426,8 @@ namespace CQuark
                     }
                 }
             }
-            stype.compiled = true;
-            return stype;
+            typeClass.compiled = true;
+            return typeClass;
         }
 
         static List<string> Compiler_Using(IList<Token> tokens, int pos, int posend)

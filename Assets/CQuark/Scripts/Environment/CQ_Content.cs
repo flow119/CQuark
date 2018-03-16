@@ -7,7 +7,7 @@ namespace CQuark
     public class CQ_Content
     {
 		public Stack<List<string>> tvalues = new Stack<List<string>>();
-		public SType CallType;
+		public CQ_Type CallType;
 		public SInstance CallThis;
 		public Dictionary<string, Value> values = new Dictionary<string, Value>();
 
@@ -213,10 +213,10 @@ namespace CQuark
 		}
         public class Value
         {
-            public CQType type;
+            public TypeBridge type;
             public object value;
             public int breakBlock = 0;//是否是块结束
-            public static Value FromICQ_Value(ICQ_Value value)
+            public static Value FromICQ_Value(IValue value)
             {
                 Value v = new Value();
                 v.type = value.type;
@@ -276,7 +276,7 @@ namespace CQuark
             }
         }
 
-        public void Define(string name,CQType type)
+        public void Define(string name,TypeBridge type)
         {
             if (values.ContainsKey(name)) throw new Exception("已经定义过");
             Value v = new Value();
@@ -295,7 +295,7 @@ namespace CQuark
             {
                 if (CallType != null)
                 {
-                    SType.Member retM = null;
+                    CQ_Type.Member retM = null;
                     bool bRet = CallType.members.TryGetValue(name, out retM);
                     if (bRet)
                     {
@@ -319,12 +319,12 @@ namespace CQuark
                 throw new Exception("值没有定义过" + name + "," + err);
 
             }
-            if ((Type)retV.type == typeof(CQ_Type_Var.var) && value != null)
+            if ((Type)retV.type == typeof(Type_Var.var) && value != null)
                 retV.type = value.GetType();
             retV.value = value;
         }
 
-        public void DefineAndSet(string name,CQType type,object value)
+        public void DefineAndSet(string name,TypeBridge type,object value)
         {
             if (values.ContainsKey(name)) 
                 throw new Exception(type.ToString()+":"+name+"已经定义过");
@@ -361,7 +361,7 @@ namespace CQuark
 
             if (CallType != null)
             {
-                SType.Member retM = null;
+                CQ_Type.Member retM = null;
                 bFind = CallType.members.TryGetValue(name, out retM);
                 if (bFind)
                 {

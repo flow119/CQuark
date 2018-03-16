@@ -9,8 +9,8 @@ namespace CQuark{
 	//整个项目只需要一个AppDomain,所以改成了全部静态
 	public class AppDomain {
 
-		static Dictionary<CQType, ICQ_Type> types = new Dictionary<CQType, ICQ_Type>();
-		static Dictionary<string, ICQ_Type> typess = new Dictionary<string, ICQ_Type>();
+		static Dictionary<TypeBridge, IType> types = new Dictionary<TypeBridge, IType>();
+		static Dictionary<string, IType> typess = new Dictionary<string, IType>();
 		static Dictionary<string, ICQ_Function> calls = new Dictionary<string, ICQ_Function>();
 		static Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
 
@@ -29,11 +29,6 @@ namespace CQuark{
 			RegType(new CQ_Type_UInt());
 			RegType(new CQ_Type_Float());
 			RegType(new CQ_Type_Double());
-			RegType(new CQ_Type_String());
-			RegType(new CQ_Type_Var());
-			RegType(new CQ_Type_Bool());
-			RegType(new CQ_Type_Lambda());
-			RegType(new CQ_Type_Delegate());
 			RegType(new CQ_Type_Byte());
 			RegType(new CQ_Type_Char());
 			RegType(new CQ_Type_UShort());
@@ -41,6 +36,12 @@ namespace CQuark{
 			RegType(new CQ_Type_Short());
 			RegType(new CQ_Type_Long());
 			RegType(new CQ_Type_ULong());
+
+            RegType(new Type_String());
+            RegType(new Type_Var());
+            RegType(new Type_Bool());
+            RegType(new Type_Lambda());
+            RegType(new Type_Delegate());
 			RegType (typeof(IEnumerator), "IEnumerator");
 
 			RegType(typeof(object), "object");
@@ -50,7 +51,7 @@ namespace CQuark{
 			RegType (typeof(Stack<>), "Stack");
 			RegType (typeof(Queue<>), "Queue");
 
-			typess["null"] = new CQ_Type_NULL();
+			typess["null"] = new Type_NULL();
 			//contentGloabl = CreateContent();
 			//if (!useNamespace)//命名空间模式不能直接用函数
 			{
@@ -115,13 +116,74 @@ namespace CQuark{
 			RegType (typeof(byte[]), "byte[]");
 		}
 
+        public static RegHelper_Type MakeType(Type type, string keyword)
+        {
+            if (!type.IsSubclassOf(typeof(Delegate)))
+            {
+                return new RegHelper_Type(type, keyword, false);
+            }
+            var method = type.GetMethod("Invoke");
+            var pp = method.GetParameters();
+            if (method.ReturnType == typeof(void))
+            {
+                if (pp.Length == 0)
+                {
+                    return new RegHelper_DeleAction(type, keyword);
+                }
+                else if (pp.Length == 1)
+                {
+                    var gtype = typeof(RegHelper_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
+                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type;
+                }
+                else if (pp.Length == 2)
+                {
+                    var gtype = typeof(RegHelper_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+                }
+                else if (pp.Length == 3)
+                {
+                    var gtype = typeof(RegHelper_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+                }
+                else
+                {
+                    throw new Exception("还没有支持这么多参数的委托");
+                }
+            }
+            else
+            {
+                Type gtype = null;
+                if (pp.Length == 0)
+                {
+                    gtype = typeof(RegHelper_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
+                }
+                else if (pp.Length == 1)
+                {
+                    gtype = typeof(RegHelper_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
+                }
+                else if (pp.Length == 2)
+                {
+                    gtype = typeof(RegHelper_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
+                }
+                else if (pp.Length == 3)
+                {
+                    gtype = typeof(RegHelper_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+                }
+                else
+                {
+                    throw new Exception("还没有支持这么多参数的委托");
+                }
+                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+            }
+        }
+
 		public static void RegType(Type type, string keyword)
 		{
-			RegType(RegHelper_Type.MakeType(type, keyword));
+			RegType(MakeType(type, keyword));
 		}
-		public static void RegType(ICQ_Type type)
+		public static void RegType(IType type)
 		{
-			types[type.type] = type;
+			types[type.typeBridge] = type;
 
 			string typename = type.keyword;
 			//if (useNamespace)
@@ -142,23 +204,23 @@ namespace CQuark{
 			}
 		}
 
-		public static ICQ_Type GetType(CQType type)
+		public static IType GetType(TypeBridge type)
 		{
 			if (type == null)
 				return typess["null"];
 
-			ICQ_Type ret = null;
+			IType ret = null;
 			if (types.TryGetValue(type, out ret) == false)
 			{
 				DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
-				ret = RegHelper_Type.MakeType(type, "");
+				ret = MakeType(type, "");
 				RegType(ret);
 			}
 			return ret;
 		}
-		public static ICQ_Type GetTypeByKeyword(string keyword)
+		public static IType GetTypeByKeyword(string keyword)
 		{
-			ICQ_Type ret = null;
+			IType ret = null;
 			if (string.IsNullOrEmpty(keyword))
 			{
 				return null;
@@ -203,13 +265,13 @@ namespace CQuark{
 					//var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
 					if (typess.ContainsKey(func))
 					{
-						Type gentype = GetTypeByKeyword(func).type;
+						Type gentype = GetTypeByKeyword(func).typeBridge;
 						if (gentype.IsGenericTypeDefinition)
 						{
 							Type[] types = new Type[_types.Count];
 							for (int i = 0; i < types.Length; i++)
 							{
-								CQType t = GetTypeByKeyword(_types[i]).type;
+								TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
 								Type rt = t;
 								if (rt == null && t != null)
 								{
@@ -218,7 +280,7 @@ namespace CQuark{
 								types[i] = rt;
 							}
 							Type IType = gentype.MakeGenericType(types);
-							RegType(CQuark.RegHelper_Type.MakeType(IType, keyword));
+							RegType(MakeType(IType, keyword));
 							return GetTypeByKeyword(keyword);
 						}
 					}
@@ -228,9 +290,9 @@ namespace CQuark{
 
 			return ret;
 		}
-		public static ICQ_Type GetTypeByKeywordQuiet(string keyword)
+		public static IType GetTypeByKeywordQuiet(string keyword)
 		{
-			ICQ_Type ret = null;
+			IType ret = null;
 			if (typess.TryGetValue(keyword, out ret) == false)
 			{
 				return null;
@@ -344,7 +406,7 @@ namespace CQuark{
 		}
 		public static void File_PreCompileToken(string filename, IList<Token> listToken)
 		{
-			IList<ICQ_Type> types = CQ_Expression_Compiler.FilePreCompile(filename, listToken);
+			IList<IType> types = CQ_Expression_Compiler.FilePreCompile(filename, listToken);
 			foreach (var type in types)
 			{
 				RegType(type);
@@ -353,7 +415,7 @@ namespace CQuark{
 		public static void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken)
 		{
 			DebugUtil.Log("File_CompilerToken:" + filename);
-			IList<ICQ_Type> types = CQ_Expression_Compiler.FileCompile(filename, listToken, embDebugToken);
+			IList<IType> types = CQ_Expression_Compiler.FileCompile(filename, listToken, embDebugToken);
 			foreach (var type in types)
 			{
 				if (GetTypeByKeywordQuiet(type.keyword) == null)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    class CQ_Type_NULL : ICQ_Type
+    class Type_NULL : IType
     {
         public string keyword
         {
@@ -14,12 +14,12 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public CQType type
+        public TypeBridge typeBridge
         {
             get { return null; }
         }
 
-        public ICQ_Value MakeValue(object value)
+        public IValue MakeValue(object value)
         {
             CQ_Value_Null v = new CQ_Value_Null();
        
@@ -27,12 +27,12 @@ namespace CQuark
 
         }
 
-        public object ConvertTo(object src, CQType targetType)
+        public object ConvertTo(object src, TypeBridge targetType)
         {
             return null;
         }
 
-        public object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
            
             if ((Type)right.type == typeof(string))
@@ -62,7 +62,7 @@ namespace CQuark
         {
             get { throw new NotImplementedException(); }
         }
-        public object DefValue
+        public object defaultValue
         {
             get { return null; }
         }

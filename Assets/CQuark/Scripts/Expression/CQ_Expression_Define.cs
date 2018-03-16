@@ -69,7 +69,7 @@ namespace CQuark
 
                 CQ_Content.Value v = _listParam[0].ComputeValue(content);
                 object val = v.value;
-                if ((Type)value_type == typeof(CQ_Type_Var.var))
+                if ((Type)value_type == typeof(Type_Var.var))
                 {
                     if(v.type!=null)
                         value_type = v.type;
@@ -103,7 +103,7 @@ namespace CQuark
 				}else{
 					CQ_Content.Value v = _listParam[0].ComputeValue(content);
 					object val = v.value;
-					if ((Type)value_type == typeof(CQ_Type_Var.var))
+					if ((Type)value_type == typeof(Type_Var.var))
 					{
 						if(v.type!=null)
 							value_type = v.type;
@@ -128,7 +128,7 @@ namespace CQuark
 
 
         public string value_name;
-        public CQType value_type;
+        public TypeBridge value_type;
         public override string ToString()
         {
             string outs = "Define|" + value_type.Name + " " + value_name;

@@ -60,11 +60,11 @@ namespace CQuark
 
             var left = listParam[0].ComputeValue(content);
             var right = listParam[1].ComputeValue(content);
-            ICQ_Type type = CQuark.AppDomain.GetType(left.type);
+            IType type = CQuark.AppDomain.GetType(left.type);
             //if (mathop == "+=")
 
             {
-                CQType returntype;
+                TypeBridge returntype;
                 object value = type.Math2Value(mathop, left.value, right, out returntype);
                 value = type.ConvertTo( value, left.type);
                 left.value = value;

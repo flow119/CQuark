@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace CQuark
 {
-	public class CQ_Value_Object:ICQ_Value
+	public class CQ_Value_Object:IValue
 	{
 		public CQ_Value_Object(Type type)
 		{
@@ -13,7 +13,7 @@ namespace CQuark
 			this.value_value = null;
 		}
 
-		public CQType type
+		public TypeBridge type
 		{
 			get;
 			private set;

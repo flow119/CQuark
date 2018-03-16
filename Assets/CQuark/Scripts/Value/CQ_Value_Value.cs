@@ -5,9 +5,9 @@ using System.Collections;
 
 namespace CQuark
 {
-    public class CQ_Value_Value<T> : ICQ_Value
+    public class CQ_Value_Value<T> : IValue
     {
-        public CQType type
+        public TypeBridge type
         {
             get { return typeof(T); }
         }

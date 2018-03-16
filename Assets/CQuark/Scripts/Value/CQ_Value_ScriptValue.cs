@@ -5,13 +5,13 @@ using System.Collections;
 
 namespace CQuark
 {
-	public class CQ_Value_ScriptValue : ICQ_Value
+	public class CQ_Value_ScriptValue : IValue
 	{
-		public CQType type
+		public TypeBridge type
 		{
 			get { return value_type; }
 		}
-		public SType value_type;
+		public CQ_Type value_type;
 
 		public SInstance value_value;
 		public object value

@@ -58,7 +58,7 @@ namespace CQuark
             content.InStack(this);
 
             var right = listParam[0].ComputeValue(content);
-            ICQ_Type type = CQuark.AppDomain.GetType(right.type);
+            IType type = CQuark.AppDomain.GetType(right.type);
             CQ_Content.Value value = new CQ_Content.Value();
             value.type = targettype;
             value.value = type.ConvertTo( right.value, targettype);
@@ -76,11 +76,11 @@ namespace CQuark
 			throw new Exception ("暂时不支持套用协程");
 		}
 
-        public CQType type
+        public TypeBridge type
         {
             get { return null; }
         }
-        public CQType targettype;
+        public TypeBridge targettype;
 
         public override string ToString()
         {

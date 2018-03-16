@@ -120,7 +120,7 @@ namespace CQuark
                     }
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(pos, posend, tlist[pos].line, tlist[posend].line);
                     convert.listParam.Add(v);
-					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).type;
+					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
                     return convert;
                 }
@@ -144,7 +144,7 @@ namespace CQuark
                 {
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     convert.listParam.Add(valueleft);
-					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).type;
+					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
 
                     return convert;
@@ -153,7 +153,7 @@ namespace CQuark
                 {
                     CQ_Expression_TypeCheck check = new CQ_Expression_TypeCheck(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     check.listParam.Add(valueleft);
-					check.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).type;
+					check.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
 
                     return check;

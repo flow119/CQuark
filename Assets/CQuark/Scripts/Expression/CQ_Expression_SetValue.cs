@@ -64,7 +64,7 @@ namespace CQuark
 
                 {
                     object val = v.value;
-                    CQType value_type = null;
+                    TypeBridge value_type = null;
                     if (content.values.ContainsKey(value_name))
                     {
                         value_type = content.values[value_name].type;
@@ -89,7 +89,7 @@ namespace CQuark
                         }
                     }
                     //val = v.value;
-                    if ((Type)value_type != typeof(CQ_Type_Var.var) && value_type != v.type)
+                    if ((Type)value_type != typeof(Type_Var.var) && value_type != v.type)
                     {
                         val = CQuark.AppDomain.GetType(v.type).ConvertTo(v.value, value_type);
                     }
@@ -112,7 +112,7 @@ namespace CQuark
 					
 					{
 						object val = v.value;
-						CQType value_type = null;
+						TypeBridge value_type = null;
 						if (content.values.ContainsKey(value_name))
 						{
 							value_type = content.values[value_name].type;
@@ -137,7 +137,7 @@ namespace CQuark
 							}
 						}
 						//val = v.value;
-						if ((Type)value_type != typeof(CQ_Type_Var.var) && value_type != v.type)
+						if ((Type)value_type != typeof(Type_Var.var) && value_type != v.type)
 						{
 							val = CQuark.AppDomain.GetType(v.type).ConvertTo(v.value, value_type);
 						}

@@ -13,7 +13,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	}
 
 	public ECodeType m_codeType = ECodeType.FileName;
-	CQuark.ICQ_Type type;
+	CQuark.IType type;
 	CQuark.SInstance inst;//脚本实例
 	public string m_className;
 
@@ -72,12 +72,12 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 
 	protected override void CallScript(string methodName, bool useCoroutine){
 		if (useCoroutine) {
-			SType cclass = type.function as SType;
+			CQ_Type cclass = type.function as CQ_Type;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
 				this.StartNewCoroutine (type.function.CoroutineCall (content, inst, methodName, null, this));
 		}
 		else {
-			SType cclass = type.function as SType;
+			CQ_Type cclass = type.function as CQ_Type;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
 				type.function.MemberCall (content, inst, methodName, null);
 		}

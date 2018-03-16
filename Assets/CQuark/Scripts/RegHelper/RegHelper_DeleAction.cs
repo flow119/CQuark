@@ -13,7 +13,7 @@ namespace CQuark
         }
 
 
-        public override object Math2Value(char code, object left, CQ_Content.Value right, out CQType returntype)
+        public override object Math2Value(char code, object left, CQ_Content.Value right, out TypeBridge returntype)
         {
             returntype = null;
 
@@ -132,9 +132,9 @@ namespace CQuark
                 }
             };
             Delegate d = dele as Delegate;
-            if ((Type)this.type != typeof(Action))
+            if ((Type)this.typeBridge != typeof(Action))
             {
-                _dele = Delegate.CreateDelegate(this.type, d.Target, d.Method);
+                _dele = Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
             }
             else
             {
@@ -175,9 +175,9 @@ namespace CQuark
                 }
             };
             Delegate d = dele as Delegate;
-            if ((Type)this.type != typeof(Action))
+            if ((Type)this.typeBridge != typeof(Action))
             {
-                return Delegate.CreateDelegate(this.type, d.Target, d.Method);
+                return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
             }
             else
             {
