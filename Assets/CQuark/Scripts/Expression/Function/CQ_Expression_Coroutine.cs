@@ -47,10 +47,10 @@ namespace CQuark
 				return true;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            List<CQ_Content.Value> list = new List<CQ_Content.Value>();
+            List<CQ_Value> list = new List<CQ_Value>();
             foreach (ICQ_Expression p in listParam)
             {
                 if (p != null)
@@ -130,7 +130,7 @@ namespace CQuark
 		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
 		{
 			content.InStack(this);
-			List<CQ_Content.Value> list = new List<CQ_Content.Value>();
+			List<CQ_Value> list = new List<CQ_Value>();
 			foreach (ICQ_Expression p in listParam)
 			{
 				if (p != null)
@@ -140,7 +140,7 @@ namespace CQuark
 				}
 			}
 
-			ICQ_Function func = CQuark.AppDomain.GetFunction (funcname);
+			IFunction func = CQuark.AppDomain.GetFunction (funcname);
 			yield return coroutine.StartNewCoroutine (func.Call(content, list).value as IEnumerator);
 			content.OutStack(this);
 //			if(funcname == "YieldWaitForSecond"){

@@ -5,7 +5,6 @@ using System.Collections;
 
 namespace CQuark
 {
-
     public class CQ_Expression_Block : ICQ_Expression
     {
         public CQ_Expression_Block(int tbegin,int tend,int lbegin,int lend)
@@ -53,11 +52,11 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             content.DepthAdd();
-            CQ_Content.Value value = null;
+            CQ_Value value = null;
 			foreach (ICQ_Expression i in listParam)
 			{
 				ICQ_Expression e =i  as ICQ_Expression;
@@ -75,7 +74,7 @@ namespace CQuark
 		{
 			content.InStack(this);
 			content.DepthAdd();
-			CQ_Content.Value value = null;
+			CQ_Value value = null;
 			foreach (ICQ_Expression i in listParam)
 			{
 				ICQ_Expression e =i  as ICQ_Expression;

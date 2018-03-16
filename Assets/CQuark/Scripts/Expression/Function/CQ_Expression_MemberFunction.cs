@@ -55,7 +55,7 @@ namespace CQuark
 		}
         MethodCache cache = null;
 
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             var parent = listParam[0].ComputeValue(content);
@@ -72,12 +72,12 @@ namespace CQuark
                     typefunction = s.type;
                 }
             }
-            List<CQ_Content.Value> _params = new List<CQ_Content.Value>();
+            List<CQ_Value> _params = new List<CQ_Value>();
             for (int i = 1; i < listParam.Count; i++)
             {
                 _params.Add(listParam[i].ComputeValue(content));
             }
-            CQ_Content.Value value = null;
+            CQ_Value value = null;
             if (cache == null||cache.cachefail)
             {
                 cache = new MethodCache();

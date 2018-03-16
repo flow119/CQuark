@@ -53,14 +53,14 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            CQ_Content.Value result = null;
+            CQ_Value result = null;
 
 
             {
-                result = new CQ_Content.Value();
+                result = new CQ_Value();
                 var value = listParam[0].ComputeValue(content);
                 if ((Type)value.type != typeof(bool))
                 {

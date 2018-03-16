@@ -53,10 +53,10 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            List<CQ_Content.Value> list = new List<CQ_Content.Value>();
+            List<CQ_Value> list = new List<CQ_Value>();
             foreach(ICQ_Expression p in listParam)
             {
                 if(p!=null)

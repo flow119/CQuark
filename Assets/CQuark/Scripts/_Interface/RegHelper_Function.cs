@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class RegHelper_Function : ICQ_Function
+    public class RegHelper_Function : IFunction
     {
         Delegate dele;
         public RegHelper_Function(Delegate dele)
@@ -50,9 +50,9 @@ namespace CQuark
 			get;
 			private set;
 		}
-        public CQ_Content.Value Call(CQ_Content content, IList<CQ_Content.Value> param)
+        public CQ_Value Call(CQ_Content content, IList<CQ_Value> param)
         {
-            CQ_Content.Value v = new CQ_Content.Value();
+            CQ_Value v = new CQ_Value();
             List<object> objs = new List<object>();
             //var _params =   dele.Method.GetParameters();
             for (int i = 0; i < this.defvalues.Count; i++)

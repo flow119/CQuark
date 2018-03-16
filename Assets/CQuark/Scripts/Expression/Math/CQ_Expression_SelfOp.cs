@@ -48,14 +48,14 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
 
             var v = content.Get(value_name);
             IType type = CQuark.AppDomain.GetType(v.type);
             TypeBridge returntype;
-            object value = type.Math2Value(mathop, v.value, CQ_Content.Value.One, out returntype);
+            object value = type.Math2Value(mathop, v.value, CQ_Value.One, out returntype);
             value = type.ConvertTo( value, v.type);
             content.Set(value_name, value);
 

@@ -53,7 +53,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             content.DepthAdd();
@@ -69,7 +69,7 @@ namespace CQuark
             ICQ_Expression expr_block = listParam[2] as ICQ_Expression;
 
             var it = emu.GetEnumerator();
-            CQ_Content.Value vrt = null;
+            CQ_Value vrt = null;
             while (it.MoveNext())
             {
 

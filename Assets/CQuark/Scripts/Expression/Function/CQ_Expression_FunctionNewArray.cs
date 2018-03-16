@@ -55,14 +55,14 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             List<object> list = new List<object>();
             int count = listParam[0] == null ? (listParam.Count - 1) : (int)listParam[0].ComputeValue(content).value;
             if (count == 0)
                 throw new Exception("不能创建0长度数组");
-            CQ_Content.Value vcount = new CQ_Content.Value();
+            CQ_Value vcount = new CQ_Value();
             vcount.type = typeof(int);
             vcount.value = count;
             for (int i = 1; i < listParam.Count; i++)
@@ -72,7 +72,7 @@ namespace CQuark
                     list.Add(listParam[i].ComputeValue(content).value);
                 }
             }
-            List<CQ_Content.Value> p = new List<CQ_Content.Value>();
+            List<CQ_Value> p = new List<CQ_Value>();
             p.Add(vcount);
             var outvalue = type.function.New(content, p);
             for (int i = 0; i < list.Count; i++)

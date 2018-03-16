@@ -52,7 +52,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             var parent = listParam[0].ComputeValue(content);
@@ -60,7 +60,7 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
             }
-            ICQ_TypeFunction typefunction = CQuark.AppDomain.GetType(parent.type).function;
+            ICQ_Function typefunction = CQuark.AppDomain.GetType(parent.type).function;
             if(parent.type is object)
             {
                 SInstance s =parent.value as SInstance;

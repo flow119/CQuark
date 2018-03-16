@@ -53,10 +53,10 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            List<CQ_Content.Value> list = new List<CQ_Content.Value>();
+            List<CQ_Value> list = new List<CQ_Value>();
             foreach (ICQ_Expression p in listParam)
             {
                 if (p != null)
@@ -64,7 +64,7 @@ namespace CQuark
                     list.Add(p.ComputeValue(content));
                 }
             }
-			CQ_Content.Value v = null;
+			CQ_Value v = null;
 
             CQ_Type.Function retFunc = null;
             bool bFind = false;
@@ -94,7 +94,7 @@ namespace CQuark
                     //if(v.value is Delegate)
                     {
                         Delegate d = v.value as Delegate;
-                        v = new CQ_Content.Value();
+                        v = new CQ_Value();
                         object[] obja = new object[list.Count];
                         for (int i = 0; i < list.Count; i++)
                         {

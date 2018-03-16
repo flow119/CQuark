@@ -53,18 +53,18 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            CQ_Content.Value result = new CQ_Content.Value();
+            CQ_Value result = new CQ_Value();
 
             //if (mathop == "&&" || mathop == "||")
             {
                 bool bleft = false;
                 bool bright = false;
-                if (listParam[0] is IValue)
+                if (listParam[0] is ICQ_Expression_Value)
                 {
-                    bleft = (bool)((listParam[0] as IValue).value);
+                    bleft = (bool)((listParam[0] as ICQ_Expression_Value).value);
                 }
                 else
                 {
@@ -79,9 +79,9 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is IValue)
+                        if (listParam[1] is ICQ_Expression_Value)
                         {
-                            bright = (bool)((listParam[1] as IValue).value);
+                            bright = (bool)((listParam[1] as ICQ_Expression_Value).value);
                         }
                         else
                         {
@@ -98,9 +98,9 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is IValue)
+                        if (listParam[1] is ICQ_Expression_Value)
                         {
-                            bright = (bool)((listParam[1] as IValue).value);
+                            bright = (bool)((listParam[1] as ICQ_Expression_Value).value);
                         }
                         else
                         {

@@ -53,7 +53,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             ICQ_Expression expr_if = listParam[0];
@@ -62,7 +62,7 @@ namespace CQuark
             ICQ_Expression expr_go1 = listParam[1];
             ICQ_Expression expr_go2 = null;
             if(listParam.Count>2)expr_go2= listParam[2];
-            CQ_Content.Value value = null;
+            CQ_Value value = null;
             if (bif && expr_go1 != null)
             {
                 if (expr_go1 is CQ_Expression_Block)

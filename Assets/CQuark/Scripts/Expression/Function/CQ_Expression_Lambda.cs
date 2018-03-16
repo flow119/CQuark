@@ -54,11 +54,11 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             //List<CQ_Content.Value> list = new List<CQ_Content.Value>();
-            CQ_Content.Value value = new CQ_Content.Value();
+            CQ_Value value = new CQ_Value();
             value.type = typeof(DeleLambda);
             value.value = new DeleLambda(content,(this.listParam[0] as CQ_Expression_Block).listParam,this.listParam[1]);
             //创建一个匿名方法

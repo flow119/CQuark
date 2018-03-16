@@ -54,7 +54,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             content.DepthAdd();
@@ -65,7 +65,7 @@ namespace CQuark
             ICQ_Expression expr_step = listParam[2] as ICQ_Expression;
 
             ICQ_Expression expr_block = listParam[3] as ICQ_Expression;
-            CQ_Content.Value vrt = null;
+            CQ_Value vrt = null;
             for (; ; )
             {
                 if (expr_continue != null && !(bool)expr_continue.ComputeValue(content).value) break;//expr2

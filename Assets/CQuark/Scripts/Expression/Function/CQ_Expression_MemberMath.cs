@@ -53,7 +53,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             var parent = listParam[0].ComputeValue(content);
@@ -67,12 +67,12 @@ namespace CQuark
 
             var getvalue = type.function.MemberValueGet(content, parent.value, membername);
 
-            CQ_Content.Value vright = CQ_Content.Value.One;
+            CQ_Value vright = CQ_Value.One;
             if (listParam.Count > 1)
             {
                 vright = listParam[1].ComputeValue(content);
             }
-            CQ_Content.Value vout =new CQ_Content.Value();
+            CQ_Value vout =new CQ_Value();
             var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
 

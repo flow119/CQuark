@@ -12,13 +12,13 @@ namespace CQuark
             {
                 if (value.text[value.text.Length - 1] == 'f')
                 {
-                    CQ_Value_Value<float> number = new CQ_Value_Value<float>();
+                    CQ_Expression_Value_Value<float> number = new CQ_Expression_Value_Value<float>();
                     number.value_value = float.Parse(value.text.Substring(0, value.text.Length - 1));
                     return number;
                 }
                 else if (value.text.Contains("."))
                 {
-                    CQ_Value_Value<double> number = new CQ_Value_Value<double>();
+                    CQ_Expression_Value_Value<double> number = new CQ_Expression_Value_Value<double>();
                     number.value_value = double.Parse(value.text);
                     return number;
                 }
@@ -26,7 +26,7 @@ namespace CQuark
                 {
                     if (value.text.Contains("'"))
                     {
-                        CQ_Value_Value<char> number = new CQ_Value_Value<char>();
+                        CQ_Expression_Value_Value<char> number = new CQ_Expression_Value_Value<char>();
                         number.value_value = (char)value.text[1];
                         return number;
                     }
@@ -36,14 +36,14 @@ namespace CQuark
                         ulong lv = ulong.Parse(value.text);
                         if (lv > uint.MaxValue)
                         {
-                            CQ_Value_Value<long> number = new CQ_Value_Value<long>();
+                            CQ_Expression_Value_Value<long> number = new CQ_Expression_Value_Value<long>();
                             number.value_value = (long)lv;
                             return number;
                         }
                         else
                         {
 
-                            CQ_Value_Value<int> number = new CQ_Value_Value<int>();
+                            CQ_Expression_Value_Value<int> number = new CQ_Expression_Value_Value<int>();
                             number.value_value = (int)lv;
                             return number;
 
@@ -54,7 +54,7 @@ namespace CQuark
             }
             else if (value.type == TokenType.STRING)
             {
-                CQ_Value_Value<string> str = new CQ_Value_Value<string>();
+                CQ_Expression_Value_Value<string> str = new CQ_Expression_Value_Value<string>();
                 str.value_value = value.text.Substring(1, value.text.Length - 2);
                 return str;
             }
@@ -89,13 +89,13 @@ namespace CQuark
             {
                 if (value.text[value.text.Length - 1] == 'f')
                 {
-                    CQ_Value_Value<float> number = new CQ_Value_Value<float>();
+                    CQ_Expression_Value_Value<float> number = new CQ_Expression_Value_Value<float>();
                     number.value_value = -float.Parse(value.text.Substring(0, value.text.Length - 1));
                     return number;
                 }
                 else if (value.text.Contains("."))
                 {
-                    CQ_Value_Value<double> number = new CQ_Value_Value<double>();
+                    CQ_Expression_Value_Value<double> number = new CQ_Expression_Value_Value<double>();
                     number.value_value = -double.Parse(value.text);
                     return number;
                 }
@@ -104,14 +104,14 @@ namespace CQuark
                     ulong lv = ulong.Parse(value.text);
                     if (lv > uint.MaxValue)
                     {
-                        CQ_Value_Value<long> number = new CQ_Value_Value<long>();
+                        CQ_Expression_Value_Value<long> number = new CQ_Expression_Value_Value<long>();
                         number.value_value = -(long)lv;
                         return number;
                     }
                     else
                     {
 
-                        CQ_Value_Value<int> number = new CQ_Value_Value<int>();
+                        CQ_Expression_Value_Value<int> number = new CQ_Expression_Value_Value<int>();
                         number.value_value = -(int)lv;
                         return number;
 

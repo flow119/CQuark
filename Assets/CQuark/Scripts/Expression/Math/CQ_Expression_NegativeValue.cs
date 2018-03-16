@@ -53,14 +53,14 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
 
-            CQ_Content.Value r = listParam[0].ComputeValue(content);
+            CQ_Value r = listParam[0].ComputeValue(content);
             IType type =CQuark.AppDomain.GetType(r.type);
             
-            r.value= type.Math2Value('*', r.value, CQ_Content.Value.OneMinus, out r.type);
+            r.value= type.Math2Value('*', r.value, CQ_Value.OneMinus, out r.type);
             content.OutStack(this);
 
             return r;

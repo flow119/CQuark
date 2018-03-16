@@ -54,12 +54,12 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             content.DepthAdd();
             ICQ_Expression expr_switch = listParam[0] as ICQ_Expression;
-			CQ_Content.Value switchVal = null;
+			CQ_Value switchVal = null;
 //			CQ_Content.Value vrt = null;
 			if (expr_switch != null) 
 				switchVal = expr_switch.ComputeValue(content);//switch//
@@ -98,7 +98,7 @@ namespace CQuark
 			content.InStack(this);
 			content.DepthAdd();
 			ICQ_Expression expr_switch = listParam[0] as ICQ_Expression;
-			CQ_Content.Value switchVal = null;
+			CQ_Value switchVal = null;
 			//			CQ_Content.Value vrt = null;
 			if (expr_switch != null) 
 				switchVal = expr_switch.ComputeValue(content);//switch//

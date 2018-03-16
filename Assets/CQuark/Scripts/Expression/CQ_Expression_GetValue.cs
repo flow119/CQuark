@@ -5,7 +5,6 @@ using System.Collections;
 
 namespace CQuark
 {
-
     public class CQ_Expression_GetValue : ICQ_Expression
     {
         public CQ_Expression_GetValue(int tbegin, int tend, int lbegin, int lend)
@@ -54,7 +53,7 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
             var value=content.Get(value_name);

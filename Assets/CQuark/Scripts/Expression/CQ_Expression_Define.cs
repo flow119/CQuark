@@ -5,7 +5,6 @@ using System.Collections;
 
 namespace CQuark
 {
-
     public class CQ_Expression_Define : ICQ_Expression
     {
         public CQ_Expression_Define(int tbegin, int tend, int lbegin, int lend)
@@ -60,14 +59,14 @@ namespace CQuark
 				return false;
 			}
 		}
-        public CQ_Content.Value ComputeValue(CQ_Content content)
+        public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
 
             if (_listParam != null && _listParam.Count > 0)
             {
 
-                CQ_Content.Value v = _listParam[0].ComputeValue(content);
+                CQ_Value v = _listParam[0].ComputeValue(content);
                 object val = v.value;
                 if ((Type)value_type == typeof(Type_Var.var))
                 {
@@ -101,7 +100,7 @@ namespace CQuark
 				if(_listParam[0].hasCoroutine){
 					yield return coroutine.StartNewCoroutine(CoroutineCompute(content, coroutine));
 				}else{
-					CQ_Content.Value v = _listParam[0].ComputeValue(content);
+					CQ_Value v = _listParam[0].ComputeValue(content);
 					object val = v.value;
 					if ((Type)value_type == typeof(Type_Var.var))
 					{

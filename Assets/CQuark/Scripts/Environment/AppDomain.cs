@@ -11,8 +11,8 @@ namespace CQuark{
 
 		static Dictionary<TypeBridge, IType> types = new Dictionary<TypeBridge, IType>();
 		static Dictionary<string, IType> typess = new Dictionary<string, IType>();
-		static Dictionary<string, ICQ_Function> calls = new Dictionary<string, ICQ_Function>();
-		static Dictionary<string, ICQ_Function> corouts = new Dictionary<string, ICQ_Function>();
+		static Dictionary<string, IFunction> calls = new Dictionary<string, IFunction>();
+		static Dictionary<string, IFunction> corouts = new Dictionary<string, IFunction>();
 
 		public static void Reset(){
 			DebugUtil.Log("Reset Domain");
@@ -25,17 +25,17 @@ namespace CQuark{
 
 		public static void RegDefaultType(){
 			//最好能默认
-			RegType(new CQ_Type_Int());
-			RegType(new CQ_Type_UInt());
-			RegType(new CQ_Type_Float());
-			RegType(new CQ_Type_Double());
-			RegType(new CQ_Type_Byte());
-			RegType(new CQ_Type_Char());
-			RegType(new CQ_Type_UShort());
-			RegType(new CQ_Type_Sbyte());
-			RegType(new CQ_Type_Short());
-			RegType(new CQ_Type_Long());
-			RegType(new CQ_Type_ULong());
+			RegType(new Type_Int());
+			RegType(new Type_UInt());
+			RegType(new Type_Float());
+			RegType(new Type_Double());
+			RegType(new Type_Byte());
+			RegType(new Type_Char());
+			RegType(new Type_UShort());
+			RegType(new Type_Sbyte());
+			RegType(new Type_Short());
+			RegType(new Type_Long());
+			RegType(new Type_ULong());
 
             RegType(new Type_String());
             RegType(new Type_Var());
@@ -116,11 +116,11 @@ namespace CQuark{
 			RegType (typeof(byte[]), "byte[]");
 		}
 
-        public static RegHelper_Type MakeType(Type type, string keyword)
+        public static Type_Operatorable MakeType(Type type, string keyword)
         {
             if (!type.IsSubclassOf(typeof(Delegate)))
             {
-                return new RegHelper_Type(type, keyword, false);
+                return new Type_Operatorable(type, keyword, false);
             }
             var method = type.GetMethod("Invoke");
             var pp = method.GetParameters();
@@ -128,22 +128,22 @@ namespace CQuark{
             {
                 if (pp.Length == 0)
                 {
-                    return new RegHelper_DeleAction(type, keyword);
+                    return new Type_DeleAction(type, keyword);
                 }
                 else if (pp.Length == 1)
                 {
-                    var gtype = typeof(RegHelper_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type;
+                    var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
+                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable;
                 }
                 else if (pp.Length == 2)
                 {
-                    var gtype = typeof(RegHelper_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+                    var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
                 }
                 else if (pp.Length == 3)
                 {
-                    var gtype = typeof(RegHelper_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+                    var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
                 }
                 else
                 {
@@ -155,25 +155,25 @@ namespace CQuark{
                 Type gtype = null;
                 if (pp.Length == 0)
                 {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
+                    gtype = typeof(Type_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
                 }
                 else if (pp.Length == 1)
                 {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
+                    gtype = typeof(Type_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
                 }
                 else if (pp.Length == 2)
                 {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
+                    gtype = typeof(Type_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
                 }
                 else if (pp.Length == 3)
                 {
-                    gtype = typeof(RegHelper_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+                    gtype = typeof(Type_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
                 }
                 else
                 {
                     throw new Exception("还没有支持这么多参数的委托");
                 }
-                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as RegHelper_Type);
+                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
             }
         }
 
@@ -299,7 +299,7 @@ namespace CQuark{
 			}
 			return ret;
 		}
-		public static void RegisterFunction(ICQ_Function func)
+		public static void RegisterFunction(IFunction func)
 		{
 			//if (useNamespace)
 			//{
@@ -315,9 +315,9 @@ namespace CQuark{
 			RegisterFunction(new RegHelper_Function (dele));
 		}
 
-		public static ICQ_Function GetFunction(string name)
+		public static IFunction GetFunction(string name)
 		{
-			ICQ_Function func = null;
+			IFunction func = null;
 			calls.TryGetValue(name, out func);
 			if (func == null)
 			{
@@ -359,12 +359,12 @@ namespace CQuark{
 
 		//CQ_Content contentGloabl = null;
 
-		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr)
+		public static CQ_Value Expr_Execute(ICQ_Expression expr)
 		{
 			CQ_Content content = new CQ_Content (true);
 			return expr.ComputeValue(content);
 		}
-		public static CQ_Content.Value Expr_Execute(ICQ_Expression expr, CQ_Content content)
+		public static CQ_Value Expr_Execute(ICQ_Expression expr, CQ_Content content)
 		{
 			if (content == null)
                 content = new CQ_Content(true);
