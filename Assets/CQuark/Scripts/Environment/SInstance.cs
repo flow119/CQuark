@@ -5,7 +5,7 @@ using System;
 
 namespace CQuark
 {
-    //脚本实例
+    //西瓜类的实例
     public class SInstance
     {
         public CQ_Type type;

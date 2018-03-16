@@ -15,6 +15,9 @@ public class Demo1 : MonoBehaviour {
 
 	//这个函数展示最简单的计算
 	void Eval1 () {
+//		CQuark.AppDomain.Reset();
+//		CQuarkClass cqClass = new CQuarkClass();
+//		int ret = (int)cqClass.Eval("1+2");
 		int ret = (int)CQuarkClass.Instance.Eval ("1+2");
 		Debug.Log ("return = " + ret);
 	}

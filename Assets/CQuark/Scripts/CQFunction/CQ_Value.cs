@@ -7,6 +7,7 @@ namespace CQuark
         public TypeBridge type;
         public object value;
         public int breakBlock = 0;//是否是块结束
+
         public static CQ_Value FromICQ_Value(ICQ_Expression_Value value)
         {
             CQ_Value v = new CQ_Value();

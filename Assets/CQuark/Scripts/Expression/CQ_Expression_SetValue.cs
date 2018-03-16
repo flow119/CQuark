@@ -7,6 +7,7 @@ namespace CQuark
 {
     public class CQ_Expression_SetValue : ICQ_Expression
     {
+		
         public CQ_Expression_SetValue(int tbegin, int tend, int lbegin, int lend)
         {
             listParam = new List<ICQ_Expression>();
@@ -25,7 +26,7 @@ namespace CQuark
             get;
             private set;
         }
-        //Block的参数 一个就是一行，顺序执行，没有
+
         public List<ICQ_Expression> listParam
         {
             get;

@@ -155,7 +155,7 @@ namespace CQuark
             {
                 CQ_Expression_SetValue define = new CQ_Expression_SetValue(pos, expend, tlist[pos].line, tlist[expend].line);
                 define.value_name = tlist[pos].text;
-                define.listParam.Add(v);
+				define.listParam.Add(v);
                 return define;
             }
             LogError(tlist,"不正确的定义表达式:" ,pos,posend);

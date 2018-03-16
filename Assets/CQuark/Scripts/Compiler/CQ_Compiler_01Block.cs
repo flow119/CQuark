@@ -81,9 +81,6 @@ namespace CQuark
                     }
                 }
 
-
-
-
                 begin = end + 1;
             }
             while (begin <= posend);

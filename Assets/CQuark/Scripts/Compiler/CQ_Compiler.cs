@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark
 {
+	//静态类，把文本的List<Token>编译成表达式
     public partial class CQ_Expression_Compiler 
     {
-
         public static ICQ_Expression Compile(IList<Token> tlist)
         {
             ICQ_Expression value;

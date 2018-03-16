@@ -36,8 +36,6 @@ namespace CQuark
             this.tokenlist = tokens;
         }
         #region impl type
-
-
         public string FullName
         {
             get { return Namespace + "." + Name; }

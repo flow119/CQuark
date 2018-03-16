@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class FunctionTrace : IFunction
+    public class MethodTrace : IMethod
     {
         public string keyword
         {

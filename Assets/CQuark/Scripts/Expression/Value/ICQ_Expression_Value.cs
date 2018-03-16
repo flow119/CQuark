@@ -16,25 +16,5 @@ namespace CQuark
 		{
 			get;
 		}
-		new int tokenBegin
-		{
-			get;
-			set;
-		}
-		new int tokenEnd
-		{
-			get;
-			set;
-		}
-		new int lineBegin
-		{
-			get;
-			set;
-		}
-		new int lineEnd
-		{
-			get;
-			set;
-		}
 	}
 }

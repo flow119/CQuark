@@ -4,10 +4,11 @@ using System.Text;
 
 namespace CQuark
 {
+	//一个西瓜Class
     public class CQ_Content
     {
-		public Stack<List<string>> tvalues = new Stack<List<string>>();
 		public CQ_Type CallType;
+		public Stack<List<string>> tvalues = new Stack<List<string>>();
 		public SInstance CallThis;
 		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>();
 
@@ -215,7 +216,8 @@ namespace CQuark
 
         public void Define(string name,TypeBridge type)
         {
-            if (values.ContainsKey(name)) throw new Exception("已经定义过");
+            if (values.ContainsKey(name))
+				throw new Exception("已经定义过");
             CQ_Value v = new CQ_Value();
             v.type = type;
             values[name] = v;
@@ -260,7 +262,6 @@ namespace CQuark
                 retV.type = value.GetType();
             retV.value = value;
         }
-
         public void DefineAndSet(string name,TypeBridge type,object value)
         {
             if (values.ContainsKey(name)) 

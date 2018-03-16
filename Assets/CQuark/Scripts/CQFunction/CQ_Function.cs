@@ -585,7 +585,6 @@ namespace CQuark
 		Dictionary<string, MemberValueCache> memberValuegetCaches = new Dictionary<string, MemberValueCache>();
 		public CQ_Value MemberValueGet(CQ_Content content, object object_this, string valuename)
 		{
-
 			MemberValueCache c;
 
 			if (!memberValuegetCaches.TryGetValue(valuename, out c))
@@ -641,56 +640,6 @@ namespace CQuark
 
 			}
 			return v;
-
-			//var targetf = type.GetField(valuename);
-			//if (targetf != null)
-			//{
-			//    CQ_Content.Value v = new CQ_Content.Value();
-			//    v.value = targetf.GetValue(object_this);
-			//    v.type = targetf.FieldType;
-			//    return v;
-			//}
-
-			//var targetp = type.GetProperty(valuename);
-			//if (targetp != null)
-			//{
-			//    CQ_Content.Value v = new CQ_Content.Value();
-			//    v.value = targetp.GetValue(object_this, null);
-			//    v.type = targetp.PropertyType;
-			//    return v;
-			//}
-			//else
-			//{//用get set 方法替代属性操作，AOT环境属性操作有问题
-			//    var methodf = type.GetMethod("get_" + valuename);
-			//    if (methodf != null)
-			//    {
-			//        CQ_Content.Value v = new CQ_Content.Value();
-			//        v.value = methodf.Invoke(object_this, null);
-			//        v.type = methodf.ReturnType;
-			//        return v;
-			//    }
-			//var targetf = type.GetField(valuename);
-			//if (targetf != null)
-			//{
-			//    CQ_Content.Value v = new CQ_Content.Value();
-			//    v.value = targetf.GetValue(object_this);
-			//    v.type = targetf.FieldType;
-			//    return v;
-			//}
-			//    else
-			//    {
-			//        System.Reflection.EventInfo targete = type.GetEvent(valuename);
-			//        if (targete != null)
-			//        {
-			//            CQ_Content.Value v = new CQ_Content.Value();
-			//            v.value = new DeleEvent(object_this, targete);
-			//            v.type = targete.EventHandlerType;
-			//            return v;
-			//        }
-			//    }
-			//}
-
-			//return null;
 		}
 
 		Dictionary<string, MemberValueCache> memberValuesetCaches = new Dictionary<string, MemberValueCache>();
@@ -804,11 +753,6 @@ namespace CQuark
 				{
 					indexGetCacheType = indexGetCache.ReturnType;
 				}
-				//    CQ_Content.Value v = new CQ_Content.Value();
-				//    v.type = targetop.ReturnType;
-				//    v.value = targetop.Invoke(object_this, new object[] { key });
-				//    return v;
-				//}
 				if (indexGetCache == null)
 				{
 					indexGetCache = type.GetMethod("GetValue", new Type[] { typeof(int) });
@@ -819,25 +763,6 @@ namespace CQuark
 
 				}
 				indexGetCachetypeindex = indexGetCache.GetParameters()[0].ParameterType;
-				//if (indexGetCache != null)
-				//{
-				//    CQ_Content.Value v = new CQ_Content.Value();
-				//    v.type = indexGetCacheType;
-				//    v.value = indexGetCache.Invoke(object_this, new object[] { key });
-				//    return v;
-				//}
-				//{
-				//    targetop = type.GetMethod("GetValue", new Type[] { typeof(int) });
-				//    if (targetop != null)
-				//    {
-				//        //targetop = type.GetMethod("Get");
-
-				//        CQ_Content.Value v = new CQ_Content.Value();
-				//        v.type = type.GetElementType();
-				//        v.value = targetop.Invoke(object_this, new object[] { key });
-				//        return v;
-				//    }
-				//}
 			}
 			//else
 			{

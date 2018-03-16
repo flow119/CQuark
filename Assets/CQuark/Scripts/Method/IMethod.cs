@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public interface IFunction
+    public interface IMethod
     {
         string keyword
         {

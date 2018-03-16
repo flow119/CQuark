@@ -11,8 +11,8 @@ namespace CQuark{
 
 		static Dictionary<TypeBridge, IType> types = new Dictionary<TypeBridge, IType>();
 		static Dictionary<string, IType> typess = new Dictionary<string, IType>();
-		static Dictionary<string, IFunction> calls = new Dictionary<string, IFunction>();
-		static Dictionary<string, IFunction> corouts = new Dictionary<string, IFunction>();
+		static Dictionary<string, IMethod> calls = new Dictionary<string, IMethod>();
+		static Dictionary<string, IMethod> corouts = new Dictionary<string, IMethod>();
 
 		public static void Reset(){
 			DebugUtil.Log("Reset Domain");
@@ -55,7 +55,7 @@ namespace CQuark{
 			//contentGloabl = CreateContent();
 			//if (!useNamespace)//命名空间模式不能直接用函数
 			{
-				RegisterFunction(new FunctionTrace());
+				RegisterFunction(new MethodTrace());
 			}
 
 			RegType(typeof(object), "object");
@@ -299,7 +299,7 @@ namespace CQuark{
 			}
 			return ret;
 		}
-		public static void RegisterFunction(IFunction func)
+		public static void RegisterFunction(IMethod func)
 		{
 			//if (useNamespace)
 			//{
@@ -312,12 +312,12 @@ namespace CQuark{
 		}
 		public static void RegisterFunction(Delegate dele)
 		{
-			RegisterFunction(new RegHelper_Function (dele));
+			RegisterFunction(new Method (dele));
 		}
 
-		public static IFunction GetFunction(string name)
+		public static IMethod GetFunction(string name)
 		{
-			IFunction func = null;
+			IMethod func = null;
 			calls.TryGetValue(name, out func);
 			if (func == null)
 			{

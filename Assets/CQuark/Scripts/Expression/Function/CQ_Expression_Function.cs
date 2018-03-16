@@ -84,8 +84,6 @@ namespace CQuark
 
                 }
             }
-
-
             else
             {
                 v = content.GetQuiet(funcname);
@@ -136,7 +134,6 @@ namespace CQuark
 
         public override string ToString()
         {
-
             return "Call|" + funcname + "(params[" + listParam.Count + ")";
         }
     }
