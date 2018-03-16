@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CQuark
 {
+	//由西瓜脚本里获取的自定义Type
     public class SType : ICQ_TypeFunction
     {
 
