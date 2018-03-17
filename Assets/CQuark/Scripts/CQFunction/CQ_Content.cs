@@ -4,12 +4,11 @@ using System.Text;
 
 namespace CQuark
 {
-	//一个西瓜Class
     public class CQ_Content
     {
 		public Class_CQuark CallType;
-		public Stack<List<string>> tvalues = new Stack<List<string>>();
 		public SInstance CallThis;
+		Stack<List<string>> tvalues = new Stack<List<string>>();//所有values的名字，Stack表示作用域
 		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>();
 
         public CQ_Content()
