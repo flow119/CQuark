@@ -14,7 +14,7 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public TypeBridge typeBridge
+        public CQ_Type typeBridge
         {
             get { return null; }
         }
@@ -22,7 +22,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public IClass function
+		public IClass _class
         {
             get { throw new NotImplementedException(); }
         }
@@ -33,11 +33,11 @@ namespace CQuark
             CQ_Expression_Value_Null v = new CQ_Expression_Value_Null();
             return v;
         }
-        public object ConvertTo(object src, TypeBridge targetType)
+        public object ConvertTo(object src, CQ_Type targetType)
         {
             return null;
         }
-        public object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
            
             if ((Type)right.type == typeof(string))

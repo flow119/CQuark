@@ -58,7 +58,7 @@ namespace CQuark
         public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            var value=type.function.StaticValueGet(content, staticmembername);
+			var value = type._class.StaticValueGet(content, staticmembername);
             content.OutStack(this);
             return value;
         }

@@ -64,7 +64,7 @@ namespace CQuark
             //if (mathop == "+=")
 
             {
-                TypeBridge returntype;
+                CQ_Type returntype;
                 object value = type.Math2Value(mathop, left.value, right, out returntype);
                 value = type.ConvertTo( value, left.type);
                 left.value = value;
@@ -91,12 +91,12 @@ namespace CQuark
                             throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
                         }
                         var ptype = CQuark.AppDomain.GetType(parent.type);
-                        ptype.function.MemberValueSet(content, parent.value, f.membername, value);
+						ptype._class.MemberValueSet(content, parent.value, f.membername, value);
                     }
                     if (_expressions[0] is CQ_Expression_StaticFind)
                     {
                         CQ_Expression_StaticFind f = _expressions[0] as CQ_Expression_StaticFind;
-                        f.type.function.StaticValueSet(content, f.staticmembername, value);
+						f.type._class.StaticValueSet(content, f.staticmembername, value);
                     }
                 }
             }

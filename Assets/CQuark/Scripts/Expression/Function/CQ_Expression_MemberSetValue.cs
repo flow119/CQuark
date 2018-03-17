@@ -68,16 +68,16 @@ namespace CQuark
             //    var vtype = CQuark.AppDomain.GetType(value.type);
             //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
             //}
-            var typefunction = CQuark.AppDomain.GetType(parent.type).function;
+			var iclass = CQuark.AppDomain.GetType(parent.type)._class;
             if(parent.type is object)
             {
                 SInstance s = parent.value as SInstance;
                 if(s!=null)
                 {
-                    typefunction = s.type;
+                    iclass = s.type;
                 }
             }
-            typefunction.MemberValueSet(content, parent.value, membername, setv);
+            iclass.MemberValueSet(content, parent.value, membername, setv);
             //做数学计算
             //从上下文取值
             //_value = null;

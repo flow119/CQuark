@@ -76,11 +76,11 @@ namespace CQuark
 			throw new Exception ("暂时不支持套用协程");
 		}
 
-        public TypeBridge type
+        public CQ_Type type
         {
             get { return null; }
         }
-        public TypeBridge targettype;
+        public CQ_Type targettype;
 
         public override string ToString()
         {

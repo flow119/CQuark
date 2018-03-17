@@ -64,7 +64,7 @@ namespace CQuark
                     list.Add(p.ComputeValue(content));
                 }
             }
-            var value= type.function.New(content,list);
+			var value= type._class.New(content,list);
             content.OutStack(this);
             return value;
 

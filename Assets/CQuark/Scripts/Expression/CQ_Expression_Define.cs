@@ -127,7 +127,7 @@ namespace CQuark
 
 
         public string value_name;
-        public TypeBridge value_type;
+        public CQ_Type value_type;
         public override string ToString()
         {
             string outs = "Define|" + value_type.Name + " " + value_name;

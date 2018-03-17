@@ -7,7 +7,7 @@ namespace CQuark
 	/// </summary>
     public class CQ_Value
     {
-        public TypeBridge type;
+        public CQ_Type type;
         public object value;
         public int breakBlock = 0;//是否是块结束
 

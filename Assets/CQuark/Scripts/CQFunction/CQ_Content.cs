@@ -214,7 +214,7 @@ namespace CQuark
 		}
         
 
-        public void Define(string name,TypeBridge type)
+        public void Define(string name,CQ_Type type)
         {
             if (values.ContainsKey(name))
 				throw new Exception("已经定义过");
@@ -262,7 +262,7 @@ namespace CQuark
                 retV.type = value.GetType();
             retV.value = value;
         }
-        public void DefineAndSet(string name,TypeBridge type,object value)
+        public void DefineAndSet(string name,CQ_Type type,object value)
         {
             if (values.ContainsKey(name)) 
                 throw new Exception(type.ToString()+":"+name+"已经定义过");

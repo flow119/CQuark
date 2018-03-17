@@ -8,7 +8,7 @@ namespace CQuark
 	//类型
 	public interface ICQ_Expression_Value : ICQ_Expression
 	{
-		TypeBridge type
+		CQ_Type type
 		{
 			get;
 		}

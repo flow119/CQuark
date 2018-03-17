@@ -59,7 +59,7 @@ namespace CQuark
             //var parent = _expressions[0].ComputeValue(content);
             var value = _expressions[0].ComputeValue(content);
 
-            type.function.StaticValueSet(content, staticmembername, value.value);
+			type._class.StaticValueSet(content, staticmembername, value.value);
             //做数学计算
             //从上下文取值
             //_value = null;

@@ -15,7 +15,7 @@ namespace CQuark
     ///    那么注册方式如下：
     ///    env.RegType(new RegHelper_DeleNonVoidAction<bool, int, int>(typeof(Class.BoolParam2Delegate), "Class.BoolParam2Delegate"));
     /// </summary>
-    public class Type_DeleNonVoidAction<ReturnType, T, T1> : Type_Operatorable
+    public class Type_DeleNonVoidAction<ReturnType, T, T1> : Type_Operatable
     {
         /// <summary>
         /// 有返回值,同时带 2 个 参数的委托.
@@ -29,7 +29,7 @@ namespace CQuark
 
         }
 
-        public override object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             returntype = null;
 

@@ -14,7 +14,7 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public TypeBridge typeBridge
+        public CQ_Type typeBridge
         {
             get { return typeof(DeleFunction); }
         }
@@ -22,7 +22,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public IClass function
+		public IClass _class
         {
             get { return null; }
         }
@@ -34,14 +34,14 @@ namespace CQuark
 
         }
 
-        public object ConvertTo(object src, TypeBridge targetType)
+        public object ConvertTo(object src, CQ_Type targetType)
         {
-            Type_Operatorable dele = CQuark.AppDomain.GetType(targetType) as Type_Operatorable;
+            Type_Operatable dele = CQuark.AppDomain.GetType(targetType) as Type_Operatable;
             return dele.CreateDelegate(src as DeleFunction);
             //throw new NotImplementedException();
         }
 
-        public object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
 
             throw new NotImplementedException("code:"+code +" right:+"+right.type.ToString()+"="+ right.value);

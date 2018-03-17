@@ -60,17 +60,17 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            IClass typefunction = CQuark.AppDomain.GetType(parent.type).function;
+			IClass iclass = CQuark.AppDomain.GetType(parent.type)._class;
             if(parent.type is object)
             {
                 SInstance s =parent.value as SInstance;
                 if(s!=null)
                 {
-                    typefunction = s.type;
+                    iclass = s.type;
                 }
             }
             //var type = CQuark.AppDomain.GetType(parent.type);
-            var value=typefunction.MemberValueGet(content, parent.value, membername);
+            var value = iclass.MemberValueGet(content, parent.value, membername);
             content.OutStack(this);
             return value;
             //做数学计算

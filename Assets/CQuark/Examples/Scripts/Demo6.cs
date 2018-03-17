@@ -34,10 +34,10 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 			//得到脚本类型
 			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword(m_className);
 			//调用脚本类构造创造一个实例
-			var thisOfScript = typeOfScript.function.New(content, null).value;
+			var thisOfScript = typeOfScript._class.New(content, null).value;
 
 			//调用脚本类成员函数
-			StartCoroutine(typeOfScript.function.CoroutineCall(content, thisOfScript, "GetHP", null, this));
+			StartCoroutine(typeOfScript._class.CoroutineCall(content, thisOfScript, "GetHP", null, this));
 		}
 	}
 }

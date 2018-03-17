@@ -15,11 +15,11 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public TypeBridge typeBridge
+        public CQ_Type typeBridge
         {
             get { return typeof(string); }
         }
-        public IClass function
+        public IClass _class
         {
             get;
             private set;
@@ -31,7 +31,7 @@ namespace CQuark
 
         public Type_String()
         {
-            function = new Class_System(typeof(string));
+            _class = new Class_System(typeof(string));
         }
 
 
@@ -43,7 +43,7 @@ namespace CQuark
             return v;
         }
 
-        public object ConvertTo(object src, TypeBridge targetType)
+        public object ConvertTo(object src, CQ_Type targetType)
         {
             if ((Type)targetType == typeof(string)) return src;
             if ((Type)targetType == typeof(void))
@@ -58,7 +58,7 @@ namespace CQuark
             return null;
         }
 
-        public object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             returntype = typeof(string);
             if (code == '+')

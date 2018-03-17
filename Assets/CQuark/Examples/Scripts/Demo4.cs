@@ -37,13 +37,13 @@ public class Demo4 : MonoBehaviour {
 			//得到脚本类型
 			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword("ScriptClass4");
 			//调用脚本类构造创造一个实例
-			var thisOfScript = typeOfScript.function.New(content, null).value;
+			var thisOfScript = typeOfScript._class.New(content, null).value;
 			//调用脚本类成员变量赋值
 			//Debug.LogWarning(thisOfScript+","+ typeOfScript+","+ typeOfScript.function);
-			typeOfScript.function.MemberValueSet(content, thisOfScript, "defHP1", 200);
-			typeOfScript.function.MemberValueSet(content, thisOfScript, "defHP2", 300);
+			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", 200);
+			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", 300);
 			//调用脚本类成员函数
-			var returnvalue = typeOfScript.function.MemberCall(content, thisOfScript, "GetHP", null);
+			var returnvalue = typeOfScript._class.MemberCall(content, thisOfScript, "GetHP", null);
 			object i = returnvalue.value;
 			result = "result=" + i;
 		}

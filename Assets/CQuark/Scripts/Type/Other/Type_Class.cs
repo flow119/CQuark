@@ -17,7 +17,7 @@ namespace CQuark
             get;
             private set;
         }
-        public TypeBridge typeBridge
+        public CQ_Type typeBridge
         {
             get;
             private set;
@@ -26,7 +26,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public IClass function
+		public IClass _class
         {
             get
             {
@@ -65,7 +65,7 @@ namespace CQuark
             svalue.value_type = typeBridge;
             return svalue;
         }
-        public object ConvertTo(object src, TypeBridge targetType)
+        public object ConvertTo(object src, CQ_Type targetType)
         {
            
 			var type = CQuark.AppDomain.GetType(targetType);
@@ -77,7 +77,7 @@ namespace CQuark
 
             throw new NotImplementedException();
         }
-        public object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             throw new NotImplementedException();
         }

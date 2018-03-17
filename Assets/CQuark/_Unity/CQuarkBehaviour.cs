@@ -50,7 +50,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			return;
 		}
 		content = new CQ_Content(true);
-		inst = type.function.New(content, null).value as CQuark.SInstance;
+		inst = type._class.New(content, null).value as CQuark.SInstance;
 		content.CallType = inst.type;
 		content.CallThis = inst;
 //		if (!inst.member.ContainsKey ("gameObject")){
@@ -71,15 +71,14 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 
 
 	protected override void CallScript(string methodName, bool useCoroutine){
+		Class_CQuark cclass = type._class as Class_CQuark;
 		if (useCoroutine) {
-			Class_CQuark cclass = type.function as Class_CQuark;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
-				this.StartNewCoroutine (type.function.CoroutineCall (content, inst, methodName, null, this));
+				this.StartNewCoroutine (type._class.CoroutineCall (content, inst, methodName, null, this));
 		}
 		else {
-			Class_CQuark cclass = type.function as Class_CQuark;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
-				type.function.MemberCall (content, inst, methodName, null);
+				type._class.MemberCall (content, inst, methodName, null);
 		}
 	}
 }

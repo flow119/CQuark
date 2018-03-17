@@ -68,11 +68,11 @@ namespace CQuark
             if (cache == null || cache.cachefail)
             {
                 cache = new MethodCache();
-                value = type.function.StaticCall(content, functionName, _params, cache);
+				value = type._class.StaticCall(content, functionName, _params, cache);
             }
             else
             {
-                value = type.function.StaticCallCache(content, _params, cache);
+				value = type._class.StaticCallCache(content, _params, cache);
             }
             
             content.OutStack(this);

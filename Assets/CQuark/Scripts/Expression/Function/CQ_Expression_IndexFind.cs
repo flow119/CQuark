@@ -64,7 +64,7 @@ namespace CQuark
             var key = _expressions[1].ComputeValue(content);
             var type = CQuark.AppDomain.GetType(parent.type);
 
-            var value = type.function.IndexGet(content, parent.value, key.value);
+            var value = type._class.IndexGet(content, parent.value, key.value);
             content.OutStack(this);
 
             //IndexGet返回的值类型是 System.Object.

@@ -8,7 +8,7 @@ namespace CQuark
 {
 	public class CQ_Expression_Value_Null : ICQ_Expression_Value
 	{
-		public TypeBridge type
+		public CQ_Type type
 		{
 			get { return null; }
 		}

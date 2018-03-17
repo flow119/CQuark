@@ -65,7 +65,7 @@ namespace CQuark
             //string membername=null;
 
 
-            var getvalue = type.function.MemberValueGet(content, parent.value, membername);
+			var getvalue = type._class.MemberValueGet(content, parent.value, membername);
 
             CQ_Value vright = CQ_Value.One;
             if (_expressions.Count > 1)
@@ -76,7 +76,7 @@ namespace CQuark
             var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
 
-            type.function.MemberValueSet(content, parent.value, membername, vout.value);
+			type._class.MemberValueSet(content, parent.value, membername, vout.value);
             //CQ_Content.Value v = new CQ_Content.Value();
 
             content.OutStack(this);

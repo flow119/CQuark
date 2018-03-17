@@ -58,8 +58,7 @@ namespace CQuark
         {
             content.InStack(this);
 
-
-            var getvalue=type.function.StaticValueGet(content, staticmembername);
+			var getvalue = type._class.StaticValueGet(content, staticmembername);
 
             CQ_Value vright = CQ_Value.One;
             if (_expressions.Count > 0)
@@ -70,7 +69,7 @@ namespace CQuark
             var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
 
-            type.function.StaticValueSet(content, staticmembername, vout.value);
+			type._class.StaticValueSet(content, staticmembername, vout.value);
 
             content.OutStack(this);
             return vout;

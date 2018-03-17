@@ -63,13 +63,13 @@ namespace CQuark
             {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            var typefunction = CQuark.AppDomain.GetType(parent.type).function;
+			var iclass = CQuark.AppDomain.GetType(parent.type)._class;
             if(parent.type is object)
             {
                 SInstance s = parent.value as SInstance;
                 if(s!=null)
                 {
-                    typefunction = s.type;
+                    iclass = s.type;
                 }
             }
             List<CQ_Value> _params = new List<CQ_Value>();
@@ -81,11 +81,11 @@ namespace CQuark
             if (cache == null||cache.cachefail)
             {
                 cache = new MethodCache();
-                value = typefunction.MemberCall(content, parent.value, functionName, _params,cache);
+                value = iclass.MemberCall(content, parent.value, functionName, _params,cache);
             }
             else
             {
-                value = typefunction.MemberCallCache(content, parent.value, _params, cache);
+                value = iclass.MemberCallCache(content, parent.value, _params, cache);
             }
             content.OutStack(this);
             return value;

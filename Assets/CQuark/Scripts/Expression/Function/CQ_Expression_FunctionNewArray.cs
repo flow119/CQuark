@@ -74,10 +74,10 @@ namespace CQuark
             }
             List<CQ_Value> p = new List<CQ_Value>();
             p.Add(vcount);
-            var outvalue = type.function.New(content, p);
+			var outvalue = type._class.New(content, p);
             for (int i = 0; i < list.Count; i++)
             {
-                type.function.IndexSet(content, outvalue.value, i, list[i]);
+				type._class.IndexSet(content, outvalue.value, i, list[i]);
             }
             content.OutStack(this);
             return outvalue;

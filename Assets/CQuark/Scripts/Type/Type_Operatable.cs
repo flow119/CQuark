@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class Type_Operatorable : IType
+    public class Type_Operatable : IType
     {
         public string keyword
         {
@@ -16,7 +16,7 @@ namespace CQuark
         {
             get { return typeBridge.NameSpace; }
         }
-        public TypeBridge typeBridge
+        public CQ_Type typeBridge
         {
             get;
             protected set;
@@ -25,7 +25,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public IClass function
+        public IClass _class
         {
             get;
             protected set;
@@ -33,9 +33,9 @@ namespace CQuark
 
         public Type _type;
 
-        public Type_Operatorable(Type type, string setkeyword, bool dele)
+        public Type_Operatable(Type type, string setkeyword, bool dele)
         {
-            function = new Class_System(type);
+            _class = new Class_System(type);
             if (setkeyword != null)
             {
                 keyword = setkeyword.Replace(" ", "");
@@ -59,7 +59,7 @@ namespace CQuark
             rvalue.value_value = value;
             return rvalue;
         }
-        public virtual object ConvertTo(object src, TypeBridge targetType)
+        public virtual object ConvertTo(object src, CQ_Type targetType)
         {
             Type targettype = (Type)targetType;
             if (this._type == targettype) return src;
@@ -108,7 +108,7 @@ namespace CQuark
 
             return null;
         }
-		public virtual object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+		public virtual object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             returntype = typeBridge;
             System.Reflection.MethodInfo call = null;

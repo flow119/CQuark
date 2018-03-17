@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class Type_DeleAction : Type_Operatorable
+    public class Type_DeleAction : Type_Operatable
     {
         public Type_DeleAction(Type type, string setkeyword)
             : base(type, setkeyword, true)
@@ -13,7 +13,7 @@ namespace CQuark
         }
 
 
-        public override object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             returntype = null;
 

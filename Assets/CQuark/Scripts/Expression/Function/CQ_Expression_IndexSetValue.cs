@@ -70,7 +70,7 @@ namespace CQuark
             //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
             //}
             var type = CQuark.AppDomain.GetType(parent.type);
-            type.function.IndexSet(content, parent.value, key.value, value.value);
+			type._class.IndexSet(content, parent.value, key.value, value.value);
             //做数学计算
             //从上下文取值
             //_value = null;

@@ -13,7 +13,7 @@ namespace CQuark
 			this.value_value = null;
 		}
 
-		public TypeBridge type
+		public CQ_Type type
 		{
 			get;
 			private set;

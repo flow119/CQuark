@@ -9,7 +9,7 @@ namespace CQuark{
 	//整个项目只需要一个AppDomain,所以改成了全部静态
 	public class AppDomain {
 
-		static Dictionary<TypeBridge, IType> types = new Dictionary<TypeBridge, IType>();
+		static Dictionary<CQ_Type, IType> types = new Dictionary<CQ_Type, IType>();
 		static Dictionary<string, IType> typess = new Dictionary<string, IType>();
 		static Dictionary<string, IMethod> calls = new Dictionary<string, IMethod>();
 		static Dictionary<string, IMethod> corouts = new Dictionary<string, IMethod>();
@@ -116,11 +116,11 @@ namespace CQuark{
 			RegType (typeof(byte[]), "byte[]");
 		}
 
-        public static Type_Operatorable MakeType(Type type, string keyword)
+        public static Type_Operatable MakeType(Type type, string keyword)
         {
             if (!type.IsSubclassOf(typeof(Delegate)))
             {
-                return new Type_Operatorable(type, keyword, false);
+                return new Type_Operatable(type, keyword, false);
             }
             var method = type.GetMethod("Invoke");
             var pp = method.GetParameters();
@@ -133,17 +133,17 @@ namespace CQuark{
                 else if (pp.Length == 1)
                 {
                     var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable;
+                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable;
                 }
                 else if (pp.Length == 2)
                 {
                     var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
                 }
                 else if (pp.Length == 3)
                 {
                     var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace CQuark{
                 {
                     throw new Exception("还没有支持这么多参数的委托");
                 }
-                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatorable);
+                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
             }
         }
 
@@ -204,7 +204,7 @@ namespace CQuark{
 			}
 		}
 
-		public static IType GetType(TypeBridge type)
+		public static IType GetType(CQ_Type type)
 		{
 			if (type == null)
 				return typess["null"];
@@ -271,7 +271,7 @@ namespace CQuark{
 							Type[] types = new Type[_types.Count];
 							for (int i = 0; i < types.Length; i++)
 							{
-								TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
+								CQ_Type t = GetTypeByKeyword(_types[i]).typeBridge;
 								Type rt = t;
 								if (rt == null && t != null)
 								{

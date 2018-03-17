@@ -64,7 +64,7 @@ namespace CQuark
 
                 {
                     object val = v.value;
-                    TypeBridge value_type = null;
+                    CQ_Type value_type = null;
                     if (content.values.ContainsKey(value_name))
                     {
                         value_type = content.values[value_name].type;
@@ -112,7 +112,7 @@ namespace CQuark
 					
 					{
 						object val = v.value;
-						TypeBridge value_type = null;
+						CQ_Type value_type = null;
 						if (content.values.ContainsKey(value_name))
 						{
 							value_type = content.values[value_name].type;

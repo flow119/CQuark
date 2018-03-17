@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    class Type_Long : Type_Operatorable
+    class Type_Long : Type_Operatable
     {
         public Type_Long()
             : base(typeof(long), "long", false)
@@ -12,7 +12,7 @@ namespace CQuark
 
         }
 
-        public override object ConvertTo(object src, TypeBridge targetType)
+        public override object ConvertTo(object src, CQ_Type targetType)
         {
             bool convertSuccess = false;
             object convertedObject = NumericTypeUtils.TryConvertTo<long>(src, targetType, out convertSuccess);
@@ -23,7 +23,7 @@ namespace CQuark
             return base.ConvertTo(src, targetType);
         }
 
-        public override object Math2Value(char code, object left, CQ_Value right, out TypeBridge returntype)
+        public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             bool math2ValueSuccess = false;
             object value = NumericTypeUtils.Math2Value<long>(code, left, right, out returntype, out math2ValueSuccess);
