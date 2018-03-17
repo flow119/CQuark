@@ -67,7 +67,7 @@ namespace CQuark
             NewStatic();
             CQ_Expression_Value_ScriptValue sv = new CQ_Expression_Value_ScriptValue();
             sv.value_type = this;
-            sv.value_value = new SInstance();
+            sv.value_value = new CQClassInstance();
             sv.value_value.type = this;
             foreach (KeyValuePair<string, Member> i in this.members)
             {
@@ -232,11 +232,11 @@ namespace CQuark
             {
                 if (value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge)
                 {
-                    if (value is SInstance)
+                    if (value is CQClassInstance)
                     {
-                        if ((value as SInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
+                        if ((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
                         {
-                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
+                            value = CQuark.AppDomain.GetType((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }
                     }
                     else if (value is DeleEvent)
@@ -271,7 +271,7 @@ namespace CQuark
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
-                    content.CallThis = object_this as SInstance;
+                    content.CallThis = object_this as CQClassInstance;
                     content.function = func;
                     for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
                     //int i = 0;
@@ -284,8 +284,8 @@ namespace CQuark
                     var funcobj = this.functions[func];
                     if (this.bInterface)
                     {
-                        content.CallType = (object_this as SInstance).type;
-                        funcobj = (object_this as SInstance).type.functions[func];
+                        content.CallType = (object_this as CQClassInstance).type;
+                        funcobj = (object_this as CQClassInstance).type.functions[func];
                     }
                     if (funcobj.expr_runtime != null)
                     {
@@ -302,7 +302,7 @@ namespace CQuark
             {
                 if (this.members[func].bStatic == false)
                 {
-                    Delegate dele = (object_this as SInstance).member[func].value as Delegate;
+                    Delegate dele = (object_this as CQClassInstance).member[func].value as Delegate;
                     if (dele != null)
                     {
                         CQ_Value value = new CQ_Value();
@@ -340,7 +340,7 @@ namespace CQuark
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
-                    content.CallThis = object_this as SInstance;
+                    content.CallThis = object_this as CQClassInstance;
                     content.function = func;
                     for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
                     //int i = 0;
@@ -353,8 +353,8 @@ namespace CQuark
                     var funcobj = this.functions[func];
                     if (this.bInterface)
                     {
-                        content.CallType = (object_this as SInstance).type;
-                        funcobj = (object_this as SInstance).type.functions[func];
+                        content.CallType = (object_this as CQClassInstance).type;
+                        funcobj = (object_this as CQClassInstance).type.functions[func];
                     }
                     if (funcobj.expr_runtime != null)
                     {
@@ -373,7 +373,7 @@ namespace CQuark
 
         public CQ_Value MemberValueGet(CQ_Content content, object object_this, string valuename)
         {
-            SInstance sin = object_this as SInstance;
+            CQClassInstance sin = object_this as CQClassInstance;
             if (sin.member.ContainsKey(valuename))
             {
                 CQ_Value v = new CQ_Value();
@@ -386,16 +386,16 @@ namespace CQuark
 
         public bool MemberValueSet(CQ_Content content, object object_this, string valuename, object value)
         {
-            SInstance sin = object_this as SInstance;
+            CQClassInstance sin = object_this as CQClassInstance;
             if (sin.member.ContainsKey(valuename))
             {
                 if (value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge)
                 {
-                    if (value is SInstance)
+                    if (value is CQClassInstance)
                     {
-                        if ((value as SInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
+                        if ((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
                         {
-                            value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
+                            value = CQuark.AppDomain.GetType((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }
                     }
                     else if (value is DeleEvent)

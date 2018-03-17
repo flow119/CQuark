@@ -14,7 +14,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 
 	public ECodeType m_codeType = ECodeType.FileName;
 	CQuark.IType type;
-	CQuark.SInstance inst;//脚本实例
+	CQuark.CQClassInstance inst;//脚本实例
 	public string m_className;
 
 	//FileName
@@ -50,7 +50,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			return;
 		}
 		content = new CQ_Content(true);
-		inst = type._class.New(content, null).value as CQuark.SInstance;
+		inst = type._class.New(content, null).value as CQuark.CQClassInstance;
 		content.CallType = inst.type;
 		content.CallThis = inst;
 //		if (!inst.member.ContainsKey ("gameObject")){

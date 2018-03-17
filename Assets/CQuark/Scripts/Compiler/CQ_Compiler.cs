@@ -34,26 +34,26 @@ namespace CQuark
             }
         }
 
-        public static ICQ_Expression Compile_NoBlock(IList<Token> tlist)
-        {
-            ICQ_Expression value;
-            int expbegin = 0;
-            int expend = tlist.Count - 1;
-            bool succ = Compiler_Expression(tlist, expbegin, expend, out value);
-            if (succ)
-            {
-                if (value == null)
-                {
-                    DebugUtil.LogWarning("编译为null:");
-                }
-                return value;
-            }
-            else
-            {
-                LogError(tlist, "编译失败:", expbegin, expend);
-                return null;
-            }
-        }
+//        public static ICQ_Expression Compile_NoBlock(IList<Token> tlist)
+//        {
+//            ICQ_Expression value;
+//            int expbegin = 0;
+//            int expend = tlist.Count - 1;
+//            bool succ = Compiler_Expression(tlist, expbegin, expend, out value);
+//            if (succ)
+//            {
+//                if (value == null)
+//                {
+//                    DebugUtil.LogWarning("编译为null:");
+//                }
+//                return value;
+//            }
+//            else
+//            {
+//                LogError(tlist, "编译失败:", expbegin, expend);
+//                return null;
+//            }
+//        }
 
         public static IList<IType> FileCompile(string filename, IList<Token> tlist, bool embDebugToken)
         {

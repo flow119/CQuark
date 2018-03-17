@@ -115,7 +115,7 @@ namespace CQuark
                 }
                 else
                 {
-                    v = CQuark.AppDomain.GetFunction(funcname).Call(content, list);
+                    v = CQuark.AppDomain.GetMethod(funcname).Call(content, list);
                 }
             }
             //操作变量之

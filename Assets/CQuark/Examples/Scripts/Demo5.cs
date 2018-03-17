@@ -5,11 +5,11 @@ using System;
 public class Demo5 : MonoBehaviour,ICoroutine {
 	public string m_blockFilePath;
 
-	CQuarkClass script = new CQuarkClass();
+	CQuarkBlock script = new CQuarkBlock();
 	void Start(){
 		CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegisterFunction ((eDelay)Wait);
-		CQuark.AppDomain.RegisterFunction ((eDelay)YieldWaitForSecond);
+		CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
+		CQuark.AppDomain.RegisterMethod ((eDelay)YieldWaitForSecond);
 		ExecuteFile ();
 	}
 

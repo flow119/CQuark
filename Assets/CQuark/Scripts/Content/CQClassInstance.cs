@@ -6,7 +6,7 @@ using System;
 namespace CQuark
 {
     //西瓜类的实例
-    public class SInstance
+    public class CQClassInstance
     {
         public Class_CQuark type;
         public Dictionary<string, CQ_Value> member = new Dictionary<string, CQ_Value>();//成员

@@ -13,7 +13,7 @@ namespace CQuark
 		}
 		public Class_CQuark value_type;
 
-		public SInstance value_value;
+		public CQClassInstance value_value;
 		public object value
 		{
 			get

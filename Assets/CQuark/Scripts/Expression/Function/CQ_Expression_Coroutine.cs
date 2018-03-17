@@ -140,7 +140,7 @@ namespace CQuark
 				}
 			}
 
-			IMethod func = CQuark.AppDomain.GetFunction (funcname);
+			IMethod func = CQuark.AppDomain.GetMethod (funcname);
 			yield return coroutine.StartNewCoroutine (func.Call(content, list).value as IEnumerator);
 			content.OutStack(this);
 //			if(funcname == "YieldWaitForSecond"){

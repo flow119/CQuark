@@ -6,7 +6,7 @@ using CQuark;
 public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 
 	//FunctionsText
-	public CQuarkClass m_script = new CQuarkClass();
+	public CQuarkBlock m_script = new CQuarkBlock();
 	public string m_Awake = "";
 	public string m_OnEnable = "";
 	public string m_OnDisable = "";
@@ -60,8 +60,7 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 		if (string.IsNullOrEmpty (code))
 			return;
 		try{
-			var token = CQuark.AppDomain.ParserToken(code);
-			var expr = CQuark.AppDomain.Expr_CompileToken(token);
+			var expr = CQuark.AppDomain.BuildBlock(code);
 			dictExpr[key] = expr;
 		}catch(System.Exception e){
 			Debug.LogError("BuildScript:" + key + " err\n" + e.ToString());

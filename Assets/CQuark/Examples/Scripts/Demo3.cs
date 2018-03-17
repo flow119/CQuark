@@ -9,13 +9,13 @@ public class Demo3 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-//		Script.Init ();
+		CQuark.AppDomain.Reset();
 
 //		Type tt = typeof(UnityEngine.GameObject);
 //		Type t = Type.GetType ("UnityEngine.GameObject");
 
 		//将函数Today()注册给脚本使用
-		CQuark.AppDomain.RegisterFunction ((deleToday)Today);
+		CQuark.AppDomain.RegisterMethod ((deleToday)Today);
 	
 		ExecuteFile ();
 	}
@@ -28,15 +28,10 @@ public class Demo3 : MonoBehaviour {
 
 	// 这个函数展示了如何执行一个文件（作为函数块）
 	void ExecuteFile () {
-
-		CQuarkClass.Instance.ClearValue ();
-		CQuarkClass.Instance.SetValue ("Monday", 1);
-		CQuarkClass.Instance.SetValue ("Sunday", 0);
-		CQuarkClass.Instance.SetValue ("HP1", 200);
-		CQuarkClass.Instance.SetValue ("HP2", 300);
+		CQuarkBlock block = new CQuarkBlock();
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		object obj = CQuarkClass.Instance.Execute (text);
+		object obj = block.Execute (text);
 		Debug.Log ("result = " + obj);
 	}
 }

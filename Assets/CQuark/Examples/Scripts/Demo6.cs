@@ -10,7 +10,7 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	// Use this for initialization
 	void Start () {
 		CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegisterFunction ((eDelay)Wait);
+		CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
@@ -29,7 +29,6 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	{
 		if (GUI.Button(new Rect(0, 0, 200, 50), "Coroutine Call"))
 		{
-			CQuarkClass.Instance.ClearValue();
 			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//得到脚本类型
 			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword(m_className);

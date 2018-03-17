@@ -4,10 +4,13 @@ using System.Text;
 
 namespace CQuark
 {
+	/// <summary>
+	/// 相当于CQ_Value的集合
+	/// </summary>
     public class CQ_Content
     {
 		public Class_CQuark CallType;
-		public SInstance CallThis;
+		public CQClassInstance CallThis;
 		Stack<List<string>> tvalues = new Stack<List<string>>();//所有values的名字，Stack表示作用域
 		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>();
 
@@ -50,7 +53,7 @@ namespace CQuark
                 string strout = "";
                 if (this.CallType != null)
                 {
-                    if (string.IsNullOrEmpty(this.CallType.filename) == false)
+                    if (!string.IsNullOrEmpty(this.CallType.filename))
                         strout += "(" + this.CallType.filename + ")";
                     strout += this.CallType.Name + ":";
                 }

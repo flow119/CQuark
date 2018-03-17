@@ -66,7 +66,7 @@ namespace CQuark
 			var iclass = CQuark.AppDomain.GetType(parent.type)._class;
             if(parent.type is object)
             {
-                SInstance s = parent.value as SInstance;
+                CQClassInstance s = parent.value as CQClassInstance;
                 if(s!=null)
                 {
                     iclass = s.type;

@@ -61,7 +61,7 @@ namespace CQuark
         public ICQ_Expression_Value MakeValue(object value)
         {
             CQ_Expression_Value_ScriptValue svalue = new CQ_Expression_Value_ScriptValue();
-            svalue.value_value = value as SInstance;
+            svalue.value_value = value as CQClassInstance;
             svalue.value_type = typeBridge;
             return svalue;
         }

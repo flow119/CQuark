@@ -8,7 +8,7 @@ namespace CQuark{
 	//参考了ILRuntime，把以前Environment和Content整合到了一起。
 	//整个项目只需要一个AppDomain,所以改成了全部静态
 	public class AppDomain {
-
+		//CQ_Content contentGloabl = null;
 		static Dictionary<CQ_Type, IType> types = new Dictionary<CQ_Type, IType>();
 		static Dictionary<string, IType> typess = new Dictionary<string, IType>();
 		static Dictionary<string, IMethod> calls = new Dictionary<string, IMethod>();
@@ -20,103 +20,101 @@ namespace CQuark{
 			typess.Clear();
 			calls.Clear();
 			corouts.Clear();
-			RegDefaultType();
+			RegisterDefaultType();
 		}
-
-		public static void RegDefaultType(){
+		public static void RegisterDefaultType(){
 			//最好能默认
-			RegType(new Type_Int());
-			RegType(new Type_UInt());
-			RegType(new Type_Float());
-			RegType(new Type_Double());
-			RegType(new Type_Byte());
-			RegType(new Type_Char());
-			RegType(new Type_UShort());
-			RegType(new Type_Sbyte());
-			RegType(new Type_Short());
-			RegType(new Type_Long());
-			RegType(new Type_ULong());
+			RegisterType(new Type_Int());
+			RegisterType(new Type_UInt());
+			RegisterType(new Type_Float());
+			RegisterType(new Type_Double());
+			RegisterType(new Type_Byte());
+			RegisterType(new Type_Char());
+			RegisterType(new Type_UShort());
+			RegisterType(new Type_Sbyte());
+			RegisterType(new Type_Short());
+			RegisterType(new Type_Long());
+			RegisterType(new Type_ULong());
 
-            RegType(new Type_String());
-            RegType(new Type_Var());
-            RegType(new Type_Bool());
-            RegType(new Type_Lambda());
-            RegType(new Type_Delegate());
-			RegType (typeof(IEnumerator), "IEnumerator");
+            RegisterType(new Type_String());
+            RegisterType(new Type_Var());
+            RegisterType(new Type_Bool());
+            RegisterType(new Type_Lambda());
+            RegisterType(new Type_Delegate());
+			RegisterType (typeof(IEnumerator), "IEnumerator");
 
-			RegType(typeof(object), "object");
+			RegisterType(typeof(object), "object");
 
-			RegType (typeof(List<>), "List");	//模板类要独立注册
-			RegType (typeof(Dictionary<,>), "Dictionary");
-			RegType (typeof(Stack<>), "Stack");
-			RegType (typeof(Queue<>), "Queue");
+			RegisterType (typeof(List<>), "List");	//模板类要独立注册
+			RegisterType (typeof(Dictionary<,>), "Dictionary");
+			RegisterType (typeof(Stack<>), "Stack");
+			RegisterType (typeof(Queue<>), "Queue");
 
 			typess["null"] = new Type_NULL();
 			//contentGloabl = CreateContent();
 			//if (!useNamespace)//命名空间模式不能直接用函数
 			{
-				RegisterFunction(new MethodTrace());
+				RegisterMethod(new MethodTrace());
 			}
 
-			RegType(typeof(object), "object");
-			//以下内容是Unity专用，如果非Unity平台可以直接主食掉
-			RegType(typeof(UnityEngine.Object), "Object");
-
-			//大部分类型用RegHelper_Type提供即可
-			RegType (typeof(System.DateTime), "DateTime");
-			RegType (typeof(AssetBundle), "AssetBundle");
-			RegType (typeof(Animation), "Animation");
-			RegType (typeof(AnimationCurve), "AnimationCurve");
-			RegType (typeof(AnimationClip), "AnimationClip");
-			RegType (typeof(Animator), "Animator");
-			RegType (typeof(Application), "Application");
-			RegType (typeof(AudioSource), "AudioSource");
-			RegType (typeof(AudioClip), "AudioClip");
-			RegType (typeof(AudioListener), "AudioListener");
-
-			RegType (typeof(Camera), "Camera");
-			RegType (typeof(Component), "Component");
-			RegType (typeof(Color), "Color");
-			RegType (typeof(Debug), "Debug");
-			RegType (typeof(GameObject), "GameObject");
-			RegType (typeof(Input), "Input");
-
-			RegType (typeof(Light), "Light");
-			RegType (typeof(Mathf), "Mathf");
-			RegType (typeof(Material), "Material");
-			RegType (typeof(Mesh), "Mesh");
-			RegType (typeof(MeshFilter), "MeshFilter");
-			RegType (typeof(Renderer), "Renderer");
-			RegType (typeof(UnityEngine.Random), "Random");
-			RegType(typeof(KeyCode),"KeyCode");
-
-			RegType (typeof(ParticleSystem), "ParticleSystem");
-			RegType (typeof(PlayerPrefs), "PlayerPrefs");
-			RegType (typeof(Ray), "Ray");
-			RegType (typeof(Resources), "Resources");
-
-			RegType (typeof(Screen), "Screen");
-			RegType (typeof(Shader), "Shader");
-			RegType (typeof(Texture), "Texture");
-			RegType (typeof(Transform), "Transform");
-			RegType (typeof(UnityEngine.Time), "Time");
-
-			RegType (typeof(Vector2), "Vector2");
-			RegType (typeof(Vector3), "Vector3");
-			RegType (typeof(Vector4), "Vector4");
-			RegType (typeof(Quaternion), "Quaternion");
-			RegType (typeof(WWW), "WWW");
-			RegType (typeof(WWWForm), "WWWForm");
+			RegisterType(typeof(object), "object");
 
 			//对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
-			RegType(typeof(int[]), "int[]");	//数组要独立注册
-			RegType(typeof(string[]), "string[]");	
-			RegType(typeof(float[]), "float[]");	
-			RegType(typeof(bool[]), "bool[]");	
-			RegType (typeof(byte[]), "byte[]");
+			RegisterType(typeof(int[]), "int[]");	//数组要独立注册
+			RegisterType(typeof(string[]), "string[]");	
+			RegisterType(typeof(float[]), "float[]");	
+			RegisterType(typeof(bool[]), "bool[]");	
+			RegisterType (typeof(byte[]), "byte[]");
+
+			//以下内容是Unity专用，如果非Unity平台可以直接主食掉
+			RegisterType(typeof(UnityEngine.Object), "Object");
+			RegisterType (typeof(System.DateTime), "DateTime");
+			RegisterType (typeof(AssetBundle), "AssetBundle");
+			RegisterType (typeof(Animation), "Animation");
+			RegisterType (typeof(AnimationCurve), "AnimationCurve");
+			RegisterType (typeof(AnimationClip), "AnimationClip");
+			RegisterType (typeof(Animator), "Animator");
+			RegisterType (typeof(Application), "Application");
+			RegisterType (typeof(AudioSource), "AudioSource");
+			RegisterType (typeof(AudioClip), "AudioClip");
+			RegisterType (typeof(AudioListener), "AudioListener");
+
+			RegisterType (typeof(Camera), "Camera");
+			RegisterType (typeof(Component), "Component");
+			RegisterType (typeof(Color), "Color");
+			RegisterType (typeof(Debug), "Debug");
+			RegisterType (typeof(GameObject), "GameObject");
+			RegisterType (typeof(Input), "Input");
+
+			RegisterType (typeof(Light), "Light");
+			RegisterType (typeof(Mathf), "Mathf");
+			RegisterType (typeof(Material), "Material");
+			RegisterType (typeof(Mesh), "Mesh");
+			RegisterType (typeof(MeshFilter), "MeshFilter");
+			RegisterType (typeof(Renderer), "Renderer");
+			RegisterType (typeof(UnityEngine.Random), "Random");
+			RegisterType(typeof(KeyCode),"KeyCode");
+
+			RegisterType (typeof(ParticleSystem), "ParticleSystem");
+			RegisterType (typeof(PlayerPrefs), "PlayerPrefs");
+			RegisterType (typeof(Ray), "Ray");
+			RegisterType (typeof(Resources), "Resources");
+
+			RegisterType (typeof(Screen), "Screen");
+			RegisterType (typeof(Shader), "Shader");
+			RegisterType (typeof(Texture), "Texture");
+			RegisterType (typeof(Transform), "Transform");
+			RegisterType (typeof(UnityEngine.Time), "Time");
+
+			RegisterType (typeof(Vector2), "Vector2");
+			RegisterType (typeof(Vector3), "Vector3");
+			RegisterType (typeof(Vector4), "Vector4");
+			RegisterType (typeof(Quaternion), "Quaternion");
+			RegisterType (typeof(WWW), "WWW");
+			RegisterType (typeof(WWWForm), "WWWForm");
 		}
 
-        public static Type_Operatable MakeType(Type type, string keyword)
+        private static Type_Operatable MakeType(Type type, string keyword)
         {
             if (!type.IsSubclassOf(typeof(Delegate)))
             {
@@ -176,12 +174,11 @@ namespace CQuark{
                 return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
             }
         }
-
-		public static void RegType(Type type, string keyword)
+		public static void RegisterType(Type type, string keyword)
 		{
-			RegType(MakeType(type, keyword));
+			RegisterType(MakeType(type, keyword));
 		}
-		public static void RegType(IType type)
+		public static void RegisterType(IType type)
 		{
 			types[type.typeBridge] = type;
 
@@ -203,7 +200,6 @@ namespace CQuark{
 				CQ_TokenParser.AddType(typename);
 			}
 		}
-
 		public static IType GetType(CQ_Type type)
 		{
 			if (type == null)
@@ -214,7 +210,7 @@ namespace CQuark{
 			{
 				DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
 				ret = MakeType(type, "");
-				RegType(ret);
+				RegisterType(ret);
 			}
 			return ret;
 		}
@@ -280,7 +276,7 @@ namespace CQuark{
 								types[i] = rt;
 							}
 							Type IType = gentype.MakeGenericType(types);
-							RegType(MakeType(IType, keyword));
+							RegisterType(MakeType(IType, keyword));
 							return GetTypeByKeyword(keyword);
 						}
 					}
@@ -299,7 +295,8 @@ namespace CQuark{
 			}
 			return ret;
 		}
-		public static void RegisterFunction(IMethod func)
+
+		private static void RegisterMethod(IMethod func)
 		{
 			//if (useNamespace)
 			//{
@@ -310,12 +307,11 @@ namespace CQuark{
 			else
 				calls[func.keyword] = func;
 		}
-		public static void RegisterFunction(Delegate dele)
+		public static void RegisterMethod(Delegate dele)
 		{
-			RegisterFunction(new Method (dele));
+			RegisterMethod(new Method (dele));
 		}
-
-		public static IMethod GetFunction(string name)
+		public static IMethod GetMethod(string name)
 		{
 			IMethod func = null;
 			calls.TryGetValue(name, out func);
@@ -327,14 +323,13 @@ namespace CQuark{
 			}
 			return func;
 		}
-
 		//是否是一个协程方法
-		//TODO 最好不要这么判断
 		public static bool IsCoroutine(string name){
 			return corouts.ContainsKey (name);
 		}
 
-		public static IList<Token> ParserToken(string code)
+		//把文本断成TokenList
+		private static IList<Token> ParserToken(string code)
 		{
 			if (code [0] == 0xFEFF) {
 				//windows下用记事本写，会在文本第一个字符出现BOM（65279）
@@ -347,41 +342,16 @@ namespace CQuark{
 
 			return tokens;
 		}
-		public static ICQ_Expression Expr_CompileToken(IList<Token> listToken)
-		{
-			return CQ_Expression_Compiler.Compile(listToken);
-		}
-
-		public static ICQ_Expression Expr_CompileToken(IList<Token> listToken, bool SimpleExpression)
-		{
-			return SimpleExpression ? CQ_Expression_Compiler.Compile_NoBlock(listToken) : CQ_Expression_Compiler.Compile(listToken);
-		}
-
-		//CQ_Content contentGloabl = null;
-
-		public static CQ_Value Expr_Execute(ICQ_Expression expr)
-		{
-			CQ_Content content = new CQ_Content (true);
-			return expr.ComputeValue(content);
-		}
-		public static CQ_Value Expr_Execute(ICQ_Expression expr, CQ_Content content)
-		{
-			if (content == null)
-                content = new CQ_Content(true);
-			return expr.ComputeValue(content);
-		}
-		public static IEnumerator Expr_Coroutine(ICQ_Expression expr, CQ_Content content, ICoroutine coroutine)
-		{
-			if (content == null)
-                content = new CQ_Content(true);
-			yield return coroutine.StartNewCoroutine(expr.CoroutineCompute(content, coroutine));
-		}
-
-		public static void Project_Compile(Dictionary<string, IList<Token>> project, bool embDebugToken)
+		private static void Project_Compile(Dictionary<string, IList<Token>> project, bool embDebugToken)
 		{
 			foreach (KeyValuePair<string, IList<Token>> f in project)
 			{
-				File_PreCompileToken(f.Key, f.Value);
+				//先把所有代码里的类注册一遍
+				IList<IType> types = CQ_Expression_Compiler.FilePreCompile(f.Key, f.Value);
+				foreach (var type in types)
+				{
+					RegisterType(type);
+				}
 			}
 			foreach (KeyValuePair<string, IList<Token>> f in project)
 			{
@@ -404,33 +374,29 @@ namespace CQuark{
 				File_CompileToken(f.Key, f.Value, embDebugToken);
 			}
 		}
-		public static void File_PreCompileToken(string filename, IList<Token> listToken)
-		{
-			IList<IType> types = CQ_Expression_Compiler.FilePreCompile(filename, listToken);
-			foreach (var type in types)
-			{
-				RegType(type);
-			}
-		}
-		public static void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken)
+		private static void File_CompileToken(string filename, IList<Token> listToken, bool embDebugToken)
 		{
 			DebugUtil.Log("File_CompilerToken:" + filename);
 			IList<IType> types = CQ_Expression_Compiler.FileCompile(filename, listToken, embDebugToken);
 			foreach (var type in types)
 			{
 				if (GetTypeByKeywordQuiet(type.keyword) == null)
-					RegType(type);
+					RegisterType(type);
 			}
 		}
-
 		/// <summary>
 		/// 这里的filename只是为了编译时报错可以看到出错文件
 		/// </summary>
+
+		public static ICQ_Expression BuildBlock(string code)
+		{
+			var token = ParserToken(code);
+			return CQ_Expression_Compiler.Compile(token);
+		}
 		public static void BuildFile(string filename, string code){
-			var token = ParserToken(code);//词法分析
+			var token = ParserToken(code);
 			File_CompileToken(filename, token, false);
 		}
-			
 		public static void BuildProject(string path, string pattern)
 		{
 			string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
@@ -445,5 +411,7 @@ namespace CQuark{
 			}
 			Project_Compile(project, true);
 		}
+
+
 	}
 }

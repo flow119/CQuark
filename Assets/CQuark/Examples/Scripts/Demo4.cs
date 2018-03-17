@@ -6,11 +6,12 @@ public class Demo4 : MonoBehaviour {
 	
 	// Use this for initialization
 	public string m_blockFilePath;
+	CQuarkBlock block = new CQuarkBlock();
 	void Start()
 	{
         CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegType (typeof(System.DateTime),"DateTime");
-		CQuark.AppDomain.RegType (typeof(System.DayOfWeek),"DayOfWeek");
+		CQuark.AppDomain.RegisterType (typeof(System.DateTime),"DateTime");
+		CQuark.AppDomain.RegisterType (typeof(System.DayOfWeek),"DayOfWeek");
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
@@ -21,21 +22,20 @@ public class Demo4 : MonoBehaviour {
 	{
 		if (GUI.Button(new Rect(0, 0, 200, 50), "Eval use String"))
 		{
-			CQuarkClass.Instance.ClearValue();
 			string callExpr ="ScriptClass4 sc =new ScriptClass4();\n"+
 				"sc.defHP1=100;\n"+
 					"sc.defHP2=200;\n"+
 					"return sc.GetHP();";
-			object i = CQuarkClass.Instance.Execute(callExpr);
+			object i = block.Execute(callExpr);
 			result = "result=" + i;
 		}
 
 		if (GUI.Button(new Rect(200, 0, 200, 50), "Eval use Code"))
 		{
-			CQuarkClass.Instance.ClearValue();
-			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//得到脚本类型
 			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword("ScriptClass4");
+
+			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//调用脚本类构造创造一个实例
 			var thisOfScript = typeOfScript._class.New(content, null).value;
 			//调用脚本类成员变量赋值
