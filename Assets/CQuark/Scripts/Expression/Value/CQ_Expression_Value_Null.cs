@@ -31,7 +31,7 @@ namespace CQuark
 		}
 
 
-		public List<ICQ_Expression> listParam
+		public List<ICQ_Expression> _expressions
 		{
 			get { return null; }
 		}
@@ -57,9 +57,9 @@ namespace CQuark
 		}
 		public bool hasCoroutine{
 			get{
-				//				if(listParam == null || listParam.Count == 0)
+				//				if(_expressions == null || _expressions.Count == 0)
 				//					return false;
-				//				foreach(ICQ_Expression expr in listParam){
+				//				foreach(ICQ_Expression expr in _expressions){
 				//					if(expr.hasCoroutine)
 				//						return true;
 				//				}

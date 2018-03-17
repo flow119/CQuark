@@ -141,7 +141,7 @@ namespace CQuark
                 if (succ && subvalue != null)
                 {
                     CQ_Expression_NegativeValue v = new CQ_Expression_NegativeValue(pos, expend2, tlist[pos].line, tlist[expend2].line);
-                    v.listParam.Add(subvalue);
+                    v._expressions.Add(subvalue);
                     return v;
                 }
                 else
@@ -170,16 +170,16 @@ namespace CQuark
                 {
                     if (subvalue is CQ_Expression_Math2Value || subvalue is CQ_Expression_Math2ValueAndOr || subvalue is CQ_Expression_Math2ValueLogic)
                     {
-						var pp = subvalue.listParam[0];
+						var pp = subvalue._expressions[0];
                         CQ_Expression_NegativeLogic v = new CQ_Expression_NegativeLogic(pp.tokenBegin, pp.tokenEnd, pp.lineBegin, pp.lineEnd);
-                        v.listParam.Add(pp);
-						subvalue.listParam[0] = v;
+                        v._expressions.Add(pp);
+						subvalue._expressions[0] = v;
                         return subvalue;
                     }
                     else
                     {
                         CQ_Expression_NegativeLogic v = new CQ_Expression_NegativeLogic(pos, expend2, tlist[pos].line, tlist[expend2].line);
-                        v.listParam.Add(subvalue);
+                        v._expressions.Add(subvalue);
                         return v;
                     }
                 }

@@ -5,11 +5,10 @@ using System.Text;
 
 namespace CQuark
 {
-
     //由西瓜脚本里获取的自定义Type
-    public class CQ_Type : ICQ_Function
+    public class Class_CQuark : IClass
     {
-        public CQ_Type(string keyword, string _namespace, string filename, bool bInterface)
+        public Class_CQuark(string keyword, string _namespace, string filename, bool bInterface)
         {
             this.Name = keyword;
             this.Namespace = _namespace;
@@ -26,6 +25,8 @@ namespace CQuark
             get;
             private set;
         }
+
+		//dumplog用的
         public IList<Token> tokenlist
         {
             get;
@@ -35,6 +36,7 @@ namespace CQuark
         {
             this.tokenlist = tokens;
         }
+
         #region impl type
         public string FullName
         {
@@ -232,7 +234,7 @@ namespace CQuark
                 {
                     if (value is SInstance)
                     {
-                        if ((value as SInstance).type != (CQ_Type)this.members[valuename].type.typeBridge)
+                        if ((value as SInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
                         {
                             value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }
@@ -391,7 +393,7 @@ namespace CQuark
                 {
                     if (value is SInstance)
                     {
-                        if ((value as SInstance).type != (CQ_Type)this.members[valuename].type.typeBridge)
+                        if ((value as SInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge)
                         {
                             value = CQuark.AppDomain.GetType((value as SInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }

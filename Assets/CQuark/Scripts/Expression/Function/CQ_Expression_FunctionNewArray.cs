@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_FunctionNewArray(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
@@ -19,7 +19,7 @@ namespace CQuark
         //Block的参数 一个就是一行，顺序执行，没有
         //0 count;
         //1~where,first value;
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -46,9 +46,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-//				if(listParam == null || listParam.Count == 0)
+//				if(_expressions == null || _expressions.Count == 0)
 //					return false;
-//				foreach(ICQ_Expression expr in listParam){
+//				foreach(ICQ_Expression expr in _expressions){
 //					if(expr.hasCoroutine)
 //						return true;
 //				}
@@ -59,17 +59,17 @@ namespace CQuark
         {
             content.InStack(this);
             List<object> list = new List<object>();
-            int count = listParam[0] == null ? (listParam.Count - 1) : (int)listParam[0].ComputeValue(content).value;
+            int count = _expressions[0] == null ? (_expressions.Count - 1) : (int)_expressions[0].ComputeValue(content).value;
             if (count == 0)
                 throw new Exception("不能创建0长度数组");
             CQ_Value vcount = new CQ_Value();
             vcount.type = typeof(int);
             vcount.value = count;
-            for (int i = 1; i < listParam.Count; i++)
+            for (int i = 1; i < _expressions.Count; i++)
             {
-                //if (listParam[i] != null)
+                //if (_expressions[i] != null)
                 {
-                    list.Add(listParam[i].ComputeValue(content).value);
+                    list.Add(_expressions[i].ComputeValue(content).value);
                 }
             }
             List<CQ_Value> p = new List<CQ_Value>();
@@ -91,7 +91,7 @@ namespace CQuark
 
         public override string ToString()
         {
-            return "new|" + type.keyword + "(params[" + listParam.Count + ")";
+            return "new|" + type.keyword + "(params[" + _expressions.Count + ")";
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_LoopWhile(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
 
@@ -28,7 +28,7 @@ namespace CQuark
             set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -45,9 +45,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -58,8 +58,8 @@ namespace CQuark
         {
             content.InStack(this);
             content.DepthAdd();
-            ICQ_Expression expr_while = listParam[0] as ICQ_Expression;
-            ICQ_Expression expr_block = listParam[1] as ICQ_Expression;
+            ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
+            ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
             CQ_Value vrt = null;
             while ((bool)expr_while.ComputeValue(content).value)
             {
@@ -104,8 +104,8 @@ namespace CQuark
 		{
 			content.InStack(this);
 			content.DepthAdd();
-			ICQ_Expression expr_while = listParam[0] as ICQ_Expression;
-			ICQ_Expression expr_block = listParam[1] as ICQ_Expression;
+			ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
+			ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
 //			CQ_Content.Value vrt = null;
 			while ((bool)expr_while.ComputeValue(content).value)
 			{

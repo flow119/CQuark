@@ -22,7 +22,7 @@ namespace CQuark
                     bool succ = Compiler_Expression(tlist, begin, end, out param);
                     if (succ && param != null)
                     {
-                        func.listParam.Add(param);
+                        func._expressions.Add(param);
                         func.tokenEnd = end;
                         func.lineEnd = tlist[end].line;
                     }
@@ -58,7 +58,7 @@ namespace CQuark
                 bool succ = Compiler_Expression(tlist, begin, end, out param);
                 if (succ && param != null)
                 {
-                    func.listParam.Add(param);
+                    func._expressions.Add(param);
                     func.tokenEnd = end;
                     func.lineEnd = tlist[end].line;
                 }
@@ -72,7 +72,7 @@ namespace CQuark
             //bool succ = Compiler_Expression(tlist,content, begin, end, out param0);
             //if(succ&&param0!=null)
             //{
-            //    func.listParam.Add(param0);
+            //    func._expressions.Add(param0);
             //    return func;
 
             //}
@@ -89,7 +89,7 @@ namespace CQuark
             bool succ = Compiler_Expression(tlist, pos + 1, posend, out subvalue);
             if (succ)
             {
-                func.listParam.Add(subvalue);
+                func._expressions.Add(subvalue);
             }
 
 
@@ -117,7 +117,7 @@ namespace CQuark
                     bool succ = Compiler_Expression(tlist, begin, end, out param);
                     if (succ && param != null)
                     {
-                        func.listParam.Add(param);
+                        func._expressions.Add(param);
                     }
                     begin = end + 2;
                     end = FindCodeAnyInFunc(tlist, ref begin, out dep);
@@ -152,7 +152,7 @@ namespace CQuark
                     }
                     valuebegin = end2 + 2;
                 }
-                func.listParam.Add(count);
+                func._expressions.Add(count);
                 if (tlist[valuebegin].text == "{")//InitValue
                 {
                     int nbegin = valuebegin + 1;
@@ -168,7 +168,7 @@ namespace CQuark
                         }
                         else
                         {
-                            func.listParam.Add(valueI);
+                            func._expressions.Add(valueI);
                         }
                         if (tlist[nend + 1].text != ",")
                             break;

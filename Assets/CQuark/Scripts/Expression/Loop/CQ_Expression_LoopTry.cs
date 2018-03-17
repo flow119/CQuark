@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_LoopTry(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-//				if(listParam == null || listParam.Count == 0)
+//				if(_expressions == null || _expressions.Count == 0)
 //					return false;
-//				foreach(ICQ_Expression expr in listParam){
+//				foreach(ICQ_Expression expr in _expressions){
 //					if(expr.hasCoroutine)
 //						return true;
 //				}
@@ -61,7 +61,7 @@ namespace CQuark
             content.Record(out depth__);
             try
             {
-                ICQ_Expression expr = listParam[0];
+                ICQ_Expression expr = _expressions[0];
                 if (expr is CQ_Expression_Block)
                 {
                     expr.ComputeValue(content);
@@ -78,15 +78,15 @@ namespace CQuark
             {
                 bool bParse = false;
                 int i = 1;
-                while (i < listParam.Count)
+                while (i < _expressions.Count)
                 {
-                    CQ_Expression_Define def = listParam[i] as CQ_Expression_Define;
+                    CQ_Expression_Define def = _expressions[i] as CQ_Expression_Define;
                     if (err.GetType()==(Type)def.value_type || err.GetType().IsSubclassOf((Type)def.value_type))
                     {
                         content.DepthAdd();
                         content.DefineAndSet(def.value_name, def.value_type, err);
 
-                        listParam[i + 1].ComputeValue(content);
+                        _expressions[i + 1].ComputeValue(content);
                         content.DepthRemove();
                         bParse = true;
                         break;

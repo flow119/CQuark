@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_Math2ValueAndOr(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -62,13 +62,13 @@ namespace CQuark
             {
                 bool bleft = false;
                 bool bright = false;
-                if (listParam[0] is ICQ_Expression_Value)
+                if (_expressions[0] is ICQ_Expression_Value)
                 {
-                    bleft = (bool)((listParam[0] as ICQ_Expression_Value).value);
+                    bleft = (bool)((_expressions[0] as ICQ_Expression_Value).value);
                 }
                 else
                 {
-                    bleft = (bool)listParam[0].ComputeValue(content).value;
+                    bleft = (bool)_expressions[0].ComputeValue(content).value;
                 }
                 result.type = typeof(bool);
                 if(mathop=='&')
@@ -79,13 +79,13 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is ICQ_Expression_Value)
+                        if (_expressions[1] is ICQ_Expression_Value)
                         {
-                            bright = (bool)((listParam[1] as ICQ_Expression_Value).value);
+                            bright = (bool)((_expressions[1] as ICQ_Expression_Value).value);
                         }
                         else
                         {
-                            bright = (bool)listParam[1].ComputeValue(content).value;
+                            bright = (bool)_expressions[1].ComputeValue(content).value;
                         }
                         result.value = (bool)(bleft && bright);
                     }
@@ -98,13 +98,13 @@ namespace CQuark
                     }
                     else
                     {
-                        if (listParam[1] is ICQ_Expression_Value)
+                        if (_expressions[1] is ICQ_Expression_Value)
                         {
-                            bright = (bool)((listParam[1] as ICQ_Expression_Value).value);
+                            bright = (bool)((_expressions[1] as ICQ_Expression_Value).value);
                         }
                         else
                         {
-                            bright = (bool)listParam[1].ComputeValue(content).value;
+                            bright = (bool)_expressions[1].ComputeValue(content).value;
                         }
                         result.value = (bool)(bleft || bright);
                     }

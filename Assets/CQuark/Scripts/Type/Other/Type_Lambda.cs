@@ -18,7 +18,7 @@ namespace CQuark
         {
             get { return typeof(DeleLambda); }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get { return null; }
         }

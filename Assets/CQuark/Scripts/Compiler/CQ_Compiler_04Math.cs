@@ -20,7 +20,7 @@ namespace CQuark
                 //    ICQ_Expression v;
                 //    bool succ = Compiler_Expression(tlist, content, pos + 3, posend, out v);
                 //    CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert();
-                //    convert.listParam.Add(v);
+                //    convert._expressions.Add(v);
                 //    convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[pos + 1].text).type;
 
 
@@ -80,8 +80,8 @@ namespace CQuark
                         CQ_Expression_StaticFunction value = new CQ_Expression_StaticFunction(pos, rightend, tlist[pos].line, tlist[rightend].line);
                         value.functionName = vf.funcname;
 						value.type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
-                        //value.listParam.Add(valueleft);
-                        value.listParam.AddRange(vf.listParam.ToArray());
+                        //value._expressions.Add(valueleft);
+                        value._expressions.AddRange(vf._expressions.ToArray());
                         return value;
                     }
                     else if (valueright is CQ_Expression_SelfOp)
@@ -119,7 +119,7 @@ namespace CQuark
                         return null;
                     }
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(pos, posend, tlist[pos].line, tlist[posend].line);
-                    convert.listParam.Add(v);
+                    convert._expressions.Add(v);
 					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
                     return convert;
@@ -136,14 +136,14 @@ namespace CQuark
                         return null;
                     }
                     CQ_Expression_IndexFind value = new CQ_Expression_IndexFind(left, rightend, tlist[left].line, tlist[rightend].line);
-                    value.listParam.Add(valueleft);
-                    value.listParam.Add(valueright);
+                    value._expressions.Add(valueleft);
+                    value._expressions.Add(valueright);
                     return value;
                 }
                 else if (tkCur.text == "as")
                 {
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
-                    convert.listParam.Add(valueleft);
+                    convert._expressions.Add(valueleft);
 					convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
 
@@ -152,7 +152,7 @@ namespace CQuark
                 else if (tkCur.text == "is")
                 {
                     CQ_Expression_TypeCheck check = new CQ_Expression_TypeCheck(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
-                    check.listParam.Add(valueleft);
+                    check._expressions.Add(valueleft);
 					check.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
 
@@ -172,8 +172,8 @@ namespace CQuark
                         {
                             CQ_Expression_MemberSetValue value = new CQ_Expression_MemberSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
                             value.membername = mfinde.membername;
-                            value.listParam.Add(mfinde.listParam[0]);
-                            value.listParam.Add(valueright);
+                            value._expressions.Add(mfinde._expressions[0]);
+                            value._expressions.Add(valueright);
                             return value;
                         }
                         else if (sfinde != null)
@@ -181,16 +181,16 @@ namespace CQuark
                             CQ_Expression_StaticSetValue value = new CQ_Expression_StaticSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
                             value.staticmembername = sfinde.staticmembername;
                             value.type = sfinde.type;
-                            //value.listParam.Add(mfinde.listParam[0]);
-                            value.listParam.Add(valueright);
+                            //value._expressions.Add(mfinde._expressions[0]);
+                            value._expressions.Add(valueright);
                             return value;
                         }
                         else if (ifinde != null)
                         {
                             CQ_Expression_IndexSetValue value = new CQ_Expression_IndexSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
-                            value.listParam.Add(ifinde.listParam[0]);
-                            value.listParam.Add(ifinde.listParam[1]);
-                            value.listParam.Add(valueright);
+                            value._expressions.Add(ifinde._expressions[0]);
+                            value._expressions.Add(ifinde._expressions[1]);
+                            value._expressions.Add(valueright);
                             return value;
                         }
                         else
@@ -207,7 +207,7 @@ namespace CQuark
                         if (vg != null)
                         {
                             CQ_Expression_MemberFind value = new CQ_Expression_MemberFind(left, rightend, tlist[left].line, tlist[rightend].line);
-                            value.listParam.Add(valueleft);
+                            value._expressions.Add(valueleft);
                             value.membername = vg.value_name;
                             return value;
                         }
@@ -215,8 +215,8 @@ namespace CQuark
                         {
                             CQ_Expression_MemberFunction value = new CQ_Expression_MemberFunction(left, rightend, tlist[left].line, tlist[rightend].line);
                             value.functionName = vf.funcname;
-                            value.listParam.Add(valueleft);
-                            value.listParam.AddRange(vf.listParam.ToArray());
+                            value._expressions.Add(valueleft);
+                            value._expressions.AddRange(vf._expressions.ToArray());
                             return value;
                         }
 
@@ -225,14 +225,14 @@ namespace CQuark
                             CQ_Expression_SelfOp vr = valueright as CQ_Expression_SelfOp;
 
                             CQ_Expression_MemberMath value = new CQ_Expression_MemberMath(left, rightend, tlist[left].line, tlist[rightend].line);
-                            value.listParam.Add(valueleft);
+                            value._expressions.Add(valueleft);
                             value.membername = vr.value_name;
                             value.mathop = vr.mathop;
                             return value;
                         }
 
                         throw new Exception("不可识别的表达式" + valueleft + "." + valueright);
-                        //value.listParam.Add(valueright);
+                        //value._expressions.Add(valueright);
                     }
                     else if (tkCur.text == "+=" || tkCur.text == "-=" || tkCur.text == "*=" || tkCur.text == "/=" || tkCur.text == "%=")
                     {
@@ -241,10 +241,10 @@ namespace CQuark
                         //{
                         //    CQ_Expression_MemberFind vf = valueleft as CQ_Expression_MemberFind;
                         //    CQ_Expression_MemberMath value = new CQ_Expression_MemberMath(left, rightend, tlist[left].line, tlist[rightend].line);
-                        //    value.listParam.Add(vf.listParam[0]);
+                        //    value._expressions.Add(vf._expressions[0]);
                         //    value.membername = vf.membername;
                         //    value.mathop = tlist[oppos].text[0];
-                        //    value.listParam.Add(valueright);
+                        //    value._expressions.Add(valueright);
                         //    return value;
                         //}
                         //if ((valueright is CQ_Expression_Lambda ==false) && valueleft is CQ_Expression_StaticFind)
@@ -254,15 +254,15 @@ namespace CQuark
                         //    value.type = vf.type;
                         //    value.staticmembername = vf.staticmembername;
                         //    value.mathop = tlist[oppos].text[0];
-                        //    value.listParam.Add(valueright);
+                        //    value._expressions.Add(valueright);
                         //    return value;
                         //}
                         //else
                         {
                             CQ_Expression_SelfOpWithValue value = new CQ_Expression_SelfOpWithValue(left, rightend, tlist[left].line, tlist[rightend].line);
                             //value.value_name = ((CQ_Expression_GetValue)valueleft).value_name;
-                            value.listParam.Add(valueleft);
-                            value.listParam.Add(valueright);
+                            value._expressions.Add(valueleft);
+                            value._expressions.Add(valueright);
                             value.mathop = tkCur.text[0];
                             return value;
                         }
@@ -270,16 +270,16 @@ namespace CQuark
                     else if (tkCur.text == "&&" || tkCur.text == "||")
                     {
                         CQ_Expression_Math2ValueAndOr value = new CQ_Expression_Math2ValueAndOr(left, rightend, tlist[left].line, tlist[rightend].line);
-                        value.listParam.Add(valueleft);
-                        value.listParam.Add(valueright);
+                        value._expressions.Add(valueleft);
+                        value._expressions.Add(valueright);
                         value.mathop = tkCur.text[0];
                         return value;
                     }
                     else if (tkCur.text == ">" || tkCur.text == ">=" || tkCur.text == "<" || tkCur.text == "<=" || tkCur.text == "==" || tkCur.text == "!=")
                     {
                         CQ_Expression_Math2ValueLogic value = new CQ_Expression_Math2ValueLogic(left, rightend, tlist[left].line, tlist[rightend].line);
-                        value.listParam.Add(valueleft);
-                        value.listParam.Add(valueright);
+                        value._expressions.Add(valueleft);
+                        value._expressions.Add(valueright);
                         LogicToken token = LogicToken.not_equal;
                         if (tkCur.text == ">")
                         {
@@ -314,20 +314,20 @@ namespace CQuark
                         if (mathop == '?')
                         {
                             CQ_Expression_Math3Value value = new CQ_Expression_Math3Value(left, rightend, tlist[left].line, tlist[rightend].line);
-                            value.listParam.Add(valueleft);
+                            value._expressions.Add(valueleft);
 
                             CQ_Expression_Math2Value vvright = valueright as CQ_Expression_Math2Value;
                             if (vvright.mathop != ':')
                                 throw new Exception("三元表达式异常" + tkCur.ToString() + tkCur.SourcePos());
-                            value.listParam.Add(vvright.listParam[0]);
-                            value.listParam.Add(vvright.listParam[1]);
+                            value._expressions.Add(vvright._expressions[0]);
+                            value._expressions.Add(vvright._expressions[1]);
                             return value;
                         }
                         else
                         {
                             CQ_Expression_Math2Value value = new CQ_Expression_Math2Value(left, rightend, tlist[left].line, tlist[rightend].line);
-                            value.listParam.Add(valueleft);
-                            value.listParam.Add(valueright);
+                            value._expressions.Add(valueleft);
+                            value._expressions.Add(valueright);
                             value.mathop = mathop;
                             return value;
                         }

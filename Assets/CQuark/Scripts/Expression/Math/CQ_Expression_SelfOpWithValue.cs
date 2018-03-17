@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_SelfOpWithValue(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -58,8 +58,8 @@ namespace CQuark
             content.InStack(this);
 
 
-            var left = listParam[0].ComputeValue(content);
-            var right = listParam[1].ComputeValue(content);
+            var left = _expressions[0].ComputeValue(content);
+            var right = _expressions[1].ComputeValue(content);
             IType type = CQuark.AppDomain.GetType(left.type);
             //if (mathop == "+=")
 
@@ -81,21 +81,21 @@ namespace CQuark
                 //}
                 //else
                 {
-                    if (listParam[0] is CQ_Expression_MemberFind)
+                    if (_expressions[0] is CQ_Expression_MemberFind)
                     {
-                        CQ_Expression_MemberFind f = listParam[0] as CQ_Expression_MemberFind;
+                        CQ_Expression_MemberFind f = _expressions[0] as CQ_Expression_MemberFind;
 
-                        var parent = f.listParam[0].ComputeValue(content);
+                        var parent = f._expressions[0].ComputeValue(content);
                         if (parent == null)
                         {
-                            throw new Exception("调用空对象的方法:" + f.listParam[0].ToString() + ":" + ToString());
+                            throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
                         }
                         var ptype = CQuark.AppDomain.GetType(parent.type);
                         ptype.function.MemberValueSet(content, parent.value, f.membername, value);
                     }
-                    if (listParam[0] is CQ_Expression_StaticFind)
+                    if (_expressions[0] is CQ_Expression_StaticFind)
                     {
-                        CQ_Expression_StaticFind f = listParam[0] as CQ_Expression_StaticFind;
+                        CQ_Expression_StaticFind f = _expressions[0] as CQ_Expression_StaticFind;
                         f.type.function.StaticValueSet(content, f.staticmembername, value);
                     }
                 }

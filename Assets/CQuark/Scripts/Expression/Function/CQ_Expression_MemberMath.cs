@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_MemberMath(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -56,10 +56,10 @@ namespace CQuark
         public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            var parent = listParam[0].ComputeValue(content);
+            var parent = _expressions[0].ComputeValue(content);
             if (parent == null)
             {
-                throw new Exception("调用空对象的方法:" + listParam[0].ToString() + ":" + ToString());
+                throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
             var type = CQuark.AppDomain.GetType(parent.type);
             //string membername=null;
@@ -68,9 +68,9 @@ namespace CQuark
             var getvalue = type.function.MemberValueGet(content, parent.value, membername);
 
             CQ_Value vright = CQ_Value.One;
-            if (listParam.Count > 1)
+            if (_expressions.Count > 1)
             {
-                vright = listParam[1].ComputeValue(content);
+                vright = _expressions[1].ComputeValue(content);
             }
             CQ_Value vout =new CQ_Value();
             var mtype = CQuark.AppDomain.GetType(getvalue.type);

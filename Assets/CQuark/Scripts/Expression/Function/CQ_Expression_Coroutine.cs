@@ -9,14 +9,14 @@ namespace CQuark
     {
 		public CQ_Expression_Coroutine(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -51,7 +51,7 @@ namespace CQuark
         {
             content.InStack(this);
             List<CQ_Value> list = new List<CQ_Value>();
-            foreach (ICQ_Expression p in listParam)
+            foreach (ICQ_Expression p in _expressions)
             {
                 if (p != null)
                 {
@@ -131,7 +131,7 @@ namespace CQuark
 		{
 			content.InStack(this);
 			List<CQ_Value> list = new List<CQ_Value>();
-			foreach (ICQ_Expression p in listParam)
+			foreach (ICQ_Expression p in _expressions)
 			{
 				if (p != null)
 				{
@@ -222,7 +222,7 @@ namespace CQuark
 
         public override string ToString()
         {
-            return "Coroutine |" + funcname + "(params[" + listParam.Count + ")";
+            return "Coroutine |" + funcname + "(params[" + _expressions.Count + ")";
         }
     }
 }

@@ -7,7 +7,7 @@ namespace CQuark
 	//一个西瓜Class
     public class CQ_Content
     {
-		public CQ_Type CallType;
+		public Class_CQuark CallType;
 		public Stack<List<string>> tvalues = new Stack<List<string>>();
 		public SInstance CallThis;
 		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>();
@@ -234,7 +234,7 @@ namespace CQuark
             {
                 if (CallType != null)
                 {
-                    CQ_Type.Member retM = null;
+                    Class_CQuark.Member retM = null;
                     bool bRet = CallType.members.TryGetValue(name, out retM);
                     if (bRet)
                     {
@@ -299,7 +299,7 @@ namespace CQuark
 
             if (CallType != null)
             {
-                CQ_Type.Member retM = null;
+                Class_CQuark.Member retM = null;
                 bFind = CallType.members.TryGetValue(name, out retM);
                 if (bFind)
                 {

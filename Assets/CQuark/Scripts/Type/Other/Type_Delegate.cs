@@ -22,7 +22,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get { return null; }
         }

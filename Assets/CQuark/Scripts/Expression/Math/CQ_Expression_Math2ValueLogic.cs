@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_Math2ValueLogic(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -62,8 +62,8 @@ namespace CQuark
             //if(mathop=="<"||mathop=="<="||mathop==">"||mathop==">="||mathop=="=="||mathop=="!=")
             {
                 result.type = typeof(bool);
-                var left = listParam[0].ComputeValue(content);
-                var right = listParam[1].ComputeValue(content);
+                var left = _expressions[0].ComputeValue(content);
+                var right = _expressions[1].ComputeValue(content);
                 if(left.type==null||right.type==null)
                 {
                     if (mathop == LogicToken.equal)

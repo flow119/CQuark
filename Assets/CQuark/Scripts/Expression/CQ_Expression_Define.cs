@@ -9,23 +9,23 @@ namespace CQuark
     {
         public CQ_Expression_Define(int tbegin, int tend, int lbegin, int lend)
         {
-            //listParam = new List<ICQ_Value>();
+            //_expressions = new List<ICQ_Value>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        List<ICQ_Expression> _listParam = null;
-        public List<ICQ_Expression> listParam
+        List<ICQ_Expression> __expressions = null;
+        public List<ICQ_Expression> _expressions
         {
             get
             {
-                if (_listParam == null)
+                if (__expressions == null)
                 {
-                    _listParam = new List<ICQ_Expression>();
+                    __expressions = new List<ICQ_Expression>();
                 }
-                return _listParam;
+                return __expressions;
             }
         }
         public int tokenBegin
@@ -50,9 +50,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -63,10 +63,10 @@ namespace CQuark
         {
             content.InStack(this);
 
-            if (_listParam != null && _listParam.Count > 0)
+            if (__expressions != null && __expressions.Count > 0)
             {
 
-                CQ_Value v = _listParam[0].ComputeValue(content);
+                CQ_Value v = __expressions[0].ComputeValue(content);
                 object val = v.value;
                 if ((Type)value_type == typeof(Type_Var.var))
                 {
@@ -95,12 +95,12 @@ namespace CQuark
 		{
 			content.InStack(this);
 			
-			if (_listParam != null && _listParam.Count > 0)
+			if (__expressions != null && __expressions.Count > 0)
 			{
-				if(_listParam[0].hasCoroutine){
+				if(__expressions[0].hasCoroutine){
 					yield return coroutine.StartNewCoroutine(CoroutineCompute(content, coroutine));
 				}else{
-					CQ_Value v = _listParam[0].ComputeValue(content);
+					CQ_Value v = __expressions[0].ComputeValue(content);
 					object val = v.value;
 					if ((Type)value_type == typeof(Type_Var.var))
 					{
@@ -131,9 +131,9 @@ namespace CQuark
         public override string ToString()
         {
             string outs = "Define|" + value_type.Name + " " + value_name;
-            if (_listParam != null)
+            if (__expressions != null)
             {
-                if (_listParam.Count > 0)
+                if (__expressions.Count > 0)
                 {
                     outs += "=";
                 }

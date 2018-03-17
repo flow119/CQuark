@@ -10,7 +10,7 @@ namespace CQuark
 		
         public CQ_Expression_SetValue(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
 
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -45,9 +45,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -60,7 +60,7 @@ namespace CQuark
 
             {
 
-                CQ_Value v = listParam[0].ComputeValue(content);
+                CQ_Value v = _expressions[0].ComputeValue(content);
 
                 {
                     object val = v.value;
@@ -105,10 +105,10 @@ namespace CQuark
 		{
 			content.InStack(this);
 			{
-				if(listParam[0].hasCoroutine){
-					yield return coroutine.StartNewCoroutine(listParam[0].CoroutineCompute(content, coroutine));
+				if(_expressions[0].hasCoroutine){
+					yield return coroutine.StartNewCoroutine(_expressions[0].CoroutineCompute(content, coroutine));
 				}else{
-					CQ_Value v = listParam[0].ComputeValue(content);
+					CQ_Value v = _expressions[0].ComputeValue(content);
 					
 					{
 						object val = v.value;

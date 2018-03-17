@@ -2,6 +2,9 @@
 
 namespace CQuark
 {
+	/// <summary>
+	/// 西瓜的值
+	/// </summary>
     public class CQ_Value
     {
         public TypeBridge type;

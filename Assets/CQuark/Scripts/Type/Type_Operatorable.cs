@@ -25,7 +25,7 @@ namespace CQuark
         {
             get { return null; }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get;
             protected set;
@@ -35,7 +35,7 @@ namespace CQuark
 
         public Type_Operatorable(Type type, string setkeyword, bool dele)
         {
-            function = new CQ_Function(type);
+            function = new Class_System(type);
             if (setkeyword != null)
             {
                 keyword = setkeyword.Replace(" ", "");

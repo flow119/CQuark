@@ -92,7 +92,7 @@ namespace CQuark
             {
                 CQ_Expression_Block block = new CQ_Expression_Block(pos, end, tlist[pos].line, tlist[end].line);
                 foreach (var v in values)
-                    block.listParam.Add(v);
+                    block._expressions.Add(v);
                 value = block;
             }
             return true;
@@ -363,7 +363,7 @@ namespace CQuark
                                 ICQ_Expression subvalue = Compiler_Expression_Math(tlist, expbegin, expend);
                                 if (subvalue != null)
                                 {
-                                    //subvalue.listParam.Add(subparam);
+                                    //subvalue._expressions.Add(subparam);
                                     values.Add(subvalue);
                                     bTest = true;
                                 }

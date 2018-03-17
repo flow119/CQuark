@@ -22,7 +22,7 @@ namespace CQuark
                     bool succ = Compiler_Expression(tlist, begin, end, out param);
                     if (succ && param != null)
                     {
-                        func.listParam.Add(param);
+                        func._expressions.Add(param);
                         func.tokenEnd = end;
                         func.lineEnd = tlist[end].line;
                     }

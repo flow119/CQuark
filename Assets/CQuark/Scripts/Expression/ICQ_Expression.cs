@@ -8,7 +8,10 @@ namespace CQuark
     //表达式是一个值
     public interface ICQ_Expression
     {
-        List<ICQ_Expression> listParam
+		/// <summary>
+		/// 表达式又由多个表达式组成
+		/// </summary>
+        List<ICQ_Expression> _expressions
         {
             get;
         }

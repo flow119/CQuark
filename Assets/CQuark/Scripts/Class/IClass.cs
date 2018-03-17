@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace CQuark
 {
-	public interface ICQ_Function
+	public interface IClass
 	{
 		CQ_Value New(CQ_Content content, IList<CQ_Value> _params);
 

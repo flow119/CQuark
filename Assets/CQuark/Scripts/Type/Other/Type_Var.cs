@@ -22,7 +22,7 @@ namespace CQuark
         {
             get { return (typeof(var)); }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get { throw new NotImplementedException(); }
         }

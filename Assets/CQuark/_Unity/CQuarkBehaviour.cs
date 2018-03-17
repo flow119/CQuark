@@ -72,12 +72,12 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 
 	protected override void CallScript(string methodName, bool useCoroutine){
 		if (useCoroutine) {
-			CQ_Type cclass = type.function as CQ_Type;
+			Class_CQuark cclass = type.function as Class_CQuark;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
 				this.StartNewCoroutine (type.function.CoroutineCall (content, inst, methodName, null, this));
 		}
 		else {
-			CQ_Type cclass = type.function as CQ_Type;
+			Class_CQuark cclass = type.function as Class_CQuark;
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
 				type.function.MemberCall (content, inst, methodName, null);
 		}

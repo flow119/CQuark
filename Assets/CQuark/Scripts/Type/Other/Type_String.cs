@@ -19,7 +19,7 @@ namespace CQuark
         {
             get { return typeof(string); }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get;
             private set;
@@ -31,7 +31,7 @@ namespace CQuark
 
         public Type_String()
         {
-            function = new CQ_Function(typeof(string));
+            function = new Class_System(typeof(string));
         }
 
 

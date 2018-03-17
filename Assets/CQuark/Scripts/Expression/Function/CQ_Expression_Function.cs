@@ -10,14 +10,14 @@ namespace CQuark
     {
         public CQ_Expression_Function(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -57,7 +57,7 @@ namespace CQuark
         {
             content.InStack(this);
             List<CQ_Value> list = new List<CQ_Value>();
-            foreach (ICQ_Expression p in listParam)
+            foreach (ICQ_Expression p in _expressions)
             {
                 if (p != null)
                 {
@@ -66,7 +66,7 @@ namespace CQuark
             }
 			CQ_Value v = null;
 
-            CQ_Type.Function retFunc = null;
+            Class_CQuark.Function retFunc = null;
             bool bFind = false;
             if (content.CallType != null)
                 bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
@@ -134,7 +134,7 @@ namespace CQuark
 
         public override string ToString()
         {
-            return "Call|" + funcname + "(params[" + listParam.Count + ")";
+            return "Call|" + funcname + "(params[" + _expressions.Count + ")";
         }
     }
 }

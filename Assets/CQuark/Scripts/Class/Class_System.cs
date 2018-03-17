@@ -5,12 +5,12 @@ using System.Text;
 
 namespace CQuark
 {
-	public class CQ_Function : ICQ_Function
+	public class Class_System : IClass
 	{
 		Type type;
 		Dictionary<int, System.Reflection.MethodInfo> cacheT;//= new Dictionary<string, System.Reflection.MethodInfo>();
 
-		public CQ_Function(Type type)
+		public Class_System(Type type)
 		{
 			this.type = type;
 		}
@@ -49,7 +49,7 @@ namespace CQuark
 			foreach (CQ_Value p in _params)
 			{
 				_oparams.Add(p.value);
-				if ((CQ_Type)p.type != null)
+				if ((Class_CQuark)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -139,7 +139,7 @@ namespace CQuark
 			foreach (var p in _params)
 			{
 				_oparams.Add(p.value);
-				if ((CQ_Type)p.type != null)
+				if ((Class_CQuark)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -334,7 +334,7 @@ namespace CQuark
 				{
 					_oparams.Add(p.value);
 				}
-				if ((CQ_Type)p.type != null)
+				if ((Class_CQuark)p.type != null)
 				{
 					types.Add(typeof(object));
 				}
@@ -539,7 +539,7 @@ namespace CQuark
 				{
 					_oparams.Add(p.value);
 				}
-				if ((CQ_Type)p.type != null)
+				if ((Class_CQuark)p.type != null)
 				{
 					types.Add(typeof(object));
 				}

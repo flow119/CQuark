@@ -26,11 +26,11 @@ namespace CQuark
         {
             get { return null; }
         }
-        public ICQ_Function function
+        public IClass function
         {
             get
             {
-                return (CQ_Type)typeBridge as ICQ_Function;
+                return (Class_CQuark)typeBridge as IClass;
             }
         }
 
@@ -45,7 +45,7 @@ namespace CQuark
         {
             this.keyword = keyword;
             this._namespace = "";
-            typeBridge = new CQ_Type(keyword, "", filename, bInterface);
+            typeBridge = new Class_CQuark(keyword, "", filename, bInterface);
             compiled = false;
         }
         public void SetBaseType(IList<IType> types)
@@ -54,7 +54,7 @@ namespace CQuark
         }
         public void EmbDebugToken(IList<Token> tokens)
         {
-            ((CQ_Type)typeBridge).EmbDebugToken(tokens);
+            ((Class_CQuark)typeBridge).EmbDebugToken(tokens);
         }
      
 

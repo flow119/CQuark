@@ -23,7 +23,7 @@ namespace CQuark
 		{
 			get;
 		}
-        ICQ_Function function
+        IClass function
         {
             get;
         }

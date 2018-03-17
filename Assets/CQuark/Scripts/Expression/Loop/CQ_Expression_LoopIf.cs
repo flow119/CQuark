@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_LoopIf(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -56,12 +56,12 @@ namespace CQuark
         public CQ_Value ComputeValue(CQ_Content content)
         {
             content.InStack(this);
-            ICQ_Expression expr_if = listParam[0];
+            ICQ_Expression expr_if = _expressions[0];
             bool bif = (bool)expr_if.ComputeValue(content).value;
             //if (expr_init != null) expr_init.ComputeValue(content);
-            ICQ_Expression expr_go1 = listParam[1];
+            ICQ_Expression expr_go1 = _expressions[1];
             ICQ_Expression expr_go2 = null;
-            if(listParam.Count>2)expr_go2= listParam[2];
+            if(_expressions.Count>2)expr_go2= _expressions[2];
             CQ_Value value = null;
             if (bif && expr_go1 != null)
             {
@@ -105,12 +105,12 @@ namespace CQuark
 		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
 		{
 			content.InStack(this);
-			ICQ_Expression expr_if = listParam[0];
+			ICQ_Expression expr_if = _expressions[0];
 			bool bif = (bool)expr_if.ComputeValue(content).value;
 			//if (expr_init != null) expr_init.ComputeValue(content);
-			ICQ_Expression expr_go1 = listParam[1];
+			ICQ_Expression expr_go1 = _expressions[1];
 			ICQ_Expression expr_go2 = null;
-			if(listParam.Count>2)expr_go2= listParam[2];
+			if(_expressions.Count>2)expr_go2= _expressions[2];
 //			CQ_Content.Value value = null;
 			if (bif && expr_go1 != null)
 			{

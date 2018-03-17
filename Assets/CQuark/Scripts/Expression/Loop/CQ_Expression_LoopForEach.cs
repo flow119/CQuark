@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_LoopForEach(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -57,16 +57,16 @@ namespace CQuark
         {
             content.InStack(this);
             content.DepthAdd();
-            CQ_Expression_Define define = listParam[0] as CQ_Expression_Define;
+            CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
             if (define == null)
             {
 
             }
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = listParam[1].ComputeValue(content).value as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).value as System.Collections.IEnumerable;
 
-            ICQ_Expression expr_block = listParam[2] as ICQ_Expression;
+            ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
             var it = emu.GetEnumerator();
             CQ_Value vrt = null;
@@ -102,10 +102,10 @@ namespace CQuark
                     }
                 }
             }
-            //ICQ_Expression expr_continue = listParam[1] as ICQ_Expression;
-            //ICQ_Expression expr_step = listParam[2] as ICQ_Expression;
+            //ICQ_Expression expr_continue = _expressions[1] as ICQ_Expression;
+            //ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 
-            //ICQ_Expression expr_block = listParam[3] as ICQ_Expression;
+            //ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
 
             //for (;(bool)expr_continue.ComputeValue(content).value; expr_step.ComputeValue(content))
             //{
@@ -130,16 +130,16 @@ namespace CQuark
 		{
 			content.InStack(this);
 			content.DepthAdd();
-			CQ_Expression_Define define = listParam[0] as CQ_Expression_Define;
+			CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
 			if (define == null)
 			{
 				
 			}
 			define.ComputeValue(content);
 			
-			System.Collections.IEnumerable emu = listParam[1].ComputeValue(content).value as System.Collections.IEnumerable;
+			System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).value as System.Collections.IEnumerable;
 			
-			ICQ_Expression expr_block = listParam[2] as ICQ_Expression;
+			ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 			
 			var it = emu.GetEnumerator();
 //			CQ_Content.Value vrt = null;
@@ -183,10 +183,10 @@ namespace CQuark
 					}
 				}
 			}
-			//ICQ_Expression expr_continue = listParam[1] as ICQ_Expression;
-			//ICQ_Expression expr_step = listParam[2] as ICQ_Expression;
+			//ICQ_Expression expr_continue = _expressions[1] as ICQ_Expression;
+			//ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 			
-			//ICQ_Expression expr_block = listParam[3] as ICQ_Expression;
+			//ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
 			
 			//for (;(bool)expr_continue.ComputeValue(content).value; expr_step.ComputeValue(content))
 			//{

@@ -10,7 +10,7 @@ namespace CQuark
     {
         public CQ_Expression_LoopReturn(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -27,7 +27,7 @@ namespace CQuark
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -44,9 +44,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -58,9 +58,9 @@ namespace CQuark
             content.InStack(this);
             CQ_Value rv = new CQ_Value();
             rv.breakBlock = 10;
-            if (listParam.Count > 0&&listParam[0]!=null)
+            if (_expressions.Count > 0&&_expressions[0]!=null)
             {
-                var v = listParam[0].ComputeValue(content);
+                var v = _expressions[0].ComputeValue(content);
                 {
                     rv.type = v.type;
                     rv.value = v.value;

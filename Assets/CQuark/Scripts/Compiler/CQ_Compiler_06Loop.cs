@@ -29,18 +29,18 @@ namespace CQuark
                 //if (!succ) return null;
 //                if (subvalue != null)
 //                {
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                     testbegin = fe2 + 2;
 //                }
 //                else
 //                {
-//                    value.listParam.Add(null);
+//                    value._expressions.Add(null);
 //                    testbegin = fe2 + 2;
 //                }
             }
             while (testbegin <= fe1);
 
-            if (value.listParam.Count != 3)
+            if (value._expressions.Count != 3)
             {
                 return null;
             }
@@ -54,7 +54,7 @@ namespace CQuark
             {
                 value.tokenEnd = fecode;
                 value.lineEnd = tlist[fecode].line;
-                value.listParam.Add(subvalueblock);
+                value._expressions.Add(subvalueblock);
                 return value;
             }
             return null;
@@ -75,7 +75,7 @@ namespace CQuark
 			if(!succ)
 				return null;
 
-			value.listParam.Add(subvalueblock);
+			value._expressions.Add(subvalueblock);
 
 			int caseBegin = fe1 + 2;
 
@@ -94,14 +94,14 @@ namespace CQuark
 //						UnityEngine.Debug.Log(GetCodeKeyString(tlist,caseBegin, poscolon - 1));
                         bool succ2 = Compiler_Expression_Block(tlist, caseBegin, poscolon - 1, out subvalueblock);
 						if(succ2){
-							value.listParam.Add(subvalueblock);
+							value._expressions.Add(subvalueblock);
 							sexpr = poscolon + 1;
 						}else{
 							return null;
 						}
 					}else if(tlist[caseBegin].text == "default"){
 						//default:
-						value.listParam.Add(null);
+						value._expressions.Add(null);
 						sexpr = poscolon + 1;
 					}
 					else{
@@ -110,7 +110,7 @@ namespace CQuark
 
 					if(tlist[sexpr].type == TokenType.KEYWORD && tlist[sexpr].text == "case"){
 						//switch(..){case ...:case ...}  //(no break)
-						value.listParam.Add(null);
+						value._expressions.Add(null);
 						caseBegin = poscolon + 1;
 						continue;
 					}else{
@@ -136,7 +136,7 @@ namespace CQuark
 //						UnityEngine.Debug.Log("case do ~ break" + GetCodeKeyString(tlist, sexpr, eexpr - 1));
                         bool succ3 = Compiler_Expression_Block(tlist, sexpr, eexpr - 1, out subvalueblock);
 						if(succ3){
-							value.listParam.Add(subvalueblock);
+							value._expressions.Add(subvalueblock);
 							caseBegin = eexpr;
 						}
 						else{
@@ -172,7 +172,7 @@ namespace CQuark
                         if (!succ) return null;
                         if (subvalue != null)
                         {
-                            value.listParam.Add(subvalue);
+                            value._expressions.Add(subvalue);
                         }
                     }
                     //添加 foreach 列表部分
@@ -183,7 +183,7 @@ namespace CQuark
                         if (subvalue != null)
                         {
 
-                            value.listParam.Add(subvalue);
+                            value._expressions.Add(subvalue);
                         }
                     }
                     break;
@@ -200,7 +200,7 @@ namespace CQuark
             {
                 value.tokenEnd = fecode;
                 value.lineEnd = tlist[fecode].line;
-                value.listParam.Add(subvalueblock);
+                value._expressions.Add(subvalueblock);
                 return value;
             }
             return null;
@@ -221,7 +221,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe1;
                     value.lineEnd = tlist[fe1].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -241,7 +241,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe2;
                     value.lineEnd = tlist[fe2].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -265,7 +265,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe1;
                     value.lineEnd = tlist[fe1].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -285,7 +285,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe2;
                     value.lineEnd = tlist[fe2].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -315,7 +315,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe1;
                     value.lineEnd = tlist[fe1].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -334,7 +334,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe2;
                     value.lineEnd = tlist[fe2].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -358,7 +358,7 @@ namespace CQuark
                     {
                         value.tokenEnd = fe3;
                         value.lineEnd = tlist[fe3].line;
-                        value.listParam.Add(subvalue);
+                        value._expressions.Add(subvalue);
                     }
                     else
                     {
@@ -390,7 +390,7 @@ namespace CQuark
                 {
                     value.tokenEnd = fe1;
                     value.lineEnd = tlist[fe1].line;
-                    value.listParam.Add(subvalue);
+                    value._expressions.Add(subvalue);
                 }
                 else
                 {
@@ -416,7 +416,7 @@ namespace CQuark
                     {
                         value.tokenEnd = fe2;
                         value.lineEnd = tlist[fe2].line;
-                        value.listParam.Add(subvalue);
+                        value._expressions.Add(subvalue);
                     }
                     else
                     {
@@ -440,7 +440,7 @@ namespace CQuark
                     {
                         value.tokenEnd = fe3;
                         value.lineEnd = tlist[fe3].line;
-                        value.listParam.Add(subvalue);
+                        value._expressions.Add(subvalue);
                     }
                     else
                     {
@@ -461,7 +461,7 @@ namespace CQuark
             bool succ = Compiler_Expression(tlist, pos + 1, posend, out subvalue);
             if (succ)
             {
-                value.listParam.Add(subvalue);
+                value._expressions.Add(subvalue);
             }
 
             return value;

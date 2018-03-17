@@ -37,19 +37,19 @@ namespace CQuark
 		#endregion
 
 		#region SType
-		static Dictionary<CQ_Type, TypeBridge> dicSType_CQType = new Dictionary<CQ_Type, TypeBridge>();
-		CQ_Type stype = null;
-        private TypeBridge(CQ_Type type)
+		static Dictionary<Class_CQuark, TypeBridge> dicSType_CQType = new Dictionary<Class_CQuark, TypeBridge>();
+		Class_CQuark stype = null;
+        private TypeBridge(Class_CQuark type)
         {
             this.stype = type;
         }
-        public static implicit operator CQ_Type(TypeBridge m)
+        public static implicit operator Class_CQuark(TypeBridge m)
         {
             if (m == null) 
                 return null;
             return m.stype;
         }
-        public static implicit operator TypeBridge(CQ_Type type)
+        public static implicit operator TypeBridge(Class_CQuark type)
         {
             TypeBridge retST = null;
             bool bRet = dicSType_CQType.TryGetValue(type, out retST);

@@ -56,18 +56,18 @@ namespace CQuark
                 if (!succ) break;
                 if (subvalue != null)
                 {
-                    block.listParam.Add(subvalue);
+                    block._expressions.Add(subvalue);
                     testbegin = fe2 + 2;
                 }
                 else
                 {
-                    block.listParam.Add(null);
+                    block._expressions.Add(null);
                     testbegin = fe2 + 2;
                 }
             }
             while (testbegin <= fe1);
 
-            value.listParam.Add(block);
+            value._expressions.Add(block);
             //(...)=>{}
             ICQ_Expression subvalueblock;
 
@@ -79,7 +79,7 @@ namespace CQuark
             {
                 //value.tokenEnd = fecode;
                 //value.lineEnd = tlist[fecode].line;
-                value.listParam.Add(subvalueblock);
+                value._expressions.Add(subvalueblock);
                 return value;
             }
             return null;
@@ -108,7 +108,7 @@ namespace CQuark
                     define.value_type = type.typeBridge;
                 }
                 define.value_name = tlist[pos + 1].text;
-                define.listParam.Add(v);
+                define._expressions.Add(v);
                 return define;
             }
             LogError(tlist,"不正确的定义表达式:" , pos,posend);
@@ -133,7 +133,7 @@ namespace CQuark
                     define.value_type = type.typeBridge;
                 }
                 define.value_name = tlist[pos + 3].text;
-                define.listParam.Add(v);
+                define._expressions.Add(v);
                 return define;
             }
             LogError(tlist, "不正确的定义表达式:", pos, posend);
@@ -155,7 +155,7 @@ namespace CQuark
             {
                 CQ_Expression_SetValue define = new CQ_Expression_SetValue(pos, expend, tlist[pos].line, tlist[expend].line);
                 define.value_name = tlist[pos].text;
-				define.listParam.Add(v);
+				define._expressions.Add(v);
                 return define;
             }
             LogError(tlist,"不正确的定义表达式:" ,pos,posend);

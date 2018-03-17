@@ -10,7 +10,7 @@ namespace CQuark
     {
 		public CQ_Expression_LoopSwitchCase(int tbegin, int tend, int lbegin, int lend)
         {
-            listParam = new List<ICQ_Expression>();
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
 
@@ -28,7 +28,7 @@ namespace CQuark
             set;
         }
         
-        public List<ICQ_Expression> listParam
+        public List<ICQ_Expression> _expressions
         {
             get;
             private set;
@@ -45,9 +45,9 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-				if(listParam == null || listParam.Count == 0)
+				if(_expressions == null || _expressions.Count == 0)
 					return false;
-				foreach(ICQ_Expression expr in listParam){
+				foreach(ICQ_Expression expr in _expressions){
 					if(expr.hasCoroutine)
 						return true;
 				}
@@ -58,23 +58,23 @@ namespace CQuark
         {
             content.InStack(this);
             content.DepthAdd();
-            ICQ_Expression expr_switch = listParam[0] as ICQ_Expression;
+            ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
 			CQ_Value switchVal = null;
 //			CQ_Content.Value vrt = null;
 			if (expr_switch != null) 
 				switchVal = expr_switch.ComputeValue(content);//switch//
 
-			for(int i = 1; i < listParam.Count - 1; i+=2){
-				if(listParam[i] != null){
+			for(int i = 1; i < _expressions.Count - 1; i+=2){
+				if(_expressions[i] != null){
 					//case xxx://
-					if(switchVal.value.Equals(listParam[i].ComputeValue(content).value))
+					if(switchVal.value.Equals(_expressions[i].ComputeValue(content).value))
 					{
-						while(listParam[i + 1] == null){
+						while(_expressions[i + 1] == null){
 							i+=2;
 						}
-//						content.InStack(listParam[i+1]);
+//						content.InStack(_expressions[i+1]);
 						content.DepthAdd();
-						listParam[i+1].ComputeValue(content);
+						_expressions[i+1].ComputeValue(content);
 						break;
 					}else{
 						continue;
@@ -82,9 +82,9 @@ namespace CQuark
 				}
 				else{
 					//default:
-//					content.InStack(listParam[i+1]);
+//					content.InStack(_expressions[i+1]);
 					content.DepthAdd();
-					listParam[i+1].ComputeValue(content);
+					_expressions[i+1].ComputeValue(content);
 					break;
 				}
 			}
@@ -97,25 +97,25 @@ namespace CQuark
 		{
 			content.InStack(this);
 			content.DepthAdd();
-			ICQ_Expression expr_switch = listParam[0] as ICQ_Expression;
+			ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
 			CQ_Value switchVal = null;
 			//			CQ_Content.Value vrt = null;
 			if (expr_switch != null) 
 				switchVal = expr_switch.ComputeValue(content);//switch//
 			
-			for(int i = 1; i < listParam.Count - 1; i+=2){
-				if(listParam[i] != null){
+			for(int i = 1; i < _expressions.Count - 1; i+=2){
+				if(_expressions[i] != null){
 					//case xxx://
-					if(switchVal.value.Equals(listParam[i].ComputeValue(content).value))
+					if(switchVal.value.Equals(_expressions[i].ComputeValue(content).value))
 					{
-						while(listParam[i + 1] == null){
+						while(_expressions[i + 1] == null){
 							i+=2;
 						}
 						content.DepthAdd();
-						if(listParam[i+1].hasCoroutine){
-							yield return coroutine.StartNewCoroutine(listParam[i+1].CoroutineCompute(content, coroutine));
+						if(_expressions[i+1].hasCoroutine){
+							yield return coroutine.StartNewCoroutine(_expressions[i+1].CoroutineCompute(content, coroutine));
 						}else{
-							listParam[i+1].ComputeValue(content);
+							_expressions[i+1].ComputeValue(content);
 						}
 						break;
 					}else{
@@ -125,10 +125,10 @@ namespace CQuark
 				else{
 					//default:
 					content.DepthAdd();
-					if(listParam[i+1].hasCoroutine){
-						yield return coroutine.StartNewCoroutine(listParam[i+1].CoroutineCompute(content, coroutine));
+					if(_expressions[i+1].hasCoroutine){
+						yield return coroutine.StartNewCoroutine(_expressions[i+1].CoroutineCompute(content, coroutine));
 					}else{
-						listParam[i+1].ComputeValue(content);
+						_expressions[i+1].ComputeValue(content);
 					}
 					break;
 				}

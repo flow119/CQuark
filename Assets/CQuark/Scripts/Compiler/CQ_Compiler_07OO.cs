@@ -202,8 +202,8 @@ namespace CQuark
             //}
 
             typeClass.compiled = false;
-            (typeClass.function as CQ_Type).functions.Clear();
-            (typeClass.function as CQ_Type).members.Clear();
+            (typeClass.function as Class_CQuark).functions.Clear();
+            (typeClass.function as Class_CQuark).members.Clear();
             //搜寻成员定义和函数
             //定义语法            //Type id[= expr];
             //函数语法            //Type id([Type id,]){block};
@@ -266,7 +266,7 @@ namespace CQuark
                         if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && tokens[i + 2].text == "(")//参数开始,这是函数
                         {
                             DebugUtil.Log("发现函数:" + idname);
-                            CQ_Type.Function func = new CQ_Type.Function();
+                            Class_CQuark.Function func = new Class_CQuark.Function();
                             func.bStatic = bStatic;
                             func.bPublic = bPublic;
 
@@ -309,7 +309,7 @@ namespace CQuark
                                 {
                                     DebugUtil.LogWarning("警告，该函数编译为null，请检查");
                                 }
-                                (typeClass.function as CQ_Type).functions.Add(idname, func);
+                                (typeClass.function as Class_CQuark).functions.Add(idname, func);
 
                                 i = funcend;
                             }
@@ -317,7 +317,7 @@ namespace CQuark
                             {
 
                                 func.expr_runtime = null;
-                                (typeClass.function as CQ_Type).functions.Add(idname, func);
+                                (typeClass.function as Class_CQuark).functions.Add(idname, func);
                                 i = funcbegin;
                             }
                             else
@@ -352,7 +352,7 @@ namespace CQuark
                             }
 
 
-                            var member = new CQ_Type.Member();
+                            var member = new Class_CQuark.Member();
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = !(haveset && setpublic);
@@ -372,13 +372,13 @@ namespace CQuark
                                 }
                                 i = jend;
                             }
-                            (typeClass.function as CQ_Type).members.Add(idname, member);
+                            (typeClass.function as Class_CQuark).members.Add(idname, member);
                         }
                         else if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && (tokens[i + 2].text == "=" || tokens[i + 2].text == ";"))//这是成员定义
                         {
                             DebugUtil.Log("发现成员定义:" + idname);
 
-                            var member = new CQ_Type.Member();
+                            var member = new Class_CQuark.Member();
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = false;
@@ -412,7 +412,7 @@ namespace CQuark
                                 }
                                 i = jend;
                             }
-                            (typeClass.function as CQ_Type).members.Add(idname, member);
+                            (typeClass.function as Class_CQuark).members.Add(idname, member);
                         }
 
                         bPublic = false;
