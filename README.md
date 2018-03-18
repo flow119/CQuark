@@ -87,7 +87,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
 * 2 劫持GetComponent和AddComponent，重写。
 
-* 不再支持非class型的代码（所有代码全部先编译）
+* yield return使用方式Unity来
 
 
 下下个版本
