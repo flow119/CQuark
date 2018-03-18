@@ -5,23 +5,17 @@ using System.Text;
 
 class InstanceScript : MonoBehaviour
 {
-    public GameObject gameObject
-   {
-        get;
-        private set;
-    }
 
-    protect Transform trans;
+
+
+
     public void Start()
     {
-	trans = gameObject.transform;
-   //     Debug.Log("Start" + this.gameObject);
         gameObject.name = "Cool name.";
     }
 
     public void Update()
     {
-        trans.Rotate(Vector3.up, 180 * Time.deltaTime);
+        transform.Rotate(Vector3.up, 180 * Time.deltaTime);
     }
-
 }

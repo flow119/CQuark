@@ -6,16 +6,10 @@ using System.Text;
 class ClassE: IScriptBehaviour
 {
 
-	public GameObject gameObject{
-        	get;
-        	private set;
-	}
-
-	Transform trans;
 
 	Vector3 pos;
 	void Start(){
-		pos = trans.localPosition;
+		pos = transform.localPosition;
 	}
     
 	void Update(){

@@ -6,13 +6,6 @@ using System.Text;
 class ClassB: IScriptBehaviour
 {
 
- public GameObject gameObject
-    {
-        get;
-        private set;
-    }
-
-	Transform trans;
 
 	private int a;
 	

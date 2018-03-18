@@ -5,13 +5,7 @@ using System.Text;
 
 class StaticScript : IScriptBehaviour
 {
-    public GameObject gameObject
-    {
-        get;
-        private set;
-    }
-
-	Transform trans;
+ 
     public void Start()
     {
 	
