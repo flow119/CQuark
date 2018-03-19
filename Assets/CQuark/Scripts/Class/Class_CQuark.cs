@@ -274,11 +274,8 @@ namespace CQuark
                     content.CallThis = object_this as CQClassInstance;
                     content.function = func;
                     for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
-                    //int i = 0;
-                    //foreach (var p in this.functions[func]._params)
                     {
                         content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].typeBridge, _params[i].value);
-                        //i++;
                     }
                     CQ_Value value = null;
                     var funcobj = this.functions[func];
