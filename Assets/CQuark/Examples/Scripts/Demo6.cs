@@ -11,7 +11,7 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	void Start () {
 		CQuark.AppDomain.Reset();
 		CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
-
+        CQuark.AppDomain.RegisterType(typeof(Debug), "Debug");
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
 	}

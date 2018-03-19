@@ -13,7 +13,7 @@ public class Demo3 : MonoBehaviour {
 
 //		Type tt = typeof(UnityEngine.GameObject);
 //		Type t = Type.GetType ("UnityEngine.GameObject");
-
+        CQuark.AppDomain.RegisterType(typeof(Debug), "Debug");
 		//将函数Today()注册给脚本使用
 		CQuark.AppDomain.RegisterMethod ((deleToday)Today);
 	
