@@ -17,8 +17,6 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 	Dictionary<string, CQuark.ICQ_Expression> dictExpr = new Dictionary<string, CQuark.ICQ_Expression>();
 
 	protected override void Initialize(){
-		base.Initialize ();
-
 		BuildBlock ("Awake", m_Awake);
 		BuildBlock ("OnEnable", m_OnEnable);
 		BuildBlock ("OnDisable", m_OnDisable);

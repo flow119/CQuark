@@ -10,13 +10,7 @@ namespace CQuark{
 		protected CQ_Content content;
 //		protected MethodCache cache = new MethodCache();
 
-		protected virtual void Initialize(){
-			if(!appDomainInit){
-				appDomainInit = true;
-				AppDomain.Reset();
-				CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
-			}
-		}
+        protected virtual void Initialize() { }
 
 		protected virtual void CallScript(string method){
 			CallScript (method, false);
@@ -27,11 +21,6 @@ namespace CQuark{
 
 		public object StartNewCoroutine(IEnumerator method){
 			return StartCoroutine(method);
-		}
-
-		delegate IEnumerator eDelay(float t);
-		IEnumerator Wait(float time){
-			yield return new WaitForSeconds (time);
 		}
 
 		void Awake(){

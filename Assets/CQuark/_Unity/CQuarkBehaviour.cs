@@ -17,24 +17,13 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	CQuark.CQClassInstance inst;//脚本实例
 	public string m_className;
 
-	//FileName
-	static bool s_projectBuilded = false;
-	public string m_folderPath = "/Demo07";
-	public string m_pattern = "*.txt";
-
 	//TextAsset Or Text
 	public TextAsset m_ta;
 	public string m_codeText = "";
 
 	protected override void Initialize(){
-		base.Initialize ();
-
 		switch(m_codeType){
 		case ECodeType.FileName:
-			if(!s_projectBuilded){
-				AppDomain.BuildProject(Application.streamingAssetsPath + m_folderPath, m_pattern);
-				s_projectBuilded = true;
-			}
 			break;
 		case ECodeType.TextAsset:
 			AppDomain.BuildFile(m_className, m_ta.text);
@@ -56,11 +45,11 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		RegisterMember("transform", typeof(Transform));
 
 		inst = type._class.New(content, null).value as CQuark.CQClassInstance;
-		DefaultValue("gameObject", typeof(GameObject), this.gameObject);
-		DefaultValue("transform", typeof(Transform), this.transform);
+        SetMember("gameObject", typeof(GameObject), this.gameObject);
+        SetMember("transform", typeof(Transform), this.transform);
 	}
 
-	CQ_Value DefaultValue(string name, CQ_Type type, Object obj){
+	CQ_Value SetMember(string name, CQ_Type type, Object obj){
 		CQ_Value val = new CQ_Value ();
 		val.type = type;
 		val.value = obj;
@@ -78,18 +67,6 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			cclass.members.Add(name, m);
 		}
 	}
-//	void AddMember(string name, CQ_Type type, Object obj){
-//		if(!inst.type.members.ContainsKey(name)){
-//			Class_CQuark.Member m = new Class_CQuark.Member();
-//			m.bPublic = true;
-//			m.bReadOnly = true;
-//			inst.type.members.Add(name, m);
-//		}
-//		CQ_Value val = new CQ_Value ();
-//		val.type = type;
-//		val.value = obj;
-//		inst.member.Add (name, val);
-//	}
 
 	protected override void CallScript(string methodName, bool useCoroutine){
 		Class_CQuark cclass = type._class as Class_CQuark;
