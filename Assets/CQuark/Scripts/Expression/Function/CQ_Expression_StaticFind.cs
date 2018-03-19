@@ -46,17 +46,16 @@ namespace CQuark
         }
 		public bool hasCoroutine{
 			get{
-//				if(_expressions == null || _expressions.Count == 0)
-//					return false;
-//				foreach(ICQ_Expression expr in _expressions){
-//					if(expr.hasCoroutine)
-//						return true;
-//				}
 				return false;
 			}
 		}
         public CQ_Value ComputeValue(CQ_Content content)
         {
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+            CQ_Value val = AppDomain.FindStaticValueFast(type.keyword ,staticmembername);
+            if (val != null)
+                return val;
+
             content.InStack(this);
 			var value = type._class.StaticValueGet(content, staticmembername);
             content.OutStack(this);
