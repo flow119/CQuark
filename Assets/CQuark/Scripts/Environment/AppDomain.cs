@@ -56,9 +56,7 @@ namespace CQuark{
 			{
 				RegisterMethod(new MethodTrace());
 			}
-
-			RegisterType(typeof(object), "object");
-
+            
 			//对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
 			RegisterType(typeof(int[]), "int[]");	//数组要独立注册
 			RegisterType(typeof(string[]), "string[]");	
@@ -66,52 +64,10 @@ namespace CQuark{
 			RegisterType(typeof(bool[]), "bool[]");	
 			RegisterType (typeof(byte[]), "byte[]");
 
-			//以下内容是Unity专用，如果非Unity平台可以直接主食掉
-			RegisterType(typeof(UnityEngine.Object), "Object");
-			RegisterType (typeof(System.DateTime), "DateTime");
-			RegisterType (typeof(AssetBundle), "AssetBundle");
-			RegisterType (typeof(Animation), "Animation");
-			RegisterType (typeof(AnimationCurve), "AnimationCurve");
-			RegisterType (typeof(AnimationClip), "AnimationClip");
-			RegisterType (typeof(Animator), "Animator");
-			RegisterType (typeof(Application), "Application");
-			RegisterType (typeof(AudioSource), "AudioSource");
-			RegisterType (typeof(AudioClip), "AudioClip");
-			RegisterType (typeof(AudioListener), "AudioListener");
+            AppDomain.RegisterType(typeof(System.DateTime), "DateTime");
+            AppDomain.RegisterType(typeof(System.IO.File), "File");
+            AppDomain.RegisterType(typeof(System.IO.Directory), "Directory");
 
-			RegisterType (typeof(Camera), "Camera");
-			RegisterType (typeof(Component), "Component");
-			RegisterType (typeof(Color), "Color");
-			RegisterType (typeof(Debug), "Debug");
-			RegisterType (typeof(GameObject), "GameObject");
-			RegisterType (typeof(Input), "Input");
-
-			RegisterType (typeof(Light), "Light");
-			RegisterType (typeof(Mathf), "Mathf");
-			RegisterType (typeof(Material), "Material");
-			RegisterType (typeof(Mesh), "Mesh");
-			RegisterType (typeof(MeshFilter), "MeshFilter");
-			RegisterType (typeof(Renderer), "Renderer");
-			RegisterType (typeof(UnityEngine.Random), "Random");
-			RegisterType(typeof(KeyCode),"KeyCode");
-
-			RegisterType (typeof(ParticleSystem), "ParticleSystem");
-			RegisterType (typeof(PlayerPrefs), "PlayerPrefs");
-			RegisterType (typeof(Ray), "Ray");
-			RegisterType (typeof(Resources), "Resources");
-
-			RegisterType (typeof(Screen), "Screen");
-			RegisterType (typeof(Shader), "Shader");
-			RegisterType (typeof(Texture), "Texture");
-			RegisterType (typeof(Transform), "Transform");
-			RegisterType (typeof(UnityEngine.Time), "Time");
-
-			RegisterType (typeof(Vector2), "Vector2");
-			RegisterType (typeof(Vector3), "Vector3");
-			RegisterType (typeof(Vector4), "Vector4");
-			RegisterType (typeof(Quaternion), "Quaternion");
-			RegisterType (typeof(WWW), "WWW");
-			RegisterType (typeof(WWWForm), "WWWForm");
 		}
 
         private static Type_Operatable MakeType(Type type, string keyword)
