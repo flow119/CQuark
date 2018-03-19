@@ -65,9 +65,9 @@ namespace CQuark{
 			RegisterType (typeof(byte[]), "byte[]");
 
             AppDomain.RegisterType(typeof(System.DateTime), "DateTime");
-            AppDomain.RegisterType(typeof(System.IO.File), "File");
+            AppDomain.RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
             AppDomain.RegisterType(typeof(System.IO.Directory), "Directory");
-
+            AppDomain.RegisterType(typeof(System.IO.File), "File");
 		}
 
         private static Type_Operatable MakeType(Type type, string keyword)

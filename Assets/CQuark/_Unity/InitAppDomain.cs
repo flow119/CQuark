@@ -78,6 +78,7 @@ public class InitAppDomain : MonoBehaviour {
         AppDomain.RegisterType(typeof(WWWForm), "WWWForm");
 
         //TODO 补充NGUI,LitJson
+        //补充自己需要的类
     }
 
     delegate IEnumerator eDelay(float t);
