@@ -121,6 +121,7 @@ namespace CQuark
 			if (stackExpr.Peek() != expr)
             {
 				if (expr.hasCoroutine) {
+					//TODO 从这里拿出去。然后useDebug就能用宏定义了
 					DepthRemove ();
 				}else {
 					throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
