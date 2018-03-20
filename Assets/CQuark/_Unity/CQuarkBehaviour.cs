@@ -16,10 +16,15 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	CQuark.IType type;
 	CQuark.CQClassInstance inst;//脚本实例
 	public string m_className;
+	Class_CQuark cclass;
 
 	//TextAsset Or Text
 	public TextAsset m_ta;
 	public string m_codeText = "";
+
+	private CQ_Content _updateContent = new CQ_Content(true);
+	public ICQ_Expression m_update;
+	public ICQ_Expression m_fixedpdate;
 
 	protected override void Initialize(){
 		switch(m_codeType){
@@ -38,6 +43,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			Debug.LogError("Type:" + m_className + "不存在与脚本项目中");
 			return;
 		}
+		cclass = type._class as Class_CQuark;
 		content = new CQ_Content(true);
 
 		//TODO 最好在编译的时候就做，不要在实例化的时候做
@@ -45,8 +51,18 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		RegisterMember("transform", typeof(Transform));
 
 		inst = type._class.New(content, null).value as CQuark.CQClassInstance;
+
         SetMember("gameObject", typeof(GameObject), this.gameObject);
         SetMember("transform", typeof(Transform), this.transform);
+
+
+		if(cclass.functions.ContainsKey("Update"))
+			m_update = cclass.functions["Update"].expr_runtime;
+		if(cclass.functions.ContainsKey("FixedUpdate"))
+			m_fixedpdate = cclass.functions["FixedUpdate"].expr_runtime;
+		_updateContent = new CQ_Content(true);
+		_updateContent.CallType = cclass;
+		_updateContent.CallThis = inst;
 	}
 
 	CQ_Value SetMember(string name, CQ_Type type, Object obj){
@@ -58,7 +74,6 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	}
 
 	void RegisterMember(string name, CQ_Type cqtype){
-		Class_CQuark cclass = (Class_CQuark)type._class;
 		if(!cclass.members.ContainsKey(name)){
 			Class_CQuark.Member m = new Class_CQuark.Member();
 			m.bPublic = true;
@@ -69,14 +84,25 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	}
 
 	protected override void CallScript(string methodName, bool useCoroutine){
-		Class_CQuark cclass = type._class as Class_CQuark;
 		if (useCoroutine) {
-			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
+			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName)){
 				this.StartNewCoroutine (type._class.CoroutineCall (content, inst, methodName, null, this));
+			}
 		}
 		else {
-			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName))
+			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName)){
 				type._class.MemberCall (content, inst, methodName, null);
+			}
 		}
+	}
+
+	void Update(){
+		if(m_update != null)
+			m_update.ComputeValue(_updateContent);
+	}
+
+	void FixedUpdate(){
+		if(m_fixedpdate != null)
+			m_fixedpdate.ComputeValue(_updateContent);
 	}
 }
