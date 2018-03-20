@@ -16,23 +16,23 @@ namespace CQuark
 		}
 		public CQ_Value New(CQ_Content content, IList<CQ_Value> _params)
 		{
-			List<Type> types = new List<Type>();
-			List<object> objparams = new List<object>();
-			foreach (var p in _params)
+			Type[] types = new Type[_params.Count];
+            object[] objparams = new object[_params.Count];
+			for (int i = 0; i < _params.Count; i++)
 			{
-				types.Add(p.type);
-				objparams.Add(p.value);
+				types[i] = _params[i].type;
+				objparams[i] = _params[i].value;
 			}
 			CQ_Value value = new CQ_Value();
 			value.type = type;
-			var con = this.type.GetConstructor(types.ToArray());
+            var con = this.type.GetConstructor(types);
 			if (con == null)
 			{
 				value.value = Activator.CreateInstance(this.type);
 			}
 			else
 			{
-				value.value = con.Invoke(objparams.ToArray());
+                value.value = con.Invoke(objparams);
 			}
 			return value;
 		}
@@ -135,18 +135,10 @@ namespace CQuark
 		public CQ_Value StaticCallCache(CQ_Content content, IList<CQ_Value> _params, MethodCache cache)
 		{
 			List<object> _oparams = new List<object>();
-			List<Type> types = new List<Type>();
+
 			foreach (var p in _params)
 			{
 				_oparams.Add(p.value);
-				if ((Class_CQuark)p.type != null)
-				{
-					types.Add(typeof(object));
-				}
-				else
-				{
-					types.Add(p.type);
-				}
 			}
 			var targetop = cache.info;
 			if (cache.slow)
@@ -314,9 +306,6 @@ namespace CQuark
 					}
 				}
 			}
-			//targetop = type.GetMethod(tfunc, types.ToArray());
-			//var pp =targetop.GetParameters();
-			//targetop = targetop.MakeGenericMethod(gtypes);
 			return null;
 		}
 		public CQ_Value MemberCall(CQ_Content content, object object_this, string function, IList<CQ_Value> _params)
@@ -532,27 +521,15 @@ namespace CQuark
 		}
 		public CQ_Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Value> _params, MethodCache cache)
 		{
-			List<Type> types = new List<Type>();
-			List<object> _oparams = new List<object>();
-			foreach (var p in _params)
-			{
-				{
-					_oparams.Add(p.value);
-				}
-				if ((Class_CQuark)p.type != null)
-				{
-					types.Add(typeof(object));
-				}
-				else
-				{
-					types.Add(p.type);
-				}
-			}
-
 			var targetop = cache.info;
 			CQ_Value v = new CQ_Value();
 			if (cache.slow)
 			{
+                List<object> _oparams = new List<object>();
+                foreach (var p in _params)
+                {
+                    _oparams.Add(p.value);
+                }
 				var pp = targetop.GetParameters();
 				for (int i = 0; i < pp.Length; i++)
 				{
@@ -568,9 +545,20 @@ namespace CQuark
 						}
 					}
 				}
-			}
-			v.value = targetop.Invoke(object_this, _oparams.ToArray());
-			v.type = targetop.ReturnType;
+                v.value = targetop.Invoke(object_this, _oparams.ToArray());
+                v.type = targetop.ReturnType;
+            }
+            else
+            {
+                object[] _oparams = new object[_params.Count];
+                for (int i = 0; i < _params.Count; i++)
+                {
+                    _oparams[i] = _params[i].value;
+                }
+                v.value = targetop.Invoke(object_this, _oparams);
+                v.type = targetop.ReturnType;
+            }
+           
 			return v;
 		}
 
@@ -585,7 +573,7 @@ namespace CQuark
 		Dictionary<string, MemberValueCache> memberValuegetCaches = new Dictionary<string, MemberValueCache>();
 		public CQ_Value MemberValueGet(CQ_Content content, object object_this, string valuename)
 		{
-			MemberValueCache c;
+			MemberValueCache c = null;
 
 			if (!memberValuegetCaches.TryGetValue(valuename, out c))
 			{
@@ -619,7 +607,8 @@ namespace CQuark
 				}
 			}
 
-			if (c.type < 0) return null;
+			if (c.type < 0)
+                return null;
 			CQ_Value v = new CQ_Value();
 			switch (c.type)
 			{

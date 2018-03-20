@@ -11,36 +11,20 @@ namespace CQuark
     {
 		public Class_CQuark CallType;
 		public CQClassInstance CallThis;
-		Stack<List<string>> tvalues = new Stack<List<string>>();//所有values的名字，Stack表示作用域
-		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>();
-
-        public CQ_Content()
+        //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
+		Stack<List<string>> tvalues = null;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
+		public Dictionary<string, CQ_Value> values = null;//new Dictionary<string, CQ_Value>();
+        public Stack<ICQ_Expression> stackExpr
         {
-            this.useDebug = false;
+            get;
+            private set;
         }
-        public CQ_Content(bool useDebug)
+        public Stack<CQ_Content> stackContent
         {
-            this.useDebug = useDebug;
-            if (useDebug)
-            {
-                stackExpr = new Stack<ICQ_Expression>();
-                stackContent = new Stack<CQ_Content>();
-            }
+            get;
+            private set;
         }
 
-        public CQ_Content Clone()
-        {
-            CQ_Content con = new CQ_Content(useDebug);
-            foreach(var c in this.values)
-            {
-                con.values.Add(c.Key, c.Value);
-            }
-            con.CallThis = this.CallThis;
-            con.CallType = this.CallType;
-
-            return con;
-        }
-        
         public string function
         {
             get;
@@ -67,16 +51,39 @@ namespace CQuark
             get;
             private set;
         }
-        public Stack<ICQ_Expression> stackExpr
+       
+
+        public CQ_Content()
         {
-            get;
-            private set;
+            this.useDebug = false;
         }
-        public Stack<CQ_Content> stackContent
+        public CQ_Content(bool useDebug)
         {
-            get;
-            private set;
+            this.useDebug = useDebug;
+            if (useDebug)
+            {
+                stackExpr = new Stack<ICQ_Expression>();
+                stackContent = new Stack<CQ_Content>();
+            }
         }
+
+        public CQ_Content Clone()
+        {
+            CQ_Content con = new CQ_Content(useDebug);
+            if (values != null)
+            {
+                foreach (var c in this.values)
+                {
+                    con.values.Add(c.Key, c.Value);
+                }
+            }
+            
+            con.CallThis = this.CallThis;
+            con.CallType = this.CallType;
+
+            return con;
+        }
+        
         public void InStack(CQ_Content expr)
         {
             if (!useDebug) return;
@@ -97,7 +104,8 @@ namespace CQuark
         }
         public void InStack(ICQ_Expression expr)
         {
-            if (!useDebug) return;
+            if (!useDebug) 
+                return;
             if (stackExpr.Count > 0 && stackExpr.Peek() == expr)
             {
                 throw new Exception("InStack error");
@@ -106,8 +114,8 @@ namespace CQuark
         }
         public void OutStack(ICQ_Expression expr)
         {
-            if (!useDebug) return;
-
+            if (!useDebug)
+                return;
 			if (stackExpr.Peek() != expr)
             {
 				if (expr.hasCoroutine) {
@@ -124,9 +132,12 @@ namespace CQuark
         }
         public void Restore(List<string> depth, ICQ_Expression expr)
         {
-            while(tvalues.Peek()!=depth)
+            if (tvalues != null)
             {
-                tvalues.Pop();
+                while (tvalues.Peek() != depth)
+                {
+                    tvalues.Pop();
+                }
             }
             while(stackExpr.Peek()!=expr)
             {
@@ -135,24 +146,28 @@ namespace CQuark
         }
 		public string DumpValue()
 		{
-			string svalues = "";
+			string strvalues = "";
             if (this.stackContent != null)
             {
                 foreach (var subc in this.stackContent)
                 {
-                    svalues += subc.DumpValue();
+                    strvalues += subc.DumpValue();
                 }
             }
-            svalues += "DumpValue:" + this.CallName + "\n";
-            foreach(var v in this.values)
+            strvalues += "DumpValue:" + this.CallName + "\n";
+            if (values != null)
             {
-                svalues += "V:" + v.Key + "=" + v.Value.ToString()+"\n";
+                foreach (var v in this.values)
+                {
+                    strvalues += "V:" + v.Key + "=" + v.Value.ToString() + "\n";
+                }
             }
-			return svalues;
+
+            return strvalues;
 		}
 		public string DumpStack(IList<Token> tokenlist)
         {
-			string svalues = "";
+			string strvalues = "";
             if (useDebug)
             {
                 if(this.CallType!=null&&this.CallType.tokenlist!=null)
@@ -161,45 +176,45 @@ namespace CQuark
                 }
                 foreach(var subc in this.stackContent)
                 {
-                    svalues += subc.DumpStack(tokenlist);
+                    strvalues += subc.DumpStack(tokenlist);
                 }
-                svalues += "DumpStack:" + this.CallName + "\n";
+                strvalues += "DumpStack:" + this.CallName + "\n";
                 foreach(var s in stackExpr)
                 {
                     if ((s.tokenBegin == 0 && s.tokenEnd == 0)||tokenlist==null)
                     {
-						svalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")\n";
+                        strvalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")\n";
                     }
                     else
                     {
-						svalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")";
+                        strvalues += "<CQuark>:line(" + s.lineBegin + "-" + s.lineEnd + ")";
                         
                         if (s.tokenEnd - s.tokenBegin >= 20)
                         {
                             for(int i=s.tokenBegin;i<s.tokenBegin+8;i++)
                             {
-                                svalues += tokenlist[i].text + " ";
+                                strvalues += tokenlist[i].text + " ";
                             }
-                            svalues += "...";
+                            strvalues += "...";
                             for (int i = s.tokenEnd-7; i <= s.tokenEnd; i++)
                             {
-                                svalues += tokenlist[i].text + " ";
+                                strvalues += tokenlist[i].text + " ";
                             }
                         }
                         else
                         {
                             for (int i = s.tokenBegin; i <= s.tokenEnd; i++)
                             {
-                                svalues += tokenlist[i].text + " ";
+                                strvalues += tokenlist[i].text + " ";
                             }
                         }
-                        svalues += "\n";
+                        strvalues += "\n";
 
                     }
                    
                 }
             }
-            return svalues;
+            return strvalues;
 
         }
         public string Dump()
@@ -218,19 +233,31 @@ namespace CQuark
 
         public void Define(string name,CQ_Type type)
         {
-            if (values.ContainsKey(name))
-				throw new Exception("已经定义过");
+            if (values == null)
+            {
+                values = new Dictionary<string, CQ_Value>();
+            }
+            else if (values.ContainsKey(name))
+            {
+                throw new Exception("已经定义过");
+            }
+				
             CQ_Value v = new CQ_Value();
             v.type = type;
             values[name] = v;
-            if (tvalues.Count > 0)
+            if (tvalues != null && tvalues.Count > 0)
             {
                 tvalues.Peek().Add(name);//暂存临时变量
             }
         }
         public void Set(string name,object value)
         {
+            if (values == null)
+            {
+                values = new Dictionary<string, CQ_Value>();
+            }
             CQ_Value retV = null;
+
             bool bFind = values.TryGetValue(name, out retV);
             if (!bFind)
             {
@@ -266,13 +293,21 @@ namespace CQuark
         }
         public void DefineAndSet(string name,CQ_Type type,object value)
         {
-            if (values.ContainsKey(name)) 
-                throw new Exception(type.ToString()+":"+name+"已经定义过");
+            if (values == null)
+            {
+                values = new Dictionary<string, CQ_Value>();
+            }
+            else if (values.ContainsKey(name))
+            {
+                throw new Exception(type.ToString() + ":" + name + "已经定义过");
+            }
+                
             CQ_Value v = new CQ_Value();
             v.type = type;
             v.value = value;
             values[name] = v;
-            if(tvalues.Count>0)
+
+            if(tvalues != null && tvalues.Count>0)
             {
                 tvalues.Peek().Add(name);//暂存临时变量
             }
@@ -295,9 +330,13 @@ namespace CQuark
             }
 
             CQ_Value retV = null;
-            bool bFind = values.TryGetValue(name, out retV);
-            if (bFind)//优先上下文变量
-                return retV;
+            bool bFind = false;
+            if (values != null)
+            {
+                bFind = values.TryGetValue(name, out retV);
+                if (bFind)//优先上下文变量
+                    return retV;
+            }
 
             if (CallType != null)
             {
@@ -336,11 +375,14 @@ namespace CQuark
 
         public void DepthAdd()//控制变量作用域，深一层
         {
+            if (tvalues == null)
+                tvalues = new Stack<List<string>>();
+
             tvalues.Push(new List<string>());
         }
         public void DepthRemove()//控制变量作用域，退出一层，上一层的变量都清除
         {
-			if (tvalues.Count == 0)
+            if (tvalues == null || tvalues.Count == 0)
 				return;
             List<string> list = tvalues.Pop();
             foreach(var v in list)

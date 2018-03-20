@@ -40,14 +40,6 @@ namespace CQuark{
 			CallScript ("Start");
 		}
 
-		void Update () {
-			CallScript ("Update");
-		}
-
-		void FixedUpdate () {
-			CallScript ("FixedUpdate");
-		}
-
 		void OnDestroy(){
 			CallScript ("OnDestroy");
 		}

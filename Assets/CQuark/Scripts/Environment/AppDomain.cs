@@ -65,9 +65,9 @@ namespace CQuark{
 			RegisterType (typeof(byte[]), "byte[]");
 
             AppDomain.RegisterType(typeof(System.DateTime), "DateTime");
-            AppDomain.RegisterType(typeof(System.IO.File), "File");
+            AppDomain.RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
             AppDomain.RegisterType(typeof(System.IO.Directory), "Directory");
-
+            AppDomain.RegisterType(typeof(System.IO.File), "File");
 		}
 
         private static Type_Operatable MakeType(Type type, string keyword)
@@ -368,6 +368,79 @@ namespace CQuark{
 			Project_Compile(project, true);
 		}
 
-
+        public static CQ_Value FindStaticValueFast(string classname, string membername)
+        {
+            CQ_Value cqVal = new CQ_Value();
+            switch(classname){
+                case "Vector3":
+                    cqVal.type = typeof(Vector3);
+                    switch(membername){
+                        case "up":
+                           cqVal.value = Vector3.up;
+                           return cqVal;
+                        case "down":
+                            cqVal.value = Vector3.down;
+                            return cqVal;
+                        case "forward":
+                            cqVal.value = Vector3.forward;
+                            return cqVal;
+                        case "back":
+                            cqVal.value = Vector3.back;
+                            return cqVal;
+                        case "left":
+                            cqVal.value = Vector3.left;
+                            return cqVal;
+                        case "right":
+                            cqVal.value = Vector3.right;
+                            return cqVal;
+                        case "one":
+                            cqVal.value = Vector3.one;
+                            return cqVal;
+                        case "zero":
+                            cqVal.value = Vector3.zero;
+                            return cqVal;
+                    }
+                    break;
+                case "Time":
+                    switch (membername)
+                    {
+                        case "deltaTime":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.deltaTime;
+                            return cqVal;
+                        case "fixedDeltaTime":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.fixedDeltaTime;
+                            return cqVal;
+                        case "captureFramerate":
+                            cqVal.type = typeof(int);
+                            cqVal.value = Time.captureFramerate;
+                            return cqVal;
+                        case "fixedTime":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.fixedTime;
+                            return cqVal;
+                        case "fixedUnscaledDeltaTime":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.fixedUnscaledDeltaTime;
+                            return cqVal;
+                        case "fixedUnscaledTime":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.fixedUnscaledTime;
+                            return cqVal;
+                        case "frameCount":
+                            cqVal.type = typeof(int);
+                            cqVal.value = Time.frameCount;
+                            return cqVal;
+                        case "realtimeSinceStartup":
+                            cqVal.type = typeof(float);
+                            cqVal.value = Time.realtimeSinceStartup;
+                            return cqVal;
+                    }
+                    break;
+            }
+            
+            return null;
+        }
 	}
 }

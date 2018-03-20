@@ -8,6 +8,7 @@ public class Demo5 : MonoBehaviour,ICoroutine {
 	CQuarkBlock script = new CQuarkBlock();
 	void Start(){
 		CQuark.AppDomain.Reset();
+        CQuark.AppDomain.RegisterType(typeof(Debug),"Debug");
 		CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
 		CQuark.AppDomain.RegisterMethod ((eDelay)YieldWaitForSecond);
 		ExecuteFile ();

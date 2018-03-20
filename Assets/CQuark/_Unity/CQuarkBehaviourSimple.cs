@@ -64,4 +64,12 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 			Debug.LogError("BuildScript:" + key + " err\n" + e.ToString());
 		}
 	}
+
+	void Update () {
+		CallScript ("Update");
+	}
+
+	void FixedUpdate () {
+		CallScript ("FixedUpdate");
+	}
 }
