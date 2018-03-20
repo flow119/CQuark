@@ -24,12 +24,13 @@ namespace CQuark
             get;
             private set;
         }
-
+		#if CQUARK_DEBUG
         public string function
         {
             get;
             set;
         }
+		#endif
         public string CallName
         {
             get
@@ -41,10 +42,11 @@ namespace CQuark
                         strout += "(" + this.CallType.filename + ")";
                     strout += this.CallType.Name + ":";
                 }
+				#if CQUARK_DEBUG
                 strout += this.function;
+				#endif
                 return strout;
             }
-
         }
         public bool useDebug
         {

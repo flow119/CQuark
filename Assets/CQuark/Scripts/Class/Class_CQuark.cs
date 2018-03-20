@@ -160,7 +160,9 @@ namespace CQuark
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
                     content.CallThis = null;
+					#if CQUARK_DEBUG
                     content.function = function;
+					#endif
                     // int i = 0;
                     for (int i = 0; i < functions[function]._paramtypes.Count; i++)
                     //foreach (var p in this.functions[function]._params)
@@ -272,7 +274,9 @@ namespace CQuark
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
                     content.CallThis = object_this as CQClassInstance;
+					#if CQUARK_DEBUG
                     content.function = func;
+					#endif
                     for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
                     {
                         content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].typeBridge, _params[i].value);
@@ -338,7 +342,9 @@ namespace CQuark
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
                     content.CallThis = object_this as CQClassInstance;
+					#if CQUARK_DEBUG
                     content.function = func;
+					#endif
                     for (int i = 0; i < this.functions[func]._paramtypes.Count; i++)
                     //int i = 0;
                     //foreach (var p in this.functions[func]._params)

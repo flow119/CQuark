@@ -112,8 +112,9 @@ namespace CQuark
                         content.DepthAdd();
                         content.CallThis = _func.callthis;
                         content.CallType = _func.calltype;
+						#if CQUARK_DEBUG
                         content.function = _func.function;
-
+						#endif
                         content.DefineAndSet(func._paramnames[0], func._paramtypes[0].typeBridge, param0);
 
                         func.expr_runtime.ComputeValue(content);
@@ -167,7 +168,9 @@ namespace CQuark
                         {
                             string errinfo = "Dump Call lambda in:";
                             if (content.CallType != null) errinfo += content.CallType.Name + "::";
+						#if CQUARK_DEBUG
                             if (content.function != null) errinfo += content.function;
+						#endif
                             errinfo += "\n";
                             DebugUtil.Log(errinfo + content.Dump()); 
                             throw err;
