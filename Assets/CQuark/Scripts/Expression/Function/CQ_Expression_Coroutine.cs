@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace CQuark
-{
-	public class CQ_Expression_Coroutine : ICQ_Expression
-    {
-		public CQ_Expression_Coroutine(int tbegin, int tend, int lbegin, int lend)
-        {
+namespace CQuark {
+    public class CQ_Expression_Coroutine : ICQ_Expression {
+        public CQ_Expression_Coroutine (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -16,212 +13,70 @@ namespace CQuark
             lineEnd = lend;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> _expressions
-        {
+        public List<ICQ_Expression> _expressions {
             get;
             private set;
         }
-        public int tokenBegin
-        {
+        public int tokenBegin {
             get;
             private set;
         }
-        public int tokenEnd
-        {
+        public int tokenEnd {
             get;
             set;
         }
-        public int lineBegin
-        {
+        public int lineBegin {
             get;
             private set;
         }
-        public int lineEnd
-        {
+        public int lineEnd {
             get;
             set;
         }
-		public bool hasCoroutine
-		{
-			get{
-				return true;
-			}
-		}
-        public CQ_Value ComputeValue(CQ_Content content)
-        {
+        public bool hasCoroutine {
+            get {
+                return true;
+            }
+        }
+        public CQ_Value ComputeValue (CQ_Content content) {
+#if CQUARK_DEBUG
             content.InStack(this);
+#endif
             List<CQ_Value> list = new List<CQ_Value>();
-            foreach (ICQ_Expression p in _expressions)
-            {
-                if (p != null)
-                {
+            foreach(ICQ_Expression p in _expressions) {
+                if(p != null) {
                     list.Add(p.ComputeValue(content));
                 }
             }
 
-//			if(funcname == "YieldWaitForSecond"){
-//
-//				content.OutStack(this);
-				return null;
-//			}else{
-//	            CQ_Content.Value v = null;
-//
-//	            SType.Function retFunc = null;
-//	            bool bFind = false;
-//	            if (content.CallType != null)
-//	                bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
-//
-//	            if (bFind)
-//	            {
-//	                if (retFunc.bStatic)
-//	                {
-//	                    v = content.CallType.StaticCall(content, funcname, list);
-//	                }
-//	                else
-//	                {
-//	                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-//	                }
-//	            }
-//
-//
-//	            else
-//	            {
-//	                v = content.GetQuiet(funcname);
-//	                if (v != null && v.value is Delegate)
-//	                {
-//	                    //if(v.value is Delegate)
-//	                    {
-//	                        Delegate d = v.value as Delegate;
-//	                        v = new CQ_Content.Value();
-//	                        object[] obja = new object[list.Count];
-//	                        for (int i = 0; i < list.Count; i++)
-//	                        {
-//	                            obja[i] = list[i].value;
-//	                        }
-//	                        v.value = d.DynamicInvoke(obja);
-//	                        if (v.value == null)
-//	                        {
-//	                            v.type = null;
-//	                        }
-//	                        else
-//	                        {
-//	                            v.type = v.value.GetType();
-//	                        }
-//	                    }
-//	                    //else
-//	                    //{
-//	                    //    throw new Exception(funcname + "不是函数");
-//	                    //}
-//	                }
-//	                else
-//	                {
-//	                    v = CQuark.AppDomain.GetFunction(funcname).Call(content, list);
-//	                }
-//	            }
-//	            //操作变量之
-//	            //做数学计算
-//	            //从上下文取值
-//	            //_value = null;
-//	            content.OutStack(this);
-//	            return v;
-//			}
+#if CQUARK_DEBUG
+				content.OutStack(this);
+#endif
+            //TODO 最好不要支持这种操作
+            return null;
         }
 
-		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
-		{
+        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+#if CQUARK_DEBUG
 			content.InStack(this);
-			List<CQ_Value> list = new List<CQ_Value>();
-			foreach (ICQ_Expression p in _expressions)
-			{
-				if (p != null)
-				{
-					//暂时不支持协程套用协程
-					list.Add(p.ComputeValue(content));
-				}
-			}
+#endif
+            List<CQ_Value> list = new List<CQ_Value>();
+            foreach(ICQ_Expression p in _expressions) {
+                if(p != null) {
+                    //暂时不支持协程套用协程
+                    list.Add(p.ComputeValue(content));
+                }
+            }
 
-			IMethod func = CQuark.AppDomain.GetMethod (funcname);
-			yield return coroutine.StartNewCoroutine (func.Call(content, list).value as IEnumerator);
+            IMethod func = CQuark.AppDomain.GetMethod(funcname);
+            yield return coroutine.StartNewCoroutine(func.Call(content, list).value as IEnumerator);
+#if CQUARK_DEBUG
 			content.OutStack(this);
-//			if(funcname == "YieldWaitForSecond"){
-//				if(list[0].type.Name == "Int32"){
-//					int delay = (int)list[0].value;
-//					yield return coroutine.WaitForSecond((float)delay);
-//				}else if(list[0].type.Name == "Single"){
-//					float delay = (float)list[0].value;
-//					yield return coroutine.WaitForSecond(delay);
-//				}else if(list[0].type.Name == "Double"){
-//					double delay = (double)list[0].value;
-//					yield return coroutine.WaitForSecond((float)delay);
-//				}else{
-//					//Unknow Number Type
-//				}
-//
-//				content.OutStack(this);
-//			}else{
-//				CQ_Content.Value v = null;
-//				
-//				SType.Function retFunc = null;
-//				bool bFind = false;
-//				if (content.CallType != null)
-//					bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
-//				
-//				if (bFind)
-//				{
-//					if (retFunc.bStatic)
-//					{
-//						v = content.CallType.StaticCall(content, funcname, list);
-//					}
-//					else
-//					{
-//						v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-//					}
-//				}
-//				else
-//				{
-//					v = content.GetQuiet(funcname);
-//					if (v != null && v.value is Delegate)
-//					{
-//						//if(v.value is Delegate)
-//						{
-//							Delegate d = v.value as Delegate;
-//							v = new CQ_Content.Value();
-//							object[] obja = new object[list.Count];
-//							for (int i = 0; i < list.Count; i++)
-//							{
-//								obja[i] = list[i].value;
-//							}
-//							v.value = d.DynamicInvoke(obja);
-//							if (v.value == null)
-//							{
-//								v.type = null;
-//							}
-//							else
-//							{
-//								v.type = v.value.GetType();
-//							}
-//						}
-//						//else
-//						//{
-//						//    throw new Exception(funcname + "不是函数");
-//						//}
-//					}
-//					else
-//					{
-//						v = CQuark.AppDomain.GetFunction(funcname).Call(content, list);
-//					}
-//				}
-//				//操作变量之
-//				//做数学计算
-//				//从上下文取值
-//				//_value = null;
-//				content.OutStack(this);
-//			}
-		}
+#endif
+        }
         public string funcname;
 
-        public override string ToString()
-        {
+        public override string ToString () {
             return "Coroutine |" + funcname + "(params[" + _expressions.Count + ")";
         }
     }

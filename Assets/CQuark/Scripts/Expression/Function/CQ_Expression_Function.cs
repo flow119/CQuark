@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace CQuark
-{
-
-	public class CQ_Expression_Function : ICQ_Expression
-    {
-        public CQ_Expression_Function(int tbegin, int tend, int lbegin, int lend)
-        {
+namespace CQuark {
+    public class CQ_Expression_Function : ICQ_Expression {
+        public CQ_Expression_Function (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -17,94 +13,78 @@ namespace CQuark
             lineEnd = lend;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> _expressions
-        {
+        public List<ICQ_Expression> _expressions {
             get;
             private set;
         }
-        public int tokenBegin
-        {
+        public int tokenBegin {
             get;
             private set;
         }
-        public int tokenEnd
-        {
+        public int tokenEnd {
             get;
             set;
         }
-        public int lineBegin
-        {
+        public int lineBegin {
             get;
             private set;
         }
-        public int lineEnd
-        {
+        public int lineEnd {
             get;
             set;
         }
-		public bool hasCoroutine{
-			get{
-				if(_expressions == null || _expressions.Count == 0)
-					return false;
-				foreach(ICQ_Expression expr in _expressions){
-					if(expr.hasCoroutine)
-						return true;
-				}
-				return false;
-			}
-		}
-        public CQ_Value ComputeValue(CQ_Content content)
-        {
+        public bool hasCoroutine {
+            get {
+                if(_expressions == null || _expressions.Count == 0)
+                    return false;
+                foreach(ICQ_Expression expr in _expressions) {
+                    if(expr.hasCoroutine)
+                        return true;
+                }
+                return false;
+            }
+        }
+        public CQ_Value ComputeValue (CQ_Content content) {
+#if CQUARK_DEBUG
             content.InStack(this);
+#endif
             List<CQ_Value> list = new List<CQ_Value>();
-            foreach (ICQ_Expression p in _expressions)
-            {
-                if (p != null)
-                {
+            foreach(ICQ_Expression p in _expressions) {
+                if(p != null) {
                     list.Add(p.ComputeValue(content));
                 }
             }
-			CQ_Value v = null;
+            CQ_Value v = null;
 
             Class_CQuark.Function retFunc = null;
             bool bFind = false;
-            if (content.CallType != null)
+            if(content.CallType != null)
                 bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
 
-            if (bFind)
-            {
-                if (retFunc.bStatic)
-                {
+            if(bFind) {
+                if(retFunc.bStatic) {
                     v = content.CallType.StaticCall(content, funcname, list);
-
                 }
-                else
-                {
+                else {
                     v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
-
                 }
             }
-            else
-            {
+            else {
                 v = content.GetQuiet(funcname);
-                if (v != null && v.value is Delegate)
-                {
+                if(v != null && v.value is Delegate) {
                     //if(v.value is Delegate)
                     {
                         Delegate d = v.value as Delegate;
                         v = new CQ_Value();
                         object[] obja = new object[list.Count];
-                        for (int i = 0; i < list.Count; i++)
-                        {
+                        for(int i = 0; i < list.Count; i++) {
                             obja[i] = list[i].value;
                         }
                         v.value = d.DynamicInvoke(obja);
-                        if (v.value == null)
-                        {
+                        if(v.value == null) {
                             v.type = null;
                         }
-                        else
-                        {
+                        else {
                             v.type = v.value.GetType();
                         }
                     }
@@ -113,8 +93,7 @@ namespace CQuark
                     //    throw new Exception(funcname + "不是函数");
                     //}
                 }
-                else
-                {
+                else {
                     v = CQuark.AppDomain.GetMethod(funcname).Call(content, list);
                 }
             }
@@ -122,18 +101,18 @@ namespace CQuark
             //做数学计算
             //从上下文取值
             //_value = null;
+#if CQUARK_DEBUG
             content.OutStack(this);
+#endif
             return v;
         }
 
-		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
-		{
-			throw new Exception ("暂时不支持套用协程");
-		}
+        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+            throw new Exception("不支持方法内套用协程");
+        }
         public string funcname;
 
-        public override string ToString()
-        {
+        public override string ToString () {
             return "Call|" + funcname + "(params[" + _expressions.Count + ")";
         }
     }

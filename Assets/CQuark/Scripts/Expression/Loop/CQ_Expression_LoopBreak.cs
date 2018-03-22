@@ -3,73 +3,59 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace CQuark
-{
+namespace CQuark {
 
-    public class CQ_Expression_LoopBreak : ICQ_Expression
-    {
-        public CQ_Expression_LoopBreak(int tbegin, int tend, int lbegin, int lend)
-        {
+    public class CQ_Expression_LoopBreak : ICQ_Expression {
+        public CQ_Expression_LoopBreak (int tbegin, int tend, int lbegin, int lend) {
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
         }
-        public int lineBegin
-        {
+        public int lineBegin {
             get;
             private set;
         }
-        public int lineEnd
-        {
+        public int lineEnd {
             get;
             private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
-        public List<ICQ_Expression> _expressions
-        {
-            get
-            {
+        public List<ICQ_Expression> _expressions {
+            get {
                 return null;
             }
         }
-        public int tokenBegin
-        {
+        public int tokenBegin {
             get;
             private set;
         }
-        public int tokenEnd
-        {
+        public int tokenEnd {
             get;
             private set;
         }
-		public bool hasCoroutine{
-			get{
-//				if(_expressions == null || _expressions.Count == 0)
-//					return false;
-//				foreach(ICQ_Expression expr in _expressions){
-//					if(expr.hasCoroutine)
-//						return true;
-//				}
-				return false;
-			}
-		}
-        public CQ_Value ComputeValue(CQ_Content content)
-        {
+        public bool hasCoroutine {
+            get {
+                return false;
+            }
+        }
+        public CQ_Value ComputeValue (CQ_Content content) {
+#if CQUARK_DEBUG
             content.InStack(this);
+#endif
             CQ_Value rv = new CQ_Value();
             rv.breakBlock = 2;
-            //跳出逻辑
+
+#if CQUARK_DEBUG
             content.OutStack(this);
+#endif
             return rv;
         }
-		public IEnumerator CoroutineCompute(CQ_Content content, ICoroutine coroutine)
-		{
-			throw new Exception ("暂时不支持套用协程");
-		}
+        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+            throw new Exception("break不支持协程");
+        }
 
-        public override string ToString()
-        {
+        public override string ToString () {
             return "break;";
         }
     }

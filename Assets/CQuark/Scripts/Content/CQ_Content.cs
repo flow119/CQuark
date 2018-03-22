@@ -55,48 +55,42 @@ namespace CQuark
 
             return con;
         }
-        
+  #if CQUARK_DEBUG      
         public void InStack(CQ_Content expr)
         {
-#if CQUARK_DEBUG
+
             if (stackContent.Count > 0 && stackContent.Peek() == expr)
             {
                 throw new Exception("InStackContent error");
             }
             stackContent.Push(expr);
-#endif
         }
         public void OutStack(CQ_Content expr)
-        {
-#if CQUARK_DEBUG            
+        {        
             if (stackContent.Peek() != expr)
             {
                 throw new Exception("OutStackContent error:" + expr.ToString() + " err:" + stackContent.Peek().ToString());
             }
             stackContent.Pop();
-#endif
         }
         public void InStack(ICQ_Expression expr)
-        {
- #if CQUARK_DEBUG           
+        {       
             if (stackExpr.Count > 0 && stackExpr.Peek() == expr)
             {
                 throw new Exception("InStack error");
             }
             stackExpr.Push(expr);
-#endif
         }
         public void OutStack(ICQ_Expression expr)
-        {
-#if CQUARK_DEBUG            
+        {       
 			if (stackExpr.Peek() != expr)
             {
 				throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
 
             }
             stackExpr.Pop();
-#endif
         }
+#endif
         public void Record(out List<string> depth)
         {
             depth = tvalues.Peek();
