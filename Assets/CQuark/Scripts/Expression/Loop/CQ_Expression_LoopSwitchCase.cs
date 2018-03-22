@@ -51,7 +51,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
+            ICQ_Expression expr_switch = _expressions[0];
             CQ_Value switchVal = null;
             //			CQ_Content.Value vrt = null;
             if(expr_switch != null)
@@ -93,7 +93,7 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
+            ICQ_Expression expr_switch = _expressions[0];
             CQ_Value switchVal = null;
             //			CQ_Content.Value vrt = null;
             if(expr_switch != null)

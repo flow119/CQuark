@@ -353,7 +353,7 @@ namespace CQuark
             if (tvalues == null || tvalues.Count == 0)
 				return;
             List<string> list = tvalues.Pop();
-            foreach(var v in list)
+            foreach(string v in list)
             {
                 values.Remove(v);
             }

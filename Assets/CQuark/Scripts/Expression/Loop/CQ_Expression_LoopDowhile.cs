@@ -50,8 +50,8 @@ namespace CQuark {
             content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_while = _expressions[1] as ICQ_Expression;
-            ICQ_Expression expr_block = _expressions[0] as ICQ_Expression;
+            ICQ_Expression expr_while = _expressions[1];
+            ICQ_Expression expr_block = _expressions[0];
 
             CQ_Value vrt = null;
             do {
@@ -90,8 +90,8 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_while = _expressions[1] as ICQ_Expression;
-            ICQ_Expression expr_block = _expressions[0] as ICQ_Expression;
+            ICQ_Expression expr_while = _expressions[1];
+            ICQ_Expression expr_block = _expressions[0];
 
             //			CQ_Content.Value vrt = null;
             do {
