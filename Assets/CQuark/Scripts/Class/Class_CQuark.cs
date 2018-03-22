@@ -155,7 +155,7 @@ namespace CQuark
             {
                 if (this.functions[function].bStatic == true)
                 {
-                    CQ_Content content = new CQ_Content(true);
+                    CQ_Content content = new CQ_Content();
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
@@ -269,7 +269,7 @@ namespace CQuark
             {
                 if (this.functions[func].bStatic == false)
                 {
-                    CQ_Content content = new CQ_Content(true);
+                    CQ_Content content = new CQ_Content();
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;
@@ -337,7 +337,7 @@ namespace CQuark
             {
                 if (this.functions[func].bStatic == false)
                 {
-                    CQ_Content content = new CQ_Content(true);
+                    CQ_Content content = new CQ_Content();
 
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
                     content.CallType = this;

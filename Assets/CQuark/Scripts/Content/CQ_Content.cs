@@ -14,19 +14,12 @@ namespace CQuark
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
 		Stack<List<string>> tvalues = null;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
 		public Dictionary<string, CQ_Value> values = null;//new Dictionary<string, CQ_Value>();
-        private Stack<ICQ_Expression> stackExpr;
-        public Stack<CQ_Content> stackContent
-        {
-            get;
-            private set;
-        }
-		#if CQUARK_DEBUG
-        public string function
-        {
-            get;
-            set;
-        }
-		#endif
+
+#if CQUARK_DEBUG
+        private Stack<ICQ_Expression> stackExpr = new Stack<ICQ_Expression>();
+        private Stack<CQ_Content> stackContent = new Stack<CQ_Content>();
+        public string function;
+#endif
         public string CallName
         {
             get
@@ -44,30 +37,11 @@ namespace CQuark
                 return strout;
             }
         }
-        public bool useDebug
-        {
-            get;
-            private set;
-        }
-       
 
-        public CQ_Content()
-        {
-            this.useDebug = false;
-        }
-        public CQ_Content(bool useDebug)
-        {
-            this.useDebug = useDebug;
-            if (useDebug)
-            {
-                stackExpr = new Stack<ICQ_Expression>();
-                stackContent = new Stack<CQ_Content>();
-            }
-        }
 
         public CQ_Content Clone()
         {
-            CQ_Content con = new CQ_Content(useDebug);
+            CQ_Content con = new CQ_Content();
             if (values != null)
             {
                 foreach (var c in this.values)
@@ -84,42 +58,44 @@ namespace CQuark
         
         public void InStack(CQ_Content expr)
         {
-            if (!useDebug) return;
+#if CQUARK_DEBUG
             if (stackContent.Count > 0 && stackContent.Peek() == expr)
             {
                 throw new Exception("InStackContent error");
             }
             stackContent.Push(expr);
+#endif
         }
         public void OutStack(CQ_Content expr)
         {
-            if (!useDebug) return;
+#if CQUARK_DEBUG            
             if (stackContent.Peek() != expr)
             {
                 throw new Exception("OutStackContent error:" + expr.ToString() + " err:" + stackContent.Peek().ToString());
             }
             stackContent.Pop();
+#endif
         }
         public void InStack(ICQ_Expression expr)
         {
-            if (!useDebug) 
-                return;
+ #if CQUARK_DEBUG           
             if (stackExpr.Count > 0 && stackExpr.Peek() == expr)
             {
                 throw new Exception("InStack error");
             }
             stackExpr.Push(expr);
+#endif
         }
         public void OutStack(ICQ_Expression expr)
         {
-            if (!useDebug)
-                return;
+#if CQUARK_DEBUG            
 			if (stackExpr.Peek() != expr)
             {
 				throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
 
             }
             stackExpr.Pop();
+#endif
         }
         public void Record(out List<string> depth)
         {
@@ -134,14 +110,17 @@ namespace CQuark
                     tvalues.Pop();
                 }
             }
+#if CQUARK_DEBUG
             while(stackExpr.Peek()!=expr)
             {
                 stackExpr.Pop();
             }
+#endif
         }
 		public string DumpValue()
 		{
 			string strvalues = "";
+#if CQUARK_DEBUG
             if (this.stackContent != null)
             {
                 foreach (var subc in this.stackContent)
@@ -149,6 +128,7 @@ namespace CQuark
                     strvalues += subc.DumpValue();
                 }
             }
+#endif
             strvalues += "DumpValue:" + this.CallName + "\n";
             if (values != null)
             {
@@ -163,8 +143,7 @@ namespace CQuark
 		public string DumpStack(IList<Token> tokenlist)
         {
 			string strvalues = "";
-            if (useDebug)
-            {
+#if CQUARK_DEBUG
                 if(this.CallType!=null&&this.CallType.tokenlist!=null)
                 {
                     tokenlist = this.CallType.tokenlist;
@@ -208,10 +187,10 @@ namespace CQuark
                     }
                    
                 }
-            }
+#endif
             return strvalues;
-
         }
+
         public string Dump()
         {
             string str = DumpValue();

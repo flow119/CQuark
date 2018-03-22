@@ -8,7 +8,7 @@ using System.Collections;
 /// </summary>
 public class CQuarkBlock
 {
-	CQ_Content content = new CQ_Content(true);
+	CQ_Content content = new CQ_Content();
 
     public object Execute(string script){
 		var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
@@ -30,6 +30,6 @@ public class CQuarkBlock
         content.DefineAndSet(name, v.GetType(), v);
     }
 	public void ClearValue(){
-		content = new CQ_Content(true);
+		content = new CQ_Content();
     }
 }

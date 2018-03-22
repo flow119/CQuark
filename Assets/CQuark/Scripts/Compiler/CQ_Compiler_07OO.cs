@@ -265,7 +265,9 @@ namespace CQuark
                         string idname = tokens[i + 1].text;
                         if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && tokens[i + 2].text == "(")//参数开始,这是函数
                         {
+#if CQUARK_DEBUG
                             DebugUtil.Log("发现函数:" + idname);
+#endif
                             Class_CQuark.Function func = new Class_CQuark.Function();
                             func.bStatic = bStatic;
                             func.bPublic = bPublic;
@@ -357,7 +359,9 @@ namespace CQuark
                             member.bPublic = bPublic;
                             member.bReadOnly = !(haveset && setpublic);
                             member.type = idtype;
+#if CQUARK_DEBUG
                             DebugUtil.Log("发现Get/Set:" + idname);
+#endif
                             //ICQ_Expression expr = null;
 
                             if (tokens[i + 2].text == "=")
@@ -376,8 +380,9 @@ namespace CQuark
                         }
                         else if (tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && (tokens[i + 2].text == "=" || tokens[i + 2].text == ";"))//这是成员定义
                         {
+#if CQUARK_DEBUG
                             DebugUtil.Log("发现成员定义:" + idname);
-
+#endif
                             var member = new Class_CQuark.Member();
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;

@@ -24,7 +24,7 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 		BuildBlock ("Update", m_Update);
 		BuildBlock ("FixedUpdate", m_FixedUpdate);
 		BuildBlock ("OnDestroy", m_OnDestroy);
-		content = new CQ_Content(true);//创建上下文，并设置变量给脚本访问
+		content = new CQ_Content();//创建上下文，并设置变量给脚本访问
 		content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 		content.DefineAndSet ("transform", typeof(Transform), this.transform);
 	}

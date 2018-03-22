@@ -106,7 +106,7 @@ namespace CQuark
 
                 if (func.expr_runtime != null)
                 {
-                    CQ_Content content = new CQ_Content(true);
+                    CQ_Content content = new CQ_Content();
                     try
                     {
                         content.DepthAdd();

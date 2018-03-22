@@ -22,7 +22,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	public TextAsset m_ta;
 	public string m_codeText = "";
 
-	private CQ_Content _updateContent = new CQ_Content(true);
+	private CQ_Content _updateContent = new CQ_Content();
 	public ICQ_Expression m_update;
 	public ICQ_Expression m_fixedpdate;
 
@@ -44,7 +44,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			return;
 		}
 		cclass = type._class as Class_CQuark;
-		content = new CQ_Content(true);
+		content = new CQ_Content();
 
 		//TODO 最好在编译的时候就做，不要在实例化的时候做
 		RegisterMember("gameObject", typeof(GameObject));
@@ -60,7 +60,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 			m_update = cclass.functions["Update"].expr_runtime;
 		if(cclass.functions.ContainsKey("FixedUpdate"))
 			m_fixedpdate = cclass.functions["FixedUpdate"].expr_runtime;
-		_updateContent = new CQ_Content(true);
+		_updateContent = new CQ_Content();
 		_updateContent.CallType = cclass;
 		_updateContent.CallThis = inst;
 	}
