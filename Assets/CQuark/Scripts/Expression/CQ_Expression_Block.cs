@@ -84,7 +84,7 @@ namespace CQuark
 					}else{
 						value = e.ComputeValue(content);
 						if (value != null && value.breakBlock != 0)
-							yield break;
+							break;
 					}
 				}
 			}

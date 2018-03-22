@@ -10,6 +10,7 @@ public class Demo4 : MonoBehaviour {
 	void Start()
 	{
         CQuark.AppDomain.Reset();
+        InitAppDomain.RegisterUnityType();
         //CQuark.AppDomain.RegisterType (typeof(System.DateTime),"DateTime");
 		
 

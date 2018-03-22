@@ -14,11 +14,7 @@ namespace CQuark
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
 		Stack<List<string>> tvalues = null;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
 		public Dictionary<string, CQ_Value> values = null;//new Dictionary<string, CQ_Value>();
-        public Stack<ICQ_Expression> stackExpr
-        {
-            get;
-            private set;
-        }
+        private Stack<ICQ_Expression> stackExpr;
         public Stack<CQ_Content> stackContent
         {
             get;
@@ -120,12 +116,8 @@ namespace CQuark
                 return;
 			if (stackExpr.Peek() != expr)
             {
-				if (expr.hasCoroutine) {
-					//TODO 从这里拿出去。然后useDebug就能用宏定义了
-					DepthRemove ();
-				}else {
-					throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
-				}
+				throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
+
             }
             stackExpr.Pop();
         }

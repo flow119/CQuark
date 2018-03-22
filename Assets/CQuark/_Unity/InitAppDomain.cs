@@ -28,7 +28,7 @@ public class InitAppDomain : MonoBehaviour {
         Debug.Log("Project Compile Finished");
     }
 
-    void RegisterUnityType()
+    public static void RegisterUnityType()
     {
         //以下内容是Unity专用，如果非Unity平台可以直接主食掉
         AppDomain.RegisterType(typeof(UnityEngine.Object), "Object");
