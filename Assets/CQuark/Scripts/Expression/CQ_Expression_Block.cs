@@ -50,14 +50,14 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             CQ_Value value = null;
-            foreach(ICQ_Expression expr in _expressions) {
-                if(expr != null)
-                    value = expr.ComputeValue(content);
+            foreach(ICQ_Expression i in _expressions) {
+                ICQ_Expression e = i as ICQ_Expression;
+                if(e != null)
+                    value = e.ComputeValue(content);
 
                 if(value != null && value.breakBlock != 0)
                     break;
             }
-
             content.DepthRemove();
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -70,13 +70,14 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             CQ_Value value = null;
-            foreach(ICQ_Expression expr in _expressions) {
-                if(expr != null) {
-                    if(expr.hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(expr.CoroutineCompute(content, coroutine));
+            foreach(ICQ_Expression i in _expressions) {
+                ICQ_Expression e = i as ICQ_Expression;
+                if(e != null) {
+                    if(e.hasCoroutine) {
+                        yield return coroutine.StartNewCoroutine(e.CoroutineCompute(content, coroutine));
                     }
                     else {
-                        value = expr.ComputeValue(content);
+                        value = e.ComputeValue(content);
                         if(value != null && value.breakBlock != 0)
                             break;
                     }

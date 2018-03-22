@@ -51,13 +51,13 @@ namespace CQuark {
             content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_init = _expressions[0];
+            ICQ_Expression expr_init = _expressions[0] as ICQ_Expression;
             if(expr_init != null) expr_init.ComputeValue(content);//expr1
 
-            ICQ_Expression expr_continue = _expressions[1];
-            ICQ_Expression expr_step = _expressions[2];
+            ICQ_Expression expr_continue = _expressions[1] as ICQ_Expression;
+            ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 
-            ICQ_Expression expr_block = _expressions[3];
+            ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
             CQ_Value vrt = null;
             for(; ; ) {
                 if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).value) break;//expr2
@@ -104,13 +104,13 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             content.DepthAdd();
-            ICQ_Expression expr_init = _expressions[0];
+            ICQ_Expression expr_init = _expressions[0] as ICQ_Expression;
             if(expr_init != null) expr_init.ComputeValue(content);//expr1
 
-            ICQ_Expression expr_continue = _expressions[1];
-            ICQ_Expression expr_step = _expressions[2];
+            ICQ_Expression expr_continue = _expressions[1] as ICQ_Expression;
+            ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 
-            ICQ_Expression expr_block = _expressions[3];
+            ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
             //			CQ_Content.Value vrt = null;
             for(; ; ) {
                 if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).value) break;//expr2
