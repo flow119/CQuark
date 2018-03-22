@@ -96,6 +96,9 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 ## TODO
 
 下个版本
+Bug多个循环嵌套时中间break会导致作用域错误
+icq_expression里的begin,end，content里的stack全部进宏定义
+
 
 * 重写MonoBehaviour//参考ILRuntime
 * 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
