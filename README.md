@@ -24,6 +24,12 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 
 ## 版本更新记录
+
+2018-03-22 v0.8.2
+
+    BugFix协程块里多个循环嵌套时中间break会导致作用域出错
+    CQ_Content里的调用堆栈信息全部进宏定义
+    
 2018-03-21 v0.8.1
 
     Update和FixedUpdate这样频繁调用的函数有特殊的调用方法，加快速度
@@ -96,9 +102,6 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 ## TODO
 
 下个版本
-Bug多个循环嵌套时中间break会导致作用域错误
-icq_expression里的begin,end，content里的stack全部进宏定义
-
 
 * 重写MonoBehaviour//参考ILRuntime
 * 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
