@@ -5,12 +5,11 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_StaticMath : ICQ_Expression {
-        public CQ_Expression_StaticMath (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_StaticValueSet : ICQ_Expression {
+        public CQ_Expression_StaticValueSet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
-
             lineBegin = lbegin;
             lineEnd = lend;
         }
@@ -37,12 +36,6 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
-                if(_expressions == null || _expressions.Count == 0)
-                    return false;
-                foreach(ICQ_Expression expr in _expressions) {
-                    if(expr.hasCoroutine)
-                        return true;
-                }
                 return false;
             }
         }
@@ -50,35 +43,26 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
+            //var parent = _expressions[0].ComputeValue(content);
+            var value = _expressions[0].ComputeValue(content);
 
-            var getvalue = type._class.StaticValueGet(content, staticmembername);
-
-            CQ_Value vright = CQ_Value.One;
-            if(_expressions.Count > 0) {
-                vright = _expressions[0].ComputeValue(content);
-            }
-            CQ_Value vout = new CQ_Value();
-            var mtype = CQuark.AppDomain.GetType(getvalue.type);
-            vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
-
-            type._class.StaticValueSet(content, staticmembername, vout.value);
-
+            type._class.StaticValueSet(content, staticmembername, value.value);
+            //做数学计算
+            //从上下文取值
+            //_value = null;
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return vout;
+            return null;
         }
-
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("StaticMath不支持套用协程");
+            throw new Exception("StaticSet不支持套用协程");
         }
-
-
         public IType type;
         public string staticmembername;
-        public char mathop;
+
         public override string ToString () {
-            return "StaticMath|" + type.keyword + "." + staticmembername + " |" + mathop;
+            return "StaticSetvalue|" + type.keyword + "." + staticmembername + "=";
         }
     }
 }

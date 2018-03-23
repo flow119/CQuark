@@ -70,7 +70,7 @@ namespace CQuark
                     CQ_Expression_Function vf = valueright as CQ_Expression_Function;
                     if (vg != null)
                     {
-                        CQ_Expression_StaticFind value = new CQ_Expression_StaticFind(pos, rightend, tlist[pos].line, tlist[rightend].line);
+                        CQ_Expression_StaticValueGet value = new CQ_Expression_StaticValueGet(pos, rightend, tlist[pos].line, tlist[rightend].line);
                         value.staticmembername = vg.value_name;
 						value.type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
                         return value;
@@ -88,7 +88,7 @@ namespace CQuark
                     {
                         CQ_Expression_SelfOp vr = valueright as CQ_Expression_SelfOp;
 
-                        CQ_Expression_StaticMath value = new CQ_Expression_StaticMath(pos, rightend, tlist[pos].line, tlist[rightend].line);
+                        CQ_Expression_StaticValueOp value = new CQ_Expression_StaticValueOp(pos, rightend, tlist[pos].line, tlist[rightend].line);
 						value.type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
                         value.staticmembername = vr.value_name;
                         value.mathop = vr.mathop;
@@ -165,12 +165,12 @@ namespace CQuark
                     {
                         //member set
 
-                        CQ_Expression_MemberFind mfinde = valueleft as CQ_Expression_MemberFind;
-                        CQ_Expression_StaticFind sfinde = valueleft as CQ_Expression_StaticFind;
+                        CQ_Expression_MemberValueGet mfinde = valueleft as CQ_Expression_MemberValueGet;
+                        CQ_Expression_StaticValueGet sfinde = valueleft as CQ_Expression_StaticValueGet;
                         CQ_Expression_IndexFind ifinde = valueleft as CQ_Expression_IndexFind;
                         if (mfinde != null)
                         {
-                            CQ_Expression_MemberSetValue value = new CQ_Expression_MemberSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
+                            CQ_Expression_MemberValueSet value = new CQ_Expression_MemberValueSet(left, rightend, tlist[left].line, tlist[rightend].line);
                             value.membername = mfinde.membername;
                             value._expressions.Add(mfinde._expressions[0]);
                             value._expressions.Add(valueright);
@@ -178,7 +178,7 @@ namespace CQuark
                         }
                         else if (sfinde != null)
                         {
-                            CQ_Expression_StaticSetValue value = new CQ_Expression_StaticSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
+                            CQ_Expression_StaticValueSet value = new CQ_Expression_StaticValueSet(left, rightend, tlist[left].line, tlist[rightend].line);
                             value.staticmembername = sfinde.staticmembername;
                             value.type = sfinde.type;
                             //value._expressions.Add(mfinde._expressions[0]);
@@ -206,7 +206,7 @@ namespace CQuark
 
                         if (vg != null)
                         {
-                            CQ_Expression_MemberFind value = new CQ_Expression_MemberFind(left, rightend, tlist[left].line, tlist[rightend].line);
+                            CQ_Expression_MemberValueGet value = new CQ_Expression_MemberValueGet(left, rightend, tlist[left].line, tlist[rightend].line);
                             value._expressions.Add(valueleft);
                             value.membername = vg.value_name;
                             return value;
@@ -224,7 +224,7 @@ namespace CQuark
                         {
                             CQ_Expression_SelfOp vr = valueright as CQ_Expression_SelfOp;
 
-                            CQ_Expression_MemberMath value = new CQ_Expression_MemberMath(left, rightend, tlist[left].line, tlist[rightend].line);
+                            CQ_Expression_MemberValueOp value = new CQ_Expression_MemberValueOp(left, rightend, tlist[left].line, tlist[rightend].line);
                             value._expressions.Add(valueleft);
                             value.membername = vr.value_name;
                             value.mathop = vr.mathop;

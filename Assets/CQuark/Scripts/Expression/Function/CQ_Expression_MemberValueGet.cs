@@ -4,8 +4,8 @@ using System.Text;
 using System.Collections;
 namespace CQuark {
 
-    public class CQ_Expression_MemberFind : ICQ_Expression {
-        public CQ_Expression_MemberFind (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_MemberValueGet : ICQ_Expression {
+        public CQ_Expression_MemberValueGet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;

@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_StaticFind : ICQ_Expression {
-        public CQ_Expression_StaticFind (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_StaticValueGet : ICQ_Expression {
+        public CQ_Expression_StaticValueGet (int tbegin, int tend, int lbegin, int lend) {
             tokenBegin = tbegin;
             tokenEnd = tend;
 

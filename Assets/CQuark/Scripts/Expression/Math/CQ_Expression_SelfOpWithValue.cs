@@ -73,8 +73,8 @@ namespace CQuark {
                 //}
                 //else
                 {
-                    if(_expressions[0] is CQ_Expression_MemberFind) {
-                        CQ_Expression_MemberFind f = _expressions[0] as CQ_Expression_MemberFind;
+                    if(_expressions[0] is CQ_Expression_MemberValueGet) {
+                        CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
 
                         var parent = f._expressions[0].ComputeValue(content);
                         if(parent == null) {
@@ -83,8 +83,8 @@ namespace CQuark {
                         var ptype = CQuark.AppDomain.GetType(parent.type);
                         ptype._class.MemberValueSet(content, parent.value, f.membername, value);
                     }
-                    if(_expressions[0] is CQ_Expression_StaticFind) {
-                        CQ_Expression_StaticFind f = _expressions[0] as CQ_Expression_StaticFind;
+                    if(_expressions[0] is CQ_Expression_StaticValueGet) {
+                        CQ_Expression_StaticValueGet f = _expressions[0] as CQ_Expression_StaticValueGet;
                         f.type._class.StaticValueSet(content, f.staticmembername, value);
                     }
                 }

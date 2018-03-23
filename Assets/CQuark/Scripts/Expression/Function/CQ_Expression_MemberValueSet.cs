@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_MemberSetValue : ICQ_Expression {
-        public CQ_Expression_MemberSetValue (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_MemberValueSet : ICQ_Expression {
+        public CQ_Expression_MemberValueSet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;

@@ -6,8 +6,18 @@ using System;
 
 public class UnityWrap {
     //TODO 把所有类型分开
-    public static CQ_Value StaticValueGet (IType type, string membername)
-    {
+    public static CQ_Value New (IType type, List<CQ_Value> param) {
+        CQ_Value cqVal = new CQ_Value();
+        switch(type.keyword) {
+            case "Vector3":
+                cqVal.type = typeof(Vector3);
+                cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
+                return cqVal;
+        }
+        return null;
+    }
+
+    public static CQ_Value StaticValueGet (IType type, string membername) {
         //if(!string.IsNullOrEmpty(type._namespace) && type._namespace != "UnityEngine")
         //    return null;
 
@@ -15,7 +25,7 @@ public class UnityWrap {
         switch(type.keyword) {
             case "Vector3":
                 cqVal.type = typeof(Vector3);
-                switch(membername){
+                switch(membername) {
                     case "up":
                         cqVal.value = Vector3.up;
                         return cqVal;
@@ -43,8 +53,7 @@ public class UnityWrap {
                 }
                 break;
             case "Time":
-                switch (membername)
-                {
+                switch(membername) {
                     case "deltaTime":
                         cqVal.type = typeof(float);
                         cqVal.value = Time.deltaTime;
@@ -84,8 +93,12 @@ public class UnityWrap {
                 }
                 break;
         }
-            
+
         return null;
+    }
+
+    public static bool StaticValueSet (IType type, string membername, CQ_Value param) {
+        return false;
     }
 
     public static CQ_Value StaticCall (IType type, string functionname, List<CQ_Value> param) {
@@ -118,15 +131,12 @@ public class UnityWrap {
         return cqVal;
     }
 
-    public static CQ_Value New (IType type, List<CQ_Value> param) {
-         CQ_Value cqVal = new CQ_Value();
-         switch(type.keyword) {
-             case "Vector3":
-                 cqVal.type = typeof(Vector3);
-                 cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
-                 return cqVal;
-         }
-         return null;
+    public static CQ_Value MemberValueGet (IClass _class, object object_this, string membername) {
+        return null;
+    }
+
+    public static bool MemberValueSet (IClass _class, object object_this, string membername, CQ_Value param) {
+        return false;
     }
 
     public static bool MemberCall (IClass _class, object object_this, string functionname, IList<CQ_Value> param, out CQ_Value cqVal) {
