@@ -1,20 +1,39 @@
+for(int i = 0; i < 5; i++)
+{
+	if(i >= 1)
+		break;
+	Wait(0.1f);
+	Debug.Log("AA");
+}
+
+Debug.Log("嵌套break");
 for(int i = 0; i < 3; i++){
-	for(int j = 0; j < 3; j++){
-		Wait(0.2f);
+	Debug.Log("HH"+i);
+	for(int j = 0; j < 5; j++){
+		if(i > 3)
+			break;
+		Wait(0.1f);
 		Debug.Log(i + ":" + j);
 	}
 }
 
+Debug.Log("continue");
 for(int i = 0; i < 5; i++){
-	if(i > 3)
-		break;
+	if(i < 3)
+		continue;
 	Wait(0.1f);
-	Debug.Log(i.ToString());
+	Debug.Log("continue" + i.ToString());
 }
 
-for(int i = 0; i < 5; i++){
-	if(i % 2 == 0){
-		Wait(1f);
-		Debug.Log("" + i);
+Debug.Log("混合");
+for(int i = 0; i < 3; i++){
+	Debug.Log("cc"+i);
+	for(int j = 0; j < 5; j++){
+		if(j <= 2)
+			continue;
+		if(i > 3)
+			break;
+		Wait(0.1f);
+		Debug.Log("mix" + i + ":" + j);
 	}
 }

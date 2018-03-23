@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-class ScriptClass6B
+class ScriptClass4
 {
-    public int defHP1 = 5;
-    public int defHP2 = 8;
+    public int defHP1;
+    public int defHP2;
 
     public int Calc1()
     {
@@ -18,12 +18,11 @@ class ScriptClass6B
         return defHP1 + (defHP2 * 2);
     }
 
-    public IEnumerator GetHP()
+    public int GetHP()
     {
-		Debug.Log("嵌套");
-    	for(int i = 0; i < 3; i++){
+        Debug.Log("嵌套");
+		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
-				Wait(0.2f);
 				Debug.Log(i + ":" + j);
 			}
 		}
@@ -32,47 +31,48 @@ class ScriptClass6B
 		for(int i = 0; i < 5; i++){
 			if(i > 3)
 				break;
-			Wait(0.1f);
 			Debug.Log(i.ToString());
 		}
-		
+
 		Debug.Log("Break2次");
 		for(int i = 0; i < 5; i++){
 			if(i > 3)
 				break;
-			Wait(0.1f);
 			Debug.Log(i.ToString());
 		}
-		
+
 		Debug.Log("循环Break");
 		for(int i = 0; i < 10; i++){
 			for(int j = 0; j < 10; j++){
 				if(i > 3)
 					break;
-				Wait(0.1f);
 				Debug.Log(i.ToString());
 			}
 		}
-		
-		Debug.Log("一般循环");
-		for(int i = 0; i < 5; i++){
-			if(i % 2 == 0){
-				Wait(0.1f);
-				Debug.Log("" + i);
-			}
-		}
-		
-		Debug.Log("Continue");
+
+		Debug.Log("混合");
 		for(int i = 0; i < 10; i++){
+			Debug.Log("HH"+i);
 			for(int j = 0; j < 10; j++){
-				if(i<2)
+				if(j<2)
 					continue;
+				if(i > 5)
+					break;
 				if((i+j) % 3 == 0){
-					Wait(0.3f);
 					Debug.Log("" + i + j);
 				}
 			}
 		}
+
+		Debug.Log("一般循环");
+		for(int i = 0; i < 5; i++){
+			if(i % 2 == 0){
+				Debug.Log("" + i);
+			}
+		}
+
+		Debug.Log("Finish");
+		return 0;
     }
 }
 
