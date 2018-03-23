@@ -9,6 +9,6 @@ namespace CQuark
 	{
 		public System.Reflection.MethodInfo info;
 		public bool cachefail = false;
-		public bool slow = false;
+		public bool needConvert = false;
 	}
 }

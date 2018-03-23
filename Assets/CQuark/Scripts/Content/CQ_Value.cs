@@ -9,7 +9,8 @@ namespace CQuark
     {
         public CQ_Type type;
         public object value;
-        public int breakBlock = 0;//是否是块结束
+        //是否是块结束，1=continue, 2=break, 10=return
+        public byte breakBlock = 0;
 
         public static CQ_Value FromICQ_Value(ICQ_Expression_Value value)
         {

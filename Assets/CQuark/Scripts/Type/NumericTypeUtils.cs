@@ -101,7 +101,7 @@ namespace CQuark {
                 return false;
             }
         }
-        static double GetDouble (Type type, object v) {
+        public static double GetDouble (Type type, object v) {
             if(type == typeof(double))
                 return (double)v;
             if(type == typeof(float))
@@ -127,6 +127,31 @@ namespace CQuark {
             return (double)v;
         }
 
+        public static float GetFloat (Type type, object v) {
+            if(type == typeof(double))
+                return (float)((double)v);
+            if(type == typeof(float))
+                return (float)v;
+            if(type == typeof(long))
+                return (long)v;
+            if(type == typeof(ulong))
+                return (ulong)v;
+            if(type == typeof(int))
+                return (int)v;
+            if(type == typeof(uint))
+                return (uint)v;
+            if(type == typeof(short))
+                return (short)v;
+            if(type == typeof(ushort))
+                return (ushort)v;
+            if(type == typeof(sbyte))
+                return (sbyte)v;
+            if(type == typeof(byte))
+                return (byte)v;
+            if(type == typeof(char))
+                return (char)v;
+            return (float)v;
+        }
         private static object Double2TargetType (Type type, double value) {
             if(type == typeof(double))
                 return (double)value;

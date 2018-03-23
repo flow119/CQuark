@@ -50,13 +50,20 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            //var parent = _expressions[0].ComputeValue(content);
-            //var type = CQuark.AppDomain.GetType(parent.type);
+
             List<CQ_Value> _params = new List<CQ_Value>();
             for(int i = 0; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }
+
             CQ_Value value = null;
+#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+            value = UnityWrap.StaticCall(type, functionName, _params);
+            if(value != null)
+                return value;
+#endif
+            
             if(cache == null || cache.cachefail) {
                 cache = new MethodCache();
                 value = type._class.StaticCall(content, functionName, _params, cache);

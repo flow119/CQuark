@@ -41,14 +41,19 @@ namespace CQuark {
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
-            //这几行是为了快速获取Unity的静态变量，而不需要反射
-            CQ_Value val = AppDomain.FindStaticValueFast(type.keyword, staticmembername);
-            if(val != null)
-                return val;
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var value = type._class.StaticValueGet(content, staticmembername);
+
+            CQ_Value value = null;
+#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+            value = UnityWrap.StaticValueGet(type, staticmembername);
+            if(value != null)
+                return value;
+#endif
+
+            value = type._class.StaticValueGet(content, staticmembername);
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
