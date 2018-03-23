@@ -24,16 +24,15 @@ namespace CQuark
 		}
 		public static implicit operator CQ_Type(Type type)
 		{
-			CQ_Type retT = null;
-			bool bRet = dicType_CQType.TryGetValue(type, out retT);
-			if (bRet)
-				return retT;
-			else
-			{
-				var ct = new CQ_Type(type);
-				dicType_CQType[type] = ct;
-				return ct;
-			}
+            CQ_Type retT = null;
+            if(dicType_CQType.TryGetValue(type, out retT)) {
+                return retT;
+            }
+            else {
+                var ct = new CQ_Type(type);
+                dicType_CQType[type] = ct;
+                return ct;
+            }
 		}
 		#endregion
 
@@ -53,11 +52,10 @@ namespace CQuark
         public static implicit operator CQ_Type(Class_CQuark type)
         {
             CQ_Type retST = null;
-            bool bRet = dicSType_CQType.TryGetValue(type, out retST);
-            if (bRet)
+            if(dicSType_CQType.TryGetValue(type, out retST)) {
                 return retST;
-            else
-            {
+            }
+            else {
                 var ct = new CQ_Type(type);
                 dicSType_CQType[type] = ct;
                 return ct;
