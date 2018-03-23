@@ -124,8 +124,26 @@ public class UnityWrap {
              case "Vector3":
                  cqVal.type = typeof(Vector3);
                  cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
-                 break;
+                 return cqVal;
          }
-         return cqVal;
+         return null;
+    }
+
+    public static bool MemberCall (IClass _class, object object_this, string functionname, IList<CQ_Value> param, out CQ_Value cqVal) {
+        cqVal = null;
+        if(_class is Class_System) {
+            cqVal = new CQ_Value();
+            Type type = (_class as Class_System).type;
+            if(type == typeof(Transform)) {
+                Transform t = (Transform)object_this;
+                switch(functionname) {
+                    case "Rotate":
+                        t.Rotate((Vector3)param[0].value, (float)param[1].value);
+                        return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

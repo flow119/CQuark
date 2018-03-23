@@ -6,7 +6,10 @@ using System.Reflection;
 
 namespace CQuark {
     public class Class_System : IClass {
-        Type type;
+        public Type type {
+            get;
+            private set;
+        }
         Dictionary<int, System.Reflection.MethodInfo> cacheT;//= new Dictionary<string, System.Reflection.MethodInfo>();
 
         public Class_System (Type type) {

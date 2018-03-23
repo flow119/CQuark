@@ -66,7 +66,14 @@ namespace CQuark {
             for(int i = 1; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }
+
             CQ_Value value = null;
+#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+            if(UnityWrap.MemberCall(iclass, parent.value, functionName, _params, out value))
+                return value;
+#endif
+
             if(cache == null || cache.cachefail) {
                 cache = new MethodCache();
                 value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
