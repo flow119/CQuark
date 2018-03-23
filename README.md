@@ -107,26 +107,25 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 下个版本
 
-* 重写MonoBehaviour//参考ILRuntime
-* 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
-* 2 劫持GetComponent和AddComponent，重写。
-
-* yield return使用方式Unity来
+* 补充剩余的UnityWrap(可以写成工具来做）
+* 减少GC
 
 
 下下个版本
 
 * 参考ILRuntime和L#，看看西瓜还有哪些不足，补足缺陷
 
-* 把每帧都容易获取的内容存下来（比如Time.deltaTime）
+* 重写MonoBehaviour//参考ILRuntime
+* 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
+* 2 劫持GetComponent和AddComponent，重写。
 
-* 优化编译速度，减少gc alloc以及重复的GetCodeKey
+* yield return使用方式Unity来
 
 下下下个版本
 
 * 类似XLua和Bridge，把项目里的cs文件转换成可以动态替换为西瓜的脚本
 
-* 执行效率测试，主要看反射在iOS上的速度
+* 优化编译速度，减少gc alloc以及重复的GetCodeKey
 
 
 ## 联系我
