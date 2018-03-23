@@ -18,8 +18,8 @@ namespace CQuark {
             convertSuccess = true;
 
             try {
-                decimal srcValue = GetDecimalValue(typeof(OriginalType), src);
-                return Decimal2TargetType(targetType, srcValue);
+                double srcValue = GetDouble(typeof(OriginalType), src);
+                return Double2TargetType(targetType, srcValue);
             }
             catch(Exception) {
                 convertSuccess = false;
@@ -41,12 +41,6 @@ namespace CQuark {
                 double rightValue = GetDouble(right.type, right.value);
                 double finalValue;
 
-                if(typeof(LeftType) == typeof(int)) {
-                    leftValue = (int)left;
-                }
-                else if(typeof(LeftType) == typeof(float)) {
-                    leftValue = (float)left;
-                }
                 switch(opCode) {
                     case '+':
                         finalValue = leftValue + rightValue;
@@ -76,59 +70,6 @@ namespace CQuark {
                 return null;
             }
         }
-
-       static double GetDouble(Type type, object v){
-           if(type == typeof(double))
-               return (double)v;
-           if(type == typeof(float))
-               return (float)v;
-           if(type == typeof(long))
-               return (long)v;
-           if(type == typeof(ulong))
-               return (ulong)v;
-           if(type == typeof(int))
-               return (int)v;
-           if(type == typeof(uint))
-               return (uint)v;
-           if(type == typeof(short))
-               return (short)v;
-           if(type == typeof(ushort))
-               return (ushort)v;
-           if(type == typeof(sbyte))
-               return (sbyte)v;
-           if(type == typeof(byte))
-               return (byte)v;
-           if(type == typeof(char))
-               return (char)v;
-           return (double)v;
-       }
-
-       private static object Double2TargetType (Type type, double value) {
-           if(type == typeof(double))
-               return (double)value;
-           if(type == typeof(float))
-               return (float)value;
-           if(type == typeof(long))
-               return (long)value;
-           if(type == typeof(ulong))
-               return (ulong)value;
-           if(type == typeof(int))
-               return (int)value;
-           if(type == typeof(uint))
-               return (uint)value;
-           if(type == typeof(short))
-               return (short)value;
-           if(type == typeof(ushort))
-               return (ushort)value;
-           if(type == typeof(sbyte))
-               return (sbyte)value;
-           if(type == typeof(byte))
-               return (byte)value;
-           if(type == typeof(char))
-               return (char)value;
-
-           throw new Exception("unknown target type...");
-       }
 
         public static bool MathLogic<LeftType> (LogicToken logicCode, object left, CQ_Value right, out bool mathLogicSuccess) {
 
@@ -160,54 +101,33 @@ namespace CQuark {
                 return false;
             }
         }
-
-        private static decimal GetDecimalValue (Type type, object value) {
-
+        static double GetDouble (Type type, object v) {
             if(type == typeof(double))
-                return (decimal)Convert.ToDouble(value);
+                return (double)v;
             if(type == typeof(float))
-                return (decimal)Convert.ToSingle(value);
+                return (float)v;
             if(type == typeof(long))
-                return Convert.ToInt64(value);
+                return (long)v;
             if(type == typeof(ulong))
-                return Convert.ToUInt64(value);
+                return (ulong)v;
             if(type == typeof(int))
-                return Convert.ToInt32(value);
+                return (int)v;
             if(type == typeof(uint))
-                return Convert.ToUInt32(value);
+                return (uint)v;
             if(type == typeof(short))
-                return Convert.ToInt16(value);
+                return (short)v;
             if(type == typeof(ushort))
-                return Convert.ToUInt16(value);
+                return (ushort)v;
             if(type == typeof(sbyte))
-                return Convert.ToSByte(value);
+                return (sbyte)v;
             if(type == typeof(byte))
-                return Convert.ToByte(value);
+                return (byte)v;
             if(type == typeof(char))
-                return Convert.ToChar(value);
-
-            throw new Exception("unknown decimal type...");
+                return (char)v;
+            return (double)v;
         }
 
-       
-
-        private static object ObjectTargetType (Type type, object value) {
-            if(type == typeof(double))
-                return (double)value;
-            if(type == typeof(float))
-                return (float)value;
-            if(type == typeof(long))
-                return (long)value;
-            if(type == typeof(ulong))
-                return (ulong)value;
-            if(type == typeof(int))
-                return (int)value;
-            if(type == typeof(uint))
-                return (uint)value;
-            throw new Exception("unknown target type...");
-        }
-
-        private static object Decimal2TargetType (Type type, decimal value) {
+        private static object Double2TargetType (Type type, double value) {
             if(type == typeof(double))
                 return (double)value;
             if(type == typeof(float))
@@ -233,6 +153,7 @@ namespace CQuark {
 
             throw new Exception("unknown target type...");
         }
+
 
         /// <summary>
         /// 获取Math2Value的返回类型.
@@ -272,6 +193,5 @@ namespace CQuark {
             //在C#类型系统中，即使是两个 ushort 结合返回的也是int类型。
             return typeof(int);
         }
-
     }
 }
