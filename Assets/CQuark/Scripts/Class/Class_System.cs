@@ -257,11 +257,12 @@ namespace CQuark {
                 hashkey += t.ToString();
             }
             int hashcode = hashkey.GetHashCode();
+            MethodInfo methodInfo = null;
             if(cacheT == null) {
                 cacheT = new Dictionary<int, System.Reflection.MethodInfo>();
             }
-            else if(cacheT.ContainsKey(hashcode)) {
-                return cacheT[hashcode];
+            else if(cacheT.TryGetValue(hashcode, out methodInfo)) {
+                return methodInfo;
             }
             //+"~" + (sf.Length - 1).ToString();
             var ms = type.GetMethods();
@@ -280,7 +281,7 @@ namespace CQuark {
                         }
                     }
                     if(match) {
-                        var methodInfo = t.MakeGenericMethod(gtypes);
+                        methodInfo = t.MakeGenericMethod(gtypes);
                         cacheT[hashcode] = methodInfo;
                         return methodInfo;
                     }

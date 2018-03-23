@@ -176,11 +176,11 @@ namespace CQuark {
 
         public CQ_Value StaticValueGet (CQ_Content content, string valuename) {
             NewStatic();
-
-            if(this.staticMemberInstance.ContainsKey(valuename)) {
+            CQ_Value temp = null;
+            if(this.staticMemberInstance.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
-                v.type = this.staticMemberInstance[valuename].type;
-                v.value = this.staticMemberInstance[valuename].value;
+                v.type = temp.type;
+                v.value = temp.value;
                 return v;
             }
             throw new NotImplementedException();
@@ -214,8 +214,9 @@ namespace CQuark {
             if(cache != null) {
                 cache.cachefail = true;
             }
-            if(this.functions.ContainsKey(func)) {
-                if(this.functions[func].bStatic == false) {
+            Function funccache = null;
+            if(this.functions.TryGetValue(func, out funccache)) {
+                if(funccache.bStatic == false) {
                     CQ_Content content = new CQ_Content();
 
                     content.CallType = this;
@@ -224,11 +225,11 @@ namespace CQuark {
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 #endif
-                    for(int i = 0; i < this.functions[func]._paramtypes.Count; i++) {
-                        content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].typeBridge, _params[i].value);
+                    for(int i = 0; i < funccache._paramtypes.Count; i++) {
+                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].value);
                     }
                     CQ_Value value = null;
-                    var funcobj = this.functions[func];
+                    var funcobj = funccache;
                     if(this.bInterface) {
                         content.CallType = (object_this as CQClassInstance).type;
                         funcobj = (object_this as CQClassInstance).type.functions[func];
@@ -273,8 +274,9 @@ namespace CQuark {
 
         public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params, ICoroutine coroutine) {
             //TODO
-            if(this.functions.ContainsKey(func)) {
-                if(this.functions[func].bStatic == false) {
+            Function funccache = null;
+            if(this.functions.TryGetValue(func, out funccache)) {
+                if(funccache.bStatic == false) {
                     CQ_Content content = new CQ_Content();
 
                     content.CallType = this;
@@ -283,15 +285,15 @@ namespace CQuark {
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 #endif
-                    for(int i = 0; i < this.functions[func]._paramtypes.Count; i++)
+                    for(int i = 0; i < funccache._paramtypes.Count; i++)
                     //int i = 0;
                     //foreach (var p in this.functions[func]._params)
                     {
-                        content.DefineAndSet(this.functions[func]._paramnames[i], this.functions[func]._paramtypes[i].typeBridge, _params[i].value);
+                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].value);
                         //i++;
                     }
                     //CQ_Content.Value value = null;
-                    var funcobj = this.functions[func];
+                    var funcobj = funccache;
                     if(this.bInterface) {
                         content.CallType = (object_this as CQClassInstance).type;
                         funcobj = (object_this as CQClassInstance).type.functions[func];
@@ -314,10 +316,11 @@ namespace CQuark {
 
         public CQ_Value MemberValueGet (CQ_Content content, object object_this, string valuename) {
             CQClassInstance sin = object_this as CQClassInstance;
-            if(sin.member.ContainsKey(valuename)) {
+            CQ_Value temp = null;
+            if(sin.member.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
-                v.type = sin.member[valuename].type;
-                v.value = sin.member[valuename].value;
+                v.type = temp.type;
+                v.value = temp.value;
                 return v;
             }
             throw new NotImplementedException();
