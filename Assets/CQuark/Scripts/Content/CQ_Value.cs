@@ -70,6 +70,10 @@ namespace CQuark
             }
             return "<" + type.ToString() + ">" + value;
         }
+
+        public float GetFloat () {
+            return NumericTypeUtils.GetFloat(type, value);
+        }
     }
 }
 

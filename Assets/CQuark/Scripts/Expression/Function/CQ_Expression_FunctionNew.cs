@@ -54,7 +54,17 @@ namespace CQuark {
                     list.Add(p.ComputeValue(content));
                 }
             }
-            var value = type._class.New(content, list);
+
+            CQ_Value value = null;
+#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+            value = UnityWrap.New(type, list);
+            if(value != null)
+                return value;
+#endif
+
+
+            value = type._class.New(content, list);
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

@@ -117,4 +117,15 @@ public class UnityWrap {
         }
         return cqVal;
     }
+
+    public static CQ_Value New (IType type, List<CQ_Value> param) {
+         CQ_Value cqVal = new CQ_Value();
+         switch(type.keyword) {
+             case "Vector3":
+                 cqVal.type = typeof(Vector3);
+                 cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
+                 break;
+         }
+         return cqVal;
+    }
 }
