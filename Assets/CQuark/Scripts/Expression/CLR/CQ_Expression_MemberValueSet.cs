@@ -54,7 +54,6 @@ namespace CQuark {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
             var value = _expressions[1].ComputeValue(content);
-           
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!UnityWrap.MemberValueSet(parent.type.type, parent.value, membername, value)){

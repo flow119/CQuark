@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 
 namespace CQuark {
@@ -427,7 +426,6 @@ namespace CQuark {
             public System.Reflection.FieldInfo finfo;
             public System.Reflection.MethodInfo minfo;
             public System.Reflection.EventInfo einfo;
-
         }
 
 
@@ -533,38 +531,6 @@ namespace CQuark {
                 c.minfo.Invoke(object_this, new object[] { value });
             }
             return true;
-            ////先操作File
-            //var targetf = type.GetField(valuename);
-            //if (targetf != null)
-            //{
-            //    if (value != null && value.GetType() != targetf.FieldType)
-            //    {
-
-            //        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, targetf.FieldType);
-            //    }
-            //    targetf.SetValue(object_this, value);
-            //    return;
-            //}
-            //else
-            //{
-            //    var methodf = type.GetMethod("set_" + valuename);
-            //    if (methodf != null)
-            //    {
-            //        var ptype = methodf.GetParameters()[0].ParameterType;
-            //        if (value != null && value.GetType() != ptype)
-            //        {
-
-            //            value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo( value, ptype);
-            //        }
-            //        methodf.Invoke(object_this, new object[] { value });
-
-            //        return;
-            //    }
-            //}
-
-
-
-            //throw new NotImplementedException();
         }
 
 
@@ -635,16 +601,6 @@ namespace CQuark {
 
                 indexSetCache.Invoke(object_this, new object[] { value, key });
             }
-            //var m = type.GetMethods();
-            //var methodInfo = type.GetMethod("set_Item");
-            //if (methodInfo == null)
-            //{
-            //    //methodInfo = type.GetMethod("Set");
-            //    methodInfo = type.GetMethod("SetValue", new Type[] { typeof(object), typeof(int) });
-            //    methodInfo.Invoke(object_this, new object[] { value, key });
-            //    return;
-            //}
-            //methodInfo.Invoke(object_this, new object[] { key, value });
         }
     }
 }

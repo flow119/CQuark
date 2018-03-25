@@ -55,13 +55,12 @@ namespace CQuark {
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            var iclass = CQuark.AppDomain.GetType(parent.type)._class;
-            if(parent.type is object) {
-                CQClassInstance s = parent.value as CQClassInstance;
-                if(s != null) {
-                    iclass = s.type;
-                }
-            }
+
+//            CQClassInstance s = parent.value as CQClassInstance;
+//            if(s != null) {
+//                iclass = s.type;
+//            }
+            
             List<CQ_Value> _params = new List<CQ_Value>();
             for(int i = 1; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
@@ -71,6 +70,7 @@ namespace CQuark {
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!UnityWrap.MemberCall(parent.type.type, parent.value, functionName, _params, out value)){
+				var iclass = CQuark.AppDomain.GetType(parent.type)._class;
 				if(cache == null || cache.cachefail) {
 					cache = new MethodCache();
 					value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
