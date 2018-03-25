@@ -11,7 +11,9 @@ namespace CQuark
 		//每个类如果实例多个就不再是相同的了，因此把他们存在静态字典里
 		#region Type
 		static Dictionary<Type, CQ_Type> dicType_CQType = new Dictionary<Type, CQ_Type>();
-		Type type;
+		public Type type{
+			get; private set;
+		}
 		private CQ_Type(Type type)
 		{
 			this.type = type;

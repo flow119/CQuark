@@ -69,7 +69,8 @@ namespace CQuark
         {
            
 			var type = CQuark.AppDomain.GetType(targetType);
-            if (this.typeBridge == type||(Type)targetType==typeof(object)) return src;
+            if (this.typeBridge == type||(Type)targetType==typeof(object)) 
+				return src;
             if (this.types.Contains(type))
             {
                 return src;

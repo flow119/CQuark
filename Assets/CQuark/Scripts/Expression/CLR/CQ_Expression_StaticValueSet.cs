@@ -5,11 +5,11 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_StaticValueGet : ICQ_Expression {
-        public CQ_Expression_StaticValueGet (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_StaticValueSet : ICQ_Expression {
+        public CQ_Expression_StaticValueSet (int tbegin, int tend, int lbegin, int lend) {
+            _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
-
             lineBegin = lbegin;
             lineEnd = lend;
         }
@@ -23,9 +23,8 @@ namespace CQuark {
         }
         //Block的参数 一个就是一行，顺序执行，没有
         public List<ICQ_Expression> _expressions {
-            get {
-                return null;
-            }
+            get;
+            private set;
         }
         public int tokenBegin {
             get;
@@ -44,31 +43,26 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
+            var value = _expressions[0].ComputeValue(content);
 
-            CQ_Value value = null;
-#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
-            //这几行是为了快速获取Unity的静态变量，而不需要反射
-            value = UnityWrap.StaticValueGet(type, staticmembername);
-            if(value != null)
-                return value;
-#endif
-
-            value = type._class.StaticValueGet(content, staticmembername);
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.StaticValueSet(type.typeBridge.type, staticmembername, value)){
+				type._class.StaticValueSet(content, staticmembername, value.value);
+			}
+            
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return value;
+            return null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("A.member不支持套用协程");
+            throw new Exception("StaticSet不支持套用协程");
         }
-
-
         public IType type;
         public string staticmembername;
 
         public override string ToString () {
-            return "StaticFind|" + type.keyword + "." + staticmembername;
+            return "StaticSetvalue|" + type.keyword + "." + staticmembername + "=";
         }
     }
 }

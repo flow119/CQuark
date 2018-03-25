@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_StaticFunction : ICQ_Expression {
-        public CQ_Expression_StaticFunction (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_MemberFunction : ICQ_Expression {
+        public CQ_Expression_MemberFunction (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -46,45 +46,54 @@ namespace CQuark {
             }
         }
         MethodCache cache = null;
+
         public CQ_Value ComputeValue (CQ_Content content) {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-
+            var parent = _expressions[0].ComputeValue(content);
+            if(parent == null) {
+                throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
+            }
+            var iclass = CQuark.AppDomain.GetType(parent.type)._class;
+            if(parent.type is object) {
+                CQClassInstance s = parent.value as CQClassInstance;
+                if(s != null) {
+                    iclass = s.type;
+                }
+            }
             List<CQ_Value> _params = new List<CQ_Value>();
-            for(int i = 0; i < _expressions.Count; i++) {
+            for(int i = 1; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }
 
             CQ_Value value = null;
-#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
+
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-            value = UnityWrap.StaticCall(type, functionName, _params);
-            if(value != null)
-                return value;
-#endif
+			if(!UnityWrap.MemberCall(parent.type.type, parent.value, functionName, _params, out value)){
+				if(cache == null || cache.cachefail) {
+					cache = new MethodCache();
+					value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
+				}
+				else {
+					value = iclass.MemberCallCache(content, parent.value, _params, cache);
+				}
+			}
             
-            if(cache == null || cache.cachefail) {
-                cache = new MethodCache();
-                value = type._class.StaticCall(content, functionName, _params, cache);
-            }
-            else {
-                value = type._class.StaticCallCache(content, _params, cache);
-            }
+
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
             return value;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("A.B()不支持套用协程");
+            throw new Exception("暂时不支持套用协程");
         }
 
-        public IType type;
         public string functionName;
 
         public override string ToString () {
-            return "StaticCall|" + type.keyword + "." + functionName;
+            return "MemberCall|a." + functionName;
         }
     }
 }

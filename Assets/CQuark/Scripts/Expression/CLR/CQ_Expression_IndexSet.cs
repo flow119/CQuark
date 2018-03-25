@@ -4,11 +4,12 @@ using System.Text;
 using System.Collections;
 
 namespace CQuark {
-    public class CQ_Expression_IndexFind : ICQ_Expression {
-        public CQ_Expression_IndexFind (int tbegin, int tend, int lbegin, int lend) {
+
+    public class CQ_Expression_IndexSet : ICQ_Expression {
+        public CQ_Expression_IndexSet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
-            tokenBegin = tbegin;
-            tokenEnd = tend;
+            this.tokenBegin = tbegin;
+            this.tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
         }
@@ -23,7 +24,7 @@ namespace CQuark {
         }
         public int tokenEnd {
             get;
-            set;
+            private set;
         }
         public int lineBegin {
             get;
@@ -31,7 +32,7 @@ namespace CQuark {
         }
         public int lineEnd {
             get;
-            set;
+            private set;
         }
         public bool hasCoroutine {
             get {
@@ -47,30 +48,29 @@ namespace CQuark {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
             var key = _expressions[1].ComputeValue(content);
+            var value = _expressions[2].ComputeValue(content);
+            //object setv=value.value;
+            //if(value.type!=parent.type)
+            //{
+            //    var vtype = CQuark.AppDomain.GetType(value.type);
+            //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
+            //}
             var type = CQuark.AppDomain.GetType(parent.type);
-
-            var value = type._class.IndexGet(content, parent.value, key.value);
-#if CQUARK_DEBUG
-            content.OutStack(this);
-#endif
-
-            //IndexGet返回的值类型是 System.Object.
-            //在这里需要将类型明确化.
-            //value.type = value.value.GetType();
-
-            return value;
-            //return type.function.MemberValueGet(CQuark.AppDomain, parent.value, membername);
+            type._class.IndexSet(content, parent.value, key.value, value.value);
             //做数学计算
             //从上下文取值
             //_value = null;
-            //return null;
+#if CQUARK_DEBUG
+            content.OutStack(this);
+#endif
+            return null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("IndexFind[]不支持套用协程");
+            throw new Exception("IndexSet[]不支持套用协程");
         }
 
         public override string ToString () {
-            return "IndexFind[]|";
+            return "IndexSet[]=|";
         }
     }
 }

@@ -67,7 +67,7 @@ namespace CQuark
                 if (succ2)
                 {
                     CQ_Expression_GetValue vg = valueright as CQ_Expression_GetValue;
-                    CQ_Expression_Function vf = valueright as CQ_Expression_Function;
+                    CQ_Expression_FunctionCQ vf = valueright as CQ_Expression_FunctionCQ;
                     if (vg != null)
                     {
                         CQ_Expression_StaticValueGet value = new CQ_Expression_StaticValueGet(pos, rightend, tlist[pos].line, tlist[rightend].line);
@@ -135,7 +135,7 @@ namespace CQuark
                         LogError(tlist, "编译表达式失败", right, rightend);
                         return null;
                     }
-                    CQ_Expression_IndexFind value = new CQ_Expression_IndexFind(left, rightend, tlist[left].line, tlist[rightend].line);
+                    CQ_Expression_IndexGet value = new CQ_Expression_IndexGet(left, rightend, tlist[left].line, tlist[rightend].line);
                     value._expressions.Add(valueleft);
                     value._expressions.Add(valueright);
                     return value;
@@ -167,7 +167,7 @@ namespace CQuark
 
                         CQ_Expression_MemberValueGet mfinde = valueleft as CQ_Expression_MemberValueGet;
                         CQ_Expression_StaticValueGet sfinde = valueleft as CQ_Expression_StaticValueGet;
-                        CQ_Expression_IndexFind ifinde = valueleft as CQ_Expression_IndexFind;
+                        CQ_Expression_IndexGet ifinde = valueleft as CQ_Expression_IndexGet;
                         if (mfinde != null)
                         {
                             CQ_Expression_MemberValueSet value = new CQ_Expression_MemberValueSet(left, rightend, tlist[left].line, tlist[rightend].line);
@@ -187,7 +187,7 @@ namespace CQuark
                         }
                         else if (ifinde != null)
                         {
-                            CQ_Expression_IndexSetValue value = new CQ_Expression_IndexSetValue(left, rightend, tlist[left].line, tlist[rightend].line);
+                            CQ_Expression_IndexSet value = new CQ_Expression_IndexSet(left, rightend, tlist[left].line, tlist[rightend].line);
                             value._expressions.Add(ifinde._expressions[0]);
                             value._expressions.Add(ifinde._expressions[1]);
                             value._expressions.Add(valueright);
@@ -202,7 +202,7 @@ namespace CQuark
                     {
                         //FindMember
                         CQ_Expression_GetValue vg = valueright as CQ_Expression_GetValue;
-                        CQ_Expression_Function vf = valueright as CQ_Expression_Function;
+                        CQ_Expression_FunctionCQ vf = valueright as CQ_Expression_FunctionCQ;
 
                         if (vg != null)
                         {

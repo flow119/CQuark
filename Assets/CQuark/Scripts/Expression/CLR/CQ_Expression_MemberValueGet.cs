@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
-
 namespace CQuark {
 
-    public class CQ_Expression_MemberValueSet : ICQ_Expression {
-        public CQ_Expression_MemberValueSet (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_MemberValueGet : ICQ_Expression {
+        public CQ_Expression_MemberValueGet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -36,12 +35,12 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
-                if(_expressions == null || _expressions.Count == 0)
-                    return false;
-                foreach(ICQ_Expression expr in _expressions) {
-                    if(expr.hasCoroutine)
-                        return true;
-                }
+                //if(_expressions == null || _expressions.Count == 0)
+                //    return false;
+                //foreach(ICQ_Expression expr in _expressions){
+                //    if(expr.hasCoroutine)
+                //        return true;
+                //}
                 return false;
             }
         }
@@ -49,41 +48,45 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var parent = _expressions[0].ComputeValue(content);
+			CQ_Value parent = _expressions[0].ComputeValue(content);
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            var value = _expressions[1].ComputeValue(content);
-            object setv = value.value;
-            //if(value.type!=parent.type)
-            //{
-            //    var vtype = CQuark.AppDomain.GetType(value.type);
-            //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
-            //}
-            var iclass = CQuark.AppDomain.GetType(parent.type)._class;
-            if(parent.type is object) {
-                CQClassInstance s = parent.value as CQClassInstance;
-                if(s != null) {
-                    iclass = s.type;
-                }
-            }
-            iclass.MemberValueSet(content, parent.value, membername, setv);
-            //做数学计算
-            //从上下文取值
-            //_value = null;
+            
+			CQ_Value value = null;
+
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.MemberValueGet(parent.type.type, parent.value, membername, out value)){
+				IClass iclass = CQuark.AppDomain.GetType(parent.type)._class;
+				CQClassInstance s = parent.value as CQClassInstance;
+				if(s != null) {
+					iclass = s.type;
+				}
+
+				value = iclass.MemberValueGet(content, parent.value, membername);
+			}
+
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return value;
+            //做数学计算
+            //从上下文取值
+            //_value = null;
+            //return null;
+
         }
+
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("a.b = 不支持协程");
+            //可能以后需要支持。。。
+            throw new Exception("a.Method暂时不支持协程");
         }
+
 
         public string membername;
 
         public override string ToString () {
-            return "MemberSetvalue|a." + membername;
+            return "MemberFind|a." + membername;
         }
     }
 }

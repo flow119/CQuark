@@ -7,7 +7,7 @@ namespace CQuark
     {
         public static ICQ_Expression Compiler_Expression_Function(IList<Token> tlist, int pos, int posend)
         {
-            CQ_Expression_Function func = new CQ_Expression_Function(pos, posend, tlist[pos].line, tlist[posend].line);
+            CQ_Expression_FunctionCQ func = new CQ_Expression_FunctionCQ(pos, posend, tlist[pos].line, tlist[posend].line);
 
             func.funcname = tlist[pos].text;
             int begin = pos + 2;
@@ -49,7 +49,7 @@ namespace CQuark
             {
                 return null;
             }
-            CQ_Expression_Function func = new CQ_Expression_Function(pos, end, tlist[pos].line, tlist[end].line);
+            CQ_Expression_FunctionCQ func = new CQ_Expression_FunctionCQ(pos, end, tlist[pos].line, tlist[end].line);
             func.funcname = "trace";
 
             do
@@ -108,7 +108,7 @@ namespace CQuark
             if (tlist[pos + 2].type == TokenType.PUNCTUATION && tlist[pos + 2].text == "(")
             {
                 //一般函数
-                CQ_Expression_FunctionNew func = new CQ_Expression_FunctionNew(pos, posend, tlist[pos].line, tlist[posend].line);
+                CQ_Expression_Construction func = new CQ_Expression_Construction(pos, posend, tlist[pos].line, tlist[posend].line);
 				func.type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos + 1].text);
 
                 do
@@ -130,7 +130,7 @@ namespace CQuark
             }
             else if (tlist[pos + 2].type == TokenType.PUNCTUATION && tlist[pos + 2].text == "[")//数组实例化表达式
             {
-                CQ_Expression_FunctionNewArray func = new CQ_Expression_FunctionNewArray(pos, posend, tlist[pos].line, tlist[posend].line);
+                CQ_Expression_NewArray func = new CQ_Expression_NewArray(pos, posend, tlist[pos].line, tlist[posend].line);
 				func.type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos + 1].text + "[]");
 
                 int valuebegin = 0;

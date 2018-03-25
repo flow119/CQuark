@@ -53,48 +53,39 @@ namespace CQuark {
             var left = _expressions[0].ComputeValue(content);
             var right = _expressions[1].ComputeValue(content);
             IType type = CQuark.AppDomain.GetType(left.type);
-            //if (mathop == "+=")
+            
+            CQ_Type returntype;
+            object value = type.Math2Value(mathop, left.value, right, out returntype);
+            value = type.ConvertTo(value, left.type);
 
-            {
-                CQ_Type returntype;
-                object value = type.Math2Value(mathop, left.value, right, out returntype);
-                value = type.ConvertTo(value, left.type);
-                left.value = value;
+			CQ_Value val = new CQ_Value();
+			val.type = returntype;
+			val.value = value;
+            
+            if(_expressions[0] is CQ_Expression_MemberValueGet) {
+                CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
 
-                //                Type t = right.type;
-                //if(t.IsSubclassOf(typeof(MulticastDelegate))||t.IsSubclassOf(typeof(Delegate)))
-                //{
-
-                //}
-                ////content.Set(value_name, value);
-                //else if (t == typeof(CQuark.DeleLambda) || t == typeof(CQuark.DeleFunction) || t == typeof(CQuark.DeleEvent))
-                //{
-
-                //}
-                //else
-                {
-                    if(_expressions[0] is CQ_Expression_MemberValueGet) {
-                        CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
-
-                        var parent = f._expressions[0].ComputeValue(content);
-                        if(parent == null) {
-                            throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
-                        }
-                        var ptype = CQuark.AppDomain.GetType(parent.type);
-                        ptype._class.MemberValueSet(content, parent.value, f.membername, value);
-                    }
-                    if(_expressions[0] is CQ_Expression_StaticValueGet) {
-                        CQ_Expression_StaticValueGet f = _expressions[0] as CQ_Expression_StaticValueGet;
-                        f.type._class.StaticValueSet(content, f.staticmembername, value);
-                    }
+                var parent = f._expressions[0].ComputeValue(content);
+                if(parent == null) {
+                    throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
                 }
+
+				//这几行是为了快速获取Unity的静态变量，而不需要反射
+				if(!UnityWrap.MemberValueSet(parent.type.type, parent.value, f.membername, val)){
+               		var ptype = CQuark.AppDomain.GetType(parent.type);
+                	ptype._class.MemberValueSet(content, parent.value, f.membername, value);
+				}
             }
+            if(_expressions[0] is CQ_Expression_StaticValueGet) {
+                CQ_Expression_StaticValueGet f = _expressions[0] as CQ_Expression_StaticValueGet;
 
-
-            //操作变量之
-            //做数学计算
-            //从上下文取值
-            //_value = null;
+				//这几行是为了快速获取Unity的静态变量，而不需要反射
+				if(!UnityWrap.StaticValueSet(type.typeBridge.type, f.staticmembername, val)){
+					f.type._class.StaticValueSet(content, f.staticmembername, value);
+				}
+            }
+            
+            
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

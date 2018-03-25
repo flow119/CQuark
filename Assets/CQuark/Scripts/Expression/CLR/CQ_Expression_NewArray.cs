@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_FunctionNewArray : ICQ_Expression {
-        public CQ_Expression_FunctionNewArray (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_NewArray : ICQ_Expression {
+        public CQ_Expression_NewArray (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -58,12 +58,20 @@ namespace CQuark {
                     list.Add(_expressions[i].ComputeValue(content).value);
                 }
             }
-            List<CQ_Value> p = new List<CQ_Value>();
-            p.Add(vcount);
-            var outvalue = type._class.New(content, p);
+			List<CQ_Value> param = new List<CQ_Value>();
+			param.Add(vcount);
+			CQ_Value outvalue = null;
+
+
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.New(type.typeBridge.type, param, out outvalue)){
+				outvalue = type._class.New(content, param);
+			}
+
             for(int i = 0; i < list.Count; i++) {
                 type._class.IndexSet(content, outvalue.value, i, list[i]);
             }
+
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

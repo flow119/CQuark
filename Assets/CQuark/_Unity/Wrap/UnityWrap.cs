@@ -4,156 +4,133 @@ using UnityEngine;
 using CQuark;
 using System;
 
-public class UnityWrap {
-    //TODO 把所有类型分开
-    public static CQ_Value New (IType type, List<CQ_Value> param) {
-        CQ_Value cqVal = new CQ_Value();
-        switch(type.keyword) {
-            case "Vector3":
-                cqVal.type = typeof(Vector3);
-                cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
-                return cqVal;
-        }
-        return null;
-    }
+//这个类由工具自动生成，不需要手动修改
 
-    public static CQ_Value StaticValueGet (IType type, string membername) {
-        //if(!string.IsNullOrEmpty(type._namespace) && type._namespace != "UnityEngine")
-        //    return null;
+namespace CQuark{
+	public partial class UnityWrap {
+		public static bool New (Type type, List<CQ_Value> param, out CQ_Value cqVal) {
+			if(type == null){
+				cqVal = null;
+				return false;
+			}
+			cqVal = null;
+			if(type == typeof(Vector3)){
+				return Vector3New(param, out cqVal);
+	        }
+			//TODO
+	        return false;
+	    }
 
-        CQ_Value cqVal = new CQ_Value();
-        switch(type.keyword) {
-            case "Vector3":
-                cqVal.type = typeof(Vector3);
-                switch(membername) {
-                    case "up":
-                        cqVal.value = Vector3.up;
-                        return cqVal;
-                    case "down":
-                        cqVal.value = Vector3.down;
-                        return cqVal;
-                    case "forward":
-                        cqVal.value = Vector3.forward;
-                        return cqVal;
-                    case "back":
-                        cqVal.value = Vector3.back;
-                        return cqVal;
-                    case "left":
-                        cqVal.value = Vector3.left;
-                        return cqVal;
-                    case "right":
-                        cqVal.value = Vector3.right;
-                        return cqVal;
-                    case "one":
-                        cqVal.value = Vector3.one;
-                        return cqVal;
-                    case "zero":
-                        cqVal.value = Vector3.zero;
-                        return cqVal;
-                }
-                break;
-            case "Time":
-                switch(membername) {
-                    case "deltaTime":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.deltaTime;
-                        return cqVal;
-                    case "fixedDeltaTime":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.fixedDeltaTime;
-                        return cqVal;
-                    case "captureFramerate":
-                        cqVal.type = typeof(int);
-                        cqVal.value = Time.captureFramerate;
-                        return cqVal;
-                    case "fixedTime":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.fixedTime;
-                        return cqVal;
-                    case "fixedUnscaledDeltaTime":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.fixedUnscaledDeltaTime;
-                        return cqVal;
-                    case "fixedUnscaledTime":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.fixedUnscaledTime;
-                        return cqVal;
-                    case "frameCount":
-                        cqVal.type = typeof(int);
-                        cqVal.value = Time.frameCount;
-                        return cqVal;
-                    case "realtimeSinceStartup":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.realtimeSinceStartup;
-                        return cqVal;
-                    case "time":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Time.time;
-                        return cqVal;
-                }
-                break;
-        }
+		public static bool StaticValueGet (Type type, string membername, out CQ_Value cqVal) {
+			if(type == null){
+				cqVal = null;
+				return false;
+			}
+			cqVal = null;
+			if(type == typeof(Vector3)){
+				return Vector3SGet(membername, out cqVal);
+			}
+			//TODO
+	        return false;
+	    }
 
-        return null;
-    }
+	    public static bool StaticValueSet (Type type, string membername, CQ_Value param) {
+			if(type == null){
+				return false;
+			}
+			if(type == typeof(Vector3)){
+				return Vector3SSet(membername, param);
+			}
+			//TODO
+			return false;
+	    }
 
-    public static bool StaticValueSet (IType type, string membername, CQ_Value param) {
-        return false;
-    }
+		public static bool StaticCall (Type type, string functionname, List<CQ_Value> param, out CQ_Value cqVal) {
+			if(type == null){
+				cqVal = null;
+				return false;
+			}
+			if(type == typeof(Mathf)){
+				return MathfSCall(functionname, param, out cqVal);
+			}
+			cqVal = null;
+	        return false;
+	    }
 
-    public static CQ_Value StaticCall (IType type, string functionname, List<CQ_Value> param) {
-        //if(!string.IsNullOrEmpty(type._namespace) && type._namespace != "UnityEngine")
-        //    return null;
+		public static bool MemberValueGet (Type type, object object_this, string membername, out CQ_Value cqVal) {
+			if(type == null){
+				cqVal = null;
+				return false;
+			}
+			if(type == typeof(Vector3)){
+				return Vector3MGet(object_this, membername, out cqVal);
+			}
+			cqVal = null;
+			return false;
+	    }
 
-        CQ_Value cqVal = new CQ_Value();
-        switch(type.keyword) {
-            case "Mathf":
-                switch(functionname) {
-                    case "Abs":
-                        if((Type)param[0].type == typeof(int)) {
-                            cqVal.type = typeof(int);
-                            cqVal.value = Mathf.Abs((int)(param[0].value));
-                            return cqVal;
-                        }
-                        else if((Type)param[0].type == typeof(float)) {
-                            cqVal.type = typeof(float);
-                            cqVal.value = Mathf.Abs((float)(param[0].value));
-                            return cqVal;
-                        }
-                        break;
-                    case "Sin":
-                        cqVal.type = typeof(float);
-                        cqVal.value = Mathf.Sin(NumericTypeUtils.GetFloat(param[0].type, param[0].value));
-                        return cqVal;
-                }
-                break;
-        }
-        return cqVal;
-    }
+		public static bool MemberValueSet (Type type, object object_this, string membername, CQ_Value param) {
+			if(type == null){
+				return false;
+			}
+			if(type == typeof(Vector3)){
+				return Vector3MSet(object_this, membername, param);
+			}
+			return false;
+	    }
 
-    public static CQ_Value MemberValueGet (IClass _class, object object_this, string membername) {
-        return null;
-    }
+		public static bool MemberCall (Type type, object object_this, string functionname, List<CQ_Value> param, out CQ_Value cqVal) {
+			if(type == null){
+				cqVal = null;
+				return false;
+			}
+			cqVal = null;
+			if(type == typeof(Transform)){
+				return TransformCall(object_this, functionname, param, out cqVal);
+			}
 
-    public static bool MemberValueSet (IClass _class, object object_this, string membername, CQ_Value param) {
-        return false;
-    }
+	        return false;
+	    }
 
-    public static bool MemberCall (IClass _class, object object_this, string functionname, IList<CQ_Value> param, out CQ_Value cqVal) {
-        cqVal = null;
-        if(_class is Class_System) {
-            cqVal = new CQ_Value();
-            Type type = (_class as Class_System).type;
-            if(type == typeof(Transform)) {
-                Transform t = (Transform)object_this;
-                switch(functionname) {
-                    case "Rotate":
-                        t.Rotate((Vector3)param[0].value, (float)param[1].value);
-                        return true;
-                }
-            }
-        }
 
-        return false;
-    }
+
+
+		private static bool TransformCall(object object_this, string functionname, List<CQ_Value> param, out CQ_Value cqVal) {
+			Transform t = (Transform)object_this;
+			switch(functionname) {
+			case "Rotate":
+				cqVal = null;
+				t.Rotate((Vector3)param[0].value, (float)param[1].value);
+				return true;
+			}
+			cqVal = null;
+			return false;
+		}
+
+
+		private static bool MathfSCall(string functionname, List<CQ_Value> param, out CQ_Value cqVal) {
+			switch(functionname) {
+			case "Abs":
+				cqVal = new CQ_Value();
+				if((Type)param[0].type == typeof(int)) {
+					cqVal.type = typeof(int);
+					cqVal.value = Mathf.Abs((int)(param[0].value));
+					return true;
+				}
+				else if((Type)param[0].type == typeof(float)) {
+					cqVal.type = typeof(float);
+					cqVal.value = Mathf.Abs((float)(param[0].value));
+					return true;
+				}
+				break;
+			case "Sin":
+				cqVal = new CQ_Value();
+				cqVal.type = typeof(float);
+				cqVal.value = Mathf.Sin(NumericTypeUtils.GetFloat(param[0].type, param[0].value));
+				return true;
+			}
+			cqVal = null;
+			return false;
+		}
+	}
 }

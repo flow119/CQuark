@@ -5,11 +5,11 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_StaticValueSet : ICQ_Expression {
-        public CQ_Expression_StaticValueSet (int tbegin, int tend, int lbegin, int lend) {
-            _expressions = new List<ICQ_Expression>();
+    public class CQ_Expression_StaticValueGet : ICQ_Expression {
+        public CQ_Expression_StaticValueGet (int tbegin, int tend, int lbegin, int lend) {
             tokenBegin = tbegin;
             tokenEnd = tend;
+
             lineBegin = lbegin;
             lineEnd = lend;
         }
@@ -23,8 +23,9 @@ namespace CQuark {
         }
         //Block的参数 一个就是一行，顺序执行，没有
         public List<ICQ_Expression> _expressions {
-            get;
-            private set;
+            get {
+                return null;
+            }
         }
         public int tokenBegin {
             get;
@@ -43,26 +44,30 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            //var parent = _expressions[0].ComputeValue(content);
-            var value = _expressions[0].ComputeValue(content);
 
-            type._class.StaticValueSet(content, staticmembername, value.value);
-            //做数学计算
-            //从上下文取值
-            //_value = null;
+            CQ_Value value = null;
+
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.StaticValueGet(type.typeBridge.type, staticmembername, out value)){
+				value = type._class.StaticValueGet(content, staticmembername);
+			}
+
+            
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return value;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("StaticSet不支持套用协程");
+            throw new Exception("A.member不支持套用协程");
         }
+
+
         public IType type;
         public string staticmembername;
 
         public override string ToString () {
-            return "StaticSetvalue|" + type.keyword + "." + staticmembername + "=";
+            return "StaticFind|" + type.keyword + "." + staticmembername;
         }
     }
 }

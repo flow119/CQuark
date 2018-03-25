@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_MemberFunction : ICQ_Expression {
-        public CQ_Expression_MemberFunction (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_MemberValueSet : ICQ_Expression {
+        public CQ_Expression_MemberValueSet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -45,8 +45,6 @@ namespace CQuark {
                 return false;
             }
         }
-        MethodCache cache = null;
-
         public CQ_Value ComputeValue (CQ_Content content) {
 #if CQUARK_DEBUG
             content.InStack(this);
@@ -55,45 +53,32 @@ namespace CQuark {
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            var iclass = CQuark.AppDomain.GetType(parent.type)._class;
-            if(parent.type is object) {
-                CQClassInstance s = parent.value as CQClassInstance;
-                if(s != null) {
-                    iclass = s.type;
-                }
-            }
-            List<CQ_Value> _params = new List<CQ_Value>();
-            for(int i = 1; i < _expressions.Count; i++) {
-                _params.Add(_expressions[i].ComputeValue(content));
-            }
+            var value = _expressions[1].ComputeValue(content);
+           
 
-            CQ_Value value = null;
-#if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
-            //这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(UnityWrap.MemberCall(iclass, parent.value, functionName, _params, out value))
-                return value;
-#endif
-
-            if(cache == null || cache.cachefail) {
-                cache = new MethodCache();
-                value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
-            }
-            else {
-                value = iclass.MemberCallCache(content, parent.value, _params, cache);
-            }
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.MemberValueSet(parent.type.type, parent.value, membername, value)){
+	            var iclass = CQuark.AppDomain.GetType(parent.type)._class;
+	            
+	            CQClassInstance s = parent.value as CQClassInstance;
+	            if(s != null) {
+	                iclass = s.type;
+	            }
+				iclass.MemberValueSet(content, parent.value, membername, value.value);
+			}
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return value;
+            return null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("暂时不支持套用协程");
+            throw new Exception("a.b = 不支持协程");
         }
 
-        public string functionName;
+        public string membername;
 
         public override string ToString () {
-            return "MemberCall|a." + functionName;
+            return "MemberSetvalue|a." + membername;
         }
     }
 }

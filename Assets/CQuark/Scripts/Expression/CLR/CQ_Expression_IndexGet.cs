@@ -2,23 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
-namespace CQuark {
 
-    public class CQ_Expression_MemberValueGet : ICQ_Expression {
-        public CQ_Expression_MemberValueGet (int tbegin, int tend, int lbegin, int lend) {
+namespace CQuark {
+    public class CQ_Expression_IndexGet : ICQ_Expression {
+        public CQ_Expression_IndexGet (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
-            this.tokenBegin = tbegin;
-            this.tokenEnd = tend;
+            tokenBegin = tbegin;
+            tokenEnd = tend;
             lineBegin = lbegin;
             lineEnd = lend;
-        }
-        public int lineBegin {
-            get;
-            private set;
-        }
-        public int lineEnd {
-            get;
-            private set;
         }
         //Block的参数 一个就是一行，顺序执行，没有
         public List<ICQ_Expression> _expressions {
@@ -31,16 +23,18 @@ namespace CQuark {
         }
         public int tokenEnd {
             get;
+            set;
+        }
+        public int lineBegin {
+            get;
             private set;
+        }
+        public int lineEnd {
+            get;
+            set;
         }
         public bool hasCoroutine {
             get {
-                //if(_expressions == null || _expressions.Count == 0)
-                //    return false;
-                //foreach(ICQ_Expression expr in _expressions){
-                //    if(expr.hasCoroutine)
-                //        return true;
-                //}
                 return false;
             }
         }
@@ -52,36 +46,31 @@ namespace CQuark {
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-            IClass iclass = CQuark.AppDomain.GetType(parent.type)._class;
-            if(parent.type is object) {
-                CQClassInstance s = parent.value as CQClassInstance;
-                if(s != null) {
-                    iclass = s.type;
-                }
-            }
-            //var type = CQuark.AppDomain.GetType(parent.type);
-            var value = iclass.MemberValueGet(content, parent.value, membername);
+            var key = _expressions[1].ComputeValue(content);
+            var type = CQuark.AppDomain.GetType(parent.type);
+
+            var value = type._class.IndexGet(content, parent.value, key.value);
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
+
+            //IndexGet返回的值类型是 System.Object.
+            //在这里需要将类型明确化.
+            //value.type = value.value.GetType();
+
             return value;
+            //return type.function.MemberValueGet(CQuark.AppDomain, parent.value, membername);
             //做数学计算
             //从上下文取值
             //_value = null;
             //return null;
-
         }
-
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            //可能以后需要支持。。。
-            throw new Exception("a.Method暂时不支持协程");
+            throw new Exception("IndexFind[]不支持套用协程");
         }
-
-
-        public string membername;
 
         public override string ToString () {
-            return "MemberFind|a." + membername;
+            return "IndexFind[]|";
         }
     }
 }

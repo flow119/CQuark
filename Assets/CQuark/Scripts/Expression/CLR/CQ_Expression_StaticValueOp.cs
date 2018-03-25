@@ -5,11 +5,12 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_MemberValueOp : ICQ_Expression {
-        public CQ_Expression_MemberValueOp (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_StaticValueOp : ICQ_Expression {
+        public CQ_Expression_StaticValueOp (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
-            this.tokenBegin = tbegin;
-            this.tokenEnd = tend;
+            tokenBegin = tbegin;
+            tokenEnd = tend;
+
             lineBegin = lbegin;
             lineEnd = lend;
         }
@@ -36,6 +37,12 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
+                if(_expressions == null || _expressions.Count == 0)
+                    return false;
+                foreach(ICQ_Expression expr in _expressions) {
+                    if(expr.hasCoroutine)
+                        return true;
+                }
                 return false;
             }
         }
@@ -43,40 +50,44 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var parent = _expressions[0].ComputeValue(content);
-            if(parent == null) {
-                throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
-            }
-            var type = CQuark.AppDomain.GetType(parent.type);
-            //string membername=null;
 
+			CQ_Value getvalue = null;
 
-            var getvalue = type._class.MemberValueGet(content, parent.value, membername);
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.StaticValueGet(type.typeBridge.type, staticmembername, out getvalue)){
+				getvalue = type._class.StaticValueGet(content, staticmembername);
+			}
 
             CQ_Value vright = CQ_Value.One;
-            if(_expressions.Count > 1) {
-                vright = _expressions[1].ComputeValue(content);
+            if(_expressions.Count > 0) {
+                vright = _expressions[0].ComputeValue(content);
             }
             CQ_Value vout = new CQ_Value();
             var mtype = CQuark.AppDomain.GetType(getvalue.type);
             vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
 
-            type._class.MemberValueSet(content, parent.value, membername, vout.value);
-            //CQ_Content.Value v = new CQ_Content.Value();
+			//这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.StaticValueSet(type.typeBridge.type, staticmembername, vout)){
+				type._class.StaticValueSet(content, staticmembername, vout.value);
+			}
+            
 
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
             return vout;
         }
+
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("数学运算不支持协程");
+            throw new Exception("StaticMath不支持套用协程");
         }
 
-        public string membername;
+
+        public IType type;
+        public string staticmembername;
         public char mathop;
         public override string ToString () {
-            return "CQ_Expression_MemberMath|a." + membername + " |" + mathop;
+            return "StaticMath|" + type.keyword + "." + staticmembername + " |" + mathop;
         }
     }
 }

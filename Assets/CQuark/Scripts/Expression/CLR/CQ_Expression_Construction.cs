@@ -4,9 +4,8 @@ using System.Text;
 using System.Collections;
 
 namespace CQuark {
-
-    public class CQ_Expression_IndexSetValue : ICQ_Expression {
-        public CQ_Expression_IndexSetValue (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_Construction : ICQ_Expression {
+        public CQ_Expression_Construction (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             this.tokenBegin = tbegin;
             this.tokenEnd = tend;
@@ -36,6 +35,12 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
+                if(_expressions == null || _expressions.Count == 0)
+                    return false;
+                foreach(ICQ_Expression expr in _expressions) {
+                    if(expr.hasCoroutine)
+                        return true;
+                }
                 return false;
             }
         }
@@ -43,34 +48,33 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var parent = _expressions[0].ComputeValue(content);
-            if(parent == null) {
-                throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
+			List<CQ_Value> param = new List<CQ_Value>();
+            foreach(ICQ_Expression p in _expressions) {
+                if(p != null) {
+					param.Add(p.ComputeValue(content));
+                }
             }
-            var key = _expressions[1].ComputeValue(content);
-            var value = _expressions[2].ComputeValue(content);
-            //object setv=value.value;
-            //if(value.type!=parent.type)
-            //{
-            //    var vtype = CQuark.AppDomain.GetType(value.type);
-            //    setv = vtype.ConvertTo(CQuark.AppDomain, setv, parent.type);
-            //}
-            var type = CQuark.AppDomain.GetType(parent.type);
-            type._class.IndexSet(content, parent.value, key.value, value.value);
-            //做数学计算
-            //从上下文取值
-            //_value = null;
+
+            CQ_Value value = null;
+
+            //这几行是为了快速获取Unity的静态变量，而不需要反射
+			if(!UnityWrap.New(type.typeBridge.type, param, out value)){
+				value = type._class.New(content, param);
+			}
+
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return value;
+
         }
         public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
-            throw new Exception("IndexSet[]不支持套用协程");
+            throw new Exception("new function不支持套用协程");
         }
+        public CQuark.IType type;
 
         public override string ToString () {
-            return "IndexSet[]=|";
+            return "new|" + type.keyword + "(function[" + _expressions.Count + ")";
         }
     }
 }
