@@ -46,8 +46,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-//namespace LitJson
-//{
+namespace LitJson
+{
 	public enum JSONBinaryTag
 	{
 		Array			= 1,
@@ -1173,4 +1173,4 @@ using System.Linq;
             return JSONNode.Parse(aJSON);
         }
     }
-//}
+}

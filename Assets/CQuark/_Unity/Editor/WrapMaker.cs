@@ -15,64 +15,74 @@ public class WrapMaker : EditorWindow {
 	}
 
 	Vector2 mScroll = Vector2.zero;
-	List<string> mDelNames = new List<string>();
+	Dictionary<string, List<string>> mDelNames = new Dictionary<string, List<string>>();
 	bool m_loaded = false;
 	string m_newClass = "";
 
-	public static Type GetType( string TypeName )
+	public static Type GetType( string TypeName, ref string nameSpace)
 	{
-		// Try Type.GetType() first. This will work with types defined
-		// by the Mono runtime, in the same assembly as the caller, etc.
-		var type = Type.GetType( TypeName );
-
-		// If it worked, then we're done here
-		if( type != null )
-			return type;
-
-		// If the TypeName is a full name, then we can try loading the defining assembly directly
-		if( TypeName.Contains( "." ) )
-		{
-
-			// Get the name of the assembly (Assumption is that we are using 
-			// fully-qualified type names)
-			string assemblyName = TypeName.Substring( 0, TypeName.IndexOf( '.' ) );
-
-			if(assemblyName == "CQuark"){
+		Type type = null;
+		if(string.IsNullOrEmpty(nameSpace)){
+			type = Type.GetType( TypeName );
+			if(type != null){
+				return type;
+			}else{
+				AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+				foreach( var assemblyName in referencedAssemblies )
+				{
+					// Load the referenced assembly
+					var assembly = Assembly.Load( assemblyName );
+					if( assembly != null )
+					{
+						type = assembly.GetType(TypeName );
+						//如DebugUtil
+						if( type != null )
+							return type;
+						
+						nameSpace = assemblyName.ToString();
+						type = assembly.GetType( nameSpace + "." + TypeName );
+						if( type != null )
+							return type;
+						
+					}
+				}
+			}
+		}else{
+			if(nameSpace == "CQuark"){
 				Debug.LogError("不允许对CQuark做Wrap");
 				return null;
 			}
-
-			// Attempt to load the indicated Assembly
-			Assembly assembly = Assembly.Load( assemblyName );
-			if( assembly == null )
-				return null;
-
-			// Ask that assembly to return the proper Type
-			type = assembly.GetType( TypeName );
-			if( type != null )
+			type = Type.GetType( nameSpace + "." + TypeName  );
+			if(type != null){
+				//如System.DateTime
 				return type;
-
-		}
-
-		// If we still haven't found the proper type, we can enumerate all of the 
-		// loaded assemblies and see if any of them define the type
-		var currentAssembly = Assembly.GetExecutingAssembly();
-		var referencedAssemblies = currentAssembly.GetReferencedAssemblies();
-		foreach( var assemblyName in referencedAssemblies )
-		{
-
-			// Load the referenced assembly
-			var assembly = Assembly.Load( assemblyName );
-			if( assembly != null )
-			{
-				// See if that assembly defines the named type
-				type = assembly.GetType( TypeName );
-				if( type != null )
-					return type;
+			}
+			try{
+				Assembly assembly = Assembly.Load( nameSpace );
+				if( assembly != null ){
+					type = assembly.GetType( nameSpace + "." + TypeName );
+					if( type != null ){
+						//如UnityEngine.Vector3
+						return type;
+					}
+					type = assembly.GetType(TypeName );
+					if( type != null )
+						return type;
+				}
+			}catch (Exception){
+				AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+				foreach( var assemblyName in referencedAssemblies ){
+					Assembly assembly = Assembly.Load( assemblyName );
+					if( assembly != null ){
+						//如LitJson.JSONNode
+						type = assembly.GetType( nameSpace + "." + TypeName );
+						if( type != null )
+							return type;
+					}
+				}
 			}
 		}
 
-		// The type just couldn't be found...
 		return null;
 	}
 
@@ -80,17 +90,16 @@ public class WrapMaker : EditorWindow {
 
 	}
 
-	void UpdateClass(string classname){
-		mDelNames.Remove(classname);
-		Add(classname);
-	}
-
-	void Add(string classname){
-		Type type = GetType(classname);
+	void AddClass(string assemblyName, string classname){
+		Type type = GetType(classname, ref assemblyName);
 		
 		if(type == null){
 			Debug.LogError("No Such Type : " + classname);
 			return;
+		}
+
+		if(!mDelNames.ContainsKey(assemblyName)){
+			mDelNames.Add(assemblyName, new List<string>());
 		}
 
 		//导出内容：
@@ -165,14 +174,19 @@ public class WrapMaker : EditorWindow {
 		}
 
 		System.IO.File.WriteAllText(Application.dataPath + "/" + type + ".txt", text);
-		mDelNames.Add(classname);
+		mDelNames[assemblyName].Add(classname);
 		//Add完毕RefreshDataBase，会编译代码
 		AssetDatabase.Refresh();
 		Refresh();
 	}
 
-	void Remove(string classname){
-		mDelNames.Remove(classname);
+	void RemoveClass(string assemblyName, string classname){
+		mDelNames[assemblyName].Remove(classname);
+	}
+
+	void UpdateClass(string assemblyName, string classname){
+		RemoveClass(assemblyName, classname);
+		AddClass(assemblyName, classname);
 	}
 
 	// Use this for initialization
@@ -190,19 +204,28 @@ public class WrapMaker : EditorWindow {
 
 		mScroll = GUILayout.BeginScrollView(mScroll);
 		GUILayout.BeginVertical();
-		for(int i = 0; i < mDelNames.Count; i++){
+		foreach(var kvp in mDelNames){
 			GUILayout.BeginHorizontal();
-			GUILayout.Label(mDelNames[i]);
-			GUI.backgroundColor = Color.green;
-			if(GUILayout.Button("Update", GUILayout.Width(60))){
-				UpdateClass(mDelNames[i]);
-			}
-			GUI.backgroundColor = Color.red;
-			if(GUILayout.Button("X", GUILayout.Width(30))){
-				Remove(mDelNames[i]);
-			}
-			GUI.backgroundColor = Color.white;
+			GUI.contentColor = Color.cyan;
+			GUILayout.Label("Namespace : ", GUILayout.Width(100));
+			GUI.contentColor = Color.white;
+			GUILayout.TextField(kvp.Key);
 			GUILayout.EndHorizontal();
+
+			for(int i = 0; i < kvp.Value.Count; i++){
+				GUILayout.BeginHorizontal();
+				GUILayout.TextField(kvp.Value[i]);
+				GUI.backgroundColor = Color.green;
+				if(GUILayout.Button("Update", GUILayout.Width(60))){
+					UpdateClass(kvp.Key, kvp.Value[i]);
+				}
+				GUI.backgroundColor = Color.red;
+				if(GUILayout.Button("X", GUILayout.Width(30))){
+					RemoveClass(kvp.Key,kvp.Value[i]);
+				}
+				GUI.backgroundColor = Color.white;
+				GUILayout.EndHorizontal();
+			}
 		}
 		GUILayout.EndVertical();
 		GUILayout.EndScrollView();
@@ -214,10 +237,21 @@ public class WrapMaker : EditorWindow {
 		GUI.enabled = !string.IsNullOrEmpty(m_newClass);
 		GUI.backgroundColor = Color.green;
 		if(GUILayout.Button("Add/Update", GUILayout.Width(100))){
-			if(mDelNames.Contains(m_newClass)){
-				UpdateClass(m_newClass);
+			string className = "";
+			string assemblyName = "";
+			string[] s = m_newClass.Split('.');
+			if(s.Length == 1){
+				assemblyName = "";
+				className = s[0];
+			}else if(s.Length == 2){
+				assemblyName = s[0];
+				className = s[1];
+			}
+
+			if(mDelNames.ContainsKey(assemblyName) && mDelNames[assemblyName].Contains(className)){
+				UpdateClass(assemblyName, className);
 			}else{
-				Add(m_newClass);
+				AddClass(assemblyName, className);
 			}
 			m_newClass = "";
 		}
