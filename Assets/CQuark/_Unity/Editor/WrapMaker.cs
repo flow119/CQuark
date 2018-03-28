@@ -22,7 +22,8 @@ public class WrapMaker : EditorWindow {
 	string _wrapFolder = "";
 	bool _loaded = false;
 	string _classInput = "";
-	string _warpCoreTemplate = "";
+	string _wrapCoreTemplate = "";
+	string _wrapTemplate = "";
 	string WrapFolder{
 		get{
 			return Application.dataPath + "/" + _wrapFolder;
@@ -92,8 +93,11 @@ public class WrapMaker : EditorWindow {
 	}
 
 	void Reload(){
-		if(string.IsNullOrEmpty(_warpCoreTemplate)){
-			_warpCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
+		if(string.IsNullOrEmpty(_wrapCoreTemplate)){
+			_wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
+		}
+		if(string.IsNullOrEmpty(_wrapTemplate)){
+//			_wrapTemplate = (Resources.Load("WrapTemplate") as TextAsset).text;
 		}
 		if(string.IsNullOrEmpty(_wrapFolder)){
 			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
@@ -252,7 +256,7 @@ public class WrapMaker : EditorWindow {
 		OnlyAddClass(assemblyName, classname);
 		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
-		AssetDatabase.Reload();
+		AssetDatabase.Refresh();
 		Reload();
 	}
 
@@ -260,7 +264,7 @@ public class WrapMaker : EditorWindow {
 		OnlyRemoveClass(assemblyName, classname);
 		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
-		AssetDatabase.Reload();
+		AssetDatabase.Refresh();
 		Reload();
 	}
 
@@ -268,7 +272,7 @@ public class WrapMaker : EditorWindow {
 		OnlyRemoveClass(assemblyName, classname);
 		OnlyAddClass(assemblyName, classname);
 		//更新不需要UpdateWrapCore
-		AssetDatabase.Reload();
+		AssetDatabase.Refresh();
 		Reload();
 	}
 
