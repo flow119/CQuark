@@ -56,7 +56,7 @@ namespace CQuark {
 			CQ_Value value = null;
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!UnityWrap.MemberValueGet(parent.type.type, parent.value, membername, out value)){
+			if(!Wrap.MemberValueGet(parent.type.type, parent.value, membername, out value)){
 				IClass iclass = CQuark.AppDomain.GetType(parent.type)._class;
 				CQClassInstance s = parent.value as CQClassInstance;
 				if(s != null) {

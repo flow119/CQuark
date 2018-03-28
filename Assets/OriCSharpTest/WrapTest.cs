@@ -42,6 +42,14 @@ public class WrapTest {
 
 	}
 
+	public void set_a(int value){
+
+	}
+
+	public int b{
+		set; get;
+	}
+
 	public IEnumerator Corout(){
 		yield return new WaitForSeconds(1);
 	}

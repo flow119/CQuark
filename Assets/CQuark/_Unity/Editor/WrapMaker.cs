@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Reflection;
+using System.IO;
 
 public class WrapMaker : EditorWindow {
 
@@ -15,12 +16,20 @@ public class WrapMaker : EditorWindow {
 	}
 
 	Vector2 mScroll = Vector2.zero;
-	Dictionary<string, List<string>> mDelNames = new Dictionary<string, List<string>>();
-	bool m_loaded = false;
-	string m_newClass = "";
+	//命名空间，类
+	Dictionary<string, List<string>> m_classes = new Dictionary<string, List<string>>();
 
-	public static Type GetType( string TypeName, ref string nameSpace)
-	{
+	string _wrapFolder = "";
+	bool _loaded = false;
+	string _classInput = "";
+	string _warpCoreTemplate = "";
+	string WrapFolder{
+		get{
+			return Application.dataPath + "/" + _wrapFolder;
+		}
+	}
+
+	public static Type GetType( string TypeName, ref string nameSpace){
 		Type type = null;
 		if(string.IsNullOrEmpty(nameSpace)){
 			type = Type.GetType( TypeName );
@@ -28,12 +37,10 @@ public class WrapMaker : EditorWindow {
 				return type;
 			}else{
 				AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-				foreach( var assemblyName in referencedAssemblies )
-				{
+				foreach( var assemblyName in referencedAssemblies ){
 					// Load the referenced assembly
 					var assembly = Assembly.Load( assemblyName );
-					if( assembly != null )
-					{
+					if( assembly != null ){
 						type = assembly.GetType(TypeName );
 						//如DebugUtil
 						if( type != null )
@@ -43,7 +50,6 @@ public class WrapMaker : EditorWindow {
 						type = assembly.GetType( nameSpace + "." + TypeName );
 						if( type != null )
 							return type;
-						
 					}
 				}
 			}
@@ -82,15 +88,42 @@ public class WrapMaker : EditorWindow {
 				}
 			}
 		}
-
 		return null;
 	}
 
-	void Refresh(){
+	void Reload(){
+		if(string.IsNullOrEmpty(_warpCoreTemplate)){
+			_warpCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
+		}
+		if(string.IsNullOrEmpty(_wrapFolder)){
+			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
+		}
 
+		m_classes = new Dictionary<string, List<string>>();
+		DirectoryInfo di = new DirectoryInfo(WrapFolder);
+		FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
+		bool findWrapCore = false;
+		for(int i = 0; i < files.Length; i++){
+			string classname = files[i].Name.Split('.')[0];
+			if(files[i].Directory.ToString().Length == WrapFolder.Length){
+				if(classname == "Wrap"){
+					findWrapCore = true;
+					continue;
+				}
+				if(!m_classes.ContainsKey(""))
+					m_classes.Add("", new List<string>());
+				m_classes[""].Add(classname);
+			}else{
+				string nameSpace = files[i].Directory.ToString().Substring(WrapFolder.Length + 1);
+				if(!m_classes.ContainsKey(nameSpace))
+					m_classes.Add(nameSpace, new List<string>());
+				m_classes[nameSpace].Add(classname);
+			}
+		}
+		PlayerPrefs.SetString("WrapFolder", _wrapFolder);
 	}
 
-	void AddClass(string assemblyName, string classname){
+	void OnlyAddClass(string assemblyName, string classname){
 		Type type = GetType(classname, ref assemblyName);
 		
 		if(type == null){
@@ -98,8 +131,8 @@ public class WrapMaker : EditorWindow {
 			return;
 		}
 
-		if(!mDelNames.ContainsKey(assemblyName)){
-			mDelNames.Add(assemblyName, new List<string>());
+		if(!m_classes.ContainsKey(assemblyName)){
+			m_classes.Add(assemblyName, new List<string>());
 		}
 
 		//导出内容：
@@ -133,6 +166,20 @@ public class WrapMaker : EditorWindow {
 			text += s + "\n";
 		}
 		text += "\n"; 
+		text += "变量\n";
+		List<string> property = new List<string>();
+		System.Reflection.MemberInfo[] members = type.GetMembers();
+		for(int i = 0; i < members.Length; i++){
+			string s = "";
+			string memberType = members[i].MemberType.ToString();
+			if(memberType == "Property" && !property.Contains(members[i].Name)){
+				property.Add(members[i].Name);
+			}
+			s += memberType + " " + members[i].Name;
+			text += s + "\n";
+		}
+
+		text += "\n"; 
 		text += "方法\n";
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
@@ -140,9 +187,8 @@ public class WrapMaker : EditorWindow {
 			string s = "";
 			s += methods[i].IsPublic ? "public " : "private ";
 			s += methods[i].IsStatic ? "static " : "";
-			string retType = methods[i].ReturnType.ToString();
-			retType = retType.Replace('+','.');//A+Enum实际上是A.Enum
-			retType = retType.Replace("System.Void", "void");
+			string retType = Type2String(methods[i].ReturnType);
+
 			s += retType + " ";
 
 			//如果方法名是get_开头，那么就是get成员（如果本来就命名为get_X，反射出的就是get_get_X）
@@ -150,7 +196,7 @@ public class WrapMaker : EditorWindow {
 			s += methods[i].Name + "(";
 			System.Reflection.ParameterInfo[] param = methods[i].GetParameters();
 			for(int j = 0; j < param.Length; j++){
-				string paramType = param[j].ParameterType.ToString();
+				string paramType = Type2String(param[j].ParameterType);
 				if(paramType.EndsWith("&")){//ref
 					s += "ref " + paramType.Substring(0, paramType.Length - 1) + " " + param[j].Name;
 				}else{
@@ -163,48 +209,92 @@ public class WrapMaker : EditorWindow {
 			text += s + "\n";
 		}
 
-		text += "\n"; 
-		text += "变量\n";
-		System.Reflection.MemberInfo[] members = type.GetMembers();
-		for(int i = 0; i < members.Length; i++){
-			string s = "";
-			string memberType = members[i].MemberType.ToString();
-			s += memberType + " " + members[i].Name;
-			text += s + "\n";
-		}
+
 
 		System.IO.File.WriteAllText(Application.dataPath + "/" + type + ".txt", text);
-		mDelNames[assemblyName].Add(classname);
-		//Add完毕RefreshDataBase，会编译代码
-		AssetDatabase.Refresh();
-		Refresh();
+		m_classes[assemblyName].Add(classname);
+	}
+
+	static string Type2String(Type type){
+		string retType = type.ToString();
+		retType = retType.Replace('+','.');//A+Enum实际上是A.Enum
+		retType = retType.Replace("System.Boolean", "bool");
+		retType = retType.Replace("System.Byte", "byte");
+		retType = retType.Replace("System.Char", "char");
+		retType = retType.Replace("System.Double", "double");
+		retType = retType.Replace("System.Int16", "short");
+		retType = retType.Replace("System.Int32", "int");
+		retType = retType.Replace("System.Int64", "long");
+		retType = retType.Replace("System.Object", "object");
+		retType = retType.Replace("System.Single", "float");
+		retType = retType.Replace("System.String", "string");
+		retType = retType.Replace("System.UInt16", "ushort");
+		retType = retType.Replace("System.UInt32", "uint");
+		retType = retType.Replace("System.UInt64", "ulong");
+		retType = retType.Replace("System.Void", "void");
+		return retType;
+	}
+
+	void OnlyRemoveClass(string assemblyName, string classname){
+		m_classes[assemblyName].Remove(classname);
+		if(string.IsNullOrEmpty(assemblyName))
+			File.Delete(WrapFolder + "/" + classname + ".cs");
+		else
+			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
+	}
+
+
+	void UpdateWrapCore(){
+
+	}
+
+	void AddClass(string assemblyName, string classname){
+		OnlyAddClass(assemblyName, classname);
+		UpdateWrapCore();
+		//Add完毕ReloadDataBase，会编译代码
+		AssetDatabase.Reload();
+		Reload();
 	}
 
 	void RemoveClass(string assemblyName, string classname){
-		mDelNames[assemblyName].Remove(classname);
+		OnlyRemoveClass(assemblyName, classname);
+		UpdateWrapCore();
+		//Remove完毕ReloadDataBase，会编译代码
+		AssetDatabase.Reload();
+		Reload();
 	}
 
 	void UpdateClass(string assemblyName, string classname){
-		RemoveClass(assemblyName, classname);
-		AddClass(assemblyName, classname);
+		OnlyRemoveClass(assemblyName, classname);
+		OnlyAddClass(assemblyName, classname);
+		//更新不需要UpdateWrapCore
+		AssetDatabase.Reload();
+		Reload();
 	}
 
 	// Use this for initialization
 	void OnGUI () {
-		if(!m_loaded){
-			Refresh();
-			m_loaded = true;
+		if(!_loaded){
+			Reload();
+			_loaded = true;
 		}
 
-		if(GUILayout.Button("Refresh")){
-			Refresh();
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("WrapFolder:", GUILayout.Width(100));
+		_wrapFolder = GUILayout.TextField(_wrapFolder);
+		GUILayout.EndHorizontal();
+
+		GUILayout.Space(5);
+
+		if(GUILayout.Button("Reload")){
+			Reload();
 		}
 
-		GUILayout.Space(10);
+		GUILayout.Space(5);
 
 		mScroll = GUILayout.BeginScrollView(mScroll);
 		GUILayout.BeginVertical();
-		foreach(var kvp in mDelNames){
+		foreach(var kvp in m_classes){
 			GUILayout.BeginHorizontal();
 			GUI.contentColor = Color.cyan;
 			GUILayout.Label("Namespace : ", GUILayout.Width(100));
@@ -233,13 +323,13 @@ public class WrapMaker : EditorWindow {
 		GUILayout.Space(10);
 
 		GUILayout.BeginHorizontal();
-		m_newClass = GUILayout.TextField(m_newClass, GUILayout.MinWidth(100));
-		GUI.enabled = !string.IsNullOrEmpty(m_newClass);
+		_classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
+		GUI.enabled = !string.IsNullOrEmpty(_classInput);
 		GUI.backgroundColor = Color.green;
 		if(GUILayout.Button("Add/Update", GUILayout.Width(100))){
 			string className = "";
 			string assemblyName = "";
-			string[] s = m_newClass.Split('.');
+			string[] s = _classInput.Split('.');
 			if(s.Length == 1){
 				assemblyName = "";
 				className = s[0];
@@ -248,12 +338,12 @@ public class WrapMaker : EditorWindow {
 				className = s[1];
 			}
 
-			if(mDelNames.ContainsKey(assemblyName) && mDelNames[assemblyName].Contains(className)){
+			if(m_classes.ContainsKey(assemblyName) && m_classes[assemblyName].Contains(className)){
 				UpdateClass(assemblyName, className);
 			}else{
 				AddClass(assemblyName, className);
 			}
-			m_newClass = "";
+			_classInput = "";
 		}
 		GUI.enabled = true;
 		GUILayout.EndHorizontal();

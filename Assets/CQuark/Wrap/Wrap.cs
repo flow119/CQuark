@@ -7,16 +7,16 @@ using System;
 //这个类由工具自动生成，不需要手动修改
 
 namespace CQuark{
-	public partial class UnityWrap {
+	public partial class Wrap {
 		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = null;
 				return false;
 			}
 			returnValue = null;
-			if(type == typeof(Vector3)){
-				return Vector3New(param, out returnValue);
-	        }
+//			if(type == typeof(Vector3)){
+//				return Vector3New(param, out returnValue);
+//	        }
 			//TODO
 	        return false;
 	    }
@@ -27,9 +27,9 @@ namespace CQuark{
 				return false;
 			}
 			returnValue = null;
-			if(type == typeof(Vector3)){
-				return Vector3SGet(memberName, out returnValue);
-			}
+//			if(type == typeof(Vector3)){
+//				return Vector3SGet(memberName, out returnValue);
+//			}
 			//TODO
 	        return false;
 	    }
@@ -38,9 +38,9 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-			if(type == typeof(Vector3)){
-				return Vector3SSet(memberName, param);
-			}
+//			if(type == typeof(Vector3)){
+//				return Vector3SSet(memberName, param);
+//			}
 			//TODO
 			return false;
 	    }
@@ -62,9 +62,9 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			if(type == typeof(Vector3)){
-				return Vector3MGet(objSelf, memberName, out returnValue);
-			}
+//			if(type == typeof(Vector3)){
+//				return Vector3MGet(objSelf, memberName, out returnValue);
+//			}
 			returnValue = null;
 			return false;
 	    }
@@ -73,9 +73,9 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-			if(type == typeof(Vector3)){
-				return Vector3MSet(objSelf, memberName, param);
-			}
+//			if(type == typeof(Vector3)){
+//				return Vector3MSet(objSelf, memberName, param);
+//			}
 			return false;
 	    }
 
