@@ -93,9 +93,7 @@ public class WrapMaker : EditorWindow {
 	}
 
 	void Reload(){
-		if(string.IsNullOrEmpty(_wrapCoreTemplate)){
-			_wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
-		}
+		
 		if(string.IsNullOrEmpty(_wrapTemplate)){
 //			_wrapTemplate = (Resources.Load("WrapTemplate") as TextAsset).text;
 		}
@@ -249,7 +247,75 @@ public class WrapMaker : EditorWindow {
 
 
 	void UpdateWrapCore(){
+        if(string.IsNullOrEmpty(_wrapCoreTemplate)) {
+            _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
+        }
 
+        string wrapNew = "";
+        string wrapSVGet = "";
+        string wrapSVSet = "";
+        string wrapSCall = "";
+        string wrapMVGet = "";
+        string wrapMVSet = "";
+        string wrapMCall = "";
+        string wrapIGet = "";
+        string wrapISet = "";
+
+
+        foreach(KeyValuePair<string, List<string>> kvp in m_classes) {
+            for(int i = 0; i < kvp.Value.Count; i++) {
+                string classFullName = kvp.Key == "" ? kvp.Value[i] : kvp.Key + "." + kvp.Value[i]; //类似UnityEngine.Vector3，用来Wrap
+                string classWrapName = kvp.Key + kvp.Value[i];                                      //类似UnityEngineVector3，不带点
+                
+                wrapNew += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue);\r\n";
+                wrapNew += "\t\t\t}\n";
+
+                wrapSVGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapSVGet += "\t\t\t\treturn " + classWrapName + "SGet(memberName, out returnValue);\r\n";
+                wrapSVGet += "\t\t\t}\n";
+
+                wrapSVSet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapSVSet += "\t\t\t\treturn " + classWrapName + "SSet(memberName, param);\r\n";
+                wrapSVSet += "\t\t\t}\n";
+
+                wrapSCall += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapSCall += "\t\t\t\treturn " + classWrapName + "SCall(functionName, param, out returnValue);\r\n";
+                wrapSCall += "\t\t\t}\n";
+
+                wrapMVGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapMVGet += "\t\t\t\treturn " + classWrapName + "MGet(objSelf, memberName, out returnValue);\r\n";
+                wrapMVGet += "\t\t\t}\n";
+
+                wrapMVSet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapMVSet += "\t\t\t\treturn " + classWrapName + "MSet(objSelf, memberName, param);\r\n";
+                wrapMVSet += "\t\t\t}\n";
+
+                wrapMCall += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapMCall += "\t\t\t\treturn " + classWrapName + "MCall(objSelf, functionName, param, out returnValue);\r\n";
+                wrapMCall += "\t\t\t}\n";
+
+                wrapIGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapIGet += "\t\t\t\treturn " + classWrapName + "IGet(objSelf, key, out returnValue);\r\n";
+                wrapIGet += "\t\t\t}\n";
+
+                wrapISet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
+                wrapISet += "\t\t\t\treturn " + classWrapName + "ISet(objSelf, key, param);\r\n";
+                wrapISet += "\t\t\t}\n";
+            }
+        }
+
+        string text = _wrapCoreTemplate.Replace("{0}", wrapNew);
+        text = text.Replace("{1}", wrapSVGet);
+        text = text.Replace("{2}", wrapSVSet);
+        text = text.Replace("{3}", wrapSCall);
+        text = text.Replace("{4}", wrapMVGet);
+        text = text.Replace("{5}", wrapMVSet);
+        text = text.Replace("{6}", wrapMCall);
+        text = text.Replace("{7}", wrapIGet);
+        text = text.Replace("{8}", wrapISet);
+        //string text = string.Format(_wrapCoreTemplate, wrapNew, wrapSVGet, wrapSVSet, wrapSCall, wrapMVGet, wrapMVSet, wrapMCall, wrapIGet, wrapISet);
+        File.WriteAllText(WrapFolder + "/WrapCore.cs", text, System.Text.Encoding.UTF8);
 	}
 
 	void AddClass(string assemblyName, string classname){
@@ -271,7 +337,7 @@ public class WrapMaker : EditorWindow {
 	void UpdateClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
 		OnlyAddClass(assemblyName, classname);
-		//更新不需要UpdateWrapCore
+        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
 		AssetDatabase.Refresh();
 		Reload();
 	}
@@ -290,9 +356,14 @@ public class WrapMaker : EditorWindow {
 
 		GUILayout.Space(5);
 
+        GUILayout.BeginHorizontal();
 		if(GUILayout.Button("Reload")){
 			Reload();
 		}
+        if(GUILayout.Button("UpdateAll")) {
+         //   Reload();
+        }
+        GUILayout.EndHorizontal();
 
 		GUILayout.Space(5);
 
