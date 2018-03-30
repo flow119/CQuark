@@ -13,7 +13,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{0}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3New(param, out returnValue);
+			}
+
 			returnValue = null;
 	        return false;
 	    }
@@ -23,7 +26,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{1}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3SGet(memberName, out returnValue);
+			}
+
 			returnValue = null;
 	        return false;
 	    }
@@ -32,7 +38,10 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-{2}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3SSet(memberName, param);
+			}
+
 			return false;
 	    }
 
@@ -41,7 +50,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{3}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3SCall(functionName, param, out returnValue);
+			}
+
 			returnValue = null;
 	        return false;
 	    }
@@ -51,7 +63,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{4}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3MGet(objSelf, memberName, out returnValue);
+			}
+
 			returnValue = null;
 			return false;
 	    }
@@ -60,7 +75,10 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-{5}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3MSet(objSelf, memberName, param);
+			}
+
 			return false;
 	    }
 
@@ -69,7 +87,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{6}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3MCall(objSelf, functionName, param, out returnValue);
+			}
+
 			returnValue = null;
 	        return false;
 	    }
@@ -79,7 +100,10 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{7}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3IGet(objSelf, key, out returnValue);
+			}
+
 			returnValue = null;
 			return false;
 		}
@@ -88,7 +112,10 @@ namespace CQuark{
 			if(type == null) {
 				return false;
 			}
-{8}
+			if(type == typeof(UnityEngine.Vector3)){
+				return UnityEngineVector3ISet(objSelf, key, param);
+			}
+
 			return false;
 		}
 	}

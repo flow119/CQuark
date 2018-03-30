@@ -100,7 +100,7 @@ public static UnityEngine.Vector3 Scale(UnityEngine.Vector3 a,UnityEngine.Vector
 public void Scale(UnityEngine.Vector3 scale)
 public static UnityEngine.Vector3 Cross(UnityEngine.Vector3 lhs,UnityEngine.Vector3 rhs)
 public int GetHashCode()
-public bool Equals(System.Object other)
+public bool Equals(object other)
 public static UnityEngine.Vector3 Reflect(UnityEngine.Vector3 inDirection,UnityEngine.Vector3 inNormal)
 public static UnityEngine.Vector3 Normalize(UnityEngine.Vector3 value)
 public void Normalize()

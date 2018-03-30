@@ -22,8 +22,7 @@ public class WrapMaker : EditorWindow {
 	string _wrapFolder = "";
 	bool _loaded = false;
 	string _classInput = "";
-	string _wrapCoreTemplate = "";
-	string _wrapTemplate = "";
+
 	string WrapFolder{
 		get{
 			return Application.dataPath + "/" + _wrapFolder;
@@ -93,10 +92,6 @@ public class WrapMaker : EditorWindow {
 	}
 
 	void Reload(){
-		
-		if(string.IsNullOrEmpty(_wrapTemplate)){
-//			_wrapTemplate = (Resources.Load("WrapTemplate") as TextAsset).text;
-		}
 		if(string.IsNullOrEmpty(_wrapFolder)){
 			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
 		}
@@ -127,7 +122,7 @@ public class WrapMaker : EditorWindow {
 
 	void OnlyAddClass(string assemblyName, string classname){
 		Type type = GetType(classname, ref assemblyName);
-		
+
 		if(type == null){
 			Debug.LogError("No Such Type : " + classname);
 			return;
@@ -150,8 +145,8 @@ public class WrapMaker : EditorWindow {
 		//index
 		//协程拿出去
 
-		string text = "";
-		text += "构造函数\n";
+		string note = "";
+        note += "构造函数\n";
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
 			string s = "";
@@ -165,10 +160,10 @@ public class WrapMaker : EditorWindow {
 					s += ",";
 			}
 			s += ")";
-			text += s + "\n";
+            note += s + "\n";
 		}
-		text += "\n"; 
-		text += "变量\n";
+        note += "\n";
+        note += "变量\n";
 		List<string> property = new List<string>();
 		System.Reflection.MemberInfo[] members = type.GetMembers();
 		for(int i = 0; i < members.Length; i++){
@@ -178,11 +173,11 @@ public class WrapMaker : EditorWindow {
 				property.Add(members[i].Name);
 			}
 			s += memberType + " " + members[i].Name;
-			text += s + "\n";
+            note += s + "\n";
 		}
 
-		text += "\n"; 
-		text += "方法\n";
+        note += "\n";
+        note += "方法\n";
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
 		for(int i = 0; i < methods.Length; i++){
@@ -210,12 +205,44 @@ public class WrapMaker : EditorWindow {
 					s += ",";
 			}
 			s += ")";
-			text += s + "\n";
+            note += s + "\n";
 		}
 
+        //下面开始写文件
+
+        string classFullName = assemblyName == "" ? classname : assemblyName + "." + classname; //类似UnityEngine.Vector3，用来Wrap
+        string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
+
+        string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
 
 
-		System.IO.File.WriteAllText(Application.dataPath + "/" + type + ".txt", text);
+        string wrapNew = "";
+        string wrapSVGet = "";
+        string wrapSVSet = "";
+        string wrapSCall = "";
+        string wrapMVGet = "";
+        string wrapMVSet = "";
+        string wrapMCall = "";
+        string wrapIGet = "";
+        string wrapISet = "";
+
+        string text = _wrapPartTemplate.Replace("{0}", classWrapName);
+        text = text.Replace("{1}", wrapNew);
+        text = text.Replace("{2}", wrapSVGet);
+        text = text.Replace("{3}", wrapSVSet);
+        text = text.Replace("{4}", wrapSCall);
+        text = text.Replace("{5}", wrapMVGet);
+        text = text.Replace("{6}", wrapMVSet);
+        text = text.Replace("{7}", wrapMCall);
+        text = text.Replace("{8}", wrapIGet);
+        text = text.Replace("{9}", wrapISet);
+  
+        if(string.IsNullOrEmpty(assemblyName)) {
+            File.WriteAllText(WrapFolder + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+        }
+        else {
+            File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+        }
 		m_classes[assemblyName].Add(classname);
 	}
 
@@ -249,9 +276,7 @@ public class WrapMaker : EditorWindow {
 
 
 	void UpdateWrapCore(){
-        if(string.IsNullOrEmpty(_wrapCoreTemplate)) {
-            _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
-        }
+        string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
 
         string wrapNew = "";
         string wrapSVGet = "";
@@ -262,7 +287,6 @@ public class WrapMaker : EditorWindow {
         string wrapMCall = "";
         string wrapIGet = "";
         string wrapISet = "";
-
 
         foreach(KeyValuePair<string, List<string>> kvp in m_classes) {
             for(int i = 0; i < kvp.Value.Count; i++) {
@@ -322,7 +346,7 @@ public class WrapMaker : EditorWindow {
 
 	void AddClass(string assemblyName, string classname){
 		OnlyAddClass(assemblyName, classname);
-//		UpdateWrapCore();
+		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 		Reload();
@@ -330,7 +354,7 @@ public class WrapMaker : EditorWindow {
 
 	void RemoveClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
-//		UpdateWrapCore();
+		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 		Reload();
@@ -339,10 +363,17 @@ public class WrapMaker : EditorWindow {
 	void UpdateClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
 		OnlyAddClass(assemblyName, classname);
-//        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
+        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
 		AssetDatabase.Refresh();
 		Reload();
 	}
+
+    void ClearAll () {
+        m_classes.Clear();
+        UpdateWrapCore();
+        AssetDatabase.Refresh();
+        Reload();
+    }
 
 	// Use this for initialization
 	void OnGUI () {
@@ -365,6 +396,11 @@ public class WrapMaker : EditorWindow {
         if(GUILayout.Button("UpdateAll")) {
          //   Reload();
         }
+        GUI.backgroundColor = Color.red;
+        if(GUILayout.Button("Clear", GUILayout.Width(30))) {
+            ClearAll();
+        }
+        GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
 
 		GUILayout.Space(5);
