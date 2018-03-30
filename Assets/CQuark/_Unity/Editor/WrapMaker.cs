@@ -145,6 +145,16 @@ public class WrapMaker : EditorWindow {
 		//index
 		//协程拿出去
 
+        List<string> newc = new List<string>();
+        List<string> sget = new List<string>();
+        List<string> sset = new List<string>();
+        List<string> scall = new List<string>();
+        List<string> mget = new List<string>();
+        List<string> mset = new List<string>();
+        List<string> mcall = new List<string>();
+        List<string> iget = new List<string>();
+        List<string> iset = new List<string>();
+
 		string note = "";
         note += "构造函数\n";
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
@@ -167,13 +177,13 @@ public class WrapMaker : EditorWindow {
 		List<string> property = new List<string>();
 		System.Reflection.MemberInfo[] members = type.GetMembers();
 		for(int i = 0; i < members.Length; i++){
-			string s = "";
 			string memberType = members[i].MemberType.ToString();
-			if(memberType == "Property" && !property.Contains(members[i].Name)){
+			if(memberType == "Property"){
 				property.Add(members[i].Name);
-			}
-			s += memberType + " " + members[i].Name;
-            note += s + "\n";
+                note += memberType + " " + members[i].Name + "\n";
+			}else if(memberType == "Field"){
+                note += memberType + " " + members[i].Name + "\n";
+            }
 		}
 
         note += "\n";
@@ -202,11 +212,12 @@ public class WrapMaker : EditorWindow {
 						s += " = " + param[j].DefaultValue;
 				}
 				if(j != param.Length - 1)
-					s += ",";
+					s += ", ";
 			}
 			s += ")";
             note += s + "\n";
 		}
+        File.WriteAllText(Application.dataPath + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
 
         //下面开始写文件
 
@@ -214,7 +225,6 @@ public class WrapMaker : EditorWindow {
         string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
 
         string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
-
 
         string wrapNew = "";
         string wrapSVGet = "";
@@ -397,7 +407,7 @@ public class WrapMaker : EditorWindow {
          //   Reload();
         }
         GUI.backgroundColor = Color.red;
-        if(GUILayout.Button("Clear", GUILayout.Width(30))) {
+        if(GUILayout.Button("Clear", GUILayout.Width(60))) {
             ClearAll();
         }
         GUI.backgroundColor = Color.white;
