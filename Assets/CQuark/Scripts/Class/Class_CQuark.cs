@@ -365,15 +365,7 @@ namespace CQuark {
             //public Dictionary<string, ICQ_Type> _params = new Dictionary<string, ICQ_Type>();
             public IType _returntype;
             public ICQ_Expression expr_runtime;
-            public string GetParamSign () {
-                string sign = "";
-                if(_returntype != null && _returntype.typeBridge != null && (Type)_returntype.typeBridge != typeof(void))
-                    sign += _returntype.keyword;
-                foreach(var p in _paramtypes) {
-                    sign += "," + p.keyword;
-                }
-                return sign;
-            }
+           
         }
         public class Member {
             public IType type;

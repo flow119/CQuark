@@ -7,7 +7,7 @@ using System.Reflection;
 using System.IO;
 
 public class WrapMaker : EditorWindow {
-
+    const string WRAP_CORE_NAME = "WrapCore";
 	[MenuItem("CQuark/Wrap Maker", false, 9)]
 	[MenuItem("Assets/CQuark/Wrap Maker", false, 0)]
 	static public void OpenAtlasMaker ()
@@ -108,7 +108,7 @@ public class WrapMaker : EditorWindow {
 		for(int i = 0; i < files.Length; i++){
 			string classname = files[i].Name.Split('.')[0];
 			if(files[i].Directory.ToString().Length == WrapFolder.Length){
-				if(classname == "Wrap"){
+                if(classname == WRAP_CORE_NAME) {
 					findWrapCore = true;
 					continue;
 				}
@@ -315,7 +315,7 @@ public class WrapMaker : EditorWindow {
         text = text.Replace("{7}", wrapIGet);
         text = text.Replace("{8}", wrapISet);
         //string text = string.Format(_wrapCoreTemplate, wrapNew, wrapSVGet, wrapSVSet, wrapSCall, wrapMVGet, wrapMVSet, wrapMCall, wrapIGet, wrapISet);
-        File.WriteAllText(WrapFolder + "/WrapCore.cs", text, System.Text.Encoding.UTF8);
+        File.WriteAllText(WrapFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}
 
 	void AddClass(string assemblyName, string classname){

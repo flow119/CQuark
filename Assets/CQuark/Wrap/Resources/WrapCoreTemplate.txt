@@ -13,7 +13,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{0}
+{0}
 			returnValue = null;
 	        return false;
 	    }
@@ -23,7 +23,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{1}
+{1}
 			returnValue = null;
 	        return false;
 	    }
@@ -32,7 +32,7 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-			{2}
+{2}
 			return false;
 	    }
 
@@ -41,7 +41,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{3}
+{3}
 			returnValue = null;
 	        return false;
 	    }
@@ -51,7 +51,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{4}
+{4}
 			returnValue = null;
 			return false;
 	    }
@@ -60,7 +60,7 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-			{5}
+{5}
 			return false;
 	    }
 
@@ -69,7 +69,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{6}
+{6}
 	        return false;
 	    }
 
@@ -78,16 +78,16 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-			{7}
+{7}
 			returnValue = null;
 			return false;
 		}
 
-		public static bool IndexSet(Type type, object objSelf, CQ_Value key, CQ_Value value){
+		public static bool IndexSet(Type type, object objSelf, CQ_Value key, CQ_Value param){
 			if(type == null) {
 				return false;
 			}
-			{8}
+{8}
 			return false;
 		}
 	}
