@@ -202,7 +202,9 @@ public class WrapMaker : EditorWindow {
 				if(paramType.EndsWith("&")){//ref
 					s += "ref " + paramType.Substring(0, paramType.Length - 1) + " " + param[j].Name;
 				}else{
-					s += paramType + " " + param[j].Name;
+					s += paramType + " " + param[j].Name ;
+					if(param[j].IsOptional)
+						s += " = " + param[j].DefaultValue;
 				}
 				if(j != param.Length - 1)
 					s += ",";
@@ -320,7 +322,7 @@ public class WrapMaker : EditorWindow {
 
 	void AddClass(string assemblyName, string classname){
 		OnlyAddClass(assemblyName, classname);
-		UpdateWrapCore();
+//		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 		Reload();
@@ -328,7 +330,7 @@ public class WrapMaker : EditorWindow {
 
 	void RemoveClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
-		UpdateWrapCore();
+//		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 		Reload();
@@ -337,7 +339,7 @@ public class WrapMaker : EditorWindow {
 	void UpdateClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
 		OnlyAddClass(assemblyName, classname);
-        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
+//        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
 		AssetDatabase.Refresh();
 		Reload();
 	}
