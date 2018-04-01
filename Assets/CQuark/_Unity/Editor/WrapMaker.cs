@@ -189,9 +189,12 @@ public class WrapMaker : EditorWindow {
 			if(pis[i].CanWrite)
 				note += "set;";
 			note += "}\n";
-			if(pis[i].Name != "Item"){//这里有个问题，实例的Item无法确认是属性还是[index]
-				propertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
-			}
+			if(pis[i].Name == "Item")
+				continue;//这里有个问题，实例的Item无法确认是属性还是[index]
+			if(pis[i].PropertyType.ToString().Contains("IEnumerable`"))
+				continue;//暂时先不处理枚举器
+			propertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+
 		}
 #endregion
 
@@ -263,13 +266,20 @@ public class WrapMaker : EditorWindow {
 		}
 
 		if(string.IsNullOrEmpty(assemblyName)) {
-			File.WriteAllText(WrapFolder + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
+			WriteAllText(WrapFolder, classname + ".txt", note);
 		}
 		else {
-			File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
+			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", note);
 		}
 
 		UpdateWrapPart(assemblyName, classname, propertys);
+	}
+
+	static void WriteAllText(string folder, string name, string content){
+//		folder = folder.Replace("/","\\");
+		if(!Directory.Exists(folder))
+			Directory.CreateDirectory(folder);
+		File.WriteAllText(folder + "/" + name, content, System.Text.Encoding.UTF8);
 	}
 
 	static string Type2String(Type type){
@@ -365,10 +375,10 @@ public class WrapMaker : EditorWindow {
 		text = text.Replace("{9}", "");//IndexSet 还没想好怎么做
 
 		if(string.IsNullOrEmpty(assemblyName)) {
-			File.WriteAllText(WrapFolder + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+			WriteAllText(WrapFolder, classname + ".cs", text);
 		}
 		else {
-			File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".cs", text);
 		}
 	}
 
@@ -443,18 +453,18 @@ public class WrapMaker : EditorWindow {
 
 	void AddClass(string assemblyName, string classname){
 		OnlyAddClass(assemblyName, classname);
+		Reload();
 		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
-		Reload();
 	}
 
 	void RemoveClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
+		Reload();
 		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
-		Reload();
 	}
 
 	void UpdateClass(string assemblyName, string classname){
@@ -462,21 +472,24 @@ public class WrapMaker : EditorWindow {
 		OnlyAddClass(assemblyName, classname);
         UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
 		AssetDatabase.Refresh();
-		Reload();
 	}
 
     void ClearAll () {
         m_classes.Clear();
+		Reload();
         UpdateWrapCore();
         AssetDatabase.Refresh();
-        Reload();
     }
 
 	// Use this for initialization
+	bool _isCompiling = true;
+	void Start(){
+		Reload();
+	}
 	void OnGUI () {
-		if(!_loaded){
+		if(_isCompiling != EditorApplication.isCompiling){
+			_isCompiling = EditorApplication.isCompiling;
 			Reload();
-			_loaded = true;
 		}
 
 		GUILayout.BeginHorizontal();

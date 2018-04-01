@@ -43,6 +43,8 @@ namespace CQuark
 			"switch",
 			"case",
 			"default"
+
+			//TODO ref, out
         };
         static readonly List<string> types = new List<string>(){
             "void",
