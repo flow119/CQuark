@@ -7,6 +7,23 @@ using System.Reflection;
 using System.IO;
 
 public class WrapMaker : EditorWindow {
+
+	class Property{
+		public string m_type;
+		public bool m_isStatic;
+		public bool m_canGet;
+		public bool m_canSet;
+		public string m_name;
+
+		public Property(Type type, bool isStatic, bool canGet, bool canSet, string name){
+			m_type = Type2String(type);
+			m_isStatic = isStatic;
+			m_canGet = canGet;
+			m_canSet = canSet;
+			m_name = name;
+		}
+	}
+
     const string WRAP_CORE_NAME = "WrapCore";
 	[MenuItem("CQuark/Wrap Maker", false, 9)]
 	[MenuItem("Assets/CQuark/Wrap Maker", false, 0)]
@@ -127,67 +144,94 @@ public class WrapMaker : EditorWindow {
 			Debug.LogError("No Such Type : " + classname);
 			return;
 		}
-
-		if(!m_classes.ContainsKey(assemblyName)){
-			m_classes.Add(assemblyName, new List<string>());
-		}
-
-		//导出内容：
-		//构造函数
-		//静态方法
-		//静态成员set_
-		//静态成员get_
-		//静态操作op_ 	?
-		//成员方法
-		//成员set
-		//成员get
-		//成员操作
-		//index
-		//协程拿出去
-
-        List<string> newc = new List<string>();
-        List<string> sget = new List<string>();
-        List<string> sset = new List<string>();
-        List<string> scall = new List<string>();
-        List<string> mget = new List<string>();
-        List<string> mset = new List<string>();
-        List<string> mcall = new List<string>();
-        List<string> iget = new List<string>();
-        List<string> iset = new List<string>();
+			
+		//TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
+		List<Property> propertys = new List<Property>();
 
 		string note = "";
+#region 变量或属性
+		note += "变量\n";
+		FieldInfo[] fis = type.GetFields();
+		for(int i= 0; i < fis.Length; i++){
+			string attributes = fis[i].Attributes.ToString();
+			bool isStatic = attributes.Contains("Static");
+			if(isStatic)
+				note += "static ";
+			bool isReadonly = attributes.Contains("Literal") && attributes.Contains("HasDefault");
+			if(isReadonly)
+				note += "readonly ";
+			note += Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
+			propertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
+		}
+
+		note += "属性\n";
+		PropertyInfo[] pis = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
+		for(int i= 0; i < pis.Length; i++){
+			note += "public ";
+			string attributes = pis[i].Attributes.ToString();
+
+			note += "static " + Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
+			if(pis[i].CanRead) 
+				note += "get;";
+			if(pis[i].CanWrite)
+				note += "set;";
+			note += "}\n";
+
+			propertys.Add(new Property(pis[i].PropertyType, true, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+		}
+		pis = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		for(int i= 0; i < pis.Length; i++){
+			note += "public ";
+			string attributes = pis[i].Attributes.ToString();
+			note += Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
+			if(pis[i].CanRead) 
+				note += "get;";
+			if(pis[i].CanWrite)
+				note += "set;";
+			note += "}\n";
+			if(pis[i].Name != "Item"){//这里有个问题，实例的Item无法确认是属性还是[index]
+				propertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+			}
+		}
+#endregion
+
+		note += "\n";
+
         note += "构造函数\n";
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
 			string s = "";
-			s += construct[i].IsPublic ? "public " : "private ";
-			s += construct[i].IsStatic ? "static " : "";
 			s += type.ToString() + "(";
 			System.Reflection.ParameterInfo[] param = construct[i].GetParameters();
 			for(int j = 0; j < param.Length; j++){
 				s += param[j].ParameterType + " " +param[j].Name;
 				if(j != param.Length - 1)
 					s += ",";
+				if(param[j].IsOptional)
+					s += " = " + param[j].DefaultValue;
 			}
 			s += ")";
             note += s + "\n";
 		}
         note += "\n";
-        note += "变量\n";
-		List<string> property = new List<string>();
-		System.Reflection.MemberInfo[] members = type.GetMembers();
-		for(int i = 0; i < members.Length; i++){
-			string memberType = members[i].MemberType.ToString();
-			if(memberType == "Property"){
-				property.Add(members[i].Name);
-                note += memberType + " " + members[i].Name + "\n";
-			}else if(memberType == "Field"){
-                note += memberType + " " + members[i].Name + "\n";
-            }
-		}
+//        note += "成员\n";
+//		List<string> property = new List<string>();
+//		System.Reflection.MemberInfo[] members = type.GetMembers();
+//		for(int i = 0; i < members.Length; i++){
+//			string memberType = members[i].MemberType.ToString();
+//			if(memberType == "Property"){
+//				property.Add(members[i].Name);
+//                note += memberType + " " + members[i].Name + "\n";
+//			}else if(memberType == "Field"){
+//                note += memberType + " " + members[i].Name + "\n";
+//            }
+//		}
+
+
 
         note += "\n";
         note += "方法\n";
+		//TODO 默认参， ref in out
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
 		for(int i = 0; i < methods.Length; i++){
@@ -217,43 +261,15 @@ public class WrapMaker : EditorWindow {
 			s += ")";
             note += s + "\n";
 		}
-        File.WriteAllText(Application.dataPath + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
 
-        //下面开始写文件
+		if(string.IsNullOrEmpty(assemblyName)) {
+			File.WriteAllText(WrapFolder + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
+		}
+		else {
+			File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".txt", note, System.Text.Encoding.UTF8);
+		}
 
-        string classFullName = assemblyName == "" ? classname : assemblyName + "." + classname; //类似UnityEngine.Vector3，用来Wrap
-        string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
-
-        string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
-
-        string wrapNew = "";
-        string wrapSVGet = "";
-        string wrapSVSet = "";
-        string wrapSCall = "";
-        string wrapMVGet = "";
-        string wrapMVSet = "";
-        string wrapMCall = "";
-        string wrapIGet = "";
-        string wrapISet = "";
-
-        string text = _wrapPartTemplate.Replace("{0}", classWrapName);
-        text = text.Replace("{1}", wrapNew);
-        text = text.Replace("{2}", wrapSVGet);
-        text = text.Replace("{3}", wrapSVSet);
-        text = text.Replace("{4}", wrapSCall);
-        text = text.Replace("{5}", wrapMVGet);
-        text = text.Replace("{6}", wrapMVSet);
-        text = text.Replace("{7}", wrapMCall);
-        text = text.Replace("{8}", wrapIGet);
-        text = text.Replace("{9}", wrapISet);
-  
-        if(string.IsNullOrEmpty(assemblyName)) {
-            File.WriteAllText(WrapFolder + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
-        }
-        else {
-            File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
-        }
-		m_classes[assemblyName].Add(classname);
+		UpdateWrapPart(assemblyName, classname, propertys);
 	}
 
 	static string Type2String(Type type){
@@ -277,13 +293,84 @@ public class WrapMaker : EditorWindow {
 	}
 
 	void OnlyRemoveClass(string assemblyName, string classname){
-		m_classes[assemblyName].Remove(classname);
 		if(string.IsNullOrEmpty(assemblyName))
 			File.Delete(WrapFolder + "/" + classname + ".cs");
 		else
 			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
 	}
 
+	void UpdateWrapPart(string assemblyName, string classname, List<Property> propertys){
+		List<string> newc = new List<string>();
+		List<string> scall = new List<string>();
+		List<string> mcall = new List<string>();
+
+		string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
+		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
+		string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
+
+		string wrapSVGet = "";
+		string wrapSVSet = "";
+		string wrapMVGet = "";
+		string wrapMVSet = "";
+
+		for(int i = 0; i < propertys.Count; i++){
+			if(propertys[i].m_isStatic){
+				if(propertys[i].m_canGet){
+					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapSVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
+					wrapSVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+					wrapSVGet += "\t\t\t\treturnValue.value = ";
+					wrapSVGet += classFullName + "." + propertys[i].m_name + ";\n";
+					wrapSVGet += "\t\t\t\treturn true;\n";
+				}
+				if(propertys[i].m_canSet){
+
+				}
+			}else{
+				if(propertys[i].m_canGet){
+					wrapMVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapMVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
+					wrapMVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+					wrapMVGet += "\t\t\t\treturnValue.value = ";
+					wrapMVGet += "obj." + propertys[i].m_name + ";\n";
+					wrapMVGet += "\t\t\t\treturn true;\n";
+				}
+				if(propertys[i].m_canSet){
+
+				}
+			}
+		}
+
+		if(!string.IsNullOrEmpty(wrapSVGet)){
+			wrapSVGet = "\t\t\tswitch(memberName) {\n" + wrapSVGet + "\t\t\t}";
+		}
+		if(!string.IsNullOrEmpty(wrapMVGet)){
+			wrapMVGet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+"\t\t\tswitch(memberName) {\n" + wrapMVGet + "\t\t\t}";
+		}
+
+		string wrapNew = "";
+		string wrapSCall = "";
+		string wrapMCall = "";
+
+		string text = _wrapPartTemplate.Replace("{0}", classWrapName);
+		text = text.Replace("{1}", wrapNew);
+		text = text.Replace("{2}", wrapSVGet);
+		text = text.Replace("{3}", wrapSVSet);
+		text = text.Replace("{4}", wrapSCall);
+		text = text.Replace("{5}", wrapMVGet);
+		text = text.Replace("{6}", wrapMVSet);
+		text = text.Replace("{7}", wrapMCall);
+		text = text.Replace("{8}", "");//IndexGet 还没想好怎么做
+		text = text.Replace("{9}", "");//IndexSet 还没想好怎么做
+
+		if(string.IsNullOrEmpty(assemblyName)) {
+			File.WriteAllText(WrapFolder + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+		}
+		else {
+			File.WriteAllText(WrapFolder + "/" + assemblyName + "/" + classname + ".cs", text, System.Text.Encoding.UTF8);
+		}
+	}
 
 	void UpdateWrapCore(){
         string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;

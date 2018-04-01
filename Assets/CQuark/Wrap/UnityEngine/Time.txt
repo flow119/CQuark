@@ -1,0 +1,53 @@
+﻿变量
+属性
+public static float time{get;}
+public static float timeSinceLevelLoad{get;}
+public static float deltaTime{get;}
+public static float fixedTime{get;}
+public static float unscaledTime{get;}
+public static float fixedUnscaledTime{get;}
+public static float unscaledDeltaTime{get;}
+public static float fixedUnscaledDeltaTime{get;}
+public static float fixedDeltaTime{get;set;}
+public static float maximumDeltaTime{get;set;}
+public static float smoothDeltaTime{get;}
+public static float maximumParticleDeltaTime{get;set;}
+public static float timeScale{get;set;}
+public static int frameCount{get;}
+public static int renderedFrameCount{get;}
+public static float realtimeSinceStartup{get;}
+public static int captureFramerate{get;set;}
+public static bool inFixedTimeStep{get;}
+
+构造函数
+UnityEngine.Time()
+
+
+方法
+public static float get_time()
+public static float get_timeSinceLevelLoad()
+public static float get_deltaTime()
+public static float get_fixedTime()
+public static float get_unscaledTime()
+public static float get_fixedUnscaledTime()
+public static float get_unscaledDeltaTime()
+public static float get_fixedUnscaledDeltaTime()
+public static float get_fixedDeltaTime()
+public static void set_fixedDeltaTime(float value)
+public static float get_maximumDeltaTime()
+public static void set_maximumDeltaTime(float value)
+public static float get_smoothDeltaTime()
+public static float get_maximumParticleDeltaTime()
+public static void set_maximumParticleDeltaTime(float value)
+public static float get_timeScale()
+public static void set_timeScale(float value)
+public static int get_frameCount()
+public static int get_renderedFrameCount()
+public static float get_realtimeSinceStartup()
+public static int get_captureFramerate()
+public static void set_captureFramerate(int value)
+public static bool get_inFixedTimeStep()
+public bool Equals(object obj)
+public int GetHashCode()
+public System.Type GetType()
+public string ToString()
