@@ -26,13 +26,7 @@ namespace CQuark
         {
             get { throw new NotImplementedException(); }
         }
-        
 
-        public ICQ_Expression_Value MakeValue(object value)
-        {
-            CQ_Expression_Value_Null v = new CQ_Expression_Value_Null();
-            return v;
-        }
         public object ConvertTo(object src, CQ_Type targetType)
         {
             return null;

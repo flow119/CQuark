@@ -107,8 +107,6 @@ namespace CQuark {
                             else {
                                 staticMemberInstance[i.Key] = value;
                             }
-
-
                         }
                     }
                 }

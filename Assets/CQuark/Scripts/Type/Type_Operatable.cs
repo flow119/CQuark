@@ -48,17 +48,6 @@ namespace CQuark
             this._type = type;
         }
 
-
-        public virtual ICQ_Expression_Value MakeValue(object value) //这个方法可能存在AOT陷阱
-        {
-            //这个方法可能存在AOT陷阱
-            //Type target = typeof(CQ_Value_Value<>).MakeGenericType(new Type[] { type }); 
-            //return target.GetConstructor(new Type[] { }).Invoke(new object[0]) as ICQ_Value;
-
-            CQ_Expression_Value_Object rvalue = new CQ_Expression_Value_Object(typeBridge);
-            rvalue.value_value = value;
-            return rvalue;
-        }
         public virtual object ConvertTo(object src, CQ_Type targetType)
         {
             Type targettype = (Type)targetType;

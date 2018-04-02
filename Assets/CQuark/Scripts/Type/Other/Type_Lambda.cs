@@ -27,13 +27,6 @@ namespace CQuark
             get { return null; }
         }
 
-
-        public ICQ_Expression_Value MakeValue(object value)
-        {
-            throw new NotSupportedException();
-
-        }
-
         public object ConvertTo(object src, CQ_Type targetType)
         {
             Type_Operatable dele = CQuark.AppDomain.GetType(targetType) as Type_Operatable;

@@ -34,15 +34,6 @@ namespace CQuark
             _class = new Class_System(typeof(string));
         }
 
-
-        public ICQ_Expression_Value MakeValue(object value)
-        {
-            CQ_Expression_Value_Value<string> v = new CQ_Expression_Value_Value<string>();
-            v.value_value = (string)value;
-            
-            return v;
-        }
-
         public object ConvertTo(object src, CQ_Type targetType)
         {
             if ((Type)targetType == typeof(string)) return src;

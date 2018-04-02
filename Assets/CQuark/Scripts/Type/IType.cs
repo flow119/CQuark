@@ -29,7 +29,6 @@ namespace CQuark
             get;
         }
 
-		ICQ_Expression_Value MakeValue(object value);
 		//自动转型能力
 		object ConvertTo(object src, CQ_Type targetType);
 
