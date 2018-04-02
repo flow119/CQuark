@@ -217,6 +217,10 @@ namespace CQuark{
             return ret;
         }
 
+		public static object ConvertTo(object obj, Type targetType){
+			return GetType(obj.GetType()).ConvertTo(obj, targetType);
+		}
+
         private static void RegisterMethod (IMethod func) {
             //if (useNamespace)
             //{
@@ -315,5 +319,6 @@ namespace CQuark{
             }
             Project_Compile(project, true);
         }
+
     }
 }

@@ -70,7 +70,7 @@ namespace CQuark {
                         if(i.Value.type.typeBridge != value.type) {
                             sv.value_value.member[i.Key] = new CQ_Value();
                             sv.value_value.member[i.Key].type = i.Value.type.typeBridge;
-                            sv.value_value.member[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(value.value, i.Value.type.typeBridge);
+                            sv.value_value.member[i.Key].value = value.ConvertTo(i.Value.type.typeBridge);
                         }
                         else {
                             sv.value_value.member[i.Key] = value;
@@ -102,7 +102,7 @@ namespace CQuark {
                             if(i.Value.type.typeBridge != value.type) {
                                 staticMemberInstance[i.Key] = new CQ_Value();
                                 staticMemberInstance[i.Key].type = i.Value.type.typeBridge;
-                                staticMemberInstance[i.Key].value = CQuark.AppDomain.GetType(value.type).ConvertTo(value.value, i.Value.type.typeBridge);
+								staticMemberInstance[i.Key].value = value.ConvertTo(i.Value.type.typeBridge);
                             }
                             else {
                                 staticMemberInstance[i.Key] = value;
@@ -199,7 +199,7 @@ namespace CQuark {
 
                     }
                     else {
-                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(value, this.members[valuename].type.typeBridge);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
                     }
                 }
                 this.staticMemberInstance[valuename].value = value;
@@ -339,7 +339,7 @@ namespace CQuark {
 
                     }
                     else {
-                        value = CQuark.AppDomain.GetType(value.GetType()).ConvertTo(value, this.members[valuename].type.typeBridge);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
                     }
                 }
                 sin.member[valuename].value = value;

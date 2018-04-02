@@ -1,4 +1,5 @@
 ﻿using CQuark;
+using System;
 
 namespace CQuark
 {
@@ -76,6 +77,10 @@ namespace CQuark
                 return NumericTypeUtils.GetDouble(type, value);
             }
         }
+
+		public object ConvertTo(Type targetType){
+			return AppDomain.GetType(type).ConvertTo(value, targetType);
+		}
     }
 }
 
