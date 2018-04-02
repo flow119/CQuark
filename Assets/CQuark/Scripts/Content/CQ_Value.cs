@@ -71,8 +71,10 @@ namespace CQuark
             return "<" + type.ToString() + ">" + value;
         }
 
-        public float GetFloat () {
-            return NumericTypeUtils.GetFloat(type, value);
+        public double AsDouble{
+            get{
+                return NumericTypeUtils.GetDouble(type, value);
+            }
         }
     }
 }

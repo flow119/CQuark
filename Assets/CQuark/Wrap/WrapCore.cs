@@ -145,5 +145,25 @@ namespace CQuark{
 
 			return false;
 		}
+
+        public static bool MatchType (Type[] needType, List<CQ_Value> param, bool implicate) {
+            if(needType.Length != param.Count)
+                return false;
+
+            for(int i = 0; i < needType.Length; i++) {
+                if(param[i] == null && !needType[i].IsValueType)
+                    continue;
+                if(!implicate) {
+                    if(needType[i] != (Type)param[i].type)
+                        return false;
+                }
+                else {
+                    if(!NumericTypeUtils.CanImplicate((Type)param[i].type, needType[i]))
+                        return false;
+                }
+            }
+           
+            return true;
+        }
 	}
 }
