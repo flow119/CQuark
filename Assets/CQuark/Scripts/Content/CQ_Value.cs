@@ -72,12 +72,6 @@ namespace CQuark
             return "<" + type.ToString() + ">" + value;
         }
 
-        public double AsDouble{
-            get{
-                return NumericTypeUtils.GetDouble(type, value);
-            }
-        }
-
 		public object ConvertTo(Type targetType){
 			return AppDomain.GetType(type).ConvertTo(value, targetType);
 		}

@@ -70,9 +70,9 @@ namespace CQuark{
             AppDomain.RegisterType(typeof(System.IO.File), "File");
         }
 
-        private static Type_Operatable MakeType (Type type, string keyword) {
+		private static IType MakeType (Type type, string keyword) {
             if(!type.IsSubclassOf(typeof(Delegate))) {
-                return new Type_Operatable(type, keyword, false);
+                return new Type_Numeric(type, keyword, false);
             }
             var method = type.GetMethod("Invoke");
             var pp = method.GetParameters();
@@ -82,15 +82,15 @@ namespace CQuark{
                 }
                 else if(pp.Length == 1) {
                     var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable;
+                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric;
                 }
                 else if(pp.Length == 2) {
                     var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
                 }
                 else if(pp.Length == 3) {
                     var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
+                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
                 }
                 else {
                     throw new Exception("还没有支持这么多参数的委托");
@@ -113,7 +113,7 @@ namespace CQuark{
                 else {
                     throw new Exception("还没有支持这么多参数的委托");
                 }
-                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Operatable);
+                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
             }
         }
         public static void RegisterType (Type type, string keyword) {

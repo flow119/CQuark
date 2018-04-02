@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    class Type_UShort : Type_Operatable
+    class Type_UShort : Type_Numeric
     {
         public Type_UShort()
             : base(typeof(ushort), "ushort",false)
@@ -15,7 +15,7 @@ namespace CQuark
         public override object ConvertTo(object src, CQ_Type targetType)
         {
             bool convertSuccess = false;
-            object convertedObject = NumericTypeUtils.TryConvertTo<ushort>(src, targetType, out convertSuccess);
+            object convertedObject = TryConvertTo<ushort>(src, targetType, out convertSuccess);
             if (convertSuccess) {
                 return convertedObject;
             }
@@ -26,7 +26,7 @@ namespace CQuark
         public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             bool math2ValueSuccess = false;
-            object value = NumericTypeUtils.Math2Value<ushort>(code, left, right, out returntype, out math2ValueSuccess);
+            object value = Math2Value<ushort>(code, left, right, out returntype, out math2ValueSuccess);
             if (math2ValueSuccess) {
                 return value;
             }
@@ -37,7 +37,7 @@ namespace CQuark
         public override bool MathLogic(LogicToken code, object left, CQ_Value right)
         {
             bool mathLogicSuccess = false;
-            bool value = NumericTypeUtils.MathLogic<ushort>(code, left, right, out mathLogicSuccess);
+            bool value = MathLogic<ushort>(code, left, right, out mathLogicSuccess);
             if (mathLogicSuccess) {
                 return value;
             }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    public class Type_DeleAction : Type_Operatable
+	public class Type_DeleAction : Type_Action
     {
         public Type_DeleAction(Type type, string setkeyword)
             : base(type, setkeyword, true)

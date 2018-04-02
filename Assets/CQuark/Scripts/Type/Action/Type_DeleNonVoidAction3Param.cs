@@ -15,7 +15,7 @@ namespace CQuark
     ///    那么注册方式如下：
     ///    env.RegType(new RegHelper_DeleNonVoidAction<bool, int, int, int>(typeof(Class.BoolParam3Delegate), "Class.BoolParam3Delegate"));
     /// </summary>
-    public class Type_DeleNonVoidAction<ReturnType, T, T1, T2> : Type_Operatable
+	public class Type_DeleNonVoidAction<ReturnType, T, T1, T2> : Type_Action
     {
         /// <summary>
         /// 有返回值,同时带 3 个 参数的委托.
