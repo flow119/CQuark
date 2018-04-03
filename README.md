@@ -39,8 +39,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 2018-04-3 v0.8.5
 
     WrapMaker可以完成大部分的工作（构造函数，get,set，静态方法，成员方法），效率大幅度提升
-    WrapMaker还不能做的事：ref,out,T,List,IEnumurator,Index[],OP
-    
+    WrapMaker还不能做的事：ref,out,T,List,IEnumurator,Index[],op(加减乘除余比较）
+
 2018-03-30 v0.8.4
 
     增加了Wrap注册工具和模板，后期需要逐渐完善工具
