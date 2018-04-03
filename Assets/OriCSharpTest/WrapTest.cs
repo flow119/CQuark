@@ -78,4 +78,8 @@ public class WrapTest : MonoBehaviour{
         //类型隐式转换是第三优先
         Log(2);
     }
+
+	public void LogOut(int a, out bool b){
+		b = false;
+	}
 }
