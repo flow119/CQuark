@@ -121,7 +121,27 @@ namespace CQuark{
 	    }
 
 		public static bool UnityEngineVector3MSet (object objSelf, string memberName, CQ_Value param) {
-
+			UnityEngine.Vector3 obj = (UnityEngine.Vector3)objSelf;
+			switch(memberName) {
+			case "x":
+				if(param.EqualOrImplicateType(typeof(float))){
+					obj.x = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "y":
+				if(param.EqualOrImplicateType(typeof(float))){
+					obj.y = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "z":
+				if(param.EqualOrImplicateType(typeof(float))){
+					obj.z = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			}
 			return false;
 	    }
 

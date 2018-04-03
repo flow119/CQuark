@@ -73,8 +73,55 @@ namespace CQuark
         }
 
 		public object ConvertTo(Type targetType){
+            if(value == null || (Type)type == targetType)
+                return value;
+            //TODO 这个流程太长了，最好简化
 			return AppDomain.GetType(type).ConvertTo(value, targetType);
 		}
+
+        public bool EqualOrImplicateType (Type targetType) {
+            if(value == null && !targetType.IsValueType)
+                return true;
+
+            Type from = type;
+            if(from == targetType)
+                return true;
+
+            //数值类型
+            if(from == typeof(sbyte)) {
+                return (targetType == typeof(short) || targetType == typeof(int) || targetType == typeof(long) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(byte)) {
+                return (targetType == typeof(short) || targetType == typeof(ushort) || targetType == typeof(int) || targetType == typeof(uint) || targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(short)) {
+                return (targetType == typeof(int) || targetType == typeof(long) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(ushort)) {
+                return (targetType == typeof(int) || targetType == typeof(uint) || targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(int) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal)) {
+                return (targetType == typeof(long));
+            }
+            else if(from == typeof(uint)) {
+                return (targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(long)) {
+                return (targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(char)) {
+                return (targetType == typeof(ushort) || targetType == typeof(int) || targetType == typeof(uint) || targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+            else if(from == typeof(float)) {
+                return (targetType == typeof(double));
+            }
+            else if(from == typeof(ulong)) {
+                return (targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
+            }
+
+            //继承
+            return (from.IsAssignableFrom(targetType));
+        }
     }
 }
 

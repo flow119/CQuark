@@ -277,15 +277,13 @@ namespace CQuark
             returntype = typeBridge;
             System.Reflection.MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
-            if (code == '+')
-            {
-                if ((Type)right.type == typeof(string))
-                {
-                    returntype = typeof(string);
-                    return left.ToString() + right.value as string;
-                }
-                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, right.type });
+            if((Type)right.type == typeof(string) && code == '+') {
+                returntype = typeof(string);
+                return left.ToString() + right.value as string;
             }
+
+            if (code == '+')
+                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, right.type });
             else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
                 call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, right.type });
             else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}

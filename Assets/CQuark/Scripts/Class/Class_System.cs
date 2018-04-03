@@ -38,10 +38,11 @@ namespace CQuark {
             return StaticCall(content, function, _params, null);
         }
         public CQ_Value StaticCall (CQ_Content content, string function, IList<CQ_Value> _params, MethodCache cache) {
+            //TODO 这里应该优先匹配类型完全相同（含默认参），没有的话再匹配隐式
             bool needConvert = false;
             List<object> _oparams = new List<object>();
             List<Type> types = new List<Type>();
-            bool bEm = false;
+            bool pIsEmpty = false;
             foreach(CQ_Value p in _params) {
                 _oparams.Add(p.value);
                 if((Class_CQuark)p.type != null) {
@@ -49,14 +50,14 @@ namespace CQuark {
                 }
                 else {
                     if(p.type == null) {
-                        bEm = true;
+                        pIsEmpty = true;
 
                     }
                     types.Add(p.type);
                 }
             }
             System.Reflection.MethodInfo methodInfo = null;
-            if(!bEm)
+            if(!pIsEmpty)
                 methodInfo = type.GetMethod(function, types.ToArray());
             //if (methodInfo == null && type.BaseType != null)//加上父类型静态函数查找,典型的现象是 GameObject.Destory
             //{
@@ -176,10 +177,11 @@ namespace CQuark {
             return MemberCall(content, object_this, function, _params, null);
         }
         public CQ_Value MemberCall (CQ_Content content, object object_this, string function, IList<CQ_Value> _params, MethodCache cache) {
+            //TODO 这里应该优先匹配类型完全相同（含默认参），没有的话再匹配隐式
             bool needConvert = false;
             List<Type> types = new List<Type>();
             List<object> _oparams = new List<object>();
-            bool bEm = false;
+            bool pIsEmpty = false;
             foreach(CQ_Value p in _params) {
                 {
                     _oparams.Add(p.value);
@@ -189,14 +191,14 @@ namespace CQuark {
                 }
                 else {
                     if(p.type == null) {
-                        bEm = true;
+                        pIsEmpty = true;
                     }
                     types.Add(p.type);
                 }
             }
 
             System.Reflection.MethodInfo methodInfo = null;
-            if(!bEm) {
+            if(!pIsEmpty) {
                 methodInfo = type.GetMethod(function, types.ToArray());
             }
             CQ_Value v = new CQ_Value();
@@ -222,7 +224,7 @@ namespace CQuark {
                     }
                 }
                 else {
-                    if(!bEm) {
+                    if(!pIsEmpty) {
                         foreach(var s in type.GetInterfaces()) {
                             methodInfo = s.GetMethod(function, types.ToArray());
                             if(methodInfo != null) break;

@@ -334,7 +334,11 @@ public class WrapMaker : EditorWindow {
 					wrapSVGet += "\t\t\t\treturn true;\n";
 				}
 				if(propertys[i].m_canSet){
-
+                    wrapSVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+                    wrapSVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
+                    wrapSVSet += "\t\t\t\t\t" + classFullName + "." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
+                    wrapSVSet += "\t\t\t\t\treturn true;\n";
+                    wrapSVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
 				}
 			}else{
 				if(propertys[i].m_canGet){
@@ -346,33 +350,50 @@ public class WrapMaker : EditorWindow {
 					wrapMVGet += "\t\t\t\treturn true;\n";
 				}
 				if(propertys[i].m_canSet){
-
+                    wrapMVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+                    wrapMVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
+                    wrapMVSet += "\t\t\t\t\tobj." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
+                    wrapMVSet += "\t\t\t\t\treturn true;\n";
+                    wrapMVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
 				}
 			}
 		}
 
 		if(!string.IsNullOrEmpty(wrapSVGet)){
-			wrapSVGet = "\t\t\tswitch(memberName) {\n" + wrapSVGet + "\t\t\t}";
+			wrapSVGet = "\t\t\tswitch(memberName) {\n" 
+                + wrapSVGet + "\t\t\t}";
 		}
+        if(!string.IsNullOrEmpty(wrapSVSet)) {
+            wrapSVSet = "\t\t\tswitch(memberName) {\n" 
+                + wrapSVSet + "\t\t\t}";
+        }
 		if(!string.IsNullOrEmpty(wrapMVGet)){
 			wrapMVGet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
-				+"\t\t\tswitch(memberName) {\n" + wrapMVGet + "\t\t\t}";
+				+"\t\t\tswitch(memberName) {\n" 
+                + wrapMVGet + "\t\t\t}";
 		}
+        if(!string.IsNullOrEmpty(wrapMVSet)) {
+            wrapMVSet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+                + "\t\t\tswitch(memberName) {\n" 
+                + wrapMVSet + "\t\t\t}";
+        }
 
 		string wrapNew = "";
 		string wrapSCall = "";
 		string wrapMCall = "";
+        string wrapOp = "";
 
 		string text = _wrapPartTemplate.Replace("{0}", classWrapName);
 		text = text.Replace("{1}", wrapNew);
-		text = text.Replace("{2}", wrapSVGet);
-		text = text.Replace("{3}", wrapSVSet);
+		text = text.Replace("{2}", wrapSVGet);  //完成
+        text = text.Replace("{3}", wrapSVSet);  //完成
 		text = text.Replace("{4}", wrapSCall);
-		text = text.Replace("{5}", wrapMVGet);
-		text = text.Replace("{6}", wrapMVSet);
+        text = text.Replace("{5}", wrapMVGet);  //完成
+        text = text.Replace("{6}", wrapMVSet);  //完成
 		text = text.Replace("{7}", wrapMCall);
 		text = text.Replace("{8}", "");//IndexGet 还没想好怎么做
 		text = text.Replace("{9}", "");//IndexSet 还没想好怎么做
+     //   text = text. OP(op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
 		if(string.IsNullOrEmpty(assemblyName)) {
 			WriteAllText(WrapFolder, classname + ".cs", text);

@@ -112,7 +112,38 @@ namespace CQuark{
 	    }
 
 	    public static bool UnityEngineTimeSSet (string memberName, CQ_Value param) {
-
+			switch(memberName) {
+			case "fixedDeltaTime":
+				if(param.EqualOrImplicateType(typeof(float))){
+					UnityEngine.Time.fixedDeltaTime = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "maximumDeltaTime":
+				if(param.EqualOrImplicateType(typeof(float))){
+					UnityEngine.Time.maximumDeltaTime = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "maximumParticleDeltaTime":
+				if(param.EqualOrImplicateType(typeof(float))){
+					UnityEngine.Time.maximumParticleDeltaTime = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "timeScale":
+				if(param.EqualOrImplicateType(typeof(float))){
+					UnityEngine.Time.timeScale = (float)param.ConvertTo(typeof(float));
+					return true;
+				}
+				break;
+			case "captureFramerate":
+				if(param.EqualOrImplicateType(typeof(int))){
+					UnityEngine.Time.captureFramerate = (int)param.ConvertTo(typeof(int));
+					return true;
+				}
+				break;
+			}
 			return false;
 	    }
 

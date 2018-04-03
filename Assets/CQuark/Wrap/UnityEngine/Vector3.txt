@@ -1,143 +1,83 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿变量
+static readonly float kEpsilon;
+float x;
+float y;
+float z;
+属性
+public static UnityEngine.Vector3 zero{get;}
+public static UnityEngine.Vector3 one{get;}
+public static UnityEngine.Vector3 forward{get;}
+public static UnityEngine.Vector3 back{get;}
+public static UnityEngine.Vector3 up{get;}
+public static UnityEngine.Vector3 down{get;}
+public static UnityEngine.Vector3 left{get;}
+public static UnityEngine.Vector3 right{get;}
+public static UnityEngine.Vector3 fwd{get;}
+public float Item{get;set;}
+public UnityEngine.Vector3 normalized{get;}
+public float magnitude{get;}
+public float sqrMagnitude{get;}
 
-namespace CQuark{
-	public partial class UnityWrap {
+构造函数
+UnityEngine.Vector3(System.Single x,System.Single y,System.Single z)
+UnityEngine.Vector3(System.Single x,System.Single y)
 
-		private static bool Vector3New(List<CQ_Value> param, out CQ_Value cqVal){
-			cqVal = new CQ_Value();
-			cqVal.type = typeof(Vector3);
-			cqVal.value = new Vector3(param[0].GetFloat(), param[1].GetFloat(), param[2].GetFloat());
-			return true;
-		}
 
-		private static bool Vector3SGet(string memberName, out CQ_Value cqVal){
-			switch(memberName) {
-			case "up":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.up;
-				return true;
-			case "down":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.down;
-				return true;
-			case "forward":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.forward;
-				return true;
-			case "back":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.back;
-				return true;
-			case "left":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.left;
-				return true;
-			case "right":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.right;
-				return true;
-			case "one":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.one;
-				return true;
-			case "zero":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(Vector3);
-				cqVal.value = Vector3.zero;
-				return true;
-			}
-			cqVal = null;
-			return false;
-		}
-
-		private static bool Vector3SSet(string memberName, CQ_Value param){
-			return false;
-		}
-		
-		private static bool Vector3SCall(string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-			returnValue = null;
-			return false;
-		}
-
-		private static bool Vector3MGet(object obj_this, string memberName, out CQ_Value cqVal){
-			Vector3 obj = (Vector3)obj_this;
-			switch(memberName){
-			case "x":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(float);
-				cqVal.value = obj.x;
-				return true;
-			case "y":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(float);
-				cqVal.value = obj.y;
-				return true;
-			case "z":
-				cqVal = new CQ_Value();
-				cqVal.type = typeof(float);
-				cqVal.value = obj.z;
-				return true;
-			}
-			cqVal = null;
-			return false;
-		}
-
-		private static bool Vector3MSet(object obj_this, string memberName, CQ_Value param){
-			Vector3 obj = (Vector3)obj_this;
-			switch(memberName){
-			case "x":
-				obj.x = param.GetFloat();
-				return true;
-			case "y":
-				obj.y = param.GetFloat();
-				return true;
-			case "z":
-				obj.z = param.GetFloat();
-				return true;
-			}
-			return false;
-		}
-		
-		private static bool Vector3MCall(object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-			Transform t = (Transform)objSelf;
-			switch(functionName) {
-			case "Rotate":
-				returnValue = null;
-				t.Rotate((Vector3)param[0].value, (float)param[1].value);
-				return true;
-			}
-			returnValue = null;
-			return false;
-		}
-		
-		private static bool Vector3IGet(object objSelf, CQ_Value key, out CQ_Value returnValue){
-			Vector3 target = (Vector3)objSelf;
-			if(key.type.type == typeof(int)){
-				returnValue = new CQ_Value();
-				returnValue.type = typeof(float);
-				returnValue.value = target[(int)key.value]; 
-				return true;
-			}
-			returnValue = null;
-			return false;
-		}
-
-		private static bool Vector3ISet(object objSelf, CQ_Value key, CQ_Value value){
-			Vector3 target = (Vector3)objSelf;
-			if(key.type.type == typeof(int)){
-				target[(int)key.value] = value.GetFloat();
-				return true;
-			}
-			return false;
-		}
-	}
-}
+方法
+public static UnityEngine.Vector3 Slerp(UnityEngine.Vector3 a, UnityEngine.Vector3 b, float t)
+public static UnityEngine.Vector3 SlerpUnclamped(UnityEngine.Vector3 a, UnityEngine.Vector3 b, float t)
+public static void OrthoNormalize(ref UnityEngine.Vector3 normal, ref UnityEngine.Vector3 tangent)
+public static void OrthoNormalize(ref UnityEngine.Vector3 normal, ref UnityEngine.Vector3 tangent, ref UnityEngine.Vector3 binormal)
+public static UnityEngine.Vector3 RotateTowards(UnityEngine.Vector3 current, UnityEngine.Vector3 target, float maxRadiansDelta, float maxMagnitudeDelta)
+public static UnityEngine.Vector3 Exclude(UnityEngine.Vector3 excludeThis, UnityEngine.Vector3 fromThat)
+public static UnityEngine.Vector3 Lerp(UnityEngine.Vector3 a, UnityEngine.Vector3 b, float t)
+public static UnityEngine.Vector3 LerpUnclamped(UnityEngine.Vector3 a, UnityEngine.Vector3 b, float t)
+public static UnityEngine.Vector3 MoveTowards(UnityEngine.Vector3 current, UnityEngine.Vector3 target, float maxDistanceDelta)
+public static UnityEngine.Vector3 SmoothDamp(UnityEngine.Vector3 current, UnityEngine.Vector3 target, ref UnityEngine.Vector3 currentVelocity, float smoothTime, float maxSpeed)
+public static UnityEngine.Vector3 SmoothDamp(UnityEngine.Vector3 current, UnityEngine.Vector3 target, ref UnityEngine.Vector3 currentVelocity, float smoothTime)
+public static UnityEngine.Vector3 SmoothDamp(UnityEngine.Vector3 current, UnityEngine.Vector3 target, ref UnityEngine.Vector3 currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
+public float get_Item(int index)
+public void set_Item(int index, float value)
+public void Set(float new_x, float new_y, float new_z)
+public static UnityEngine.Vector3 Scale(UnityEngine.Vector3 a, UnityEngine.Vector3 b)
+public void Scale(UnityEngine.Vector3 scale)
+public static UnityEngine.Vector3 Cross(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public int GetHashCode()
+public bool Equals(object other)
+public static UnityEngine.Vector3 Reflect(UnityEngine.Vector3 inDirection, UnityEngine.Vector3 inNormal)
+public static UnityEngine.Vector3 Normalize(UnityEngine.Vector3 value)
+public void Normalize()
+public UnityEngine.Vector3 get_normalized()
+public static float Dot(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public static UnityEngine.Vector3 Project(UnityEngine.Vector3 vector, UnityEngine.Vector3 onNormal)
+public static UnityEngine.Vector3 ProjectOnPlane(UnityEngine.Vector3 vector, UnityEngine.Vector3 planeNormal)
+public static float Angle(UnityEngine.Vector3 from, UnityEngine.Vector3 to)
+public static float Distance(UnityEngine.Vector3 a, UnityEngine.Vector3 b)
+public static UnityEngine.Vector3 ClampMagnitude(UnityEngine.Vector3 vector, float maxLength)
+public static float Magnitude(UnityEngine.Vector3 a)
+public float get_magnitude()
+public static float SqrMagnitude(UnityEngine.Vector3 a)
+public float get_sqrMagnitude()
+public static UnityEngine.Vector3 Min(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public static UnityEngine.Vector3 Max(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public static UnityEngine.Vector3 get_zero()
+public static UnityEngine.Vector3 get_one()
+public static UnityEngine.Vector3 get_forward()
+public static UnityEngine.Vector3 get_back()
+public static UnityEngine.Vector3 get_up()
+public static UnityEngine.Vector3 get_down()
+public static UnityEngine.Vector3 get_left()
+public static UnityEngine.Vector3 get_right()
+public static UnityEngine.Vector3 op_Addition(UnityEngine.Vector3 a, UnityEngine.Vector3 b)
+public static UnityEngine.Vector3 op_Subtraction(UnityEngine.Vector3 a, UnityEngine.Vector3 b)
+public static UnityEngine.Vector3 op_UnaryNegation(UnityEngine.Vector3 a)
+public static UnityEngine.Vector3 op_Multiply(UnityEngine.Vector3 a, float d)
+public static UnityEngine.Vector3 op_Multiply(float d, UnityEngine.Vector3 a)
+public static UnityEngine.Vector3 op_Division(UnityEngine.Vector3 a, float d)
+public static bool op_Equality(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public static bool op_Inequality(UnityEngine.Vector3 lhs, UnityEngine.Vector3 rhs)
+public string ToString()
+public string ToString(string format)
+public static UnityEngine.Vector3 get_fwd()
+public static float AngleBetween(UnityEngine.Vector3 from, UnityEngine.Vector3 to)
+public System.Type GetType()
