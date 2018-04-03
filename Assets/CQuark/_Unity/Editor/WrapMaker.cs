@@ -26,13 +26,11 @@ public class WrapMaker : EditorWindow {
 
     class Method {
         public string m_methodType;//"New, SCall, MCall, Op..."
-        public string m_className;
         public string m_returnType;
         public string m_methodName;
         public string[] m_inType;
-        public Method (string methodType, Type className, Type returnType, string methodName, System.Reflection.ParameterInfo[] param, int paramLength) {
+        public Method (string methodType, Type returnType, string methodName, System.Reflection.ParameterInfo[] param, int paramLength) {
             m_methodType = methodType;
-            m_className = Type2String(className);
             if(returnType != null)
                 m_returnType = Type2String(returnType); ;
             m_methodName = methodName;
@@ -227,10 +225,10 @@ public class WrapMaker : EditorWindow {
 			s += type.ToString() + "(";
 			System.Reflection.ParameterInfo[] param = construct[i].GetParameters();
             if(param.Length == 0){
-                saveMethods.Add(new Method("New", type, null, "", param, 0));
+                saveMethods.Add(new Method("New", null, "", param, 0));
             }else{
                 if(param[0].IsOptional)
-                    saveMethods.Add(new Method("New", type, null, "", param, 0));
+                    saveMethods.Add(new Method("New", null, "", param, 0));
 
 			    for(int j = 0; j < param.Length; j++){
 				    s += param[j].ParameterType + " " +param[j].Name;
@@ -240,7 +238,7 @@ public class WrapMaker : EditorWindow {
 					    s += " = " + param[j].DefaultValue;
 
                     if(j == param.Length - 1 || param[j + 1].IsOptional) {
-                        saveMethods.Add(new Method("New", type, null, "", param, j + 1));
+                        saveMethods.Add(new Method("New", null, "", param, j + 1));
                     }
 			    }
             }
@@ -286,10 +284,10 @@ public class WrapMaker : EditorWindow {
 			s += methods[i].Name + "(";
 			System.Reflection.ParameterInfo[] param = methods[i].GetParameters();
             if(param.Length == 0){
-                saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType,  methods[i].Name, param, 0));
+                saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", methods[i].ReturnType,  methods[i].Name, param, 0));
             }else{
                 if(param[0].IsOptional)
-                    saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType,  methods[i].Name, param, 0));
+                    saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", methods[i].ReturnType,  methods[i].Name, param, 0));
 			    for(int j = 0; j < param.Length; j++){
 				    string paramType = Type2String(param[j].ParameterType);
                     bool finish = true;
@@ -308,7 +306,7 @@ public class WrapMaker : EditorWindow {
 
                     if(finish) {
                         if(j == param.Length - 1 || param[j + 1].IsOptional) {
-                            saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType, methods[i].Name, param, j + 1));
+                            saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", methods[i].ReturnType, methods[i].Name, param, j + 1));
                         }
                     }
 			    }
@@ -443,8 +441,8 @@ public class WrapMaker : EditorWindow {
                     wrapNew += "}, mustEqual)){\n";
                 }
                 wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
-                wrapNew += "\t\t\t\treturnValue.type = typeof(" + methods[i].m_className + ");\n";
-                wrapNew += "\t\t\t\treturnValue.value = new " + methods[i].m_className + "(";
+				wrapNew += "\t\t\t\treturnValue.type = typeof(" + classFullName + ");\n";
+				wrapNew += "\t\t\t\treturnValue.value = new " + classFullName + "(";
                 for(int j = 0; j < methods[i].m_inType.Length; j++) {
                     wrapNew += "(" + methods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + methods[i].m_inType[j] + "))";
                     if(j != methods[i].m_inType.Length - 1)
@@ -470,7 +468,7 @@ public class WrapMaker : EditorWindow {
                 //    continue;
                 //}
 
-                if(!Finish(methods[i].m_inType))
+				if(!Finish(methods[i].m_returnType) || !Finish(methods[i].m_inType))
                     continue;
 
                 if(methods[i].m_inType.Length == 0)
@@ -484,14 +482,14 @@ public class WrapMaker : EditorWindow {
                     }
                     wrapSCall += "}, mustEqual)){\n";
                 }
-                if(string.IsNullOrEmpty(methods[i].m_returnType)){
+                if(methods[i].m_returnType == "void"){
                     wrapSCall += "\t\t\t\treturnValue = null;\n";
                 }else{
                     wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
                     wrapSCall += "\t\t\t\treturnValue.type = typeof(" + methods[i].m_returnType + ");\n";
                     wrapSCall += "\t\t\t\treturnValue.value = ";
                 }
-                wrapSCall += methods[i].m_className + "." + methods[i].m_methodName + "(";
+				wrapSCall += classFullName + "." + methods[i].m_methodName + "(";
                 for(int j = 0; j < methods[i].m_inType.Length; j++) {
                     wrapSCall += "(" + methods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + methods[i].m_inType[j] + "))";
                     if(j != methods[i].m_inType.Length - 1)
@@ -504,25 +502,56 @@ public class WrapMaker : EditorWindow {
 		string wrapMCall = "";
         for(int i = 0; i < methods.Count; i++) {
             if(methods[i].m_methodType == "MCall") {
-                wrapMCall += "//\t" + methods[i].m_returnType + " " + methods[i].m_methodName + " ";
-                for(int j = 0; j < methods[i].m_inType.Length; j++) {
-                    wrapMCall += methods[i].m_inType[j] + ",";
-                }
+				if(!Finish(methods[i].m_returnType) || !Finish(methods[i].m_inType))
+					continue;
+
+				if(methods[i].m_inType.Length == 0)
+					wrapMCall += "\t\t\tif(param.Count == 0 && functionName == \"" + methods[i].m_methodName + "\"){\n";
+				else {
+					wrapMCall += "\t\t\tif(param.Count == " + methods[i].m_inType.Length + " && functionName == \"" + methods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+					for(int j = 0; j < methods[i].m_inType.Length; j++) {
+						wrapMCall += "typeof(" + methods[i].m_inType[j] + ")";
+						if(j != methods[i].m_inType.Length - 1)
+							wrapMCall += ",";
+					}
+					wrapMCall += "}, mustEqual)){\n";
+				}
+				if(methods[i].m_returnType == "void"){
+					wrapMCall += "\t\t\t\treturnValue = null;\n\t\t\t\t";
+				}else{
+					wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
+					wrapMCall += "\t\t\t\treturnValue.type = typeof(" + methods[i].m_returnType + ");\n";
+					wrapMCall += "\t\t\t\treturnValue.value = ";
+				}
+				wrapMCall += "obj." + methods[i].m_methodName + "(";
+				for(int j = 0; j < methods[i].m_inType.Length; j++) {
+					wrapMCall += "(" + methods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + methods[i].m_inType[j] + "))";
+					if(j != methods[i].m_inType.Length - 1)
+						wrapMCall += ",";
+				}
+				wrapMCall += ");\n";
+				wrapMCall += "\t\t\t\treturn true;\n\t\t\t}\n";
             }
         }
+		if(!string.IsNullOrEmpty(wrapMCall)) {
+			wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ wrapMCall + "\t\t\t";
+		}
+
         string wrapOp = "";
 
 		string text = _wrapPartTemplate.Replace("{0}", classWrapName);
-		text = text.Replace("{1}", wrapNew);
-		text = text.Replace("{2}", wrapSVGet);  //完成
-        text = text.Replace("{3}", wrapSVSet);  //完成
-		text = text.Replace("{4}", wrapSCall);
-        text = text.Replace("{5}", wrapMVGet);  //完成
-        text = text.Replace("{6}", wrapMVSet);  //完成
+		text = text.Replace("{1}", wrapNew);	
+		text = text.Replace("{2}", wrapSVGet);  
+        text = text.Replace("{3}", wrapSVSet);  
+		text = text.Replace("{4}", wrapSCall);	
+        text = text.Replace("{5}", wrapMVGet);  
+        text = text.Replace("{6}", wrapMVSet);  
 		text = text.Replace("{7}", wrapMCall);
 		text = text.Replace("{8}", "");//IndexGet 还没想好怎么做
 		text = text.Replace("{9}", "");//IndexSet 还没想好怎么做
-     //   text = text. OP(op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
+		//TODO OP text = text.OP
+     //  (op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
 		if(string.IsNullOrEmpty(assemblyName)) {
 			WriteAllText(WrapFolder, classname + ".cs", text);
@@ -534,11 +563,23 @@ public class WrapMaker : EditorWindow {
 
     static bool Finish (string[] types) {
         for(int j = 0; j < types.Length; j++) {
-            if(types[j].EndsWith("&"))
-                return false;
+			if(!Finish(types[j]))
+				return false;
         }
         return true;
     }
+
+	static bool Finish(string type){
+		if(type.EndsWith("&"))	//ref
+			return false;
+		if(type.Contains("List`"))	//List
+			return false;
+		if(type == "T" || type == "[T]" || type == "T[]")	//T , 比如GetComponent<T>
+			return false;
+		if(type =="System.Collections.IEnumerator")			//
+			return false;	
+		return true;
+	}
 
 	void UpdateWrapCore(){
         string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
