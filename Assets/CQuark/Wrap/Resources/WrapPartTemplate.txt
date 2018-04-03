@@ -8,7 +8,7 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		private static bool {0}New(List<CQ_Value> param, out CQ_Value returnValue){
+		private static bool {0}New(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
 {1}
 			returnValue = null;
 			return false;
@@ -25,7 +25,7 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool {0}SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool {0}SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
 {4}
 			returnValue = null;
 	        return false;
@@ -42,7 +42,7 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool {0}MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool {0}MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
 {7}
 			returnValue = null;
 	        return false;

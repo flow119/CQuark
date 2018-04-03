@@ -49,6 +49,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
 			List<CQ_Value> param = new List<CQ_Value>();
+            //TODO 这些_expressions一开始就做非空判断，那么List全部可以换成数组了
             foreach(ICQ_Expression p in _expressions) {
                 if(p != null) {
 					param.Add(p.ComputeValue(content));

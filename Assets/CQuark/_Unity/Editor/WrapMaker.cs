@@ -24,7 +24,28 @@ public class WrapMaker : EditorWindow {
 		}
 	}
 
+    class Method {
+        public string m_methodType;//"New, SCall, MCall, Op..."
+        public string m_className;
+        public string m_returnType;
+        public string m_methodName;
+        public string[] m_inType;
+        public Method (string methodType, Type className, Type returnType, string methodName, System.Reflection.ParameterInfo[] param, int paramLength) {
+            m_methodType = methodType;
+            m_className = Type2String(className);
+            if(returnType != null)
+                m_returnType = Type2String(returnType); ;
+            m_methodName = methodName;
+            m_inType = new string[paramLength];
+            for(int i = 0; i < paramLength; i++) {
+                m_inType[i] = Type2String(param[i].ParameterType);
+            }
+        }
+    }
+
     const string WRAP_CORE_NAME = "WrapCore";
+    const string WRAP_UTIL_NAME = "WrapUtil";
+
 	[MenuItem("CQuark/Wrap Maker", false, 9)]
 	[MenuItem("Assets/CQuark/Wrap Maker", false, 0)]
 	static public void OpenAtlasMaker ()
@@ -37,7 +58,6 @@ public class WrapMaker : EditorWindow {
 	Dictionary<string, List<string>> m_classes = new Dictionary<string, List<string>>();
 
 	string _wrapFolder = "";
-	bool _loaded = false;
 	string _classInput = "";
 
 	string WrapFolder{
@@ -116,12 +136,10 @@ public class WrapMaker : EditorWindow {
 		m_classes = new Dictionary<string, List<string>>();
 		DirectoryInfo di = new DirectoryInfo(WrapFolder);
 		FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
-		bool findWrapCore = false;
 		for(int i = 0; i < files.Length; i++){
 			string classname = files[i].Name.Split('.')[0];
 			if(files[i].Directory.ToString().Length == WrapFolder.Length){
-                if(classname == WRAP_CORE_NAME) {
-					findWrapCore = true;
+                if(classname == WRAP_CORE_NAME || classname == WRAP_UTIL_NAME) {
 					continue;
 				}
 				if(!m_classes.ContainsKey(""))
@@ -144,12 +162,11 @@ public class WrapMaker : EditorWindow {
 			Debug.LogError("No Such Type : " + classname);
 			return;
 		}
-			
-		//TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
-		List<Property> propertys = new List<Property>();
 
 		string note = "";
+
 #region 变量或属性
+        List<Property> savePropertys = new List<Property>();
 		note += "变量\n";
 		FieldInfo[] fis = type.GetFields();
 		for(int i= 0; i < fis.Length; i++){
@@ -161,7 +178,7 @@ public class WrapMaker : EditorWindow {
 			if(isReadonly)
 				note += "readonly ";
 			note += Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
-			propertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
+			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
 		}
 
 		note += "属性\n";
@@ -177,7 +194,7 @@ public class WrapMaker : EditorWindow {
 				note += "set;";
 			note += "}\n";
 
-			propertys.Add(new Property(pis[i].PropertyType, true, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+			savePropertys.Add(new Property(pis[i].PropertyType, true, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
 		}
 		pis = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 		for(int i= 0; i < pis.Length; i++){
@@ -193,30 +210,46 @@ public class WrapMaker : EditorWindow {
 				continue;//这里有个问题，实例的Item无法确认是属性还是[index]
 			if(pis[i].PropertyType.ToString().Contains("IEnumerable`"))
 				continue;//暂时先不处理枚举器
-			propertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
 
 		}
 #endregion
 
-		note += "\n";
+        note += "\n";
 
+#region 构造函数，静态函数，成员函数
+        //TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
+        List<Method> saveMethods = new List<Method>();
         note += "构造函数\n";
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
 			string s = "";
 			s += type.ToString() + "(";
 			System.Reflection.ParameterInfo[] param = construct[i].GetParameters();
-			for(int j = 0; j < param.Length; j++){
-				s += param[j].ParameterType + " " +param[j].Name;
-				if(j != param.Length - 1)
-					s += ",";
-				if(param[j].IsOptional)
-					s += " = " + param[j].DefaultValue;
-			}
+            if(param.Length == 0){
+                saveMethods.Add(new Method("New", type, null, "", param, 0));
+            }else{
+                if(param[0].IsOptional)
+                    saveMethods.Add(new Method("New", type, null, "", param, 0));
+
+			    for(int j = 0; j < param.Length; j++){
+				    s += param[j].ParameterType + " " +param[j].Name;
+				    if(j != param.Length - 1)
+					    s += ",";
+				    if(param[j].IsOptional)
+					    s += " = " + param[j].DefaultValue;
+
+                    if(j == param.Length - 1 || param[j + 1].IsOptional) {
+                        saveMethods.Add(new Method("New", type, null, "", param, j + 1));
+                    }
+			    }
+            }
 			s += ")";
             note += s + "\n";
 		}
         note += "\n";
+
+
 //        note += "成员\n";
 //		List<string> property = new List<string>();
 //		System.Reflection.MemberInfo[] members = type.GetMembers();
@@ -238,6 +271,9 @@ public class WrapMaker : EditorWindow {
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
 		for(int i = 0; i < methods.Length; i++){
+            if(methods[i].Name.StartsWith("get_") || methods[i].Name.StartsWith("set_"))
+                continue;
+
 			string s = "";
 			s += methods[i].IsPublic ? "public " : "private ";
 			s += methods[i].IsStatic ? "static " : "";
@@ -249,30 +285,47 @@ public class WrapMaker : EditorWindow {
 			//如果方法名是set_开头，那么就是set成员（如果本来就命名为set_X，反射出的就是set_set_X）
 			s += methods[i].Name + "(";
 			System.Reflection.ParameterInfo[] param = methods[i].GetParameters();
-			for(int j = 0; j < param.Length; j++){
-				string paramType = Type2String(param[j].ParameterType);
-				if(paramType.EndsWith("&")){//ref
-					s += "ref " + paramType.Substring(0, paramType.Length - 1) + " " + param[j].Name;
-				}else{
-					s += paramType + " " + param[j].Name ;
-					if(param[j].IsOptional)
-						s += " = " + param[j].DefaultValue;
-				}
-				if(j != param.Length - 1)
-					s += ", ";
-			}
+            if(param.Length == 0){
+                saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType,  methods[i].Name, param, 0));
+            }else{
+                if(param[0].IsOptional)
+                    saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType,  methods[i].Name, param, 0));
+			    for(int j = 0; j < param.Length; j++){
+				    string paramType = Type2String(param[j].ParameterType);
+                    bool finish = true;
+				    if(paramType.EndsWith("&")){//ref
+					    s += "ref " + paramType.Substring(0, paramType.Length - 1) + " " + param[j].Name;
+				    }else{
+					    s += paramType + " " + param[j].Name ;
+					    if(param[j].IsOptional)
+						    s += " = " + param[j].DefaultValue;
+				    }
+				    if(j != param.Length - 1)
+					    s += ", ";
+
+                    if(methods[i].Name.StartsWith("op_"))//TODO 补充OP
+                        finish = false;
+
+                    if(finish) {
+                        if(j == param.Length - 1 || param[j + 1].IsOptional) {
+                            saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", type, methods[i].ReturnType, methods[i].Name, param, j + 1));
+                        }
+                    }
+			    }
+            }
 			s += ")";
             note += s + "\n";
-		}
+        }
+#endregion
 
-		if(string.IsNullOrEmpty(assemblyName)) {
+        if(string.IsNullOrEmpty(assemblyName)) {
 			WriteAllText(WrapFolder, classname + ".txt", note);
 		}
 		else {
 			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", note);
 		}
 
-		UpdateWrapPart(assemblyName, classname, propertys);
+		UpdateWrapPart(assemblyName, classname, savePropertys, saveMethods);
 	}
 
 	static void WriteAllText(string folder, string name, string content){
@@ -309,11 +362,7 @@ public class WrapMaker : EditorWindow {
 			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
 	}
 
-	void UpdateWrapPart(string assemblyName, string classname, List<Property> propertys){
-		List<string> newc = new List<string>();
-		List<string> scall = new List<string>();
-		List<string> mcall = new List<string>();
-
+	void UpdateWrapPart(string assemblyName, string classname, List<Property> propertys, List<Method> methods){
 		string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
 		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
 		string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
@@ -378,9 +427,89 @@ public class WrapMaker : EditorWindow {
                 + wrapMVSet + "\t\t\t}";
         }
 
+
 		string wrapNew = "";
+        for(int i = 0; i < methods.Count; i++) {
+            if(methods[i].m_methodType == "New") {
+                if(methods[i].m_inType.Length == 0)
+                    wrapNew += "\t\t\tif(param.Count == 0){\n";
+                else{
+                    wrapNew += "\t\t\tif(param.Count == " + methods[i].m_inType.Length + " && MatchType(param, new Type[] {";
+                    for(int j = 0; j < methods[i].m_inType.Length; j++) {
+                        wrapNew += "typeof(" + methods[i].m_inType[j] + ")";
+                        if(j != methods[i].m_inType.Length - 1)
+                            wrapNew += ",";
+                    }
+                    wrapNew += "}, mustEqual)){\n";
+                }
+                wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
+                wrapNew += "\t\t\t\treturnValue.type = typeof(" + methods[i].m_className + ");\n";
+                wrapNew += "\t\t\t\treturnValue.value = new " + methods[i].m_className + "(";
+                for(int j = 0; j < methods[i].m_inType.Length; j++) {
+                    wrapNew += "(" + methods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + methods[i].m_inType[j] + "))";
+                    if(j != methods[i].m_inType.Length - 1)
+                        wrapNew += ",";
+                }
+                wrapNew += ");\n";
+                wrapNew += "\t\t\t\treturn true;\n\t\t\t}\n";
+            }
+        }
+
 		string wrapSCall = "";
+        for(int i = 0; i < methods.Count; i++) {
+            if(methods[i].m_methodType == "SCall") {
+                //if(param.Count == 3 && functionName == "Slerp" && MatchType(param, new Type[] { typeof(float), typeof(float), typeof(float) }, mustEqual)) {
+                //    returnValue = new CQ_Value();
+                //    returnValue.type = typeof(UnityEngine.Vector3);
+                //    returnValue.value = UnityEngine.Vector3.Slerp((float)param[0].ConvertTo(typeof(float)), (float)param[1].ConvertTo(typeof(float)), (float)param[2].ConvertTo(typeof(float)));
+                //    return true;
+                //}
+
+                //if(methods[i].m_methodName.StartsWith("op_")) {
+                //    wrapSCall += "//" + methods[i].m_methodName + "\n";
+                //    continue;
+                //}
+
+                if(!Finish(methods[i].m_inType))
+                    continue;
+
+                if(methods[i].m_inType.Length == 0)
+                    wrapSCall += "\t\t\tif(param.Count == 0 && functionName == \"" + methods[i].m_methodName + "\"){\n";
+                else {
+                    wrapSCall += "\t\t\tif(param.Count == " + methods[i].m_inType.Length + " && functionName == \"" + methods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+                    for(int j = 0; j < methods[i].m_inType.Length; j++) {
+                        wrapSCall += "typeof(" + methods[i].m_inType[j] + ")";
+                        if(j != methods[i].m_inType.Length - 1)
+                            wrapSCall += ",";
+                    }
+                    wrapSCall += "}, mustEqual)){\n";
+                }
+                if(string.IsNullOrEmpty(methods[i].m_returnType)){
+                    wrapSCall += "\t\t\t\treturnValue = null;\n";
+                }else{
+                    wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
+                    wrapSCall += "\t\t\t\treturnValue.type = typeof(" + methods[i].m_returnType + ");\n";
+                    wrapSCall += "\t\t\t\treturnValue.value = ";
+                }
+                wrapSCall += methods[i].m_className + "." + methods[i].m_methodName + "(";
+                for(int j = 0; j < methods[i].m_inType.Length; j++) {
+                    wrapSCall += "(" + methods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + methods[i].m_inType[j] + "))";
+                    if(j != methods[i].m_inType.Length - 1)
+                        wrapSCall += ",";
+                }
+                wrapSCall += ");\n";
+                wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
+            }
+        }
 		string wrapMCall = "";
+        for(int i = 0; i < methods.Count; i++) {
+            if(methods[i].m_methodType == "MCall") {
+                wrapMCall += "//\t" + methods[i].m_returnType + " " + methods[i].m_methodName + " ";
+                for(int j = 0; j < methods[i].m_inType.Length; j++) {
+                    wrapMCall += methods[i].m_inType[j] + ",";
+                }
+            }
+        }
         string wrapOp = "";
 
 		string text = _wrapPartTemplate.Replace("{0}", classWrapName);
@@ -403,6 +532,14 @@ public class WrapMaker : EditorWindow {
 		}
 	}
 
+    static bool Finish (string[] types) {
+        for(int j = 0; j < types.Length; j++) {
+            if(types[j].EndsWith("&"))
+                return false;
+        }
+        return true;
+    }
+
 	void UpdateWrapCore(){
         string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
 
@@ -422,7 +559,8 @@ public class WrapMaker : EditorWindow {
                 string classWrapName = kvp.Key + kvp.Value[i];                                      //类似UnityEngineVector3，不带点
                 
                 wrapNew += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
-                wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue);\r\n";
+                wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue, true) || " 
+                                                + classWrapName + "New(param, out returnValue, false);\r\n";
                 wrapNew += "\t\t\t}\n";
 
                 wrapSVGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
@@ -434,7 +572,8 @@ public class WrapMaker : EditorWindow {
                 wrapSVSet += "\t\t\t}\n";
 
                 wrapSCall += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
-                wrapSCall += "\t\t\t\treturn " + classWrapName + "SCall(functionName, param, out returnValue);\r\n";
+                wrapSCall += "\t\t\t\treturn " + classWrapName + "SCall(functionName, param, out returnValue, true) || " 
+                                                + classWrapName + "SCall(functionName, param, out returnValue, false);\r\n";
                 wrapSCall += "\t\t\t}\n";
 
                 wrapMVGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
@@ -446,7 +585,8 @@ public class WrapMaker : EditorWindow {
                 wrapMVSet += "\t\t\t}\n";
 
                 wrapMCall += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
-                wrapMCall += "\t\t\t\treturn " + classWrapName + "MCall(objSelf, functionName, param, out returnValue);\r\n";
+                wrapMCall += "\t\t\t\treturn " + classWrapName + "MCall(objSelf, functionName, param, out returnValue, true) || "
+                                                + classWrapName + "MCall(objSelf, functionName, param, out returnValue, false);\r\n";
                 wrapMCall += "\t\t\t}\n";
 
                 wrapIGet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";

@@ -79,10 +79,20 @@ namespace CQuark
 			return AppDomain.GetType(type).ConvertTo(value, targetType);
 		}
 
-        public bool EqualOrImplicateType (Type targetType) {
+        //类型是否等于targetType
+        public bool EqualType (Type targetType) {
             if(value == null && !targetType.IsValueType)
                 return true;
 
+            Type from = type;
+            if(from == targetType)
+                return true;
+
+            return false;
+        }
+
+        //类型是否可以隐式转换成targetType
+        public bool ImplicateType (Type targetType) {
             Type from = type;
             if(from == targetType)
                 return true;
@@ -121,6 +131,10 @@ namespace CQuark
 
             //继承
             return (from.IsAssignableFrom(targetType));
+        }
+
+        public bool EqualOrImplicateType (Type targetType) {
+            return EqualType(targetType) || ImplicateType(targetType);            
         }
     }
 }
