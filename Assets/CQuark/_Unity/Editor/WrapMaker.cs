@@ -41,6 +41,28 @@ public class WrapMaker : EditorWindow {
         }
     }
 
+
+    [System.Serializable]
+    class WrapClass {
+        public string m_nameSpace;
+        public List<string> m_classes = new List<string>();
+        public WrapClass (string nameSpace) {
+            m_nameSpace = nameSpace;
+        }
+        public void AddClass (string s) {
+            m_classes.Add(s);
+            m_classes.Sort();
+        }
+    }
+    WrapClass GetWrapClass (string key) {
+        for(int i = 0; i < m_wrapClasses.Count; i++) {
+            if(m_wrapClasses[i].m_nameSpace == key)
+                return m_wrapClasses[i];
+        }
+        return null;
+    }
+    List<WrapClass> m_wrapClasses = new List<WrapClass>();
+
     const string WRAP_CORE_NAME = "WrapCore";
     const string WRAP_UTIL_NAME = "WrapUtil";
 
@@ -56,7 +78,8 @@ public class WrapMaker : EditorWindow {
     /// <summary>
     /// key = 命名空间，value = 类
     /// </summary>
-	Dictionary<string, List<string>> m_classes = new Dictionary<string, List<string>>();
+    //Dictionary<string, List<string>> m_classes = new Dictionary<string, List<string>>();
+    
 
 	string _wrapFolder = "";
 	string _classInput = "";
@@ -134,7 +157,7 @@ public class WrapMaker : EditorWindow {
 			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
 		}
 
-		m_classes = new Dictionary<string, List<string>>();
+        m_wrapClasses.Clear();
 		DirectoryInfo di = new DirectoryInfo(WrapFolder);
 		FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
 		for(int i = 0; i < files.Length; i++){
@@ -143,14 +166,22 @@ public class WrapMaker : EditorWindow {
                 if(classname == WRAP_CORE_NAME || classname == WRAP_UTIL_NAME) {
 					continue;
 				}
-				if(!m_classes.ContainsKey(""))
-					m_classes.Add("", new List<string>());
-				m_classes[""].Add(classname);
+
+                WrapClass wc = GetWrapClass("");
+                if(wc == null) {
+                    wc = new WrapClass("");
+                    m_wrapClasses.Add(wc);
+                }
+                wc.AddClass(classname);
 			}else{
 				string nameSpace = files[i].Directory.ToString().Substring(WrapFolder.Length + 1);
-				if(!m_classes.ContainsKey(nameSpace))
-					m_classes.Add(nameSpace, new List<string>());
-				m_classes[nameSpace].Add(classname);
+				
+                WrapClass wc = GetWrapClass(nameSpace);
+                if(wc == null) {
+                    wc = new WrapClass(nameSpace);
+                    m_wrapClasses.Add(wc);
+                }
+                wc.AddClass(classname);
 			}
 		}
 		PlayerPrefs.SetString("WrapFolder", _wrapFolder);
@@ -173,12 +204,13 @@ public class WrapMaker : EditorWindow {
 		for(int i= 0; i < fis.Length; i++){
 			string attributes = fis[i].Attributes.ToString();
 			bool isStatic = attributes.Contains("Static");
-			if(isStatic)
-				note += "static ";
-			bool isReadonly = attributes.Contains("Literal") && attributes.Contains("HasDefault");
-			if(isReadonly)
-				note += "readonly ";
-			note += Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
+            if(isStatic)
+                note += "static ";
+            bool isReadonly = attributes.Contains("Literal") && attributes.Contains("HasDefault") ; //const
+            isReadonly = isReadonly || attributes.Contains("InitOnly");                             //readonly
+            if(isReadonly)
+                note += "readonly ";
+            note += attributes + Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
 			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
 		}
 
@@ -630,10 +662,10 @@ public class WrapMaker : EditorWindow {
         string wrapIGet = "";
         string wrapISet = "";
 
-        foreach(KeyValuePair<string, List<string>> kvp in m_classes) {
-            for(int i = 0; i < kvp.Value.Count; i++) {
-                string classFullName = kvp.Key == "" ? kvp.Value[i] : kvp.Key + "." + kvp.Value[i]; //类似UnityEngine.Vector3，用来Wrap
-                string classWrapName = kvp.Key.Replace(".","") + kvp.Value[i];                                      //类似UnityEngineVector3，不带点
+        foreach(WrapClass kvp in m_wrapClasses) {
+            for(int i = 0; i < kvp.m_classes.Count; i++) {
+                string classFullName = kvp.m_nameSpace == "" ? kvp.m_classes[i] : kvp.m_nameSpace + "." + kvp.m_classes[i]; //类似UnityEngine.Vector3，用来Wrap
+                string classWrapName = kvp.m_nameSpace.Replace(".", "") + kvp.m_classes[i];                                      //类似UnityEngineVector3，不带点
                 
                 wrapNew += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
                 wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue, true) || " 
@@ -693,6 +725,7 @@ public class WrapMaker : EditorWindow {
 		OnlyAddClass(assemblyName, classname);
 		Reload();
 		UpdateWrapCore();
+        
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 	}
@@ -713,7 +746,7 @@ public class WrapMaker : EditorWindow {
 	}
 
     void ClearAll () {
-        m_classes.Clear();
+        m_wrapClasses.Clear();
 		Reload();
         UpdateWrapCore();
         AssetDatabase.Refresh();
@@ -755,28 +788,34 @@ public class WrapMaker : EditorWindow {
 
 		mScroll = GUILayout.BeginScrollView(mScroll);
 		GUILayout.BeginVertical();
-		foreach(var kvp in m_classes){
+		foreach(var kvp in m_wrapClasses){
 			GUILayout.BeginHorizontal();
-			GUI.contentColor = Color.cyan;
-			GUILayout.Label("Namespace : ", GUILayout.Width(100));
-			GUI.contentColor = Color.white;
-			GUILayout.TextField(kvp.Key);
+            if(GUILayout.Button("+", GUILayout.Width(25))) {
+
+            }
+            GUILayout.Label("Namespace", GUILayout.Width(80));
+
+			GUILayout.TextField(kvp.m_nameSpace, GUILayout.Width(200));
+            //GUILayout.Space(90);
 			GUILayout.EndHorizontal();
 
-			for(int i = 0; i < kvp.Value.Count; i++){
+			for(int i = 0; i < kvp.m_classes.Count; i++){
 				GUILayout.BeginHorizontal();
-				GUILayout.TextField(kvp.Value[i]);
-				GUI.backgroundColor = Color.green;
+                GUILayout.Space(60);
+                GUILayout.TextField(kvp.m_classes[i]);
+				GUI.backgroundColor = Color.cyan;
 				if(GUILayout.Button("Update", GUILayout.Width(60))){
-					UpdateClass(kvp.Key, kvp.Value[i]);
+                    UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
 				}
 				GUI.backgroundColor = Color.red;
-				if(GUILayout.Button("X", GUILayout.Width(30))){
-					RemoveClass(kvp.Key,kvp.Value[i]);
+				if(GUILayout.Button("X", GUILayout.Width(25))){
+                    RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
+                    return;
 				}
 				GUI.backgroundColor = Color.white;
 				GUILayout.EndHorizontal();
 			}
+            GUILayout.Space(5);
 		}
 		GUILayout.EndVertical();
 		GUILayout.EndScrollView();
@@ -810,11 +849,18 @@ public class WrapMaker : EditorWindow {
                 className = _classInput.Substring(dotIndex + 1);
             }
 
-			if(m_classes.ContainsKey(assemblyName) && m_classes[assemblyName].Contains(className)){
-				UpdateClass(assemblyName, className);
-			}else{
-				AddClass(assemblyName, className);
-			}
+            WrapClass wc = GetWrapClass(assemblyName);
+            if(wc == null) {
+                wc = new WrapClass(assemblyName);
+                AddClass(assemblyName, className);
+            }
+            else {
+                if(!wc.m_classes.Contains(className))
+                    AddClass(assemblyName, className);
+                else
+                    UpdateClass(assemblyName, className);
+            }
+
 			_classInput = "";
 		}
 		GUI.enabled = true;
