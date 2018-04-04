@@ -52,7 +52,10 @@ public class WrapMaker : EditorWindow {
 	}
 
 	Vector2 mScroll = Vector2.zero;
-	//命名空间，类
+
+    /// <summary>
+    /// key = 命名空间，value = 类
+    /// </summary>
 	Dictionary<string, List<string>> m_classes = new Dictionary<string, List<string>>();
 
 	string _wrapFolder = "";
@@ -261,6 +264,7 @@ public class WrapMaker : EditorWindow {
 //            }
 //		}
 
+        bool isStaticClass = saveMethods.Count == 0;//是否是静态类
 
 
         note += "\n";
@@ -269,7 +273,23 @@ public class WrapMaker : EditorWindow {
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
 		for(int i = 0; i < methods.Length; i++){
-            if(methods[i].Name.StartsWith("get_") || methods[i].Name.StartsWith("set_"))
+            //属性上面已经获取过了 这里做个判断，是否包含这个属性，包含的话continue，否则表示有方法名是get_,set_开头
+            if(methods[i].Name.StartsWith("get_")){
+                if(HasProperty(savePropertys, methods[i].Name.Substring(4), true))
+                    continue;
+            }
+
+            if(methods[i].Name.StartsWith("set_")) {
+                if(HasProperty(savePropertys, methods[i].Name.Substring(4), false))
+                    continue;
+            }
+
+            if(methods[i].Name == "get_Item" || methods[i].Name == "set_Item") {
+                continue;//未完成
+            }
+
+            //静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
+            if(isStaticClass && !methods[i].IsStatic)
                 continue;
 
 			string s = "";
@@ -333,6 +353,20 @@ public class WrapMaker : EditorWindow {
 		File.WriteAllText(folder + "/" + name, content, System.Text.Encoding.UTF8);
 	}
 
+    static bool HasProperty (List<Property> propertys, string propertyName, bool isGet) {
+        for(int i = 0; i < propertys.Count; i++) {
+            if(isGet){
+                if(propertys[i].m_canGet && propertys[i].m_name == propertyName)
+                    return true;
+            }
+            else {
+                if(propertys[i].m_canSet && propertys[i].m_name == propertyName)
+                    return true;
+            }
+        }
+        return false;
+    }
+
 	static string Type2String(Type type){
 		string retType = type.ToString();
 		retType = retType.Replace('+','.');//A+Enum实际上是A.Enum
@@ -361,7 +395,7 @@ public class WrapMaker : EditorWindow {
 	}
 
 	void UpdateWrapPart(string assemblyName, string classname, List<Property> propertys, List<Method> methods){
-		string classWrapName = assemblyName + classname;                                      //类似UnityEngineVector3，不带点
+		string classWrapName = assemblyName.Replace(".","") + classname;                                      //类似UnityEngineVector3，不带点
 		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
 		string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
 
@@ -574,6 +608,8 @@ public class WrapMaker : EditorWindow {
 			return false;
 		if(type.Contains("List`"))	//List
 			return false;
+        if(type.Contains("IEnumerable`"))
+            return false;
 		if(type == "T" || type == "[T]" || type == "T[]")	//T , 比如GetComponent<T>
 			return false;
 		if(type =="System.Collections.IEnumerator")			//
@@ -597,7 +633,7 @@ public class WrapMaker : EditorWindow {
         foreach(KeyValuePair<string, List<string>> kvp in m_classes) {
             for(int i = 0; i < kvp.Value.Count; i++) {
                 string classFullName = kvp.Key == "" ? kvp.Value[i] : kvp.Key + "." + kvp.Value[i]; //类似UnityEngine.Vector3，用来Wrap
-                string classWrapName = kvp.Key + kvp.Value[i];                                      //类似UnityEngineVector3，不带点
+                string classWrapName = kvp.Key.Replace(".","") + kvp.Value[i];                                      //类似UnityEngineVector3，不带点
                 
                 wrapNew += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
                 wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue, true) || " 
@@ -754,14 +790,25 @@ public class WrapMaker : EditorWindow {
 		if(GUILayout.Button("Add/Update", GUILayout.Width(100))){
 			string className = "";
 			string assemblyName = "";
-			string[] s = _classInput.Split('.');
-			if(s.Length == 1){
-				assemblyName = "";
-				className = s[0];
-			}else if(s.Length == 2){
-				assemblyName = s[0];
-				className = s[1];
-			}
+
+            //string[] s = _classInput.Split('.');
+            //if(s.Length == 1) {
+            //    assemblyName = "";
+            //    className = s[0];
+            //}
+            //else if(s.Length == 2) {
+            //    assemblyName = s[0];
+            //    className = s[1];
+            //}
+            int dotIndex = _classInput.LastIndexOf('.');
+            if(dotIndex == -1) {
+                assemblyName = "";
+                className = _classInput;
+            }
+            else {
+                assemblyName = _classInput.Substring(0, dotIndex);
+                className = _classInput.Substring(dotIndex + 1);
+            }
 
 			if(m_classes.ContainsKey(assemblyName) && m_classes[assemblyName].Contains(className)){
 				UpdateClass(assemblyName, className);

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace CQuark
 {
@@ -250,8 +251,8 @@ namespace CQuark
                 return Enum.ToObject(targettype, src);
 
             }
-            var ms = _type.GetMethods();
-            foreach (var m in ms)
+            MethodInfo[] ms = _type.GetMethods();
+            foreach(MethodInfo m in ms)
             {
                 if ((m.Name == "op_Implicit" || m.Name == "op_Explicit") && m.ReturnType == targettype)
                 {
@@ -275,7 +276,7 @@ namespace CQuark
 		public virtual object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
             returntype = typeBridge;
-            System.Reflection.MethodInfo call = null;
+            MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
             if((Type)right.type == typeof(string) && code == '+') {
                 returntype = typeof(string);
