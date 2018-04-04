@@ -8,7 +8,19 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		private static bool UnityEngineVector3New(List<CQ_Value> param, out CQ_Value returnValue){
+		private static bool UnityEngineVector3New(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
+			if(param.Count == 3 && MatchType(param, new Type[] {typeof(float),typeof(float),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = new UnityEngine.Vector3((float)param[0].ConvertTo(typeof(float)),(float)param[1].ConvertTo(typeof(float)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 2 && MatchType(param, new Type[] {typeof(float),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = new UnityEngine.Vector3((float)param[0].ConvertTo(typeof(float)),(float)param[1].ConvertTo(typeof(float)));
+				return true;
+			}
 
 			returnValue = null;
 			return false;
@@ -76,7 +88,139 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool UnityEngineVector3SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool UnityEngineVector3SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+			if(param.Count == 3 && functionName == "Slerp" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Slerp((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 3 && functionName == "SlerpUnclamped" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.SlerpUnclamped((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 4 && functionName == "RotateTowards" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.RotateTowards((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)),(float)param[3].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Exclude" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Exclude((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 3 && functionName == "Lerp" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Lerp((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 3 && functionName == "LerpUnclamped" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.LerpUnclamped((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 3 && functionName == "MoveTowards" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.MoveTowards((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Scale" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Scale((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Cross" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Cross((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Reflect" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Reflect((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 1 && functionName == "Normalize" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Normalize((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Dot" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.Dot((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Project" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Project((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "ProjectOnPlane" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.ProjectOnPlane((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Angle" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.Angle((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Distance" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.Distance((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "ClampMagnitude" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(float)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.ClampMagnitude((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(float)param[1].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 1 && functionName == "Magnitude" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.Magnitude((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 1 && functionName == "SqrMagnitude" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.SqrMagnitude((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Min" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Min((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "Max" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Vector3);
+				returnValue.value = UnityEngine.Vector3.Max((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 2 && functionName == "AngleBetween" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3),typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(float);
+				returnValue.value = UnityEngine.Vector3.AngleBetween((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)),(UnityEngine.Vector3)param[1].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
 
 			returnValue = null;
 	        return false;
@@ -145,8 +289,54 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool UnityEngineVector3MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-
+		public static bool UnityEngineVector3MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+			UnityEngine.Vector3 obj = (UnityEngine.Vector3)objSelf;
+			if(param.Count == 3 && functionName == "Set" && MatchType(param, new Type[] {typeof(float),typeof(float),typeof(float)}, mustEqual)){
+				returnValue = null;
+				obj.Set((float)param[0].ConvertTo(typeof(float)),(float)param[1].ConvertTo(typeof(float)),(float)param[2].ConvertTo(typeof(float)));
+				return true;
+			}
+			if(param.Count == 1 && functionName == "Scale" && MatchType(param, new Type[] {typeof(UnityEngine.Vector3)}, mustEqual)){
+				returnValue = null;
+				obj.Scale((UnityEngine.Vector3)param[0].ConvertTo(typeof(UnityEngine.Vector3)));
+				return true;
+			}
+			if(param.Count == 0 && functionName == "GetHashCode"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(int);
+				returnValue.value = obj.GetHashCode();
+				return true;
+			}
+			if(param.Count == 1 && functionName == "Equals" && MatchType(param, new Type[] {typeof(object)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(bool);
+				returnValue.value = obj.Equals((object)param[0].ConvertTo(typeof(object)));
+				return true;
+			}
+			if(param.Count == 0 && functionName == "Normalize"){
+				returnValue = null;
+				obj.Normalize();
+				return true;
+			}
+			if(param.Count == 0 && functionName == "ToString"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(string);
+				returnValue.value = obj.ToString();
+				return true;
+			}
+			if(param.Count == 1 && functionName == "ToString" && MatchType(param, new Type[] {typeof(string)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(string);
+				returnValue.value = obj.ToString((string)param[0].ConvertTo(typeof(string)));
+				return true;
+			}
+			if(param.Count == 0 && functionName == "GetType"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(System.Type);
+				returnValue.value = obj.GetType();
+				return true;
+			}
+			
 			returnValue = null;
 	        return false;
 	    }

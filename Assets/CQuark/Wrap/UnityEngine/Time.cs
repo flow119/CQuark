@@ -8,7 +8,13 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		private static bool UnityEngineTimeNew(List<CQ_Value> param, out CQ_Value returnValue){
+		private static bool UnityEngineTimeNew(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
+			if(param.Count == 0){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(UnityEngine.Time);
+				returnValue.value = new UnityEngine.Time();
+				return true;
+			}
 
 			returnValue = null;
 			return false;
@@ -147,7 +153,7 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool UnityEngineTimeSCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool UnityEngineTimeSCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
 
 			returnValue = null;
 	        return false;
@@ -164,8 +170,33 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool UnityEngineTimeMCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-
+		public static bool UnityEngineTimeMCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+			UnityEngine.Time obj = (UnityEngine.Time)objSelf;
+			if(param.Count == 1 && functionName == "Equals" && MatchType(param, new Type[] {typeof(object)}, mustEqual)){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(bool);
+				returnValue.value = obj.Equals((object)param[0].ConvertTo(typeof(object)));
+				return true;
+			}
+			if(param.Count == 0 && functionName == "GetHashCode"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(int);
+				returnValue.value = obj.GetHashCode();
+				return true;
+			}
+			if(param.Count == 0 && functionName == "GetType"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(System.Type);
+				returnValue.value = obj.GetType();
+				return true;
+			}
+			if(param.Count == 0 && functionName == "ToString"){
+				returnValue = new CQ_Value();
+				returnValue.type = typeof(string);
+				returnValue.value = obj.ToString();
+				return true;
+			}
+			
 			returnValue = null;
 	        return false;
 	    }
