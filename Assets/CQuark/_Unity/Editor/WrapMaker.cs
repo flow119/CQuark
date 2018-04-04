@@ -745,12 +745,33 @@ public class WrapMaker : EditorWindow {
 		AssetDatabase.Refresh();
 	}
 
+    void RemoveClass (string assemblyName) {
+        List<string> classes = GetWrapClass(assemblyName).m_classes;
+        for(int i = classes.Count - 1; i >= 0; i--) {
+            OnlyRemoveClass(assemblyName, classes[i]);
+        }
+        Reload();
+        UpdateWrapCore();
+        //Remove完毕ReloadDataBase，会编译代码
+        AssetDatabase.Refresh();
+    }
+
 	void UpdateClass(string assemblyName, string classname){
 		OnlyRemoveClass(assemblyName, classname);
 		OnlyAddClass(assemblyName, classname);
         UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
 		AssetDatabase.Refresh();
 	}
+
+    void UpdateClass (string assemblyName) {
+        List<string> classes = GetWrapClass(assemblyName).m_classes;
+        for(int i = classes.Count - 1; i >= 0; i--) {
+            OnlyRemoveClass(assemblyName, classes[i]);
+            OnlyAddClass(assemblyName, classes[i]);
+        }
+        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
+        AssetDatabase.Refresh();
+    }
 
     void ClearAll () {
         m_wrapClasses.Clear();
@@ -861,8 +882,18 @@ public class WrapMaker : EditorWindow {
             
             GUILayout.Label("Namespace", GUILayout.Width(80));
 
-			GUILayout.TextField(kvp.m_nameSpace, GUILayout.Width(200));
+			GUILayout.TextField(kvp.m_nameSpace);
             GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
+            GUI.backgroundColor = Color.cyan;
+            if(GUILayout.Button("Update", GUILayout.Width(60))) {
+                UpdateClass(kvp.m_nameSpace);
+            }
+            GUI.backgroundColor = Color.red;
+            if(GUILayout.Button("X", GUILayout.Width(25))) {
+                RemoveClass(kvp.m_nameSpace);
+                return;
+            }
+            GUI.backgroundColor = Color.white;
             //GUILayout.Space(90);
 			GUILayout.EndHorizontal();
 
