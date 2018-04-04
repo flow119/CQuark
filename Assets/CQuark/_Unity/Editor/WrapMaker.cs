@@ -41,7 +41,8 @@ public class WrapMaker : EditorWindow {
         }
     }
 
-
+    #region WrapClass
+    //这个类只是编辑器使用的，便于预览创建的Wrap而已，不影响最终发布
     [System.Serializable]
     class WrapClass {
         public string m_nameSpace;
@@ -54,6 +55,7 @@ public class WrapMaker : EditorWindow {
             m_classes.Sort();
         }
     }
+    List<WrapClass> m_wrapClasses = new List<WrapClass>();
     WrapClass GetWrapClass (string key) {
         for(int i = 0; i < m_wrapClasses.Count; i++) {
             if(m_wrapClasses[i].m_nameSpace == key)
@@ -61,8 +63,9 @@ public class WrapMaker : EditorWindow {
         }
         return null;
     }
-    List<WrapClass> m_wrapClasses = new List<WrapClass>();
-
+    List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
+    List<string> _deleteClasses = new List<string>();       //准备删除的类
+    #endregion
     const string WRAP_CORE_NAME = "WrapCore";
     const string WRAP_UTIL_NAME = "WrapUtil";
 
@@ -199,7 +202,7 @@ public class WrapMaker : EditorWindow {
 
 #region 变量或属性
         List<Property> savePropertys = new List<Property>();
-		note += "变量\n";
+		note += "\n变量\n";
 		FieldInfo[] fis = type.GetFields();
 		for(int i= 0; i < fis.Length; i++){
 			string attributes = fis[i].Attributes.ToString();
@@ -214,7 +217,7 @@ public class WrapMaker : EditorWindow {
 			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
 		}
 
-		note += "属性\n";
+        note += "\n属性\n";
 		PropertyInfo[] pis = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
 		for(int i= 0; i < pis.Length; i++){
 			note += "public ";
@@ -248,12 +251,11 @@ public class WrapMaker : EditorWindow {
 		}
 #endregion
 
-        note += "\n";
 
 #region 构造函数，静态函数，成员函数
         //TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
         List<Method> saveMethods = new List<Method>();
-        note += "构造函数\n";
+        note += "\n构造函数\n";
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
 			string s = "";
@@ -280,7 +282,6 @@ public class WrapMaker : EditorWindow {
 			s += ")";
             note += s + "\n";
 		}
-        note += "\n";
 
 
 //        note += "成员\n";
@@ -298,9 +299,7 @@ public class WrapMaker : EditorWindow {
 
         bool isStaticClass = saveMethods.Count == 0;//是否是静态类
 
-
-        note += "\n";
-        note += "方法\n";
+        note += "\n方法\n";
 		//TODO 默认参， ref in out
 		System.Reflection.MethodInfo[] methods = type.GetMethods();//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调基类
@@ -317,7 +316,7 @@ public class WrapMaker : EditorWindow {
             }
 
             if(methods[i].Name == "get_Item" || methods[i].Name == "set_Item") {
-                continue;//未完成
+                continue;//TODO 未完成
             }
 
             //静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
@@ -328,7 +327,15 @@ public class WrapMaker : EditorWindow {
 			s += methods[i].IsPublic ? "public " : "private ";
 			s += methods[i].IsStatic ? "static " : "";
 			string retType = Type2String(methods[i].ReturnType);
-
+            //s += methods[i].Attributes.ToString();
+            //s += methods[i].MethodHandle.ToString();
+            s += methods[i].IsGenericMethod.ToString();
+            s += methods[i].IsGenericMethodDefinition.ToString();
+            s += methods[i].IsFinal.ToString();
+            s += methods[i].IsFamilyAndAssembly.ToString();
+            s += methods[i].IsAbstract.ToString();
+            s += methods[i].ContainsGenericParameters.ToString();
+            s += methods[i].CallingConvention.ToString();
 			s += retType + " ";
 
 			//如果方法名是get_开头，那么就是get成员（如果本来就命名为get_X，反射出的就是get_get_X）
@@ -770,65 +777,20 @@ public class WrapMaker : EditorWindow {
 
 		GUILayout.Space(5);
 
-        GUILayout.BeginHorizontal();
-		if(GUILayout.Button("Reload")){
-			Reload();
-		}
-        if(GUILayout.Button("UpdateAll")) {
-         //   Reload();
-        }
-        GUI.backgroundColor = Color.red;
-        if(GUILayout.Button("Clear", GUILayout.Width(60))) {
-            ClearAll();
-        }
-        GUI.backgroundColor = Color.white;
-        GUILayout.EndHorizontal();
+        GUILayout.Label("    You can make Wrap with this tool simply.\n"
+                            +"    Step 1 : Type Full class name in the box below（eg . UnityEngine.Vector3)\n" 
+                            +"    Step 2 : Click \"Add/Update\" button");
 
-		GUILayout.Space(5);
+        GUILayout.Space(5);
 
-		mScroll = GUILayout.BeginScrollView(mScroll);
-		GUILayout.BeginVertical();
-		foreach(var kvp in m_wrapClasses){
-			GUILayout.BeginHorizontal();
-            if(GUILayout.Button("+", GUILayout.Width(25))) {
-
-            }
-            GUILayout.Label("Namespace", GUILayout.Width(80));
-
-			GUILayout.TextField(kvp.m_nameSpace, GUILayout.Width(200));
-            //GUILayout.Space(90);
-			GUILayout.EndHorizontal();
-
-			for(int i = 0; i < kvp.m_classes.Count; i++){
-				GUILayout.BeginHorizontal();
-                GUILayout.Space(60);
-                GUILayout.TextField(kvp.m_classes[i]);
-				GUI.backgroundColor = Color.cyan;
-				if(GUILayout.Button("Update", GUILayout.Width(60))){
-                    UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
-				}
-				GUI.backgroundColor = Color.red;
-				if(GUILayout.Button("X", GUILayout.Width(25))){
-                    RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
-                    return;
-				}
-				GUI.backgroundColor = Color.white;
-				GUILayout.EndHorizontal();
-			}
-            GUILayout.Space(5);
-		}
-		GUILayout.EndVertical();
-		GUILayout.EndScrollView();
-
-		GUILayout.Space(10);
-
-		GUILayout.BeginHorizontal();
-		_classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
-		GUI.enabled = !string.IsNullOrEmpty(_classInput);
-		GUI.backgroundColor = Color.green;
-		if(GUILayout.Button("Add/Update", GUILayout.Width(100))){
-			string className = "";
-			string assemblyName = "";
+        GUILayout.BeginHorizontal(); 
+        GUI.backgroundColor = Color.green;
+        GUILayout.Label("Full Classname : ", GUILayout.Width(100));
+        _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
+        GUI.enabled = !string.IsNullOrEmpty(_classInput);
+        if(GUILayout.Button("Add/Update", GUILayout.Width(100))) {
+            string className = "";
+            string assemblyName = "";
 
             //string[] s = _classInput.Split('.');
             //if(s.Length == 1) {
@@ -861,11 +823,81 @@ public class WrapMaker : EditorWindow {
                     UpdateClass(assemblyName, className);
             }
 
-			_classInput = "";
-		}
-		GUI.enabled = true;
-		GUILayout.EndHorizontal();
+            _classInput = "";
+        }
+        GUI.enabled = true;
+        GUI.backgroundColor = Color.white;
+        GUILayout.EndHorizontal();
+        //GUILayout.BeginHorizontal();
+		
+        //if(GUILayout.Button("UpdateAll")) {
+        // //   Reload();
+        //}
+        //GUI.backgroundColor = Color.red;
+        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
+        //    ClearAll();
+        //}
+        //GUI.backgroundColor = Color.white;
+        //GUILayout.EndHorizontal();
 
 		GUILayout.Space(10);
+
+        GUILayout.Label("Wraps : ");
+
+		mScroll = GUILayout.BeginScrollView(mScroll);
+		GUILayout.BeginVertical();
+		foreach(var kvp in m_wrapClasses){
+			GUILayout.BeginHorizontal();
+            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+                if(GUILayout.Button("\u25BC", GUILayout.Width(25))) {
+                    _folderNamespace.Remove(kvp.m_nameSpace);
+                }
+            }
+            else {
+                if(GUILayout.Button("\u25BA", GUILayout.Width(25))) {
+                    _folderNamespace.Add(kvp.m_nameSpace);
+                }
+            }
+            
+            GUILayout.Label("Namespace", GUILayout.Width(80));
+
+			GUILayout.TextField(kvp.m_nameSpace, GUILayout.Width(200));
+            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
+            //GUILayout.Space(90);
+			GUILayout.EndHorizontal();
+
+            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+                for(int i = 0; i < kvp.m_classes.Count; i++) {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(60);
+                    GUILayout.Label("  Class",GUILayout.Width(54));
+                    GUILayout.TextField(kvp.m_classes[i]);
+                    GUI.backgroundColor = Color.cyan;
+                    if(GUILayout.Button("Update", GUILayout.Width(60))) {
+                        UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
+                    }
+                    GUI.backgroundColor = Color.red;
+                    if(GUILayout.Button("X", GUILayout.Width(25))) {
+                        RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
+                        return;
+                    }
+                    GUI.backgroundColor = Color.white;
+                    GUILayout.EndHorizontal();
+                }
+            }
+            GUILayout.Space(5);
+		}
+		GUILayout.EndVertical();
+		GUILayout.EndScrollView();
+
+		GUILayout.Space(10);
+
+
+        GUILayout.Label("If the Serializable Field is missing, Click the button below ↓");
+        GUILayout.Space(5);
+        if(GUILayout.Button("Reload")) {
+            Reload();
+        }
+        GUILayout.Space(10);
 	}
 }
