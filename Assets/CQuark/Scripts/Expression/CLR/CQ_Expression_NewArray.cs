@@ -64,7 +64,7 @@ namespace CQuark {
 
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.New(type.typeBridge.type, param, out outvalue)){
+			if(!Wrap.New(type.cqType.type, param, out outvalue)){
 				outvalue = type._class.New(content, param);
 			}
 

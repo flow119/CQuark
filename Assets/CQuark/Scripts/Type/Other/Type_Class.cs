@@ -17,7 +17,7 @@ namespace CQuark
             get;
             private set;
         }
-        public CQ_Type typeBridge
+        public CQ_Type cqType
         {
             get;
             private set;
@@ -30,7 +30,7 @@ namespace CQuark
         {
             get
             {
-                return (Class_CQuark)typeBridge as IClass;
+                return (Class_CQuark)cqType as IClass;
             }
         }
 
@@ -45,7 +45,7 @@ namespace CQuark
         {
             this.keyword = keyword;
             this._namespace = "";
-            typeBridge = new Class_CQuark(keyword, "", filename, bInterface);
+            cqType = new Class_CQuark(keyword, "", filename, bInterface);
             compiled = false;
         }
         public void SetBaseType(IList<IType> types)
@@ -54,13 +54,13 @@ namespace CQuark
         }
         public void EmbDebugToken(IList<Token> tokens)
         {
-            ((Class_CQuark)typeBridge).EmbDebugToken(tokens);
+            ((Class_CQuark)cqType).EmbDebugToken(tokens);
         }
      
         public object ConvertTo(object src, CQ_Type targetType)
         {
 			var type = CQuark.AppDomain.GetType(targetType);
-            if (this.typeBridge == type||(Type)targetType==typeof(object)) 
+            if (this.cqType == type||(Type)targetType==typeof(object)) 
 				return src;
             if (this.types.Contains(type))
             {

@@ -130,9 +130,9 @@ namespace CQuark
                         content.function = _func.function;
 						#endif
 
-                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].typeBridge, param0);
-                        content.DefineAndSet(func._paramnames[1], func._paramtypes[1].typeBridge, param1);
-                        content.DefineAndSet(func._paramnames[2], func._paramtypes[2].typeBridge, param2);
+                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].cqType, param0);
+                        content.DefineAndSet(func._paramnames[1], func._paramtypes[1].cqType, param1);
+                        content.DefineAndSet(func._paramnames[2], func._paramtypes[2].cqType, param2);
 
                         CQ_Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
@@ -152,7 +152,7 @@ namespace CQuark
                 return default(ReturnType);
             };
 
-            _dele = Delegate.CreateDelegate(this.typeBridge, dele.Target, dele.Method);
+            _dele = Delegate.CreateDelegate(this.cqType, dele.Target, dele.Method);
             return delefunc.cacheFunction(this._type, _dele);
         }
 
@@ -196,7 +196,7 @@ namespace CQuark
             };
 
             Delegate d = dele as Delegate;
-            return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+            return Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
         }
     }
 }

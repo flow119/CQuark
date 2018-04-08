@@ -59,7 +59,7 @@ namespace CQuark {
             CQ_Value value = null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.StaticCall(type.typeBridge.type, functionName, _params, out value)){
+			if(!Wrap.StaticCall(type.cqType.type, functionName, _params, out value)){
 	            if(cache == null || cache.cachefail) {
 	                cache = new MethodCache();
 	                value = type._class.StaticCall(content, functionName, _params, cache);

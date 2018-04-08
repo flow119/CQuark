@@ -134,9 +134,9 @@ namespace CQuark
                 }
             };
             Delegate d = dele as Delegate;
-            if ((Type)this.typeBridge != typeof(Action))
+            if ((Type)this.cqType != typeof(Action))
             {
-                _dele = Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+                _dele = Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
             }
             else
             {
@@ -179,9 +179,9 @@ namespace CQuark
                 }
             };
             Delegate d = dele as Delegate;
-            if ((Type)this.typeBridge != typeof(Action))
+            if ((Type)this.cqType != typeof(Action))
             {
-                return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+                return Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
             }
             else
             {

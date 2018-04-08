@@ -15,7 +15,7 @@ namespace CQuark
             else
             {
 				IType type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
-                define.value_type = type.typeBridge;
+                define.value_type = type.cqType;
             }
             define.value_name = tlist[pos+1].text;
             return define;
@@ -26,7 +26,7 @@ namespace CQuark
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             {
 				IType type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text + "[]");
-                define.value_type = type.typeBridge;
+                define.value_type = type.cqType;
             }
             define.value_name = tlist[pos + 3].text;
             return define;
@@ -105,7 +105,7 @@ namespace CQuark
                 else
                 {
 					IType type = CQuark.AppDomain.GetTypeByKeyword(tlist[pos].text);
-                    define.value_type = type.typeBridge;
+                    define.value_type = type.cqType;
                 }
                 define.value_name = tlist[pos + 1].text;
                 define._expressions.Add(v);
@@ -130,7 +130,7 @@ namespace CQuark
                 CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
                 {
 					IType type = AppDomain.GetTypeByKeyword(tlist[pos].text+"[]");
-                    define.value_type = type.typeBridge;
+                    define.value_type = type.cqType;
                 }
                 define.value_name = tlist[pos + 3].text;
                 define._expressions.Add(v);

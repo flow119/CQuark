@@ -16,7 +16,7 @@ namespace CQuark
 		{
 			get;
 		}
-		CQ_Type typeBridge
+		CQ_Type cqType
 		{
 			get;
 		}

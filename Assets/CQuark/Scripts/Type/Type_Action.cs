@@ -14,9 +14,9 @@ namespace CQuark
         }
         public string _namespace
         {
-            get { return typeBridge.NameSpace; }
+            get { return cqType.NameSpace; }
         }
-        public CQ_Type typeBridge
+        public CQ_Type cqType
         {
             get;
             protected set;
@@ -44,7 +44,7 @@ namespace CQuark
             {
                 keyword = type.Name;
             }
-            this.typeBridge = type;
+            this.cqType = type;
             this._type = type;
         }
 

@@ -115,7 +115,7 @@ namespace CQuark
 						#if CQUARK_DEBUG
                         content.function = _func.function;
 						#endif
-                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].typeBridge, param0);
+                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].cqType, param0);
 
                         func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
@@ -132,9 +132,9 @@ namespace CQuark
                 }
             };
             Delegate d = dele as Delegate;
-            if ((Type)this.typeBridge != typeof(Action))
+            if ((Type)this.cqType != typeof(Action))
             {
-                _dele = Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+                _dele = Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
             }
             else
             {
@@ -178,9 +178,9 @@ namespace CQuark
                     }
                 };
             Delegate d = dele as Delegate;
-            if ((Type)this.typeBridge != typeof(Action<T>))
+            if ((Type)this.cqType != typeof(Action<T>))
             {
-                return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+                return Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
             }
             else
             {

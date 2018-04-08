@@ -15,9 +15,9 @@ namespace CQuark
         }
         public string _namespace
         {
-            get { return typeBridge.NameSpace; }
+            get { return cqType.NameSpace; }
         }
-        public CQ_Type typeBridge
+        public CQ_Type cqType
         {
             get;
             protected set;
@@ -45,7 +45,7 @@ namespace CQuark
             {
                 keyword = type.Name;
             }
-            this.typeBridge = type;
+            this.cqType = type;
             this._type = type;
         }
 
@@ -275,7 +275,7 @@ namespace CQuark
         }
 		public virtual object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
-            returntype = typeBridge;
+            returntype = cqType;
             MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
             Type rightType = (Type)right.type;
@@ -285,15 +285,15 @@ namespace CQuark
             }
 
             if (code == '+')
-                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, rightType });
+                call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
             else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, rightType });
+                call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
             else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Multiply", new Type[] { this.typeBridge, rightType });
+                call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
             else if (code == '/')//[3] = {CQcriptExt.Vector3 op_Division(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Division", new Type[] { this.typeBridge, rightType });
+                call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
             else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Modulus", new Type[] { this.typeBridge, rightType });
+                call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
 
             var obj = call.Invoke(null, new object[] { left, right.value });
             //function.StaticCall(env,"op_Addtion",new List<ICL>{})

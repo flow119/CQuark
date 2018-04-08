@@ -146,7 +146,7 @@ namespace CQuark
                 }
                 return default(ReturnType);
             };
-            _dele = Delegate.CreateDelegate(this.typeBridge, dele.Target, dele.Method);
+            _dele = Delegate.CreateDelegate(this.cqType, dele.Target, dele.Method);
             return delefunc.cacheFunction(this._type, _dele);
         }
 
@@ -184,7 +184,7 @@ namespace CQuark
             };
 
             Delegate d = dele;
-            return Delegate.CreateDelegate(this.typeBridge, d.Target, d.Method);
+            return Delegate.CreateDelegate(this.cqType, d.Target, d.Method);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public CQ_Type typeBridge
+        public CQ_Type cqType
         {
             get { return (typeof(var)); }
         }

@@ -73,7 +73,7 @@ namespace CQuark {
                     //string tfunc = sf[0];
                     Type[] gtypes = new Type[sf.Length];
                     for(int i = 0; i < sf.Length; i++) {
-                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).typeBridge;
+                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).cqType;
                     }
                     methodInfo = FindMethod(type, tfunc, _params, gtypes);
 
@@ -130,7 +130,7 @@ namespace CQuark {
                     }
                     else {
                         if(pp[i].ParameterType != (Type)_params[i].type) {
-                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(_oparams[i], pp[i].ParameterType);
+                            _oparams[i] = _params[i].ConvertTo(pp[i].ParameterType);
                         }
                     }
                 }
@@ -212,14 +212,14 @@ namespace CQuark {
                     //string tfunc = sf[0];
                     Type[] gtypes = new Type[sf.Length];
                     for(int i = 0; i < sf.Length; i++) {
-                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).typeBridge;
+                        gtypes[i] = CQuark.AppDomain.GetTypeByKeyword(sf[i]).cqType;
                     }
                     methodInfo = FindMethod(type, tfunc, _params, gtypes);
                     var ps = methodInfo.GetParameters();
                     for(int i = 0; i < Math.Min(ps.Length, _oparams.Count); i++) {
                         if(ps[i].ParameterType != (Type)_params[i].type) {
 
-                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(_oparams[i], ps[i].ParameterType);
+                            _oparams[i] = _params[i].ConvertTo(ps[i].ParameterType);
                         }
                     }
                 }
@@ -293,10 +293,6 @@ namespace CQuark {
             }
             return null;
         }
-        public bool HasFunction (string key) {
-            //TODO 
-            return false;
-        }
 
         public IEnumerator CoroutineCall (CQ_Content content, object object_this, string function, IList<CQ_Value> _params, ICoroutine coroutine) {
             //TODO 不存在這樣的調用
@@ -346,7 +342,8 @@ namespace CQuark {
                         }
                     }
                     else {
-                        if(pp[i].ParameterType == types[i]) continue;
+                        if(pp[i].ParameterType == types[i])
+                            continue;
 
                         try {
                             if(types[i] == null && !pp[i].ParameterType.IsValueType) {
@@ -405,7 +402,7 @@ namespace CQuark {
                     }
                     else {
                         if(pp[i].ParameterType != (Type)_params[i].type) {
-                            _oparams[i] = CQuark.AppDomain.GetType(_params[i].type).ConvertTo(_oparams[i], pp[i].ParameterType);
+                            _oparams[i] = _params[i].ConvertTo(pp[i].ParameterType);
                         }
                     }
                 }

@@ -16,7 +16,6 @@ namespace CQuark
 		CQ_Value StaticValueGet(CQ_Content content, string valuename);
 		bool StaticValueSet(CQ_Content content, string valuename, object value);
 
-		bool HasFunction(string key);
 		CQ_Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params);
 		IEnumerator CoroutineCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params, ICoroutine coroutin);
 		CQ_Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params, MethodCache cache);

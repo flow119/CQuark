@@ -120,7 +120,7 @@ namespace CQuark{
             RegisterType(MakeType(type, keyword));
         }
         public static void RegisterType (IType type) {
-            types[type.typeBridge] = type;
+            types[type.cqType] = type;
 
             string typename = type.keyword;
             //if (useNamespace)
@@ -187,11 +187,11 @@ namespace CQuark{
 
                     //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     if(typess.ContainsKey(func)) {
-                        Type gentype = GetTypeByKeyword(func).typeBridge;
+                        Type gentype = GetTypeByKeyword(func).cqType;
                         if(gentype.IsGenericTypeDefinition) {
                             Type[] types = new Type[_types.Count];
                             for(int i = 0; i < types.Length; i++) {
-                                CQ_Type t = GetTypeByKeyword(_types[i]).typeBridge;
+                                CQ_Type t = GetTypeByKeyword(_types[i]).cqType;
                                 Type rt = t;
                                 if(rt == null && t != null) {
                                     rt = typeof(object);
