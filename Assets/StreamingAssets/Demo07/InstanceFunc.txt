@@ -12,6 +12,6 @@ class InstanceScript : MonoBehaviour
     {
         transform.Rotate(Vector3.up + Vector3.up, 180 * Time.deltaTime);
 		float scale = Mathf.Sin(Time.time) / 2 + 2;
-		transform.localScale = new Vector3(scale,scale,scale);
+		transform.localScale = new Vector3(scale,scale,scale) * 2;
     }
 }

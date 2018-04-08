@@ -278,21 +278,22 @@ namespace CQuark
             returntype = typeBridge;
             MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
-            if((Type)right.type == typeof(string) && code == '+') {
+            Type rightType = (Type)right.type;
+            if(rightType == typeof(string) && code == '+') {
                 returntype = typeof(string);
                 return left.ToString() + right.value as string;
             }
 
             if (code == '+')
-                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, right.type });
+                call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, rightType });
             else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, right.type });
+                call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, rightType });
             else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Multiply", new Type[] { this.typeBridge, right.type });
+                call = _type.GetMethod("op_Multiply", new Type[] { this.typeBridge, rightType });
             else if (code == '/')//[3] = {CQcriptExt.Vector3 op_Division(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Division", new Type[] { this.typeBridge, right.type });
+                call = _type.GetMethod("op_Division", new Type[] { this.typeBridge, rightType });
             else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Modulus", new Type[] { this.typeBridge, right.type });
+                call = _type.GetMethod("op_Modulus", new Type[] { this.typeBridge, rightType });
 
             var obj = call.Invoke(null, new object[] { left, right.value });
             //function.StaticCall(env,"op_Addtion",new List<ICL>{})

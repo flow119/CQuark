@@ -360,9 +360,6 @@ public class WrapMaker : EditorWindow {
 				    if(j != param.Length - 1)
 					    s += ", ";
 
-                    if(methods[i].Name.StartsWith("op_"))//TODO 补充OP
-                        finish = false;
-
                     if(finish) {
                         if(j == param.Length - 1 || param[j + 1].IsOptional) {
                             saveMethods.Add(new Method(methods[i].IsStatic ? "SCall" : "MCall", methods[i].ReturnType, methods[i].Name, param, j + 1));
@@ -541,9 +538,27 @@ public class WrapMaker : EditorWindow {
                 //    continue;
                 //}
 
-				if(!Finish(methods[i].m_returnType) || !Finish(methods[i].m_inType))
+                if(!Finish(methods[i].m_returnType) || !Finish(methods[i].m_inType))
                     continue;
 
+                //if(methods[i].m_methodName == "op_Addition") {//TODO 补充OP
+
+                //}
+                //else if(methods[i].m_methodName == "op_Subtraction") {
+
+                //}
+                //else if(methods[i].m_methodName == "op_Multiply") {
+
+                //}
+                //else if(methods[i].m_methodName == "op_Division") {
+
+                //}
+                //else if(methods[i].m_methodName == "op_Modulus") {
+
+                //}
+                //else {
+
+                //}
                 if(methods[i].m_inType.Length == 0)
                     wrapSCall += "\t\t\tif(param.Count == 0 && functionName == \"" + methods[i].m_methodName + "\"){\n";
                 else {
@@ -849,12 +864,24 @@ public class WrapMaker : EditorWindow {
         GUI.enabled = true;
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
-        //GUILayout.BeginHorizontal();
-		
-        //if(GUILayout.Button("UpdateAll")) {
-        // //   Reload();
-        //}
-        //GUI.backgroundColor = Color.red;
+
+
+        GUILayout.Label("    Or just click the button below");
+        GUI.backgroundColor = Color.green;
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Add/Update Full project")) {
+            //   Reload();
+        }
+        if(GUILayout.Button("Update Registed wrap")) {
+            //   Reload();
+        }
+        GUI.backgroundColor = Color.red;
+        if(GUILayout.Button("Clear All wraps")) {
+            //   Reload();
+        }
+        GUI.backgroundColor = Color.white;
+        GUILayout.EndHorizontal();
+
         //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
         //    ClearAll();
         //}
