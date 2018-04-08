@@ -91,5 +91,35 @@ namespace CQuark{
 {8}
 			return false;
 		}
+		
+		public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+//{9}           
+            return false;
+        }
+		
+		public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+//{10}           
+            return false;
+        }
+		
+		public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+//{11}           
+            return false;
+        }
+		
+		public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+//{12}           
+            return false;
+        }
+		
+		public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+//{13}           
+            return false;
+        }
 	}
 }
