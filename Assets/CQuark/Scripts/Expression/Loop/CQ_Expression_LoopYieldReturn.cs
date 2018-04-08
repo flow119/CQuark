@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_LoopReturn : ICQ_Expression {
-        public CQ_Expression_LoopReturn (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_LoopYieldReturn : ICQ_Expression {
+		public CQ_Expression_LoopYieldReturn (int tbegin, int tend, int lbegin, int lend) {
             _expressions = new List<ICQ_Expression>();
             tokenBegin = tbegin;
             tokenEnd = tend;
@@ -36,13 +36,14 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
-                if(_expressions == null || _expressions.Count == 0)
-                    return false;
-                foreach(ICQ_Expression expr in _expressions) {
-                    if(expr.hasCoroutine)
-                        return true;
-                }
-                return false;
+//                if(_expressions == null || _expressions.Count == 0)
+//                    return false;
+//                foreach(ICQ_Expression expr in _expressions) {
+//                    if(expr.hasCoroutine)
+//                        return true;
+//                }
+//                return false;
+				return true;
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
@@ -50,7 +51,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-			rv.breakBlock = BreakType.Return;
+			rv.breakBlock = BreakType.YieldReturn;
             if(_expressions.Count > 0 && _expressions[0] != null) {
                 var v = _expressions[0].ComputeValue(content);
                 {
@@ -67,9 +68,32 @@ namespace CQuark {
             return rv;
 
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
-            throw new Exception("return 不支持套用协程");
-        }
+		public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
+			#if CQUARK_DEBUG
+			content.InStack(this);
+			#endif
+			CQ_Value rv = new CQ_Value();
+			rv.breakBlock = BreakType.YieldReturn;
+			if(_expressions.Count > 0 && _expressions[0] != null) {
+				var v = _expressions[0].ComputeValue(content);
+				{
+					rv.type = v.type;
+					rv.value = v.value;
+				}
+			}
+			else {
+				rv.type = typeof(void);
+			}
+			#if CQUARK_DEBUG
+			content.OutStack(this);
+			#endif
+			if(rv.value == null)
+				yield return null;
+			else if(rv.type.type == typeof (IEnumerator))
+				yield return coroutine.StartCoroutine(rv.value as IEnumerator);
+			else
+				yield return rv.value;//这里Unity会非常智能的自动去转型
+		}
 
         public override string ToString () {
             return "return|";

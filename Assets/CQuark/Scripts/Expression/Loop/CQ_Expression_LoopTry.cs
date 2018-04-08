@@ -86,7 +86,7 @@ namespace CQuark {
 #endif
             return null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("协程无法包含在try中");
         }
 

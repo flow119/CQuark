@@ -1,10 +1,12 @@
 for(int i = 0; i < 5; i++)
 {
-	if(i >= 1)
+	if(i >= 3)
 		break;
-	Wait(0.1f);
+	yield return new WaitForSeconds(0.2f);
 	Debug.Log("AA");
 }
+//未完成yield break
+yield break;
 
 Debug.Log("嵌套break");
 for(int i = 0; i < 3; i++){
@@ -12,7 +14,7 @@ for(int i = 0; i < 3; i++){
 	for(int j = 0; j < 5; j++){
 		if(i > 3)
 			break;
-		Wait(0.1f);
+		yield return new WaitForSeconds(0.3f);
 		Debug.Log(i + ":" + j);
 	}
 }
@@ -21,7 +23,7 @@ Debug.Log("continue");
 for(int i = 0; i < 5; i++){
 	if(i < 3)
 		continue;
-	Wait(0.1f);
+	yield return new WaitForSeconds(0.2f);
 	Debug.Log("continue" + i.ToString());
 }
 
@@ -33,7 +35,7 @@ for(int i = 0; i < 3; i++){
 			continue;
 		if(i > 3)
 			break;
-		Wait(0.1f);
+		yield return new WaitForSeconds(0.3f);
 		Debug.Log("mix" + i + ":" + j);
 	}
 }

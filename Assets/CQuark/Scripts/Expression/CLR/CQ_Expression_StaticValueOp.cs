@@ -78,7 +78,7 @@ namespace CQuark {
             return vout;
         }
 
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("StaticMath不支持套用协程");
         }
 

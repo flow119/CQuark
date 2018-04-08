@@ -21,9 +21,9 @@ class ScriptClass6
     public IEnumerator GetHP()
     {
     	Debug.Log((defHP1 + defHP2).ToString());
-		Wait(1);
+		yield return new WaitForSeconds(1);
 		for(int i = 0; i < 10; i ++){
-			Wait(0.2f);
+			yield return new WaitForSeconds(0.2f);
 			Debug.Log("B" + i);
 		}
     }

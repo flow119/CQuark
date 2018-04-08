@@ -78,7 +78,7 @@ namespace CQuark {
             return outvalue;
 
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("new params[]不支持协程");
         }
         public CQuark.IType type;

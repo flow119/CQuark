@@ -7,6 +7,16 @@ namespace CQuark
     {
         public static ICQ_Expression Compiler_Expression_Coroutine(IList<Token> tlist, int pos, int posend)
         {
+			//yield return new WaitXXX()
+			//yield return www
+			//yield return StartCoroutine(xx())
+			//yield return null/其他内容
+		
+
+
+
+
+
 			CQ_Expression_Coroutine func = new CQ_Expression_Coroutine(pos, posend, tlist[pos].line, tlist[posend].line);
 
             func.funcname = tlist[pos].text;

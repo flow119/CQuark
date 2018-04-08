@@ -17,7 +17,7 @@ namespace CQuark
 		bool StaticValueSet(CQ_Content content, string valuename, object value);
 
 		CQ_Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params);
-		IEnumerator CoroutineCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params, ICoroutine coroutin);
+		IEnumerator CoroutineCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutin);
 		CQ_Value MemberCall(CQ_Content content, object object_this, string func, IList<CQ_Value> _params, MethodCache cache);
 		CQ_Value MemberCallCache(CQ_Content content, object object_this, IList<CQ_Value> _params, MethodCache cache);
 

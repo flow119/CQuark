@@ -69,7 +69,7 @@ namespace CQuark {
             return value;
 
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+		public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("new function不支持套用协程");
         }
         public CQuark.IType type;

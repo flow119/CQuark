@@ -77,7 +77,7 @@ namespace CQuark {
 
         }
 
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             //可能以后需要支持。。。
             throw new Exception("a.Method暂时不支持协程");
         }

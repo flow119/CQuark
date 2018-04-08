@@ -55,7 +55,7 @@ namespace CQuark {
 #endif
             return null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("StaticSet不支持套用协程");
         }
         public IType type;

@@ -77,13 +77,13 @@ namespace CQuark {
 #endif
             return null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
 			content.InStack(this);
 #endif
             if(__expressions != null && __expressions.Count > 0) {
                 if(__expressions[0].hasCoroutine) {
-                    yield return coroutine.StartNewCoroutine(CoroutineCompute(content, coroutine));
+                    yield return coroutine.StartCoroutine(CoroutineCompute(content, coroutine));
                 }
                 else {
                     CQ_Value v = __expressions[0].ComputeValue(content);

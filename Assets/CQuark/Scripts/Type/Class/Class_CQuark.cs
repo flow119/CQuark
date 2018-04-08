@@ -141,7 +141,7 @@ namespace CQuark {
                     if(this.functions[function].expr_runtime != null) {
                         value = this.functions[function].expr_runtime.ComputeValue(content);
                         if(value != null)
-                            value.breakBlock = 0;
+							value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
@@ -163,7 +163,7 @@ namespace CQuark {
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
                             value.type = value.value.GetType();
-                        value.breakBlock = 0;
+						value.breakBlock = BreakType.None;
                         return value;
                     }
                 }
@@ -235,7 +235,7 @@ namespace CQuark {
                     if(funcobj.expr_runtime != null) {
                         value = funcobj.expr_runtime.ComputeValue(content);
                         if(value != null)
-                            value.breakBlock = 0;
+							value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
@@ -257,7 +257,7 @@ namespace CQuark {
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
                             value.type = value.value.GetType();
-                        value.breakBlock = 0;
+						value.breakBlock = BreakType.None;
                         return value;
                     }
                 }
@@ -267,7 +267,7 @@ namespace CQuark {
         }
 
 
-        public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params, ICoroutine coroutine) {
+		public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
             //TODO
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
@@ -294,7 +294,7 @@ namespace CQuark {
                         funcobj = (object_this as CQClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
-                        yield return coroutine.StartNewCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
                         //						if (value != null)
                         //							value.breakBlock = 0;
                     }

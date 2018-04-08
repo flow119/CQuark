@@ -176,6 +176,27 @@ namespace CQuark
                                 values.Add(subvalue);
 
                         }
+						else if(tlist[expbegin].text == "yield" ){
+							if(tlist[expbegin + 1].text == "return"){
+								ICQ_Expression subvalue = Compiler_Expression_Loop_YieldReturn(tlist, expbegin, expend);
+								if (null == subvalue)
+								{
+									LogError(tlist, "不可识别的yield:", expbegin, expend);
+									return false;
+								}
+								else
+									values.Add(subvalue);
+							}else if(tlist[expbegin + 1].text == "break"){
+								ICQ_Expression subvalue = Compiler_Expression_Loop_YieldBreak(tlist, expbegin);
+								if (null == subvalue)
+								{
+									//LogError(tlist, "表达式编译失败", expbegin, expend);
+									return false;
+								}
+								else
+									values.Add(subvalue);
+							}
+						}
                         else if (tlist[expbegin].text == "break")
                         {
                             ICQ_Expression subvalue = Compiler_Expression_Loop_Break(tlist, expbegin);
@@ -518,6 +539,30 @@ namespace CQuark
                                 values.Add(subvalue);
                             bTest = true;
                         }
+						else if(tlist[expbegin].text == "yield")
+						{
+							if(tlist[expbegin + 1].text == "return"){
+								ICQ_Expression subvalue = Compiler_Expression_Loop_YieldReturn(tlist, expbegin, expend);
+								if (null == subvalue)
+								{
+									LogError(tlist, "不可识别的yield:", expbegin, expend);
+									return false;
+								}
+								else
+									values.Add(subvalue);
+								bTest = true;
+							}else if(tlist[expbegin + 1].text == "break"){
+								ICQ_Expression subvalue = Compiler_Expression_Loop_YieldBreak(tlist, expbegin);
+								if (null == subvalue)
+								{
+									LogError(tlist, "不可识别的yield:", expbegin, expend);
+									return false;
+								}
+								else
+									values.Add(subvalue);
+								bTest = true;
+							}
+						}
                         else if (tlist[expbegin].text == "trace")
                         {
                             ICQ_Expression subvalue = Compiler_Expression_FunctionTrace(tlist, expbegin, expend);

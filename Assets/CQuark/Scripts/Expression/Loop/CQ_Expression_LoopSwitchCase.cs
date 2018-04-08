@@ -88,7 +88,7 @@ namespace CQuark {
 #endif
             return null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
 			content.InStack(this);
 #endif
@@ -108,7 +108,7 @@ namespace CQuark {
                         }
                         content.DepthAdd();
                         if(_expressions[i + 1].hasCoroutine) {
-                            yield return coroutine.StartNewCoroutine(_expressions[i + 1].CoroutineCompute(content, coroutine));
+                            yield return coroutine.StartCoroutine(_expressions[i + 1].CoroutineCompute(content, coroutine));
                         }
                         else {
                             _expressions[i + 1].ComputeValue(content);
@@ -123,7 +123,7 @@ namespace CQuark {
                     //default:
                     content.DepthAdd();
                     if(_expressions[i + 1].hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(_expressions[i + 1].CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(_expressions[i + 1].CoroutineCompute(content, coroutine));
                     }
                     else {
                         _expressions[i + 1].ComputeValue(content);

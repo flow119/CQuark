@@ -84,7 +84,7 @@ namespace CQuark {
 
             return result;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("数学逻辑符不支持套用协程");
         }
 

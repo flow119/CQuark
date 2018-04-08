@@ -44,14 +44,14 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-            rv.breakBlock = 1;
+			rv.breakBlock = BreakType.Continue;
             //跳出逻辑
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
             return rv;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("continue不支持套用协程");
         }
 

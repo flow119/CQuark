@@ -60,7 +60,7 @@ namespace CQuark {
             return content.Get(value_name);
         }
 
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("SelfOp不支持套用协程");
         }
 

@@ -28,6 +28,6 @@ namespace CQuark {
             get;
         }
         CQ_Value ComputeValue (CQ_Content content);
-        IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine);
+		IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine);
     }
 }

@@ -294,7 +294,7 @@ namespace CQuark {
             return null;
         }
 
-        public IEnumerator CoroutineCall (CQ_Content content, object object_this, string function, IList<CQ_Value> _params, ICoroutine coroutine) {
+		public IEnumerator CoroutineCall (CQ_Content content, object object_this, string function, IList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
             //TODO 不存在這樣的調用
             MemberCall(content, object_this, function, _params, null);
             yield return null;

@@ -5,8 +5,8 @@ using System.Collections;
 
 namespace CQuark {
 
-    public class CQ_Expression_LoopBreak : ICQ_Expression {
-        public CQ_Expression_LoopBreak (int tbegin, int tend, int lbegin, int lend) {
+    public class CQ_Expression_LoopYieldBreak : ICQ_Expression {
+		public CQ_Expression_LoopYieldBreak (int tbegin, int tend, int lbegin, int lend) {
             tokenBegin = tbegin;
             tokenEnd = tend;
             lineBegin = lbegin;
@@ -36,7 +36,7 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
-                return false;
+                return true;
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
@@ -44,7 +44,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-			rv.breakBlock = BreakType.Break;
+			rv.breakBlock = BreakType.YieldBreak;
 
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -52,7 +52,9 @@ namespace CQuark {
             return rv;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
-            throw new Exception("break不支持协程");
+			coroutine.StopCoroutine(CoroutineCompute(content, coroutine));
+			yield break;
+			//TODO 这里要想方设法把break抛出给上层
         }
 
         public override string ToString () {

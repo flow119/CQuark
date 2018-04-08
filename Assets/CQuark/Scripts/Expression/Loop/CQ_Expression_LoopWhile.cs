@@ -59,8 +59,10 @@ namespace CQuark {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
                         if(v != null) {
-                            if(v.breakBlock > 2) vrt = v;
-                            if(v.breakBlock > 1) break;
+							if(v.breakBlock == BreakType.Return)
+								vrt = v;
+							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) 
+								break;
                         }
                     }
                     else {
@@ -68,8 +70,10 @@ namespace CQuark {
                         bool bbreak = false;
                         var v = expr_block.ComputeValue(content);
                         if(v != null) {
-                            if(v.breakBlock > 2) vrt = v;
-                            if(v.breakBlock > 1) bbreak = true;
+							if(v.breakBlock == BreakType.Return) 
+								vrt = v;
+							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break)
+								bbreak = true;
                         }
                         content.DepthRemove();
                         if(bbreak) break;
@@ -89,7 +93,7 @@ namespace CQuark {
             //从上下文取值
             //_value = null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
 			content.InStack(this);
 #endif
@@ -101,27 +105,28 @@ namespace CQuark {
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         if(expr_block.hasCoroutine) {
-                            yield return coroutine.StartNewCoroutine(expr_block.CoroutineCompute(content, coroutine));
+                            yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
                             if(v != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-                                if(v.breakBlock > 1) break;
+								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
+									break;
                             }
                         }
                     }
                     else {
                         content.DepthAdd();
                         if(expr_block.hasCoroutine) {
-                            yield return coroutine.StartNewCoroutine(expr_block.CoroutineCompute(content, coroutine));
+                            yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
                             bool bbreak = false;
                             var v = expr_block.ComputeValue(content);
                             if(v != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-                                if(v.breakBlock > 1) bbreak = true;
+								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return) bbreak = true;
                             }
                             content.DepthRemove();
                             if(bbreak) break;

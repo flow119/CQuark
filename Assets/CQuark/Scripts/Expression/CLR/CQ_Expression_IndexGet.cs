@@ -70,7 +70,7 @@ namespace CQuark {
             //_value = null;
             //return null;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("IndexFind[]不支持套用协程");
         }
 

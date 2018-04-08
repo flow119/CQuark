@@ -57,7 +57,7 @@ namespace CQuark {
 #endif
             return v;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("不支持套用协程");
         }
     }

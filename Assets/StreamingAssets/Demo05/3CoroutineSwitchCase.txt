@@ -4,18 +4,18 @@ case 0:
 	for(int i = 0; i < 5; i++){
 		if(i > 3)
 			break;
-		Wait(0.1f);
+		yield return new WaitForSeconds(0.1f);
 		Debug.Log(i.ToString());
 	}
 	break;
 case 1:
 	for(int i = 0; i < 5; i++){
-		Wait(0.1f);
+		yield return new WaitForSeconds(0.1f);
 		Debug.Log(i.ToString());
 	}
 	break;
 case 2:
-	Wait(1);
+	yield return new WaitForSeconds(1);
 	Debug.Log(a.ToString());
 	break;
 	

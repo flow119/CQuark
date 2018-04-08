@@ -56,7 +56,7 @@ namespace CQuark {
             return null;
         }
 
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
 			content.InStack(this);
 #endif
@@ -69,7 +69,7 @@ namespace CQuark {
             }
 
             IMethod func = CQuark.AppDomain.GetMethod(funcname);
-            yield return coroutine.StartNewCoroutine(func.Call(content, list).value as IEnumerator);
+            yield return coroutine.StartCoroutine(func.Call(content, list).value as IEnumerator);
 #if CQUARK_DEBUG
 			content.OutStack(this);
 #endif

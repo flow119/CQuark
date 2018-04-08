@@ -17,9 +17,9 @@ public class CQuarkBlock
 			return null;
         return value.value;
     }
-	public IEnumerator StartCoroutine(string script, ICoroutine coroutine){
+	public IEnumerator StartCoroutine(string script, UnityEngine.MonoBehaviour coroutine){
 		var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
-		yield return coroutine.StartNewCoroutine(expr.CoroutineCompute (content, coroutine));
+		yield return coroutine.StartCoroutine(expr.CoroutineCompute (content, coroutine));
 	}
 
 	public CQ_Value GetValue(string name){

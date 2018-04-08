@@ -85,7 +85,7 @@ namespace CQuark {
 #endif
             return value;
         }
-        public IEnumerator CoroutineCompute (CQ_Content content, ICoroutine coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
 			content.InStack(this);
 #endif
@@ -99,7 +99,7 @@ namespace CQuark {
             if(bif && expr_go1 != null) {
                 if(expr_go1 is CQ_Expression_Block) {
                     if(expr_go1.hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(expr_go1.CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(expr_go1.CoroutineCompute(content, coroutine));
                     }
                     else {
                         expr_go1.ComputeValue(content);
@@ -108,7 +108,7 @@ namespace CQuark {
                 else {
                     content.DepthAdd();
                     if(expr_go1.hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(expr_go1.CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(expr_go1.CoroutineCompute(content, coroutine));
                     }
                     else {
                         expr_go1.ComputeValue(content);
@@ -121,7 +121,7 @@ namespace CQuark {
 
                 if(expr_go2 is CQ_Expression_Block) {
                     if(expr_go2.hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(expr_go2.CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(expr_go2.CoroutineCompute(content, coroutine));
                     }
                     else {
                         expr_go2.ComputeValue(content);
@@ -130,7 +130,7 @@ namespace CQuark {
                 else {
                     content.DepthAdd();
                     if(expr_go2.hasCoroutine) {
-                        yield return coroutine.StartNewCoroutine(expr_go2.CoroutineCompute(content, coroutine));
+                        yield return coroutine.StartCoroutine(expr_go2.CoroutineCompute(content, coroutine));
                     }
                     else {
                         expr_go2.ComputeValue(content);

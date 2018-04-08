@@ -466,11 +466,29 @@ namespace CQuark
 
             return value;
         }
+		public static ICQ_Expression Compiler_Expression_Loop_YieldReturn(IList<Token> tlist, int pos, int posend)
+		{
+			CQ_Expression_LoopYieldReturn value = new CQ_Expression_LoopYieldReturn(pos, posend, tlist[pos].line, tlist[posend].line);
+
+			ICQ_Expression subvalue;
+			bool succ = Compiler_Expression(tlist, pos + 1, posend, out subvalue);
+			if (succ)
+			{
+				value._expressions.Add(subvalue);
+			}
+
+			return value;
+		}
         public static ICQ_Expression Compiler_Expression_Loop_Break(IList<Token> tlist, int pos)
         {
             CQ_Expression_LoopBreak value = new CQ_Expression_LoopBreak(pos, pos, tlist[pos].line, tlist[pos].line);
             return value;
         }
+		public static ICQ_Expression Compiler_Expression_Loop_YieldBreak(IList<Token> tlist, int pos)
+		{
+			CQ_Expression_LoopYieldBreak value = new CQ_Expression_LoopYieldBreak(pos, pos, tlist[pos].line, tlist[pos].line);
+			return value;
+		}
         public static ICQ_Expression Compiler_Expression_Loop_Continue(IList<Token> tlist, int pos)
         {
             CQ_Expression_LoopContinue value = new CQ_Expression_LoopContinue(pos, pos, tlist[pos].line, tlist[pos].line);

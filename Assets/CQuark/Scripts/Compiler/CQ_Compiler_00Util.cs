@@ -454,6 +454,10 @@ namespace CQuark
 			{
 				return FindCodeKeyWord_Return(tokens, startPos);
 			}
+			if(start.text == "yield")
+			{
+				return FindCodeKeyWord_Yield(tokens, startPos);
+			}
 			return -1;
 		}
 
@@ -660,6 +664,16 @@ namespace CQuark
             int fe = FindCodeAnyWithoutKeyword(tokens, ref fs, out b);
             return fe;
         }
+		static int FindCodeKeyWord_Yield(IList<Token> tokens, int pos)
+		{
+			int fs = pos + 1;
+			if (tokens[fs].type == TokenType.PUNCTUATION && tokens[fs].text == ";")
+				return pos;
+			int b;
+			fs = pos;
+			int fe = FindCodeAnyWithoutKeyword(tokens, ref fs, out b);
+			return fe;
+		}
         static IList<int> SplitExpressionWithOp(IList<Token> tokens, int pos, int posend)
         {
             List<int> list = new List<int>();

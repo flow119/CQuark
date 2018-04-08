@@ -3,6 +3,15 @@ using System;
 
 namespace CQuark
 {
+	public enum BreakType{
+		None = 0,
+		Continue = 1,
+		Break = 1,
+		Return = 10,
+		YieldBreak = 11,
+		YieldReturn = 12,
+	}
+
 	/// <summary>
 	/// 西瓜的值
 	/// </summary>
@@ -10,8 +19,8 @@ namespace CQuark
     {
         public CQ_Type type;
         public object value;
-        //是否是块结束，1=continue, 2=break, 10=return
-        public byte breakBlock = 0;
+
+		public BreakType breakBlock = BreakType.None;
 
         public static CQ_Value FromICQ_Value(ICQ_Expression_Value value)
         {

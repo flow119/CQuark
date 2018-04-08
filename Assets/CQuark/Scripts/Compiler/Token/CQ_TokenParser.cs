@@ -42,7 +42,10 @@ namespace CQuark
 			//0.7.2 补充switch case
 			"switch",
 			"case",
-			"default"
+			"default",
+
+			//0.8.4 补充
+			"yield",
 
 			//TODO ref, out
         };
