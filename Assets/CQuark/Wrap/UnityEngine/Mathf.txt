@@ -1,0 +1,74 @@
+﻿
+变量
+static readonly Public, Static, Literal, HasDefaultfloat PI;
+static readonly Public, Static, Literal, HasDefaultfloat Infinity;
+static readonly Public, Static, Literal, HasDefaultfloat NegativeInfinity;
+static readonly Public, Static, Literal, HasDefaultfloat Deg2Rad;
+static readonly Public, Static, Literal, HasDefaultfloat Rad2Deg;
+static readonly Public, Static, InitOnlyfloat Epsilon;
+
+属性
+
+构造函数
+
+方法
+public static FalseFalseFalseFalseFalseFalseStandardint ClosestPowerOfTwo(int value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat GammaToLinearSpace(float value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat LinearToGammaSpace(float value)
+public static FalseFalseFalseFalseFalseFalseStandardUnityEngine.Color CorrelatedColorTemperatureToRGB(float kelvin)
+public static FalseFalseFalseFalseFalseFalseStandardbool IsPowerOfTwo(int value)
+public static FalseFalseFalseFalseFalseFalseStandardint NextPowerOfTwo(int value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat PerlinNoise(float x, float y)
+public static FalseFalseFalseFalseFalseFalseStandardushort FloatToHalf(float val)
+public static FalseFalseFalseFalseFalseFalseStandardfloat HalfToFloat(ushort val)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Sin(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Cos(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Tan(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Asin(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Acos(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Atan(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Atan2(float y, float x)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Sqrt(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Abs(float f)
+public static FalseFalseFalseFalseFalseFalseStandardint Abs(int value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Min(float a, float b)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Min(float[] values)
+public static FalseFalseFalseFalseFalseFalseStandardint Min(int a, int b)
+public static FalseFalseFalseFalseFalseFalseStandardint Min(int[] values)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Max(float a, float b)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Max(float[] values)
+public static FalseFalseFalseFalseFalseFalseStandardint Max(int a, int b)
+public static FalseFalseFalseFalseFalseFalseStandardint Max(int[] values)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Pow(float f, float p)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Exp(float power)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Log(float f, float p)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Log(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Log10(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Ceil(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Floor(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Round(float f)
+public static FalseFalseFalseFalseFalseFalseStandardint CeilToInt(float f)
+public static FalseFalseFalseFalseFalseFalseStandardint FloorToInt(float f)
+public static FalseFalseFalseFalseFalseFalseStandardint RoundToInt(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Sign(float f)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Clamp(float value, float min, float max)
+public static FalseFalseFalseFalseFalseFalseStandardint Clamp(int value, int min, int max)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Clamp01(float value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Lerp(float a, float b, float t)
+public static FalseFalseFalseFalseFalseFalseStandardfloat LerpUnclamped(float a, float b, float t)
+public static FalseFalseFalseFalseFalseFalseStandardfloat LerpAngle(float a, float b, float t)
+public static FalseFalseFalseFalseFalseFalseStandardfloat MoveTowards(float current, float target, float maxDelta)
+public static FalseFalseFalseFalseFalseFalseStandardfloat MoveTowardsAngle(float current, float target, float maxDelta)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothStep(float from, float to, float t)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Gamma(float value, float absmax, float gamma)
+public static FalseFalseFalseFalseFalseFalseStandardbool Approximately(float a, float b)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime)
+public static FalseFalseFalseFalseFalseFalseStandardfloat SmoothDampAngle(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
+public static FalseFalseFalseFalseFalseFalseStandardfloat Repeat(float t, float length)
+public static FalseFalseFalseFalseFalseFalseStandardfloat PingPong(float t, float length)
+public static FalseFalseFalseFalseFalseFalseStandardfloat InverseLerp(float a, float b, float value)
+public static FalseFalseFalseFalseFalseFalseStandardfloat DeltaAngle(float current, float target)

@@ -13,6 +13,9 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfNew(param, out returnValue, true) || UnityEngineMathfNew(param, out returnValue, false);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeNew(param, out returnValue, true) || UnityEngineTimeNew(param, out returnValue, false);
 			}
@@ -32,6 +35,9 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfSGet(memberName, out returnValue);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeSGet(memberName, out returnValue);
 			}
@@ -50,6 +56,9 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfSSet(memberName, param);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeSSet(memberName, param);
 			}
@@ -67,6 +76,9 @@ namespace CQuark{
 			if(type == null){
 				returnValue = null;
 				return false;
+			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfSCall(functionName, param, out returnValue, true) || UnityEngineMathfSCall(functionName, param, out returnValue, false);
 			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeSCall(functionName, param, out returnValue, true) || UnityEngineTimeSCall(functionName, param, out returnValue, false);
@@ -87,6 +99,9 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfMGet(objSelf, memberName, out returnValue);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeMGet(objSelf, memberName, out returnValue);
 			}
@@ -105,6 +120,9 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfMSet(objSelf, memberName, param);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeMSet(objSelf, memberName, param);
 			}
@@ -122,6 +140,9 @@ namespace CQuark{
 			if(type == null){
 				returnValue = null;
 				return false;
+			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfMCall(objSelf, functionName, param, out returnValue, true) || UnityEngineMathfMCall(objSelf, functionName, param, out returnValue, false);
 			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeMCall(objSelf, functionName, param, out returnValue, true) || UnityEngineTimeMCall(objSelf, functionName, param, out returnValue, false);
@@ -142,6 +163,9 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfIGet(objSelf, key, out returnValue);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeIGet(objSelf, key, out returnValue);
 			}
@@ -160,6 +184,9 @@ namespace CQuark{
 			if(type == null) {
 				return false;
 			}
+			if(type == typeof(UnityEngine.Mathf)){
+				return UnityEngineMathfISet(objSelf, key, param);
+			}
 			if(type == typeof(UnityEngine.Time)){
 				return UnityEngineTimeISet(objSelf, key, param);
 			}
@@ -172,5 +199,6 @@ namespace CQuark{
 
 			return false;
 		}
+		
 	}
 }
