@@ -7,6 +7,14 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 * 西瓜的前身是疯光无线前辈写的C#LightEvil和自己曾经写的一个脚本语言。
 
+
+西瓜的定位（如果你想使用西瓜，请务必理解）：
+
+* 西瓜的设计初衷是为了提高开发效率（而非执行效率）、便于使用，西瓜的效率近似Lua，请不要拿西瓜的效率和AOT比较
+* 西瓜的开发永远围绕着JIT的思想，因此，不会支持（也不需要）热更dll
+* C#的JIT编译器有很多成熟方案（比如CSharpCodeProvider）但西瓜是对Unity无缝连接的，出于效率和脚本书写规范化考虑，从0.9.0版本开始西瓜将依赖UnityEngine.MonoBehaviour。即：西瓜无法再在非Unity环境下运行。
+
+
 项目最新地址：        https://github.com/flow119/CQuark
 
 疯光无线前辈的项目地址：https://github.com/lightszero/cslightcore
