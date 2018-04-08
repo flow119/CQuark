@@ -8,6 +8,5 @@
 		greater_equal,     //>=
 		equal,          //==
 		not_equal       //!=
-
 	}
 }
