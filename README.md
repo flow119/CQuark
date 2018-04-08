@@ -42,7 +42,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
     调用协程的方式更加"C#"（yield return...）而不再是通过ICoroutine。
     这意味着不再需要自己先注册一个协程函数来调用。
-    同时，这意味着这个版本开始，西瓜的协程将完全依赖Unity的MonoBehaviour。
+    同时，这个版本开始西瓜的协程将完全依赖Unity的MonoBehaviour。这意味着无法在非Unity3D环境下运行。
     （目前还不支持yield break来跳出协程）
 
 2018-04-3 v0.8.5
