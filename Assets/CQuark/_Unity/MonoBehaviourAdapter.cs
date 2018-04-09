@@ -5,8 +5,6 @@ using CQuark;
 namespace CQuark{
 	public class MonoBehaviourAdapter : MonoBehaviour {
 		
-		static bool appDomainInit = false;
-
 		protected CQ_Content content;
 //		protected MethodCache cache = new MethodCache();
 

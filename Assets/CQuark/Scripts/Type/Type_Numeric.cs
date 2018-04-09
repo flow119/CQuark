@@ -148,7 +148,7 @@ namespace CQuark
 				return Double2TargetType(returntype, finalValue);
 
 			}
-			catch(Exception e) {
+			catch(Exception) {
 				math2ValueSuccess = false;
 				returntype = null;
 				return null;
