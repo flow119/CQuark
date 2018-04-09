@@ -22,7 +22,6 @@ public class InitAppDomain : MonoBehaviour {
             appDomainInit = true;
             CQuark.AppDomain.Reset();
             RegisterUnityType();
-            CQuark.AppDomain.RegisterMethod((eDelay)Wait);
         }
         CQuark.AppDomain.BuildProject(Application.streamingAssetsPath + "/" + m_folderPath, m_pattern);
         Debug.Log("Project Compile Finished");

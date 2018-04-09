@@ -3,7 +3,7 @@ using System.Collections;
 using CQuark;
 
 namespace CQuark{
-	public class MonoBehaviourAdapter : MonoBehaviour, ICoroutine {
+	public class MonoBehaviourAdapter : MonoBehaviour {
 		
 		static bool appDomainInit = false;
 
@@ -19,9 +19,6 @@ namespace CQuark{
 		protected virtual void CallScript(string method, bool useCorountine){
 		}
 
-		public object StartNewCoroutine(IEnumerator method){
-			return StartCoroutine(method);
-		}
 
 		void Awake(){
 			Initialize ();

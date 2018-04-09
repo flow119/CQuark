@@ -63,13 +63,60 @@ namespace CQuark {
             List<CQ_Value> list = new List<CQ_Value>();
             foreach(ICQ_Expression p in _expressions) {
                 if(p != null) {
-                    //暂时不支持协程套用协程
-                    list.Add(p.ComputeValue(content));
+                    //if(p.hasCoroutine) {
+                    //    yield return p.CoroutineCompute(content, coroutine);
+                    //}
+                    //else {
+                        list.Add(p.ComputeValue(content));
+                    //}
                 }
             }
 
-            IMethod func = CQuark.AppDomain.GetMethod(funcname);
-            yield return coroutine.StartCoroutine(func.Call(content, list).value as IEnumerator);
+            CQ_Value v = null;
+            Class_CQuark.Function retFunc = null;
+            bool bFind = false;
+            if(content.CallType != null)
+                bFind = content.CallType.functions.TryGetValue(funcname, out retFunc);
+
+            if(bFind) {
+                if(retFunc.bStatic) {
+                    v = content.CallType.StaticCall(content, funcname, list);
+                }
+                else {
+                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
+                }
+            }
+            else {
+                v = content.GetQuiet(funcname);
+                if(v != null && v.value is Delegate) {
+                    //if(v.value is Delegate)
+                    {
+                        Delegate d = v.value as Delegate;
+                        v = new CQ_Value();
+                        object[] obja = new object[list.Count];
+                        for(int i = 0; i < list.Count; i++) {
+                            obja[i] = list[i].value;
+                        }
+                        v.value = d.DynamicInvoke(obja);
+                        if(v.value == null) {
+                            v.type = null;
+                        }
+                        else {
+                            v.type = v.value.GetType();
+                        }
+                    }
+                    //else
+                    //{
+                    //    throw new Exception(funcname + "不是函数");
+                    //}
+                }
+                else {
+                    throw new Exception(funcname + "没有这样的方法");
+                    //v = CQuark.AppDomain.GetMethod(funcname).Call(content, list);
+                }
+            }
+
+            yield return coroutine.StartCoroutine(v.value as IEnumerator);
 #if CQUARK_DEBUG
 			content.OutStack(this);
 #endif

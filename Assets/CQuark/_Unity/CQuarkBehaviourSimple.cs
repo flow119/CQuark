@@ -38,7 +38,8 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 			return;
 
 		if(useCoroutine){
-			StartNewCoroutine(expr.CoroutineCompute(content, this));
+            //StartNewCoroutine(expr.CoroutineCompute(content, this));
+           StartCoroutine(expr.CoroutineCompute(content, this));
 		}
 		else{
 			try {

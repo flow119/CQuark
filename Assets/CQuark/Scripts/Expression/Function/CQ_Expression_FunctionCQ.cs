@@ -94,7 +94,8 @@ namespace CQuark {
                     //}
                 }
                 else {
-                    v = CQuark.AppDomain.GetMethod(funcname).Call(content, list);
+                    throw new Exception(funcname + "没有这样的方法");
+                    //v = CQuark.AppDomain.GetMethod(funcname).Call(content, list);
                 }
             }
             //操作变量之

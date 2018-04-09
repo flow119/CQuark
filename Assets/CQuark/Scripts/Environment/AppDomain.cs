@@ -11,15 +11,11 @@ namespace CQuark{
         //CQ_Content contentGloabl = null;
         static Dictionary<CQ_Type, IType> types = new Dictionary<CQ_Type, IType>();
         static Dictionary<string, IType> typess = new Dictionary<string, IType>();
-        static Dictionary<string, IMethod> calls = new Dictionary<string, IMethod>();
-        static Dictionary<string, IMethod> corouts = new Dictionary<string, IMethod>();
 
         public static void Reset () {
             DebugUtil.Log("Reset Domain");
             types.Clear();
             typess.Clear();
-            calls.Clear();
-            corouts.Clear();
             RegisterDefaultType();
         }
         public static void RegisterDefaultType () {
@@ -51,11 +47,7 @@ namespace CQuark{
             RegisterType(typeof(Queue<>), "Queue");
 
             typess["null"] = new Type_NULL();
-            //contentGloabl = CreateContent();
-            //if (!useNamespace)//命名空间模式不能直接用函数
-            {
-                RegisterMethod(new MethodTrace());
-            }
+
 
 			RegisterType(typeof(WaitForSeconds),"WaitForSeconds");
 			RegisterType(typeof(WaitForEndOfFrame), "WaitForEndOfFrame");
@@ -226,33 +218,6 @@ namespace CQuark{
 			return GetType(obj.GetType()).ConvertTo(obj, targetType);
 		}
 
-        private static void RegisterMethod (IMethod func) {
-            //if (useNamespace)
-            //{
-            //    throw new Exception("用命名空间时不能直接使用函数，必须直接定义在类里");
-            //}
-            if(func.returntype == typeof(IEnumerator))
-                corouts[func.keyword] = func;
-            else
-                calls[func.keyword] = func;
-        }
-        public static void RegisterMethod (Delegate dele) {
-            RegisterMethod(new Method(dele));
-        }
-        public static IMethod GetMethod (string name) {
-            IMethod func = null;
-            calls.TryGetValue(name, out func);
-            if(func == null) {
-                corouts.TryGetValue(name, out func);
-                if(func == null)
-                    throw new Exception("找不到函数:" + name);
-            }
-            return func;
-        }
-        //是否是一个协程方法
-        public static bool IsCoroutine (string name) {
-            return corouts.ContainsKey(name);
-        }
 
         //把文本断成TokenList
         private static IList<Token> ParserToken (string code) {

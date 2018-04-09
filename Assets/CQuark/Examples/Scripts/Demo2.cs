@@ -11,13 +11,11 @@ public class Demo2 : MonoBehaviour {
 		Execute1 ();
 
 		//将函数Today()注册给脚本使用
-        
-		CQuark.AppDomain.RegisterMethod ((deleToday)Today);
+        CQuark.AppDomain.RegisterType(typeof(Demo2), "Demo2");
 		Execute2 ();
 	}
 
-	delegate int deleToday();
-	int Today(){
+	public static int Today(){
 		return (int)DateTime.Now.DayOfWeek;
 	}
 	
@@ -36,8 +34,8 @@ public class Demo2 : MonoBehaviour {
 	void Execute2(){
 		CQuarkBlock block = new CQuarkBlock();
 		int ret = (int)block.Execute (
-			"Debug.Log(\"Today is \" + Today());\n" +
-			"return Today();");
+			"Debug.Log(\"Today is \" + Demo2.Today());\n" +
+            "return Demo2.Today();");
 		Debug.Log("return = " + ret);
 	}
 }

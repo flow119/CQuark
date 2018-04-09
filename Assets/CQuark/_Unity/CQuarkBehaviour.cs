@@ -86,7 +86,8 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	protected override void CallScript(string methodName, bool useCoroutine){
 		if (useCoroutine) {
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName)){
-				this.StartNewCoroutine (type._class.CoroutineCall (content, inst, methodName, null, this));
+                //this.StartNewCoroutine (type._class.CoroutineCall (content, inst, methodName, null, this));
+                StartCoroutine(type._class.CoroutineCall(content, inst, methodName, null, this));
 			}
 		}
 		else {

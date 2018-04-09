@@ -32,10 +32,10 @@ namespace CQuark
                 //}
                 if (tlist[pos + 1].type == TokenType.PUNCTUATION && tlist[pos + 1].text == "(")//函数表达式
                 {
-					if(CQuark.AppDomain.IsCoroutine(tlist[pos].text))
-//					if(tlist[pos].text == "YieldWaitForSecond")
-						return Compiler_Expression_Coroutine(tlist, pos, posend);
-					else
+//                    if(CQuark.AppDomain.IsCoroutine(tlist[pos].text))
+////					if(tlist[pos].text == "YieldWaitForSecond")
+//                        return Compiler_Expression_Coroutine(tlist, pos, posend);
+//                    else
 	                    return Compiler_Expression_Function(tlist, pos, posend);
                 }
                 else

@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class Demo6 : MonoBehaviour, ICoroutine {
+public class Demo6 : MonoBehaviour {
 
 	public string m_blockFilePath;
     public string m_className = "ScriptClass6B";
@@ -10,19 +10,9 @@ public class Demo6 : MonoBehaviour, ICoroutine {
 	// Use this for initialization
 	void Start () {
 		CQuark.AppDomain.Reset();
-		CQuark.AppDomain.RegisterMethod ((eDelay)Wait);
         CQuark.AppDomain.RegisterType(typeof(Debug), "Debug");
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
-	}
-
-	delegate IEnumerator eDelay(float t);
-	IEnumerator Wait(float time){
-		yield return new WaitForSeconds (time);
-	}
-
-	public object StartNewCoroutine(IEnumerator method){
-		return StartCoroutine(method);
 	}
 
 	void OnGUI()

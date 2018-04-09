@@ -1,4 +1,4 @@
-Debug.Log("Today is:"+Today());
+
 int a = 1;
 if(a == 0){
 	Debug.Log("AAA");
@@ -10,4 +10,4 @@ if(a == 0){
 }
 
 
-return HP1+HP2*0.5;
+return 0;
