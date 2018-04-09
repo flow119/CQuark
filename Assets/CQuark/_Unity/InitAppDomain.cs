@@ -79,10 +79,4 @@ public class InitAppDomain : MonoBehaviour {
         //TODO 补充NGUI,LitJson
         //补充自己需要的类
     }
-
-    delegate IEnumerator eDelay(float t);
-    IEnumerator Wait(float time)
-    {
-        yield return new WaitForSeconds(time);
-    }
 }

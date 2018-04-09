@@ -61,10 +61,10 @@ namespace CQuark{
             RegisterType(typeof(bool[]), "bool[]");
             RegisterType(typeof(byte[]), "byte[]");
 
-            AppDomain.RegisterType(typeof(System.DateTime), "DateTime");
-            AppDomain.RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
-            AppDomain.RegisterType(typeof(System.IO.Directory), "Directory");
-            AppDomain.RegisterType(typeof(System.IO.File), "File");
+            RegisterType(typeof(System.DateTime), "DateTime");
+            RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
+            RegisterType(typeof(System.IO.Directory), "Directory");
+            RegisterType(typeof(System.IO.File), "File");
         }
 
 		private static IType MakeType (Type type, string keyword) {
@@ -289,6 +289,5 @@ namespace CQuark{
             }
             Project_Compile(project, true);
         }
-
     }
 }
