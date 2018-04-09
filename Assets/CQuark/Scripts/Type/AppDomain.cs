@@ -52,7 +52,7 @@ namespace CQuark{
 			RegisterType(typeof(WaitForSeconds),"WaitForSeconds");
 			RegisterType(typeof(WaitForEndOfFrame), "WaitForEndOfFrame");
 			RegisterType(typeof(WaitForFixedUpdate), "WaitForFixedUpdate");
-			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
+//			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
 
             //对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
             RegisterType(typeof(int[]), "int[]");	//数组要独立注册
