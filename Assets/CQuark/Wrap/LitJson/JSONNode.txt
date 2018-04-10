@@ -1,0 +1,60 @@
+﻿
+字段
+
+静态属性
+
+实例属性
+public string Value{get;set;}
+public int Count{get;}
+public System.Collections.Generic.IEnumerable`1[LitJson.JSONNode] Childs{get;}
+public System.Collections.Generic.IEnumerable`1[LitJson.JSONNode] DeepChilds{get;}
+public int AsInt{get;set;}
+public float AsFloat{get;set;}
+public double AsDouble{get;set;}
+public bool AsBool{get;set;}
+public LitJson.JSONArray AsArray{get;}
+public LitJson.JSONClass AsObject{get;}
+
+构造函数
+LitJson.JSONNode()
+
+运算符
+public static System.Boolean op_Equality(LitJson.JSONNode a, System.Object b)
+public static System.Boolean op_Inequality(LitJson.JSONNode a, System.Object b)
+
+静态方法
+public static LitJson.JSONNode Parse(string aJSON)
+public static LitJson.JSONData GetJSONData(string s)
+public static LitJson.JSONNode Deserialize(System.IO.BinaryReader aReader)
+public static LitJson.JSONNode LoadFromCompressedFile(string aFileName)
+public static LitJson.JSONNode LoadFromCompressedStream(System.IO.Stream aData)
+public static LitJson.JSONNode LoadFromCompressedBase64(string aBase64)
+public static LitJson.JSONNode LoadFromStream(System.IO.Stream aData)
+public static LitJson.JSONNode LoadFromFile(string aFileName)
+public static LitJson.JSONNode LoadFromBase64(string aBase64)
+
+成员方法
+public void Add(string aKey, LitJson.JSONNode aItem)
+public bool ContainKey(string key)
+public void Add(LitJson.JSONNode aItem)
+public LitJson.JSONNode Remove(string aKey)
+public LitJson.JSONNode Remove(int aIndex)
+public LitJson.JSONNode Remove(LitJson.JSONNode aNode)
+public string ToString()
+public string ToString(string aPrefix)
+public bool Equals(object obj)
+public int GetHashCode()
+public void Serialize(System.IO.BinaryWriter aWriter)
+public void SaveToStream(System.IO.Stream aData)
+public void SaveToCompressedStream(System.IO.Stream aData)
+public void SaveToCompressedFile(string aFileName)
+public string SaveToCompressedBase64()
+public void SaveToFile(string aFileName)
+public string SaveToBase64()
+public System.Type GetType()
+
+Index
+IndexGet LitJson.JSONNode [System.Int32 aIndex]
+IndexSet [System.Int32 aIndex] = LitJson.JSONNode value
+IndexGet LitJson.JSONNode [System.String aKey]
+IndexSet [System.String aKey] = LitJson.JSONNode value

@@ -212,12 +212,6 @@ public class WrapMaker : EditorWindow{
 			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
 		}
 
-		//成员应该是字段和属性的和
-//		log += "\n成员\n";
-//		MemberInfo[] mis = type.GetMembers ();
-//		for (int i = 0; i < mis.Length; i++) {
-//			log += "public " + mis[i].MemberType + " " + mis[i].Name +"\n";
-//		}
 		return savePropertys;
 	}
 
@@ -255,12 +249,6 @@ public class WrapMaker : EditorWindow{
 			log += s + "\n";
 		}
 
-		//Event 不导出
-//		log += "\nEvent事件\n";
-//		System.Reflection.EventInfo[] events = type.GetEvents ();
-//		for (int i = 0; i < events.Length; i++) {
-//			log += events[i].Attributes.ToString() + events[i].Name + "\n";
-//		}
 		return saveMethods;
 	}
 
@@ -345,11 +333,14 @@ public class WrapMaker : EditorWindow{
 	}
 
 	protected List<Method> GetInstanceMethods(Type type, ref string log, List<Property> ignoreProperty){
-		if (type.GetConstructors ().Length == 0)	//是否是静态类，静态类没有构造函数
-			return new List<Method> ();			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
-
 		List<Method> saveMethods = new List<Method> ();
 		log += "\n成员方法\n";
+
+		if (type.GetConstructors ().Length == 0) {	//是否是静态类，静态类没有构造函数
+			log += "静态类没有成员方法";
+			return saveMethods;			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
+		}
+
 		System.Reflection.MethodInfo[] imis = type.GetMethods (BindingFlags.Public | BindingFlags.Instance);//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调用基类
 
