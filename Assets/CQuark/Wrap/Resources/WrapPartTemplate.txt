@@ -8,54 +8,56 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		private static bool {0}New(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
-{1}
+		private static bool {WrapName}SGet (string memberName, out CQ_Value returnValue) {
+{WrapSGet}
+			returnValue = null;
+	        return false;
+	    }
+
+	    private static bool {WrapName}SSet (string memberName, CQ_Value param) {
+{WrapSSet}
+			return false;
+	    }
+
+		private static bool {WrapName}MGet (object objSelf, string memberName, out CQ_Value returnValue) {
+{WrapMGet}
+			returnValue = null;
+			return false;
+	    }
+
+		private static bool {WrapName}MSet (object objSelf, string memberName, CQ_Value param) {
+{WrapMSet}
+			return false;
+	    }
+		
+		private static bool {WrapName}New(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
+{WrapNew}
+			returnValue = null;
+			return false;
+		}
+		
+		private static bool {WrapName}SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+{WrapSCall}
+			returnValue = null;
+	        return false;
+	    }
+
+		private static bool {WrapName}MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+{WrapMCall}
+			returnValue = null;
+	        return false;
+	    }
+
+		private static bool {WrapName}IGet(object objSelf, CQ_Value key, out CQ_Value returnValue){
+{WrapIGet}
+
 			returnValue = null;
 			return false;
 		}
 
-		public static bool {0}SGet (string memberName, out CQ_Value returnValue) {
-{2}
-			returnValue = null;
-	        return false;
-	    }
+		private static bool {WrapName}ISet(object objSelf, CQ_Value key, CQ_Value param){
+{WrapISet}
 
-	    public static bool {0}SSet (string memberName, CQ_Value param) {
-{3}
-			return false;
-	    }
-
-		public static bool {0}SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
-{4}
-			returnValue = null;
-	        return false;
-	    }
-
-		public static bool {0}MGet (object objSelf, string memberName, out CQ_Value returnValue) {
-{5}
-			returnValue = null;
-			return false;
-	    }
-
-		public static bool {0}MSet (object objSelf, string memberName, CQ_Value param) {
-{6}
-			return false;
-	    }
-
-		public static bool {0}MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
-{7}
-			returnValue = null;
-	        return false;
-	    }
-
-		public static bool {0}IGet(object objSelf, CQ_Value key, out CQ_Value returnValue){
-{8}
-			returnValue = null;
-			return false;
-		}
-
-		public static bool {0}ISet(object objSelf, CQ_Value key, CQ_Value param){
-{9}
 			return false;
 		}
 	}

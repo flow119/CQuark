@@ -77,24 +77,30 @@ public class WrapMakerGUI : WrapMaker {
 		}
 
 		string log = "";//一个记事本，用来保存哪些内容做了Wrap
+		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
 
 		//变量或属性
 		List<Property> savePropertys = GetPropertys(type, ref log);
+		string[] propertyPartStr = Propertys2PartStr(classFullName, savePropertys);
 
 		//构造函数，
-		List<Method> constructMethods = GetConstruction(type, ref log);
-
-		//运算符（数学运算和逻辑运算）
-		List<Method> opMethods = GetOp (type, ref log);
+		List<Method> constructMethods = GetConstructor(type, ref log);
+		string wrapNew = Constructor2PartStr(classFullName, constructMethods);
 
 		//静态方法（最后的参数是忽略属性，因为属性也是一种方法）
 		List<Method> staticMethods = GetStaticMethods (type, ref log, savePropertys);
+		string wrapSCall = SCall2PartStr(classFullName, staticMethods);
 
 		//成员方法
 		List<Method> memberMethods = GetInstanceMethods (type, ref log, savePropertys);
+		string wrapMCall = MCall2PartStr(classFullName, memberMethods);
 
-		//Index
+		//索引
 		List<Method> indexMethods = GetIndex (type, ref log);
+		string[] wrapIndex = Index2PartStr(classFullName, indexMethods);
+
+		//运算符（数学运算和逻辑运算）
+		List<Method> opMethods = GetOp (type, ref log);
 
         if(string.IsNullOrEmpty(assemblyName)) {
 			WriteAllText(WrapFolder, classname + ".txt", log);
@@ -103,8 +109,8 @@ public class WrapMakerGUI : WrapMaker {
 			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", log);
 		}
 
-		UpdateWrapPart(assemblyName, classname, savePropertys, 
-		               constructMethods, staticMethods, memberMethods, opMethods);
+		UpdateWrapPart(assemblyName, classname, propertyPartStr, 
+			wrapNew, wrapSCall, wrapMCall, wrapIndex, opMethods);
 	}
 
 	static void WriteAllText(string folder, string name, string content){
@@ -124,191 +130,25 @@ public class WrapMakerGUI : WrapMaker {
 			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
 	}
 
-	void UpdateWrapPart(string assemblyName, string classname, List<Property> propertys, 
-	                    List<Method> contruction, List<Method> staticMethods, List<Method> instanceMethods, List<Method> opMethods){
-
-		//测试
-		return;
+	void UpdateWrapPart(string assemblyName, string classname, string[] propertys, 
+		string wrapNew, string wrapSCall, string wrapMCall, string[] wrapIndex, List<Method> opMethods){
 
 		string classWrapName = assemblyName.Replace(".","") + classname;                                      //类似UnityEngineVector3，不带点
-		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
-		string _wrapPartTemplate = (Resources.Load("WrapPartTemplate") as TextAsset).text;
-
-		string wrapSVGet = "";
-		string wrapSVSet = "";
-		string wrapMVGet = "";
-		string wrapMVSet = "";
-
-		for(int i = 0; i < propertys.Count; i++){
-			if(!Finish(propertys[i].m_type))
-				continue;
-			if(propertys[i].m_isStatic){
-				if(propertys[i].m_canGet){
-					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
-					wrapSVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
-					wrapSVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
-					wrapSVGet += "\t\t\t\treturnValue.value = ";
-					wrapSVGet += classFullName + "." + propertys[i].m_name + ";\n";
-					wrapSVGet += "\t\t\t\treturn true;\n";
-				}
-				if(propertys[i].m_canSet){
-                    wrapSVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
-                    wrapSVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
-                    wrapSVSet += "\t\t\t\t\t" + classFullName + "." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
-                    wrapSVSet += "\t\t\t\t\treturn true;\n";
-                    wrapSVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
-				}
-			}else{
-				if(propertys[i].m_canGet){
-					wrapMVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
-					wrapMVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
-					wrapMVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
-					wrapMVGet += "\t\t\t\treturnValue.value = ";
-					wrapMVGet += "obj." + propertys[i].m_name + ";\n";
-					wrapMVGet += "\t\t\t\treturn true;\n";
-				}
-				if(propertys[i].m_canSet){
-                    wrapMVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
-                    wrapMVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
-                    wrapMVSet += "\t\t\t\t\tobj." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
-                    wrapMVSet += "\t\t\t\t\treturn true;\n";
-                    wrapMVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
-				}
-			}
-		}
-
-		if(!string.IsNullOrEmpty(wrapSVGet)){
-			wrapSVGet = "\t\t\tswitch(memberName) {\n" 
-                + wrapSVGet + "\t\t\t}";
-		}
-        if(!string.IsNullOrEmpty(wrapSVSet)) {
-            wrapSVSet = "\t\t\tswitch(memberName) {\n" 
-                + wrapSVSet + "\t\t\t}";
-        }
-		if(!string.IsNullOrEmpty(wrapMVGet)){
-			wrapMVGet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
-				+"\t\t\tswitch(memberName) {\n" 
-                + wrapMVGet + "\t\t\t}";
-		}
-        if(!string.IsNullOrEmpty(wrapMVSet)) {
-            wrapMVSet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
-                + "\t\t\tswitch(memberName) {\n" 
-                + wrapMVSet + "\t\t\t}";
-        }
+		string text = (Resources.Load("WrapPartTemplate") as TextAsset).text;
 
 
-		string wrapNew = "";
-		for(int i = 0; i < contruction.Count; i++) {
-			if(contruction[i].m_inType.Length == 0)
-                wrapNew += "\t\t\tif(param.Count == 0){\n";
-            else{
-				wrapNew += "\t\t\tif(param.Count == " + contruction[i].m_inType.Length + " && MatchType(param, new Type[] {";
-				for(int j = 0; j < contruction[i].m_inType.Length; j++) {
-					wrapNew += "typeof(" + contruction[i].m_inType[j] + ")";
-					if(j != contruction[i].m_inType.Length - 1)
-                        wrapNew += ",";
-                }
-                wrapNew += "}, mustEqual)){\n";
-            }
-            wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
-			wrapNew += "\t\t\t\treturnValue.type = typeof(" + classFullName + ");\n";
-			wrapNew += "\t\t\t\treturnValue.value = new " + classFullName + "(";
-			for(int j = 0; j < contruction[i].m_inType.Length; j++) {
-				wrapNew += "(" + contruction[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + contruction[i].m_inType[j] + "))";
-				if(j != contruction[i].m_inType.Length - 1)
-                    wrapNew += ",";
-            }
-            wrapNew += ");\n";
-            wrapNew += "\t\t\t\treturn true;\n\t\t\t}\n";
-        }
+		text = text.Replace("{WrapName}", classWrapName);
+		text = text.Replace("{WrapSGet}", propertys[0]);  
+		text = text.Replace("{WrapSSet}", propertys[1]);  
+		text = text.Replace("{WrapMGet}", propertys[2]);  
+		text = text.Replace("{WrapMSet}", propertys[3]);
 
-		string wrapSCall = "";
-        for(int i = 0; i < staticMethods.Count; i++) {
-				if(!Finish(staticMethods[i].m_returnType) || !Finish(staticMethods[i].m_inType))
-                    continue;
+		text = text.Replace("{WrapNew}", wrapNew);	
+		text = text.Replace("{WrapSCall}", wrapSCall);	
+		text = text.Replace("{WrapMCall}", wrapMCall);
 
-				if(staticMethods[i].m_inType.Length == 0)
-					wrapSCall += "\t\t\tif(param.Count == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
-                else {
-					wrapSCall += "\t\t\tif(param.Count == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
-					for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
-						wrapSCall += "typeof(" + staticMethods[i].m_inType[j] + ")";
-						if(j != staticMethods[i].m_inType.Length - 1)
-                            wrapSCall += ",";
-                    }
-                    wrapSCall += "}, mustEqual)){\n";
-                }
-				if(staticMethods[i].m_returnType == "void"){
-                    wrapSCall += "\t\t\t\treturnValue = null;\n";
-                }else{
-                    wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
-					wrapSCall += "\t\t\t\treturnValue.type = typeof(" + staticMethods[i].m_returnType + ");\n";
-                    wrapSCall += "\t\t\t\treturnValue.value = ";
-                }
-				wrapSCall += classFullName + "." + staticMethods[i].m_methodName + "(";
-				for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
-					wrapSCall += "(" + staticMethods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + staticMethods[i].m_inType[j] + "))";
-					if(j != staticMethods[i].m_inType.Length - 1)
-                        wrapSCall += ",";
-                }
-                wrapSCall += ");\n";
-                wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
-        }
-
-		string wrapMCall = "";
-        for(int i = 0; i < instanceMethods.Count; i++) {
-			if(!Finish(instanceMethods[i].m_returnType) || !Finish(instanceMethods[i].m_inType))
-					continue;
-
-			if(instanceMethods[i].m_inType.Length == 0)
-				wrapMCall += "\t\t\tif(param.Count == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
-			else {
-				wrapMCall += "\t\t\tif(param.Count == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
-				for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
-					wrapMCall += "typeof(" + instanceMethods[i].m_inType[j] + ")";
-					if(j != instanceMethods[i].m_inType.Length - 1)
-						wrapMCall += ",";
-				}
-				wrapMCall += "}, mustEqual)){\n";
-			}
-			if(instanceMethods[i].m_returnType == "void"){
-				wrapMCall += "\t\t\t\treturnValue = null;\n\t\t\t\t";
-			}else{
-				wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
-				wrapMCall += "\t\t\t\treturnValue.type = typeof(" + instanceMethods[i].m_returnType + ");\n";
-				wrapMCall += "\t\t\t\treturnValue.value = ";
-			}
-			wrapMCall += "obj." + instanceMethods[i].m_methodName + "(";
-			for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
-				wrapMCall += "(" + instanceMethods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + instanceMethods[i].m_inType[j] + "))";
-				if(j != instanceMethods[i].m_inType.Length - 1)
-					wrapMCall += ",";
-			}
-			wrapMCall += ");\n";
-			wrapMCall += "\t\t\t\treturn true;\n\t\t\t}\n";
-        }
-		if(!string.IsNullOrEmpty(wrapMCall)) {
-			wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
-				+ wrapMCall + "\t\t\t";
-		}
-
-//        string wrapOp = "";
-//		string wrapAdd = "";
-//		string wrapSub = "";
-//		string wrapMul = "";
-//		string wrapDiv = "";
-//		string wrapMod = "";
-
-		string text = _wrapPartTemplate.Replace("{0}", classWrapName);
-		text = text.Replace("{1}", wrapNew);	
-		text = text.Replace("{2}", wrapSVGet);  
-        text = text.Replace("{3}", wrapSVSet);  
-		text = text.Replace("{4}", wrapSCall);	
-        text = text.Replace("{5}", wrapMVGet);  
-        text = text.Replace("{6}", wrapMVSet);  
-		text = text.Replace("{7}", wrapMCall);
-		text = text.Replace("{8}", "");//IndexGet 还没想好怎么做
-		text = text.Replace("{9}", "");//IndexSet 还没想好怎么做
+		text = text.Replace("{WrapIGet}", wrapIndex[0]);
+		text = text.Replace("{WrapISet}", wrapIndex[1]);
 		//TODO OP text = text.OP
      //  (op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
@@ -320,31 +160,11 @@ public class WrapMakerGUI : WrapMaker {
 		}
 	}
 
-	static bool Finish(string type){
-		if(type.EndsWith("&"))	//ref
-			return false;
-		if(type.Contains("List`"))	//List
-			return false;
-		if(type.Contains("IEnumerable`"))
-			return false;
-		if(type == "T" || type == "[T]" || type == "T[]")	//T , 比如GetComponent<T>
-			return false;
-		if(type =="System.Collections.IEnumerator")			//
-			return false;	
-		return true;
-	}
 
-	static bool Finish (string[] types) {
-		for(int j = 0; j < types.Length; j++) {
-			if(!Finish(types[j]))
-				return false;
-		}
-		return true;
-	}
 
 	void UpdateWrapCore(){
-		//测试
-		return;
+//		//测试
+//		return;
 
         string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
 

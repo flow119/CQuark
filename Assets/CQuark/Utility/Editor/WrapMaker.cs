@@ -214,8 +214,72 @@ public class WrapMaker : EditorWindow{
 
 		return savePropertys;
 	}
+	protected string[] Propertys2PartStr(string classFullName, List<Property> propertys){
+		string wrapSVGet = "";
+		string wrapSVSet = "";
+		string wrapMVGet = "";
+		string wrapMVSet = "";
 
-	protected List<Method> GetConstruction(Type type, ref string log){
+		for(int i = 0; i < propertys.Count; i++){
+			if(!Finish(propertys[i].m_type))
+				continue;
+			if(propertys[i].m_isStatic){
+				if(propertys[i].m_canGet){
+					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapSVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
+					wrapSVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+					wrapSVGet += "\t\t\t\treturnValue.value = ";
+					wrapSVGet += classFullName + "." + propertys[i].m_name + ";\n";
+					wrapSVGet += "\t\t\t\treturn true;\n";
+				}
+				if(propertys[i].m_canSet){
+					wrapSVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapSVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
+					wrapSVSet += "\t\t\t\t\t" + classFullName + "." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
+					wrapSVSet += "\t\t\t\t\treturn true;\n";
+					wrapSVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
+				}
+			}else{
+				if(propertys[i].m_canGet){
+					wrapMVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapMVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
+					wrapMVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+					wrapMVGet += "\t\t\t\treturnValue.value = ";
+					wrapMVGet += "obj." + propertys[i].m_name + ";\n";
+					wrapMVGet += "\t\t\t\treturn true;\n";
+				}
+				if(propertys[i].m_canSet){
+					wrapMVSet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
+					wrapMVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
+					wrapMVSet += "\t\t\t\t\tobj." + propertys[i].m_name + " = (" + propertys[i].m_type + ")" + "param.ConvertTo(typeof(" + propertys[i].m_type + "));\n";
+					wrapMVSet += "\t\t\t\t\treturn true;\n";
+					wrapMVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
+				}
+			}
+		}
+
+		if(!string.IsNullOrEmpty(wrapSVGet)){
+			wrapSVGet = "\t\t\tswitch(memberName) {\n" 
+				+ wrapSVGet + "\t\t\t}";
+		}
+		if(!string.IsNullOrEmpty(wrapSVSet)) {
+			wrapSVSet = "\t\t\tswitch(memberName) {\n" 
+				+ wrapSVSet + "\t\t\t}";
+		}
+		if(!string.IsNullOrEmpty(wrapMVGet)){
+			wrapMVGet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+"\t\t\tswitch(memberName) {\n" 
+				+ wrapMVGet + "\t\t\t}";
+		}
+		if(!string.IsNullOrEmpty(wrapMVSet)) {
+			wrapMVSet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ "\t\t\tswitch(memberName) {\n" 
+				+ wrapMVSet + "\t\t\t}";
+		}
+		return new string[]{wrapSVGet, wrapSVSet, wrapMVGet, wrapMVSet};
+	}
+
+	protected List<Method> GetConstructor(Type type, ref string log){
 		List<Method> saveMethods = new List<Method>();
 		log += "\n构造函数\n";
 		if (typeof(MonoBehaviour).IsAssignableFrom(type)) {
@@ -251,27 +315,34 @@ public class WrapMaker : EditorWindow{
 
 		return saveMethods;
 	}
-
-	protected List<Method> GetOp(Type type, ref string log){
-		List<Method> saveMethods = new List<Method> ();
-		
-		log += "\n运算符\n";
-		
-		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//和获取静态方法一样
-		for (int i = 0; i < smis.Length; i++) {
-			if (!IsOp (smis [i]))
-				continue;
-			
-			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
-			log += "public static " + smis[i].ReturnType + " " + smis[i].Name 
-				+ "(" +param[0].ParameterType + " " + param[0].Name + ", " + param[1].ParameterType + " " + param[1].Name + ")\n";
-			
-			Method method = new Method(smis[i].Name, smis[i].ReturnType, smis[i].Name, param, 2);
-			saveMethods.Add(method);
+	protected string Constructor2PartStr(string classFullName, List<Method> constructor){
+		string wrapNew = "";
+		for(int i = 0; i < constructor.Count; i++) {
+			if(constructor[i].m_inType.Length == 0)
+				wrapNew += "\t\t\tif(param.Count == 0){\n";
+			else{
+				wrapNew += "\t\t\tif(param.Count == " + constructor[i].m_inType.Length + " && MatchType(param, new Type[] {";
+				for(int j = 0; j < constructor[i].m_inType.Length; j++) {
+					wrapNew += "typeof(" + constructor[i].m_inType[j] + ")";
+					if(j != constructor[i].m_inType.Length - 1)
+						wrapNew += ",";
+				}
+				wrapNew += "}, mustEqual)){\n";
+			}
+			wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
+			wrapNew += "\t\t\t\treturnValue.type = typeof(" + classFullName + ");\n";
+			wrapNew += "\t\t\t\treturnValue.value = new " + classFullName + "(";
+			for(int j = 0; j < constructor[i].m_inType.Length; j++) {
+				wrapNew += "(" + constructor[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + constructor[i].m_inType[j] + "))";
+				if(j != constructor[i].m_inType.Length - 1)
+					wrapNew += ",";
+			}
+			wrapNew += ");\n";
+			wrapNew += "\t\t\t\treturn true;\n\t\t\t}\n";
 		}
-		return saveMethods;
+		return wrapNew;
 	}
-
+		
 	protected List<Method> GetStaticMethods(Type type, ref string log, List<Property> ignoreProperty){
 		List<Method> saveMethods = new List<Method> ();
 		//静态函数，成员函数
@@ -330,6 +401,41 @@ public class WrapMaker : EditorWindow{
 			log += s + "\n";
 		}
 		return saveMethods;
+	}
+	protected string SCall2PartStr(string classFullName, List<Method> staticMethods){
+		string wrapSCall = "";
+		for(int i = 0; i < staticMethods.Count; i++) {
+			if(!Finish(staticMethods[i].m_returnType) || !Finish(staticMethods[i].m_inType))
+				continue;
+
+			if(staticMethods[i].m_inType.Length == 0)
+				wrapSCall += "\t\t\tif(param.Count == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
+			else {
+				wrapSCall += "\t\t\tif(param.Count == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+				for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
+					wrapSCall += "typeof(" + staticMethods[i].m_inType[j] + ")";
+					if(j != staticMethods[i].m_inType.Length - 1)
+						wrapSCall += ",";
+				}
+				wrapSCall += "}, mustEqual)){\n";
+			}
+			if(staticMethods[i].m_returnType == "void"){
+				wrapSCall += "\t\t\t\treturnValue = null;\n";
+			}else{
+				wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
+				wrapSCall += "\t\t\t\treturnValue.type = typeof(" + staticMethods[i].m_returnType + ");\n";
+				wrapSCall += "\t\t\t\treturnValue.value = ";
+			}
+			wrapSCall += classFullName + "." + staticMethods[i].m_methodName + "(";
+			for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
+				wrapSCall += "(" + staticMethods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + staticMethods[i].m_inType[j] + "))";
+				if(j != staticMethods[i].m_inType.Length - 1)
+					wrapSCall += ",";
+			}
+			wrapSCall += ");\n";
+			wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
+		}
+		return wrapSCall;
 	}
 
 	protected List<Method> GetInstanceMethods(Type type, ref string log, List<Property> ignoreProperty){
@@ -403,6 +509,45 @@ public class WrapMaker : EditorWindow{
 		}
 		return saveMethods;
 	}
+	protected string MCall2PartStr(string classFullName, List<Method> instanceMethods){
+		string wrapMCall = "";
+		for(int i = 0; i < instanceMethods.Count; i++) {
+			if(!Finish(instanceMethods[i].m_returnType) || !Finish(instanceMethods[i].m_inType))
+				continue;
+
+			if(instanceMethods[i].m_inType.Length == 0)
+				wrapMCall += "\t\t\tif(param.Count == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
+			else {
+				wrapMCall += "\t\t\tif(param.Count == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+				for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
+					wrapMCall += "typeof(" + instanceMethods[i].m_inType[j] + ")";
+					if(j != instanceMethods[i].m_inType.Length - 1)
+						wrapMCall += ",";
+				}
+				wrapMCall += "}, mustEqual)){\n";
+			}
+			if(instanceMethods[i].m_returnType == "void"){
+				wrapMCall += "\t\t\t\treturnValue = null;\n\t\t\t\t";
+			}else{
+				wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
+				wrapMCall += "\t\t\t\treturnValue.type = typeof(" + instanceMethods[i].m_returnType + ");\n";
+				wrapMCall += "\t\t\t\treturnValue.value = ";
+			}
+			wrapMCall += "obj." + instanceMethods[i].m_methodName + "(";
+			for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
+				wrapMCall += "(" + instanceMethods[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + instanceMethods[i].m_inType[j] + "))";
+				if(j != instanceMethods[i].m_inType.Length - 1)
+					wrapMCall += ",";
+			}
+			wrapMCall += ");\n";
+			wrapMCall += "\t\t\t\treturn true;\n\t\t\t}\n";
+		}
+		if(!string.IsNullOrEmpty(wrapMCall)) {
+			wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ wrapMCall;
+		}
+		return wrapMCall;
+	}
 
 	protected List<Method> GetIndex(Type type, ref string log){
 		if (type.GetConstructors ().Length == 0)	//是否是静态类，静态类没有构造函数
@@ -452,7 +597,58 @@ public class WrapMaker : EditorWindow{
 		}
 		return saveMethods;
 	}
+	protected string[] Index2PartStr(string classFullName, List<Method> indexMethods){
+		string wrapIGet = "";
+		string wrapISet = "";
+		for(int i = 0; i < indexMethods.Count; i++) {
+			if(!Finish(indexMethods[i].m_returnType) || !Finish(indexMethods[i].m_inType))
+				continue;
+			//TODO 可能有多位数组this[x,y]
+			if(indexMethods[i].m_methodType == "IndexGet"){
+				wrapIGet += "\t\t\tif(key.EqualOrImplicateType(typeof(" + indexMethods[i].m_inType[0]+ "))){\n";
+				wrapIGet += "\t\t\t\treturnValue = new CQ_Value();\n";
+				wrapIGet += "\t\t\t\treturnValue.type = typeof(" + indexMethods[i].m_returnType + ");\n";
+				wrapIGet += "\t\t\t\treturnValue.value = ";
+				wrapIGet += "obj[(" + indexMethods[i].m_inType[0] + ")key.ConvertTo(typeof(" + indexMethods[i].m_inType[0] + "))];\n";
+				wrapIGet += "\t\t\t\treturn true;\n\t\t\t}";
+			}
+			else if(indexMethods[i].m_methodType == "IndexSet"){
+				wrapISet += "\t\t\tif(param.EqualOrImplicateType(typeof(" + indexMethods[i].m_inType[0]+ "))){\n";
+				wrapISet += "\t\t\t\tobj[(" + indexMethods[i].m_inType[0] + ")key.ConvertTo(typeof(" + indexMethods[i].m_inType[0] + "))] = ";
+				wrapISet += "(" + indexMethods[i].m_inType[indexMethods[i].m_inType.Length - 1] + ")param.ConvertTo(typeof(" + indexMethods[i].m_inType[indexMethods[i].m_inType.Length - 1] + "));\n";
+				wrapISet += "\t\t\t\treturn true;\n\t\t\t}";
+			}
+		}
+		if(!string.IsNullOrEmpty(wrapIGet)) {
+			wrapIGet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ wrapIGet;
+		}
+		if(!string.IsNullOrEmpty(wrapISet)) {
+			wrapISet = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ wrapISet;
+		}
+		return new string[]{wrapIGet, wrapISet};
+	}
 
+	protected List<Method> GetOp(Type type, ref string log){
+		List<Method> saveMethods = new List<Method> ();
+
+		log += "\n运算符\n";
+
+		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//和获取静态方法一样
+		for (int i = 0; i < smis.Length; i++) {
+			if (!IsOp (smis [i]))
+				continue;
+
+			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
+			log += "public static " + smis[i].ReturnType + " " + smis[i].Name 
+				+ "(" +param[0].ParameterType + " " + param[0].Name + ", " + param[1].ParameterType + " " + param[1].Name + ")\n";
+
+			Method method = new Method(smis[i].Name, smis[i].ReturnType, smis[i].Name, param, 2);
+			saveMethods.Add(method);
+		}
+		return saveMethods;
+	}
 	protected static bool ContainsProperty (List<Property> propertys, string methodName) {
 		if (methodName.StartsWith ("get_")) {
 			string propertyName = methodName.Substring (4);
@@ -488,5 +684,27 @@ public class WrapMaker : EditorWindow{
 
 			|| methodName == "op_Equality"
 			|| methodName == "op_Inequality";
+	}
+
+	protected static bool Finish(string type){
+		if(type.EndsWith("&"))	//ref
+			return false;
+		if(type.Contains("List`"))	//List
+			return false;
+		if(type.Contains("IEnumerable`"))
+			return false;
+		if(type == "T" || type == "[T]" || type == "T[]")	//T , 比如GetComponent<T>
+			return false;
+		if(type =="System.Collections.IEnumerator")			//
+			return false;	
+		return true;
+	}
+
+	protected static bool Finish (string[] types) {
+		for(int j = 0; j < types.Length; j++) {
+			if(!Finish(types[j]))
+				return false;
+		}
+		return true;
 	}
 }
