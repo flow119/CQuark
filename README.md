@@ -1,7 +1,7 @@
 ## 西瓜
 CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Unity热更新。支持Windows,iOS,Android平台。
 
-* 本项目是在Unity3D项目环境下运行。（Demo版本为5.6.5，以后我将提供更低版本Demo）
+* 本项目是在Unity3D环境下（Unity4.7.2)运行。
 
 * <del>如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。</del>（从0.9.0版本开始协程机制修改，所有协程依赖MonoBehaviour，因此不再支持非Unity3D环境）
 
@@ -48,6 +48,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 2018-04-09 v0.9.1
 
     RegistMethod被废除，方法不再需要注册，只需要注册所在的类即可。
+    Example用4.7.2重新开发。
     
 2018-04-08 v0.9.0
 
