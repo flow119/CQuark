@@ -8,15 +8,6 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
-			if(type == null){
-				returnValue = null;
-				return false;
-			}
-
-			returnValue = null;
-	        return false;
-	    }
 
 		public static bool StaticValueGet (Type type, string memberName, out CQ_Value returnValue) {
 			if(type == null){
@@ -36,16 +27,6 @@ namespace CQuark{
 			return false;
 	    }
 
-		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-			if(type == null){
-				returnValue = null;
-				return false;
-			}
-
-			returnValue = null;
-	        return false;
-	    }
-
 		public static bool MemberValueGet (Type type, object objSelf, string memberName, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = null;
@@ -63,6 +44,28 @@ namespace CQuark{
 
 			return false;
 	    }
+		
+		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
+			if(type == null){
+				returnValue = null;
+				return false;
+			}
+
+			returnValue = null;
+	        return false;
+	    }
+		
+		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+			if(type == null){
+				returnValue = null;
+				return false;
+			}
+
+			returnValue = null;
+	        return false;
+	    }
+
+		
 
 		public static bool MemberCall (Type type, object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
@@ -92,34 +95,49 @@ namespace CQuark{
 			return false;
 		}
 		
-//        public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-//            returnValue = null;
-//{9}           
-//            return false;
-//        }
+		public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+			for(int t = 2; t > 0; t--){
+				bool mustEqual = (t == 2);
+			}
+           
+            return false;
+        }
 		
-//        public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-//            returnValue = null;
-//{10}           
-//            return false;
-//        }
+		public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+			for(int t = 2; t > 0; t--){
+				bool mustEqual = (t == 2);
+			}
+           
+            return false;
+        }
 		
-//        public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-//            returnValue = null;
-//{11}           
-//            return false;
-//        }
+		public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+			for(int t = 2; t > 0; t--){
+				bool mustEqual = (t == 2);
+			}
+           
+            return false;
+        }
 		
-//        public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-//            returnValue = null;
-//{12}           
-//            return false;
-//        }
+		public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+			for(int t = 2; t > 0; t--){
+				bool mustEqual = (t == 2);
+			}
+           
+            return false;
+        }
 		
-//        public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-//            returnValue = null;
-//{13}           
-//            return false;
-//        }
+		public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
+            returnValue = null;
+			for(int t = 2; t > 0; t--){
+				bool mustEqual = (t == 2);
+			}
+           
+            return false;
+        }
 	}
 }
