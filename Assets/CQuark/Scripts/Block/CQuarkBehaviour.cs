@@ -65,7 +65,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		_updateContent.CallThis = inst;
 	}
 
-	CQ_Value SetMember(string name, CQ_Type type, Object obj){
+	CQ_Value SetMember(string name, System.Type type, Object obj){
 		CQ_Value val = new CQ_Value ();
 		val.cq_type = type;
 		val.value = obj;
