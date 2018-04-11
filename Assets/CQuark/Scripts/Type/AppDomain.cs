@@ -9,13 +9,17 @@ namespace CQuark{
 	//整个项目只需要一个AppDomain,所以改成了全部静态
     public class AppDomain {
         //CQ_Content contentGloabl = null;
-        static Dictionary<CQ_Type, IType> types = new Dictionary<CQ_Type, IType>();
-        static Dictionary<string, IType> typess = new Dictionary<string, IType>();
+//        static Dictionary<CQ_Type, IType> cqtype2itype = new Dictionary<CQ_Type, IType>();
+		static Dictionary<Class_CQuark, IType> ccq2itype = new Dictionary<Class_CQuark, IType> ();
+		static Dictionary<Type, IType> type2itype = new Dictionary<Type, IType> ();
+        static Dictionary<string, IType> str2itype = new Dictionary<string, IType>();
 
         public static void Reset () {
             DebugUtil.Log("Reset Domain");
-            types.Clear();
-            typess.Clear();
+//			cqtype2itype.Clear();
+			ccq2itype.Clear ();
+			type2itype.Clear ();
+			str2itype.Clear();
             RegisterDefaultType();
         }
         public static void RegisterDefaultType () {
@@ -46,7 +50,7 @@ namespace CQuark{
             RegisterType(typeof(Stack<>), "Stack");
             RegisterType(typeof(Queue<>), "Queue");
 
-            typess["null"] = new Type_NULL();
+			str2itype["null"] = new Type_NULL();
 
 
 			RegisterType(typeof(WaitForSeconds),"WaitForSeconds");
@@ -117,7 +121,11 @@ namespace CQuark{
             RegisterType(MakeIType(type, keyword));
         }
         public static void RegisterType (IType type) {
-            types[type.cqType] = type;
+			if (type.cqType.type != null)
+				type2itype [type.cqType.type] = type;
+			else if (type.cqType.stype != null)
+				ccq2itype [type.cqType.stype] = type;
+//			cqtype2itype[type.cqType] = type;
 
             string typename = type.keyword;
             //if (useNamespace)
@@ -131,28 +139,61 @@ namespace CQuark{
             if(string.IsNullOrEmpty(typename)) {//匿名自动注册
             }
             else {
-                typess[typename] = type;
+				str2itype[typename] = type;
                 CQ_TokenParser.AddType(typename);
             }
         }
-        public static IType GetType (CQ_Type type) {
-            if(type == null)
-                return typess["null"];
+//        public static IType GetType (CQ_Type type) {
+//            if(type == null)
+//				return str2itype["null"];
+//			
+//			IType ret = null;
+//			if(cqtype2itype.TryGetValue(type, out ret) == false) {
+//                DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
+//                ret = MakeIType(type, "");
+//                RegisterType(ret);
+//            }
+//            return ret;
+//        }
 
-            IType ret = null;
-            if(types.TryGetValue(type, out ret) == false) {
-                DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
-                ret = MakeIType(type, "");
-                RegisterType(ret);
-            }
-            return ret;
-        }
-        public static IType GetTypeByKeyword (string keyword) {
-            IType ret = null;
+		public static IType GetITypeByCQType(CQ_Type type){
+			if (type.type != null)
+				return GetITypeByType (type.type);
+			else if (type.stype != null)
+				return GetITypeByClassCQ (type.stype);
+			return null;
+		}
+		public static IType GetITypeByClassCQ (Class_CQuark type) {
+			if(type == null)
+				return str2itype["null"];
+			
+			IType ret = null;
+			if(ccq2itype.TryGetValue(type, out ret) == false) {
+				DebugUtil.LogWarning("(Class_CQuark)类型未注册,将自动注册一份匿名:" + type.ToString());
+//				ret = MakeIType(type, "");
+//				RegisterType(ret);
+			}
+			return ret;
+		}
+		public static IType GetITypeByType (Type type) {
+			if(type == null)
+				return str2itype["null"];
+			
+			IType ret = null;
+			if(type2itype.TryGetValue(type, out ret) == false) {
+				DebugUtil.LogWarning("(Type)类型未注册,将自动注册一份匿名:" + type.ToString());
+				ret = MakeIType(type, "");
+				RegisterType(ret);
+			}
+			return ret;
+		}
+		
+		public static IType GetTypeByKeyword (string keyword) {
+			IType ret = null;
             if(string.IsNullOrEmpty(keyword)) {
                 return null;
             }
-            if(typess.TryGetValue(keyword, out ret) == false) {
+			if(str2itype.TryGetValue(keyword, out ret) == false) {
                 if(keyword[keyword.Length - 1] == '>') {
                     int iis = keyword.IndexOf('<');
                     string func = keyword.Substring(0, iis);
@@ -183,7 +224,7 @@ namespace CQuark{
                     }
 
                     //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    if(typess.ContainsKey(func)) {
+					if(str2itype.ContainsKey(func)) {
                         Type gentype = GetTypeByKeyword(func).cqType;
                         if(gentype.IsGenericTypeDefinition) {
                             Type[] types = new Type[_types.Count];
@@ -208,14 +249,15 @@ namespace CQuark{
         }
         public static IType GetTypeByKeywordQuiet (string keyword) {
             IType ret = null;
-            if(typess.TryGetValue(keyword, out ret) == false) {
+			if(str2itype.TryGetValue(keyword, out ret) == false) {
                 return null;
             }
             return ret;
         }
 
 		public static object ConvertTo(object obj, Type targetType){
-			return GetType(obj.GetType()).ConvertTo(obj, targetType);
+//			return GetType(obj.GetType()).ConvertTo(obj, targetType);
+			return GetITypeByType(obj.GetType()).ConvertTo(obj, targetType);
 		}
 
         private static void Project_Compile (Dictionary<string, IList<Token>> project, bool embDebugToken) {

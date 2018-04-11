@@ -44,7 +44,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value r = _expressions[0].ComputeValue(content);
-            IType type = CQuark.AppDomain.GetType(r.type);
+			IType type = CQuark.AppDomain.GetITypeByCQType(r.type);
 
             r.value = type.Math2Value('*', r.value, CQ_Value.OneMinus, out r.type);
 #if CQUARK_DEBUG

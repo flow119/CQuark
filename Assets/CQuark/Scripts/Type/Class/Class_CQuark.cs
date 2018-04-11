@@ -190,7 +190,7 @@ namespace CQuark {
                 if(value != null && value.GetType() != (Type)this.members[valuename].type.cqType) {
                     if(value is CQClassInstance) {
                         if((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.cqType) {
-                            value = CQuark.AppDomain.GetType((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
+							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
                         }
                     }
                     else if(value is DeleEvent) {
@@ -327,7 +327,7 @@ namespace CQuark {
                 if(value != null && value.GetType() != (Type)this.members[valuename].type.cqType) {
                     if(value is CQClassInstance) {
                         if((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.cqType) {
-                            value = CQuark.AppDomain.GetType((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
+                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
                         }
                     }
                     else if(value is DeleEvent) {

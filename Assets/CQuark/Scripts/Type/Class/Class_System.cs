@@ -83,7 +83,7 @@ namespace CQuark {
                     while(ptype != null) {
                         methodInfo = ptype.GetMethod(function, types.ToArray());
                         if(methodInfo != null) break;
-                        var t = CQuark.AppDomain.GetType(ptype);
+                        var t = CQuark.AppDomain.GetITypeByType(ptype);
                         try {
                             return t._class.StaticCall(content, function, _params, cache);
                         }
@@ -145,7 +145,7 @@ namespace CQuark {
             var v = MemberValueGet(content, null, valuename);
             if(v == null) {
                 if(type.BaseType != null) {
-                    return CQuark.AppDomain.GetType(type.BaseType)._class.StaticValueGet(content, valuename);
+					return CQuark.AppDomain.GetITypeByType(type.BaseType)._class.StaticValueGet(content, valuename);
                 }
                 else {
                     throw new NotImplementedException();
@@ -160,7 +160,7 @@ namespace CQuark {
             bool b = MemberValueSet(content, null, valuename, value);
             if(!b) {
                 if(type.BaseType != null) {
-                    CQuark.AppDomain.GetType(type.BaseType)._class.StaticValueSet(content, valuename, value);
+					CQuark.AppDomain.GetITypeByType(type.BaseType)._class.StaticValueSet(content, valuename, value);
                     return true;
                 }
                 else {
@@ -349,7 +349,7 @@ namespace CQuark {
                             if(types[i] == null && !pp[i].ParameterType.IsValueType) {
                                 continue;
                             }
-                            myparams[i] = CQuark.AppDomain.GetType(types[i]).ConvertTo(_params[i], pp[i].ParameterType);
+							myparams[i] = CQuark.AppDomain.GetITypeByType(types[i]).ConvertTo(_params[i], pp[i].ParameterType);
                             if(myparams[i] == null) {
                                 match = false;
                                 break;

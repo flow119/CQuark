@@ -59,7 +59,7 @@ namespace CQuark
      
         public object ConvertTo(object src, CQ_Type targetType)
         {
-			var type = CQuark.AppDomain.GetType(targetType);
+			var type = CQuark.AppDomain.GetITypeByCQType(targetType);
             if (this.cqType == type||(Type)targetType==typeof(object)) 
 				return src;
             if (this.types.Contains(type))

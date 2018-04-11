@@ -37,7 +37,10 @@ namespace CQuark {
 
         #region SType
         static Dictionary<Class_CQuark, CQ_Type> dicSType_CQType = new Dictionary<Class_CQuark, CQ_Type>();
-        Class_CQuark stype = null;
+        public Class_CQuark stype {
+			get;
+			private set;
+		}
         private CQ_Type (Class_CQuark type) {
             this.stype = type;
         }

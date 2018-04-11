@@ -29,7 +29,7 @@ namespace CQuark
 
         public object ConvertTo(object src, CQ_Type targetType)
         {
-			Type_Action dele = CQuark.AppDomain.GetType(targetType) as Type_Action;
+			Type_Action dele = CQuark.AppDomain.GetITypeByCQType(targetType) as Type_Action;
             return dele.CreateDelegate(src as DeleLambda);
             //throw new NotImplementedException();
         }

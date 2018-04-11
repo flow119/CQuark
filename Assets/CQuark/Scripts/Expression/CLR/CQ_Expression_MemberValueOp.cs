@@ -47,7 +47,7 @@ namespace CQuark {
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-			IType type = CQuark.AppDomain.GetType(parent.type);
+			IType type = CQuark.AppDomain.GetITypeByCQType(parent.type);
 
 			CQ_Value getvalue = null;
 
@@ -61,7 +61,7 @@ namespace CQuark {
                 vright = _expressions[1].ComputeValue(content);
             }
             CQ_Value vout = new CQ_Value();
-            var mtype = CQuark.AppDomain.GetType(getvalue.type);
+			var mtype = CQuark.AppDomain.GetITypeByCQType(getvalue.type);
             vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射

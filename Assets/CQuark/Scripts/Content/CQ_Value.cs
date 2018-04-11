@@ -85,7 +85,9 @@ namespace CQuark
             if(value == null || (Type)type == targetType)
                 return value;
             //TODO 这个流程太长了，最好简化
-			return AppDomain.GetType(type).ConvertTo(value, targetType);
+			return AppDomain.GetITypeByCQType (type).ConvertTo (value, targetType);
+
+//			return AppDomain.GetType(type).ConvertTo(value, targetType);
 		}
 
         //类型是否等于targetType
