@@ -88,8 +88,6 @@ namespace CQuark
                 return value;
             //TODO 这个流程太长了，最好简化
 			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
-
-//			return AppDomain.GetType(type).ConvertTo(value, targetType);
 		}
 
         //类型是否等于targetType
@@ -107,8 +105,8 @@ namespace CQuark
         //类型是否可以隐式转换成targetType
         public bool ImplicateType (Type targetType) {
             Type from = cq_type;
-            if(from == targetType)
-                return true;
+            //if(from == targetType)
+            //    return true;
 
             //数值类型
             if(from == typeof(sbyte)) {
