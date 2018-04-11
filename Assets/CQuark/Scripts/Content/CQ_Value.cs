@@ -81,8 +81,8 @@ namespace CQuark
             return "<" + cq_type.ToString() + ">" + value;
         }
 
-		public object ConvertTo(Type targetType){
-            if(value == null || (Type)cq_type == targetType)
+		public object ConvertTo(CQ_Type targetType){
+            if(value == null || (Type)cq_type == (Type)targetType)
                 return value;
             //TODO 这个流程太长了，最好简化
 			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);

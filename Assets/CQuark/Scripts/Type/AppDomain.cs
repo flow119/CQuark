@@ -255,7 +255,7 @@ namespace CQuark{
             return ret;
         }
 
-		public static object ConvertTo(object obj, Type targetType){
+		public static object ConvertTo(object obj, CQ_Type targetType){
 //			return GetType(obj.GetType()).ConvertTo(obj, targetType);
 			return GetITypeByType(obj.GetType()).ConvertTo(obj, targetType);
 		}
