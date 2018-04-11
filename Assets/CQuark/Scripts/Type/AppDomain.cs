@@ -67,7 +67,7 @@ namespace CQuark{
             RegisterType(typeof(System.IO.File), "File");
         }
 
-		private static IType MakeType (Type type, string keyword) {
+		private static IType MakeIType (Type type, string keyword) {
             if(!type.IsSubclassOf(typeof(Delegate))) {
                 return new Type_Numeric(type, keyword, false);
             }
@@ -114,7 +114,7 @@ namespace CQuark{
             }
         }
         public static void RegisterType (Type type, string keyword) {
-            RegisterType(MakeType(type, keyword));
+            RegisterType(MakeIType(type, keyword));
         }
         public static void RegisterType (IType type) {
             types[type.cqType] = type;
@@ -142,7 +142,7 @@ namespace CQuark{
             IType ret = null;
             if(types.TryGetValue(type, out ret) == false) {
                 DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
-                ret = MakeType(type, "");
+                ret = MakeIType(type, "");
                 RegisterType(ret);
             }
             return ret;
@@ -196,7 +196,7 @@ namespace CQuark{
                                 types[i] = rt;
                             }
                             Type IType = gentype.MakeGenericType(types);
-                            RegisterType(MakeType(IType, keyword));
+                            RegisterType(MakeIType(IType, keyword));
                             return GetTypeByKeyword(keyword);
                         }
                     }
