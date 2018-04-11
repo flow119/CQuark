@@ -494,8 +494,6 @@ public class WrapMakerGUI : WrapMaker {
 
 		GUILayout.Space(10);
 
-        GUILayout.Label("If the Serializable Field is missing, Click the button below ↓");
-        GUILayout.Space(5);
         if(GUILayout.Button("Reload")) {
             Reload();
         }
