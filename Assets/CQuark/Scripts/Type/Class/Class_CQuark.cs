@@ -140,8 +140,8 @@ namespace CQuark {
                     CQ_Value value = null;
                     if(this.functions[function].expr_runtime != null) {
                         value = this.functions[function].expr_runtime.ComputeValue(content);
-                        if(value != null)
-							value.breakBlock = BreakType.None;
+                        //if(value != null)
+                        //    value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
@@ -163,7 +163,7 @@ namespace CQuark {
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
                             value.cq_type = value.value.GetType();
-						value.breakBlock = BreakType.None;
+                        //value.breakBlock = BreakType.None;
                         return value;
                     }
                 }
@@ -234,8 +234,8 @@ namespace CQuark {
                     }
                     if(funcobj.expr_runtime != null) {
                         value = funcobj.expr_runtime.ComputeValue(content);
-                        if(value != null)
-							value.breakBlock = BreakType.None;
+                        //if(value != null)
+                        //    value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
@@ -257,7 +257,7 @@ namespace CQuark {
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
                             value.cq_type = value.value.GetType();
-						value.breakBlock = BreakType.None;
+                        //value.breakBlock = BreakType.None;
                         return value;
                     }
                 }

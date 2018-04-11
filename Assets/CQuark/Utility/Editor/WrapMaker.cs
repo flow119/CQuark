@@ -228,7 +228,7 @@ public class WrapMaker : EditorWindow{
 				if(propertys[i].m_canGet){
 					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
 					wrapSVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
-					wrapSVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+                    wrapSVGet += "\t\t\t\treturnValue.cq_type = typeof(" + propertys[i].m_type + ");\n";
 					wrapSVGet += "\t\t\t\treturnValue.value = ";
 					wrapSVGet += classFullName + "." + propertys[i].m_name + ";\n";
 					wrapSVGet += "\t\t\t\treturn true;\n";
@@ -244,7 +244,7 @@ public class WrapMaker : EditorWindow{
 				if(propertys[i].m_canGet){
 					wrapMVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
 					wrapMVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
-					wrapMVGet += "\t\t\t\treturnValue.type = typeof(" + propertys[i].m_type + ");\n";
+                    wrapMVGet += "\t\t\t\treturnValue.cq_type = typeof(" + propertys[i].m_type + ");\n";
 					wrapMVGet += "\t\t\t\treturnValue.value = ";
 					wrapMVGet += "obj." + propertys[i].m_name + ";\n";
 					wrapMVGet += "\t\t\t\treturn true;\n";
@@ -331,7 +331,7 @@ public class WrapMaker : EditorWindow{
 				wrapNew += "}, mustEqual)){\n";
 			}
 			wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
-			wrapNew += "\t\t\t\treturnValue.type = typeof(" + classFullName + ");\n";
+            wrapNew += "\t\t\t\treturnValue.cq_type = typeof(" + classFullName + ");\n";
 			wrapNew += "\t\t\t\treturnValue.value = new " + classFullName + "(";
 			for(int j = 0; j < constructor[i].m_inType.Length; j++) {
 				wrapNew += "(" + constructor[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + constructor[i].m_inType[j] + "))";
@@ -421,7 +421,7 @@ public class WrapMaker : EditorWindow{
 				wrapSCall += "\t\t\t\treturnValue = null;\n";
 			}else{
 				wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
-				wrapSCall += "\t\t\t\treturnValue.type = typeof(" + staticMethods[i].m_returnType + ");\n";
+                wrapSCall += "\t\t\t\treturnValue.cq_type = typeof(" + staticMethods[i].m_returnType + ");\n";
 				wrapSCall += "\t\t\t\treturnValue.value = ";
 			}
 			wrapSCall += classFullName + "." + staticMethods[i].m_methodName + "(";
@@ -528,7 +528,7 @@ public class WrapMaker : EditorWindow{
 				wrapMCall += "\t\t\t\treturnValue = null;\n\t\t\t\t";
 			}else{
 				wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
-				wrapMCall += "\t\t\t\treturnValue.type = typeof(" + instanceMethods[i].m_returnType + ");\n";
+                wrapMCall += "\t\t\t\treturnValue.cq_type = typeof(" + instanceMethods[i].m_returnType + ");\n";
 				wrapMCall += "\t\t\t\treturnValue.value = ";
 			}
 			wrapMCall += "obj." + instanceMethods[i].m_methodName + "(";
@@ -605,7 +605,7 @@ public class WrapMaker : EditorWindow{
 			if(indexMethods[i].m_methodType == "IndexGet"){
 				wrapIGet += "\t\t\tif(key.EqualOrImplicateType(typeof(" + indexMethods[i].m_inType[0]+ "))){\n";
 				wrapIGet += "\t\t\t\treturnValue = new CQ_Value();\n";
-				wrapIGet += "\t\t\t\treturnValue.type = typeof(" + indexMethods[i].m_returnType + ");\n";
+                wrapIGet += "\t\t\t\treturnValue.cq_type = typeof(" + indexMethods[i].m_returnType + ");\n";
 				wrapIGet += "\t\t\t\treturnValue.value = ";
 				wrapIGet += "obj[(" + indexMethods[i].m_inType[0] + ")key.ConvertTo(typeof(" + indexMethods[i].m_inType[0] + "))];\n";
 				wrapIGet += "\t\t\t\treturn true;\n\t\t\t}";
@@ -675,7 +675,7 @@ public class WrapMaker : EditorWindow{
                 wrapAdd += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
-                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.cq_type = typeof(" + opMethods[i].m_returnType + ");\n"
                 + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) + (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
@@ -684,7 +684,7 @@ public class WrapMaker : EditorWindow{
                 wrapSub += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
-                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.cq_type = typeof(" + opMethods[i].m_returnType + ");\n"
                 + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) - (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
@@ -693,7 +693,7 @@ public class WrapMaker : EditorWindow{
                 wrapMul += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
-                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.cq_type = typeof(" + opMethods[i].m_returnType + ");\n"
                 + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) * (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
@@ -702,7 +702,7 @@ public class WrapMaker : EditorWindow{
                 wrapDiv += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
-                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.cq_type = typeof(" + opMethods[i].m_returnType + ");\n"
                 + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) / (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
@@ -711,7 +711,7 @@ public class WrapMaker : EditorWindow{
                 wrapMod += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
-                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.cq_type = typeof(" + opMethods[i].m_returnType + ");\n"
                 + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) % (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
