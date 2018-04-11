@@ -119,8 +119,8 @@ namespace CQuark
             else if(from == typeof(ushort)) {
                 return (targetType == typeof(int) || targetType == typeof(uint) || targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
             }
-            else if(from == typeof(int) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal)) {
-                return (targetType == typeof(long));
+            else if(from == typeof(int)) {
+                return (targetType == typeof(long)) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal);
             }
             else if(from == typeof(uint)) {
                 return (targetType == typeof(long) || targetType == typeof(ulong) || targetType == typeof(double) || targetType == typeof(float) || targetType == typeof(decimal));
