@@ -8,22 +8,13 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
-		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
-			if(type == null){
-				returnValue = null;
-				return false;
-			}
-{0}
-			returnValue = null;
-	        return false;
-	    }
 
 		public static bool StaticValueGet (Type type, string memberName, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = null;
 				return false;
 			}
-{1}
+{wrapSVGet}
 			returnValue = null;
 	        return false;
 	    }
@@ -32,18 +23,8 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-{2}
+{wrapSVSet}
 			return false;
-	    }
-
-		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
-			if(type == null){
-				returnValue = null;
-				return false;
-			}
-{3}
-			returnValue = null;
-	        return false;
 	    }
 
 		public static bool MemberValueGet (Type type, object objSelf, string memberName, out CQ_Value returnValue) {
@@ -51,7 +32,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{4}
+{wrapMVGet}
 			returnValue = null;
 			return false;
 	    }
@@ -60,16 +41,38 @@ namespace CQuark{
 			if(type == null){
 				return false;
 			}
-{5}
+{wrapMVSet}
 			return false;
 	    }
+		
+		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
+			if(type == null){
+				returnValue = null;
+				return false;
+			}
+{wrapNew}
+			returnValue = null;
+	        return false;
+	    }
+		
+		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
+			if(type == null){
+				returnValue = null;
+				return false;
+			}
+{wrapSCall}
+			returnValue = null;
+	        return false;
+	    }
+
+		
 
 		public static bool MemberCall (Type type, object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = null;
 				return false;
 			}
-{6}
+{wrapMCall}
 			returnValue = null;
 	        return false;
 	    }
@@ -79,7 +82,7 @@ namespace CQuark{
 				returnValue = null;
 				return false;
 			}
-{7}
+{wrapIGet}
 			returnValue = null;
 			return false;
 		}
@@ -88,37 +91,37 @@ namespace CQuark{
 			if(type == null) {
 				return false;
 			}
-{8}
+{wrapISet}
 			return false;
 		}
 		
 		public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = null;
-//{9}           
+{wrapAdd}           
             return false;
         }
 		
 		public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = null;
-//{10}           
+{wrapSub}           
             return false;
         }
 		
 		public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = null;
-//{11}           
+{wrapMul}           
             return false;
         }
 		
 		public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = null;
-//{12}           
+{wrapDiv}           
             return false;
         }
 		
 		public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = null;
-//{13}           
+{wrapMod}           
             return false;
         }
 	}

@@ -652,6 +652,91 @@ public class WrapMaker : EditorWindow{
 		}
 		return saveMethods;
 	}
+    protected string[] Op2PartStr (List<Method> opMethods) {
+        string wrapAdd = "";
+        string wrapSub = "";
+        string wrapMul = "";
+        string wrapDiv = "";
+        string wrapMod = "";
+
+        string wrapGreater = "";
+        string wrapLess = "";
+        string wrapEGreater = "";
+        string wrapELess = "";
+        string wrapEqual = "";
+        string wrapInequal = "";
+
+        string wrapImplicit = "";
+        string wrapExplicit = "";
+        string wrapNegation = "";
+
+        for(int i = 0; i < opMethods.Count; i++) {
+            if(opMethods[i].m_methodName == "op_Addition") {
+                wrapAdd += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
+                + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
+                + "\t\t\t\treturnValue = new CQ_Value();\n"
+                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) + (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturn true;\n"
+                + "\t\t\t}\n";
+            }
+            if(opMethods[i].m_methodName == "op_Subtraction") {
+                wrapSub += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
+                + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
+                + "\t\t\t\treturnValue = new CQ_Value();\n"
+                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) - (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturn true;\n"
+                + "\t\t\t}\n";
+            }
+            if(opMethods[i].m_methodName == "op_Multiply") {
+                wrapMul += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
+                + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
+                + "\t\t\t\treturnValue = new CQ_Value();\n"
+                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) * (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturn true;\n"
+                + "\t\t\t}\n";
+            }
+            if(opMethods[i].m_methodName == "op_Division") {
+                wrapDiv += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
+                + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
+                + "\t\t\t\treturnValue = new CQ_Value();\n"
+                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) / (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturn true;\n"
+                + "\t\t\t}\n";
+            }
+            if(opMethods[i].m_methodName == "op_Modulus") {
+                wrapMod += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
+                + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
+                + "\t\t\t\treturnValue = new CQ_Value();\n"
+                + "\t\t\t\treturnValue.type = typeof(" + opMethods[i].m_returnType + ");\n"
+                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) % (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturn true;\n"
+                + "\t\t\t}\n";
+            }
+        }
+
+        return new string[]{
+            wrapAdd,
+            wrapSub,
+            wrapMul,
+            wrapDiv,
+            wrapMod,
+
+            wrapGreater, 
+            wrapLess,
+            wrapEGreater,
+            wrapELess,
+            wrapEqual, 
+            wrapInequal, 
+
+            wrapImplicit,
+            wrapExplicit,
+            wrapNegation,
+        };
+    }
 	protected static bool ContainsProperty (List<Property> propertys, string methodName) {
 		if (methodName.StartsWith ("get_")) {
 			string propertyName = methodName.Substring (4);
@@ -674,7 +759,10 @@ public class WrapMaker : EditorWindow{
         //if (method.GetParameters ().Length != 2)
         //    return false;
 		string methodName = method.Name;
-        return methodName == "op_Addition"              //a+b
+        int paramLength = method.GetParameters().Length;
+        if(paramLength == 2) {
+             return 
+                 methodName == "op_Addition"            //a+b
             || methodName == "op_Subtraction"           //a-b
             || methodName == "op_Multiply"              //a*b
             || methodName == "op_Division"              //a/b
@@ -686,12 +774,16 @@ public class WrapMaker : EditorWindow{
             || methodName == "op_LessThanOrEqual"       //a<=b
 
             || methodName == "op_Equality"              //a==b
-            || methodName == "op_Inequality"            //a!=b
+            || methodName == "op_Inequality";           //a!=b
+        }
+        else if(paramLength == 1){
+            return
+                methodName == "op_Implicit"            //a 隐式转换成T
+            || methodName == "op_Explicit"             //(T)a
 
-            || methodName == "op_UnaryNegation"         //-a
-
-            || methodName == "op_Implicit"              //a 隐式转换成T
-            || methodName == "op_Explicit";             //(T)a
+            || methodName == "op_UnaryNegation" ;      //-a
+        }
+        return false;            
 	}
 
 	protected static bool Finish(string type){

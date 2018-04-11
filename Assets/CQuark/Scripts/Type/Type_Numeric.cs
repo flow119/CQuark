@@ -284,16 +284,58 @@ namespace CQuark
                 return left.ToString() + right.value as string;
             }
 
-            if (code == '+')
-                call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
-            else if (code == '-')//base = {CQcriptExt.Vector3 op_Subtraction(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
-            else if (code == '*')//[2] = {CQcriptExt.Vector3 op_Multiply(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
-            else if (code == '/')//[3] = {CQcriptExt.Vector3 op_Division(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
-            else if (code == '%')//[4] = {CQcriptExt.Vector3 op_Modulus(CQcriptExt.Vector3, CQcriptExt.Vector3)}
-                call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
+            //会走到这里说明不是简单的数学计算了
+            //我们这里开始使用Wrap，如果再不行再走反射
+            CQ_Value leftcq = new CQ_Value();
+            leftcq.type = this.cqType;
+            leftcq.value = left;
+            CQ_Value ret = null;
+            if(code == '+') {
+                if(Wrap.OpAddition(leftcq, right, out ret)) {
+                    returntype = ret.type;
+                    return ret.value;
+                }
+                else {
+                    call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
+                }
+            }
+
+            else if(code == '-'){
+                if(Wrap.OpSubtraction(leftcq, right, out ret)) {
+                    returntype = ret.type;
+                    return ret.value;
+                }
+                else {
+                    call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
+                }
+            }
+            else if(code == '*'){
+                if(Wrap.OpMultiply(leftcq, right, out ret)) {
+                    returntype = ret.type;
+                    return ret.value;
+                }
+                else {
+                    call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
+                }
+            }
+            else if(code == '/'){
+                if(Wrap.OpDivision(leftcq, right, out ret)) {
+                    returntype = ret.type;
+                    return ret.value;
+                }
+                else {
+                    call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
+                }
+            }
+            else if(code == '%') {
+                if(Wrap.OpModulus(leftcq, right, out ret)) {
+                    returntype = ret.type;
+                    return ret.value;
+                }
+                else {
+                    call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
+                }
+            }
 
             var obj = call.Invoke(null, new object[] { left, right.value });
             //function.StaticCall(env,"op_Addtion",new List<ICL>{})

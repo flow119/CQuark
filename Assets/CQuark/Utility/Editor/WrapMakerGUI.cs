@@ -101,6 +101,7 @@ public class WrapMakerGUI : WrapMaker {
 
 		//运算符（数学运算和逻辑运算）
 		List<Method> opMethods = GetOp (type, ref log);
+        string[] wrapOp = Op2PartStr(opMethods);
 
         if(string.IsNullOrEmpty(assemblyName)) {
 			WriteAllText(WrapFolder, classname + ".txt", log);
@@ -109,8 +110,8 @@ public class WrapMakerGUI : WrapMaker {
 			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", log);
 		}
 
-		UpdateWrapPart(assemblyName, classname, propertyPartStr, 
-			wrapNew, wrapSCall, wrapMCall, wrapIndex, opMethods);
+		UpdateWrapPart(assemblyName, classname, propertyPartStr,
+            wrapNew, wrapSCall, wrapMCall, wrapIndex, wrapOp);
 	}
 
 	static void WriteAllText(string folder, string name, string content){
@@ -131,7 +132,7 @@ public class WrapMakerGUI : WrapMaker {
 	}
 
 	void UpdateWrapPart(string assemblyName, string classname, string[] propertys, 
-		string wrapNew, string wrapSCall, string wrapMCall, string[] wrapIndex, List<Method> opMethods){
+		string wrapNew, string wrapSCall, string wrapMCall, string[] wrapIndex, string[] wrapOp){
 
 		string classWrapName = assemblyName.Replace(".","") + classname;                                      //类似UnityEngineVector3，不带点
 		string text = (Resources.Load("WrapPartTemplate") as TextAsset).text;
@@ -149,6 +150,13 @@ public class WrapMakerGUI : WrapMaker {
 
 		text = text.Replace("{WrapIGet}", wrapIndex[0]);
 		text = text.Replace("{WrapISet}", wrapIndex[1]);
+
+        text = text.Replace("{WrapAdd}", wrapOp[0]);
+        text = text.Replace("{WrapSub}", wrapOp[1]);
+        text = text.Replace("{WrapMul}", wrapOp[2]);
+        text = text.Replace("{WrapDiv}", wrapOp[3]);
+        text = text.Replace("{WrapMod}", wrapOp[4]);
+
 		//TODO OP text = text.OP
      //  (op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
@@ -166,7 +174,7 @@ public class WrapMakerGUI : WrapMaker {
 //		//测试
 //		return;
 
-        string _wrapCoreTemplate = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
+        string text = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
 
         string wrapNew = "";
         string wrapSVGet = "";
@@ -226,18 +234,64 @@ public class WrapMakerGUI : WrapMaker {
                 wrapISet += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
                 wrapISet += "\t\t\t\treturn " + classWrapName + "ISet(objSelf, key, param);\r\n";
                 wrapISet += "\t\t\t}\n";
+
+               
+                wrapAdd += "\t\t\t\tif(" + classWrapName + "Add(left, right, out returnValue, mustEqual))\n";
+                wrapAdd += "\t\t\t\t\treturn true;\n";
+
+                wrapSub += "\t\t\t\tif(" + classWrapName + "Sub(left, right, out returnValue, mustEqual))\n";
+                wrapSub += "\t\t\t\t\treturn true;\n";
+
+                wrapMul += "\t\t\t\tif(" + classWrapName + "Mul(left, right, out returnValue, mustEqual))\n";
+                wrapMul += "\t\t\t\t\treturn true;\n";
+
+                wrapDiv += "\t\t\t\tif(" + classWrapName + "Div(left, right, out returnValue, mustEqual))\n";
+                wrapDiv += "\t\t\t\t\treturn true;\n";
+
+                wrapMod += "\t\t\t\tif(" + classWrapName + "Mod(left, right, out returnValue, mustEqual))\n";
+                wrapMod += "\t\t\t\t\treturn true;\n";
+               
             }
         }
 
-        string text = _wrapCoreTemplate.Replace("{0}", wrapNew);
-        text = text.Replace("{1}", wrapSVGet);
-        text = text.Replace("{2}", wrapSVSet);
-        text = text.Replace("{3}", wrapSCall);
-        text = text.Replace("{4}", wrapMVGet);
-        text = text.Replace("{5}", wrapMVSet);
-        text = text.Replace("{6}", wrapMCall);
-        text = text.Replace("{7}", wrapIGet);
-        text = text.Replace("{8}", wrapISet);
+        wrapAdd = "\t\t\tfor(int t = 2; t > 0; t--){\n"
+                            + "\t\t\t\tbool mustEqual = (t == 2);\n"
+                            + wrapAdd
+                            + "\t\t\t}\n";
+        wrapSub = "\t\t\tfor(int t = 2; t > 0; t--){\n"
+                           + "\t\t\t\tbool mustEqual = (t == 2);\n"
+                           + wrapSub
+                           + "\t\t\t}\n";
+        wrapMul = "\t\t\tfor(int t = 2; t > 0; t--){\n"
+                           + "\t\t\t\tbool mustEqual = (t == 2);\n"
+                           + wrapMul
+                           + "\t\t\t}\n";
+        wrapDiv = "\t\t\tfor(int t = 2; t > 0; t--){\n"
+                           + "\t\t\t\tbool mustEqual = (t == 2);\n"
+                           + wrapDiv
+                           + "\t\t\t}\n";
+        wrapMod = "\t\t\tfor(int t = 2; t > 0; t--){\n"
+                           + "\t\t\t\tbool mustEqual = (t == 2);\n"
+                           + wrapMod
+                           + "\t\t\t}\n";
+
+        text = text.Replace("{wrapSVGet}", wrapSVGet);
+        text = text.Replace("{wrapSVSet}", wrapSVSet);
+        text = text.Replace("{wrapMVGet}", wrapMVGet);
+        text = text.Replace("{wrapMVSet}", wrapMVSet);
+
+        text = text.Replace("{wrapNew}", wrapNew);
+        text = text.Replace("{wrapSCall}", wrapSCall);
+        text = text.Replace("{wrapMCall}", wrapMCall);
+        text = text.Replace("{wrapIGet}", wrapIGet);
+        text = text.Replace("{wrapISet}", wrapISet);
+
+        text = text.Replace("{wrapAdd}", wrapAdd);
+        text = text.Replace("{wrapSub}", wrapSub);
+        text = text.Replace("{wrapMul}", wrapMul);
+        text = text.Replace("{wrapDiv}", wrapDiv);
+        text = text.Replace("{wrapMod}", wrapMod);
+
         //string text = string.Format(_wrapCoreTemplate, wrapNew, wrapSVGet, wrapSVSet, wrapSCall, wrapMVGet, wrapMVSet, wrapMCall, wrapIGet, wrapISet);
         File.WriteAllText(WrapFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}

@@ -57,7 +57,37 @@ namespace CQuark{
 
 		private static bool {WrapName}ISet(object objSelf, CQ_Value key, CQ_Value param){
 {WrapISet}
-
+			
+			return false;
+		}
+		
+		private static bool {WrapName}Add(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
+{WrapAdd}
+			returnValue = null;
+			return false;
+		}
+		
+		private static bool {WrapName}Sub(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
+{WrapSub}
+			returnValue = null;
+			return false;
+		}
+		
+		private static bool {WrapName}Mul(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
+{WrapMul}
+			returnValue = null;
+			return false;
+		}
+		
+		private static bool {WrapName}Div(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
+{WrapDiv}
+			returnValue = null;
+			return false;
+		}
+		
+		private static bool {WrapName}Mod(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
+{WrapMod}
+			returnValue = null;
 			return false;
 		}
 	}
