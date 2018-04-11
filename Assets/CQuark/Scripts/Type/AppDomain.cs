@@ -218,20 +218,6 @@ namespace CQuark{
 			return GetType(obj.GetType()).ConvertTo(obj, targetType);
 		}
 
-
-        //把文本断成TokenList
-        private static IList<Token> ParserToken (string code) {
-            if(code[0] == 0xFEFF) {
-                //windows下用记事本写，会在文本第一个字符出现BOM（65279）
-                code = code.Substring(1);
-            }
-
-            IList<Token> tokens = CQ_TokenParser.Parse(code);
-            if(tokens == null)
-                DebugUtil.LogWarning("没有解析到代码");
-
-            return tokens;
-        }
         private static void Project_Compile (Dictionary<string, IList<Token>> project, bool embDebugToken) {
             foreach(KeyValuePair<string, IList<Token>> f in project) {
                 //先把所有代码里的类注册一遍
@@ -270,22 +256,22 @@ namespace CQuark{
         /// </summary>
 
         public static ICQ_Expression BuildBlock (string code) {
-            var token = ParserToken(code);
+			var token = CQ_TokenParser.Parse(code);
             return CQ_Expression_Compiler.Compile(token);
         }
         public static void BuildFile (string filename, string code) {
-            var token = ParserToken(code);
+			var token = CQ_TokenParser.Parse(code);
             File_CompileToken(filename, token, false);
         }
         public static void BuildProject (string path, string pattern) {
             string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
             Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
-            foreach(var file in files) {
-                if(project.ContainsKey(file))
+            foreach(string fileName in files) {
+				if(project.ContainsKey(fileName))
                     continue;
-                string text = System.IO.File.ReadAllText(file);
+				string text = System.IO.File.ReadAllText(fileName);
                 var tokens = CQ_TokenParser.Parse(text);
-                project.Add(file, tokens);
+				project.Add(fileName, tokens);
             }
             Project_Compile(project, true);
         }

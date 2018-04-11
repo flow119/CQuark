@@ -72,13 +72,9 @@ namespace CQuark
             return types.Contains(type) || customTypes.Contains(type);
         }
 
-        static Dictionary<string, IList<Token>> _parseCache = new Dictionary<string, IList<Token>>();
-
-
         public static void Reload()
         {
             customTypes = new List<string>();
-            _parseCache.Clear();
         }
 
         static int FindStart(string lines, int npos, ref int lineIndex)
@@ -605,14 +601,13 @@ namespace CQuark
         }
         public static IList<Token> Parse(string lines)
         {
-            if (_parseCache.ContainsKey(lines))
-            {
-                //UnityEngine.Debug.Log("已使用缓存");
-                return _parseCache[lines];
-            }
+			if(lines[0] == 0xFEFF) {
+				//windows下用记事本写，会在文本第一个字符出现BOM（65279）
+				lines = lines.Substring(1);
+			}
 
             int lineIndex = 1;
-            List<Token> ts = new List<Token>();
+			List<Token> tokens = new List<Token>();
             int n = 0;
             while (n >= 0)
             {
@@ -633,55 +628,58 @@ namespace CQuark
                 n = nend;
                 if (n >= 0)
                 {
-                    if (ts.Count >= 2 && t.type == TokenType.IDENTIFIER && ts[ts.Count - 1].text == "." && ts[ts.Count - 2].type == TokenType.TYPE)
+                    if (tokens.Count >= 2 && t.type == TokenType.IDENTIFIER && tokens[tokens.Count - 1].text == "." && tokens[tokens.Count - 2].type == TokenType.TYPE)
                     {
-                        string ntype = ts[ts.Count - 2].text + ts[ts.Count - 1].text + t.text;
+                        string ntype = tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
                         if (ContainsType(ntype))
                         {//类中类，合并之
                             t.type = TokenType.TYPE;
                             t.text = ntype;
-                            t.pos = ts[ts.Count - 2].pos;
-                            t.line = ts[ts.Count - 2].line;
-                            ts.RemoveAt(ts.Count - 1);
-                            ts.RemoveAt(ts.Count - 1);
+                            t.pos = tokens[tokens.Count - 2].pos;
+                            t.line = tokens[tokens.Count - 2].line;
+                            tokens.RemoveAt(tokens.Count - 1);
+                            tokens.RemoveAt(tokens.Count - 1);
 
-                            ts.Add(t);
+                            tokens.Add(t);
                             continue;
                         }
                     }
-                    if (ts.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
-                        && ts[ts.Count - 1].type == TokenType.TYPE
-                        && ts[ts.Count - 2].type == TokenType.PUNCTUATION && ts[ts.Count - 2].text == "<"
-                        && ts[ts.Count - 3].type == TokenType.IDENTIFIER)
+                    if (tokens.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
+                        && tokens[tokens.Count - 1].type == TokenType.TYPE
+                        && tokens[tokens.Count - 2].type == TokenType.PUNCTUATION && tokens[tokens.Count - 2].text == "<"
+                        && tokens[tokens.Count - 3].type == TokenType.IDENTIFIER)
                     {//模板函数调用,合并之
-                        string ntype = ts[ts.Count - 3].text + ts[ts.Count - 2].text + ts[ts.Count - 1].text + t.text;
+                        string ntype = tokens[tokens.Count - 3].text + tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
                         t.type = TokenType.IDENTIFIER;
                         t.text = ntype;
-                        t.pos = ts[ts.Count - 2].pos;
-                        t.line = ts[ts.Count - 2].line;
-                        ts.RemoveAt(ts.Count - 1);
-                        ts.RemoveAt(ts.Count - 1);
-                        ts.RemoveAt(ts.Count - 1);
-                        ts.Add(t);
+                        t.pos = tokens[tokens.Count - 2].pos;
+                        t.line = tokens[tokens.Count - 2].line;
+                        tokens.RemoveAt(tokens.Count - 1);
+                        tokens.RemoveAt(tokens.Count - 1);
+                        tokens.RemoveAt(tokens.Count - 1);
+                        tokens.Add(t);
                         continue;
                     }
-                    if (ts.Count >= 2 && t.type == TokenType.TYPE && ts[ts.Count - 1].text == "." && (ts[ts.Count - 2].type == TokenType.TYPE || ts[ts.Count - 2].type == TokenType.IDENTIFIER))
+                    if (tokens.Count >= 2 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].text == "." && (tokens[tokens.Count - 2].type == TokenType.TYPE || tokens[tokens.Count - 2].type == TokenType.IDENTIFIER))
                     {//Type.Type IDENTIFIER.Type 均不可能，为重名
                         t.type = TokenType.IDENTIFIER;
-                        ts.Add(t);
+                        tokens.Add(t);
                         continue;
                     }
-                    if (ts.Count >= 1 && t.type == TokenType.TYPE && ts[ts.Count - 1].type == TokenType.TYPE)
+                    if (tokens.Count >= 1 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].type == TokenType.TYPE)
                     {//Type Type 不可能，为重名
                         t.type = TokenType.IDENTIFIER;
-                        ts.Add(t);
+                        tokens.Add(t);
                         continue;
                     }
-                    ts.Add(t);
+                    tokens.Add(t);
                 }
             }
-            _parseCache.Add(lines, ts);
-            return ts;
+
+			if(tokens == null)
+				DebugUtil.LogWarning("没有解析到代码");
+
+			return tokens;
         }
     }
 }
