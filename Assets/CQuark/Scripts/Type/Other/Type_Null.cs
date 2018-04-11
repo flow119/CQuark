@@ -34,7 +34,7 @@ namespace CQuark
         public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
         {
            
-            if ((Type)right.type == typeof(string))
+            if ((Type)right.cq_type == typeof(string))
             {
                 returntype = typeof(String);
                 return "null" + right.value;

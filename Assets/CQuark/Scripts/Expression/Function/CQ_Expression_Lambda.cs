@@ -46,7 +46,7 @@ namespace CQuark {
 #endif
             //List<CQ_Content.Value> list = new List<CQ_Content.Value>();
             CQ_Value value = new CQ_Value();
-            value.type = typeof(DeleLambda);
+            value.cq_type = typeof(DeleLambda);
             value.value = new DeleLambda(content, (this._expressions[0] as CQ_Expression_Block)._expressions, this._expressions[1]);
 
 #if CQUARK_DEBUG

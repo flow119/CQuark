@@ -62,14 +62,14 @@ namespace CQuark {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {
                         sv.value_value.member[i.Key] = new CQ_Value();
-                        sv.value_value.member[i.Key].type = i.Value.type.cqType;
+                        sv.value_value.member[i.Key].cq_type = i.Value.type.cqType;
                         sv.value_value.member[i.Key].value = i.Value.type.defaultValue;
                     }
                     else {
                         var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                        if(i.Value.type.cqType != value.type) {
+                        if(i.Value.type.cqType != value.cq_type) {
                             sv.value_value.member[i.Key] = new CQ_Value();
-                            sv.value_value.member[i.Key].type = i.Value.type.cqType;
+                            sv.value_value.member[i.Key].cq_type = i.Value.type.cqType;
                             sv.value_value.member[i.Key].value = value.ConvertTo(i.Value.type.cqType);
                         }
                         else {
@@ -94,14 +94,14 @@ namespace CQuark {
                         if(i.Value.expr_defvalue == null) {
                             staticMemberInstance[i.Key] = new CQ_Value();
 
-                            staticMemberInstance[i.Key].type = i.Value.type.cqType;
+                            staticMemberInstance[i.Key].cq_type = i.Value.type.cqType;
                             staticMemberInstance[i.Key].value = i.Value.type.defaultValue;
                         }
                         else {
                             var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                            if(i.Value.type.cqType != value.type) {
+                            if(i.Value.type.cqType != value.cq_type) {
                                 staticMemberInstance[i.Key] = new CQ_Value();
-                                staticMemberInstance[i.Key].type = i.Value.type.cqType;
+                                staticMemberInstance[i.Key].cq_type = i.Value.type.cqType;
 								staticMemberInstance[i.Key].value = value.ConvertTo(i.Value.type.cqType);
                             }
                             else {
@@ -155,14 +155,14 @@ namespace CQuark {
                     Delegate dele = this.staticMemberInstance[function].value as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
-                        value.type = null;
+                        value.cq_type = null;
                         object[] objs = new object[_params.Count];
                         for(int i = 0; i < _params.Count; i++) {
                             objs[i] = _params[i].value;
                         }
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
-                            value.type = value.value.GetType();
+                            value.cq_type = value.value.GetType();
 						value.breakBlock = BreakType.None;
                         return value;
                     }
@@ -177,7 +177,7 @@ namespace CQuark {
             CQ_Value temp = null;
             if(this.staticMemberInstance.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
-                v.type = temp.type;
+                v.cq_type = temp.cq_type;
                 v.value = temp.value;
                 return v;
             }
@@ -249,14 +249,14 @@ namespace CQuark {
                     Delegate dele = (object_this as CQClassInstance).member[func].value as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
-                        value.type = null;
+                        value.cq_type = null;
                         object[] objs = new object[_params.Count];
                         for(int i = 0; i < _params.Count; i++) {
                             objs[i] = _params[i].value;
                         }
                         value.value = dele.DynamicInvoke(objs);
                         if(value.value != null)
-                            value.type = value.value.GetType();
+                            value.cq_type = value.value.GetType();
 						value.breakBlock = BreakType.None;
                         return value;
                     }
@@ -314,7 +314,7 @@ namespace CQuark {
             CQ_Value temp = null;
             if(sin.member.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
-                v.type = temp.type;
+                v.cq_type = temp.cq_type;
                 v.value = temp.value;
                 return v;
             }

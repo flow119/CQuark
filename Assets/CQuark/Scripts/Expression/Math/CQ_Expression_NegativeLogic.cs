@@ -48,7 +48,7 @@ namespace CQuark {
 
 
             CQ_Value r2 = new CQ_Value();
-            r2.type = r.type;
+            r2.cq_type = r.cq_type;
             r2.breakBlock = r.breakBlock;
             r2.value = !(bool)r.value;
 #if CQUARK_DEBUG

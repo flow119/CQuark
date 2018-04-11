@@ -120,9 +120,9 @@ namespace CQuark
 		protected static object Math2Value<LeftType> (char opCode, object left, CQ_Value right, out CQ_Type returntype, out bool math2ValueSuccess) where LeftType : struct {
 			try {
 				math2ValueSuccess = true;
-				returntype = GetReturnType_Math2Value(typeof(LeftType), right.type);
+				returntype = GetReturnType_Math2Value(typeof(LeftType), right.cq_type);
 				double leftValue = GetDouble(typeof(LeftType), left);
-				double rightValue = GetDouble(right.type, right.value);
+				double rightValue = GetDouble(right.cq_type, right.value);
 				double finalValue;
 
 				switch(opCode) {
@@ -197,7 +197,7 @@ namespace CQuark
 
 			try {
 				double leftValue = GetDouble(typeof(LeftType), left);
-				double rightValue = GetDouble(right.type, right.value);
+				double rightValue = GetDouble(right.cq_type, right.value);
 
 				switch(logicCode) {
 				case LogicToken.equal:
@@ -278,7 +278,7 @@ namespace CQuark
             returntype = cqType;
             MethodInfo call = null;
             //var m = ((Type)type).GetMembers();
-            Type rightType = (Type)right.type;
+            Type rightType = (Type)right.cq_type;
             if(rightType == typeof(string) && code == '+') {
                 returntype = typeof(string);
                 return left.ToString() + right.value as string;
@@ -287,12 +287,12 @@ namespace CQuark
             //会走到这里说明不是简单的数学计算了
             //我们这里开始使用Wrap，如果再不行再走反射
             CQ_Value leftcq = new CQ_Value();
-            leftcq.type = this.cqType;
+            leftcq.cq_type = this.cqType;
             leftcq.value = left;
             CQ_Value ret = null;
             if(code == '+') {
                 if(Wrap.OpAddition(leftcq, right, out ret)) {
-                    returntype = ret.type;
+                    returntype = ret.cq_type;
                     return ret.value;
                 }
                 else {
@@ -302,7 +302,7 @@ namespace CQuark
 
             else if(code == '-'){
                 if(Wrap.OpSubtraction(leftcq, right, out ret)) {
-                    returntype = ret.type;
+                    returntype = ret.cq_type;
                     return ret.value;
                 }
                 else {
@@ -311,7 +311,7 @@ namespace CQuark
             }
             else if(code == '*'){
                 if(Wrap.OpMultiply(leftcq, right, out ret)) {
-                    returntype = ret.type;
+                    returntype = ret.cq_type;
                     return ret.value;
                 }
                 else {
@@ -320,7 +320,7 @@ namespace CQuark
             }
             else if(code == '/'){
                 if(Wrap.OpDivision(leftcq, right, out ret)) {
-                    returntype = ret.type;
+                    returntype = ret.cq_type;
                     return ret.value;
                 }
                 else {
@@ -329,7 +329,7 @@ namespace CQuark
             }
             else if(code == '%') {
                 if(Wrap.OpModulus(leftcq, right, out ret)) {
-                    returntype = ret.type;
+                    returntype = ret.cq_type;
                     return ret.value;
                 }
                 else {
@@ -356,7 +356,7 @@ namespace CQuark
                 call = _type.GetMethod("op_LessThanOrEqual");
             else if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.type == null)
+                if (left == null || right.cq_type == null)
                 {
                     return left == right.value;
                 }
@@ -369,7 +369,7 @@ namespace CQuark
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.type == null)
+                if (left == null || right.cq_type == null)
                 {
                     return left != right.value;
                 }

@@ -59,7 +59,7 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             CQ_Value v = new CQ_Value();
-            v.type = this.type;
+            v.cq_type = this.type;
             v.value = null;
 #if CQUARK_DEBUG
 			content.OutStack(this);

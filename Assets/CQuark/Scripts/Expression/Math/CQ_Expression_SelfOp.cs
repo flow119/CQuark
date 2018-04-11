@@ -44,10 +44,10 @@ namespace CQuark {
             content.InStack(this);
 #endif
             var v = content.Get(value_name);
-			IType type = CQuark.AppDomain.GetITypeByCQType(v.type);
+			IType type = CQuark.AppDomain.GetITypeByCQType(v.cq_type);
             CQ_Type returntype;
             object value = type.Math2Value(mathop, v.value, CQ_Value.One, out returntype);
-            value = type.ConvertTo(value, v.type);
+            value = type.ConvertTo(value, v.cq_type);
             content.Set(value_name, value);
 
             //操作变量之

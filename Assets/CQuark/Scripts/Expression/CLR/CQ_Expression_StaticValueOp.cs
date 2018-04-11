@@ -63,8 +63,8 @@ namespace CQuark {
                 vright = _expressions[0].ComputeValue(content);
             }
             CQ_Value vout = new CQ_Value();
-			var mtype = CQuark.AppDomain.GetITypeByCQType(getvalue.type);
-            vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.type);
+			var mtype = CQuark.AppDomain.GetITypeByCQType(getvalue.cq_type);
+            vout.value = mtype.Math2Value(mathop, getvalue.value, vright, out vout.cq_type);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!Wrap.StaticValueSet(type.cqType.type, staticmembername, vout)){

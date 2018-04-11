@@ -55,7 +55,7 @@ namespace CQuark {
                 else {
                     bleft = (bool)_expressions[0].ComputeValue(content).value;
                 }
-                result.type = typeof(bool);
+                result.cq_type = typeof(bool);
                 if(mathop == '&') {
                     if(!bleft) {
                         result.value = false;

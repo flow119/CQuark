@@ -77,7 +77,7 @@ namespace CQuark
         {
             if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.type == null)
+                if (left == null || right.cq_type == null)
                 {
                     return left == right.value;
                 }
@@ -88,7 +88,7 @@ namespace CQuark
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.type == null)
+                if (left == null || right.cq_type == null)
                 {
                     return left != right.value;
                 }
