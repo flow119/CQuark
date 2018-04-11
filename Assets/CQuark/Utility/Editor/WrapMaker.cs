@@ -36,6 +36,7 @@ public class WrapMaker : EditorWindow{
 				m_returnType = Type2String(returnType); ;
 			m_methodName = methodName;
 			m_inType = new string[paramLength];
+
 			for(int i = 0; i < paramLength; i++) {
 				m_inType[i] = Type2String(param[i].ParameterType);
 			}
@@ -359,9 +360,6 @@ public class WrapMaker : EditorWindow{
 			if (IsOp (smis [i]))
 				continue;
 
-			if(smis[i].Name == "op_Implicit")	//TODO 
-				continue;
-
 			string retType = Type2String (smis [i].ReturnType);
 
 			string s = "public static " + retType + " " ;
@@ -369,7 +367,7 @@ public class WrapMaker : EditorWindow{
 			bool isGeneric = (smis[i].ContainsGenericParameters && smis[i].IsGenericMethod);
 			if(isGeneric)
 				s += "<T>";
-
+            s += "(";
 			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
 			if (param.Length == 0) {
 				saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, 0, isGeneric));
@@ -641,10 +639,15 @@ public class WrapMaker : EditorWindow{
 				continue;
 
 			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
-			log += "public static " + smis[i].ReturnType + " " + smis[i].Name 
-				+ "(" +param[0].ParameterType + " " + param[0].Name + ", " + param[1].ParameterType + " " + param[1].Name + ")\n";
+            log += "public static " + smis[i].ReturnType + " " + smis[i].Name + "(";
+            for(int j = 0; j < param.Length; j++) {
+                log += param[j].ParameterType + " " + param[j].Name;
+                if(j != param.Length - 1)
+                    log += ",";
+            }
+            log += ")\n";
 
-			Method method = new Method(smis[i].Name, smis[i].ReturnType, smis[i].Name, param, 2);
+            Method method = new Method(smis[i].Name, smis[i].ReturnType, smis[i].Name, param, param.Length);
 			saveMethods.Add(method);
 		}
 		return saveMethods;
@@ -668,22 +671,27 @@ public class WrapMaker : EditorWindow{
 	}
 
 	protected static bool IsOp(MethodInfo method){
-		if (method.GetParameters ().Length != 2)
-			return false;
+        //if (method.GetParameters ().Length != 2)
+        //    return false;
 		string methodName = method.Name;
-		return methodName == "op_Addition"
-			|| methodName == "op_Subtraction"
-			|| methodName == "op_Multiply"
-			|| methodName == "op_Division"
-			|| methodName == "op_Modulus"
+        return methodName == "op_Addition"              //a+b
+            || methodName == "op_Subtraction"           //a-b
+            || methodName == "op_Multiply"              //a*b
+            || methodName == "op_Division"              //a/b
+            || methodName == "op_Modulus"               //a%b
 
-			|| methodName == "op_GreaterThan"
-			|| methodName == "op_LessThan"
-			|| methodName == "op_GreaterThanOrEqual"
-			|| methodName == "op_LessThanOrEqual"
+            || methodName == "op_GreaterThan"           //a>b
+            || methodName == "op_LessThan"              //a<b
+            || methodName == "op_GreaterThanOrEqual"    //a>=b
+            || methodName == "op_LessThanOrEqual"       //a<=b
 
-			|| methodName == "op_Equality"
-			|| methodName == "op_Inequality";
+            || methodName == "op_Equality"              //a==b
+            || methodName == "op_Inequality"            //a!=b
+
+            || methodName == "op_UnaryNegation"         //-a
+
+            || methodName == "op_Implicit"              //a 隐式转换成T
+            || methodName == "op_Explicit";             //(T)a
 	}
 
 	protected static bool Finish(string type){
