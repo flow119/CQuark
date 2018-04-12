@@ -25,22 +25,6 @@ namespace CQuark
                     return m_stype;
                 return null;
             }
-            //set {
-            //    if(value == null) {
-            //        type = null;
-            //        stype = null;
-            //    }
-            //    else if(value.type != null) {
-            //        type = value.type;
-            //    }
-            //    else if(value.stype != null) {
-            //        stype = value.stype;
-            //    }
-            //    else{
-            //        type = null;
-            //        stype = null;
-            //    }
-            //}
         }
 
         public Type m_type;
@@ -145,6 +129,17 @@ namespace CQuark
             return null;
 //			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
 		}
+
+        public object ConvertTo (Type targetType) {
+            if(value == null)
+                return value;
+            if(m_type == targetType)
+                return value;
+            if(m_type != null)
+                return AppDomain.GetITypeByType(m_type).ConvertTo(value, targetType);
+           
+            return null;
+        }
 
         //类型是否等于targetType
         public bool EqualType (Type targetType) {

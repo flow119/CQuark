@@ -440,7 +440,7 @@ public class WrapMaker : EditorWindow{
 		List<Method> saveMethods = new List<Method> ();
 		log += "\n成员方法\n";
 
-		if (type.GetConstructors ().Length == 0) {	//是否是静态类，静态类没有构造函数
+		if (type.GetConstructors ().Length == 0 && !typeof(Component).IsAssignableFrom(type)) {	//是否是静态类，静态类没有构造函数
 			log += "静态类没有成员方法";
 			return saveMethods;			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
 		}
