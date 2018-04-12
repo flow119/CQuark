@@ -85,7 +85,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return CQ_Value.Null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG

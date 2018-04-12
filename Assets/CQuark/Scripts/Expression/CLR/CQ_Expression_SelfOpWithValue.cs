@@ -61,7 +61,7 @@ namespace CQuark {
                 CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
 
                 var parent = f._expressions[0].ComputeValue(content);
-                if(parent == null) {
+                if(parent == CQ_Value.Null) {
                     throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
                 }
 
@@ -85,7 +85,7 @@ namespace CQuark {
             content.OutStack(this);
 #endif
 
-            return null;
+            return CQ_Value.Null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("SelfOp=不支持套用协程");

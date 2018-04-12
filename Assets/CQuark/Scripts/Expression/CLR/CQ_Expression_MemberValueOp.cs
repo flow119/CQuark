@@ -44,12 +44,12 @@ namespace CQuark {
             content.InStack(this);
 #endif
 			CQ_Value parent = _expressions[0].ComputeValue(content);
-            if(parent == null) {
+            if(parent == CQ_Value.Null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
             IType type = CQuark.AppDomain.GetITypeByCQValue(parent);
 
-			CQ_Value getvalue = null;
+            CQ_Value getvalue = CQ_Value.Null;
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!Wrap.MemberValueGet(parent.m_type, parent.value, membername, out getvalue)){

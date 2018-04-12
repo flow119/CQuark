@@ -24,7 +24,7 @@ namespace CQuark
         }
 
        public override CQ_Value Math2Value (char code, object left, CQ_Value right) {
-            CQ_Value returnValue = null;
+            CQ_Value returnValue = CQ_Value.Null;
 
             if(Math2Value<int>(code, left, right, out returnValue)) {
                 return returnValue;

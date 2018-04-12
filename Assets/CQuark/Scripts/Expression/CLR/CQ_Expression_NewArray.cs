@@ -60,7 +60,7 @@ namespace CQuark {
             }
 			List<CQ_Value> param = new List<CQ_Value>();
 			param.Add(vcount);
-			CQ_Value outvalue = null;
+            CQ_Value outvalue = CQ_Value.Null;
 
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射

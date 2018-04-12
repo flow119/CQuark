@@ -56,7 +56,7 @@ namespace CQuark {
                 _params.Add(_expressions[i].ComputeValue(content));
             }
 
-            CQ_Value value = null;
+            CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!Wrap.StaticCall(type.cqType.type, functionName, _params, out value)){

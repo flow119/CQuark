@@ -418,7 +418,7 @@ public class WrapMaker : EditorWindow{
 				wrapSCall += "}, mustEqual)){\n";
 			}
 			if(staticMethods[i].m_returnType == "void"){
-				wrapSCall += "\t\t\t\treturnValue = null;\n";
+				wrapSCall += "\t\t\t\treturnValue = CQ_Value.Null;\n";
 			}else{
 				wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
                 wrapSCall += "\t\t\t\treturnValue.m_type = typeof(" + staticMethods[i].m_returnType + ");\n";
@@ -525,7 +525,7 @@ public class WrapMaker : EditorWindow{
 				wrapMCall += "}, mustEqual)){\n";
 			}
 			if(instanceMethods[i].m_returnType == "void"){
-				wrapMCall += "\t\t\t\treturnValue = null;\n\t\t\t\t";
+				wrapMCall += "\t\t\t\treturnValue = CQ_Value.Null;\n\t\t\t\t";
 			}else{
 				wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
                 wrapMCall += "\t\t\t\treturnValue.m_type = typeof(" + instanceMethods[i].m_returnType + ");\n";

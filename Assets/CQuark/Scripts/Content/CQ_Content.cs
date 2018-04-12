@@ -224,7 +224,7 @@ namespace CQuark
             {
                 values = new Dictionary<string, CQ_Value>();
             }
-            CQ_Value retV = null;
+            CQ_Value retV = CQ_Value.Null;
 
             bool bFind = values.TryGetValue(name, out retV);
             if (!bFind)
@@ -237,11 +237,15 @@ namespace CQuark
                     {
                         if (retM.bStatic)
                         {
-                            CallType.staticMemberInstance[name].value=value;
+                            CQ_Value val = CallType.staticMemberInstance[name];
+                            val.value=value;
+                            CallType.staticMemberInstance[name] = val;
                         }
                         else
                         {
-                            CallThis.member[name].value=value;
+                            CQ_Value val = CallThis.member[name];
+                            val.value = value;
+                            CallThis.member[name] = val;
                         }
                         return;
                     }
@@ -255,9 +259,12 @@ namespace CQuark
                 throw new Exception("值没有定义过" + name + "," + err);
 
             }
-            if (retV.m_type == typeof(Type_Var.var) && value != null)
-                retV.m_type = value.GetType();
-            retV.value = value;
+            else {
+                if(retV.m_type == typeof(Type_Var.var) && value != null)
+                    retV.m_type = value.GetType();
+                retV.value = value;
+                values[name] = retV;
+            }
         }
         public void DefineAndSet(string name,CQ_Type type,object value)
         {
@@ -283,7 +290,7 @@ namespace CQuark
         public CQ_Value Get(string name)
         {
             CQ_Value v = GetQuiet(name);
-            if(v==null)
+            if(v == CQ_Value.Null)
                 throw new Exception("值"+name+"没有定义过");
             return v;
         }
@@ -297,7 +304,7 @@ namespace CQuark
                 return v;
             }
 
-            CQ_Value retV = null;
+            CQ_Value retV = CQ_Value.Null;
             bool bFind = false;
             if (values != null)
             {
@@ -338,7 +345,7 @@ namespace CQuark
 
                 }
             }
-            return null;
+            return CQ_Value.Null;
         }
 
         public void DepthAdd()//控制变量作用域，深一层

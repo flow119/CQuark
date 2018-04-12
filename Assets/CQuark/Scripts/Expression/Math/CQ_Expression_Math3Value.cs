@@ -49,7 +49,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            CQ_Value result = null;
+            CQ_Value result = CQ_Value.Null;
 
 
             {

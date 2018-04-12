@@ -55,7 +55,7 @@ namespace CQuark {
             ICQ_Expression expr_go1 = _expressions[1];
             ICQ_Expression expr_go2 = null;
             if(_expressions.Count > 2) expr_go2 = _expressions[2];//else
-            CQ_Value value = null;
+            CQ_Value value = CQ_Value.Null;
             if(bif && expr_go1 != null) {
                 if(expr_go1 is CQ_Expression_Block) {
                     value = expr_go1.ComputeValue(content);

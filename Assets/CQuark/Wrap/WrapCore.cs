@@ -11,11 +11,11 @@ namespace CQuark{
 
 		public static bool StaticValueGet (Type type, string memberName, out CQ_Value returnValue) {
 			if(type == null){
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
@@ -29,11 +29,11 @@ namespace CQuark{
 
 		public static bool MemberValueGet (Type type, object objSelf, string memberName, out CQ_Value returnValue) {
 			if(type == null){
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 	    }
 
@@ -47,21 +47,21 @@ namespace CQuark{
 		
 		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 		
 		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
@@ -69,21 +69,21 @@ namespace CQuark{
 
 		public static bool MemberCall (Type type, object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
 		public static bool IndexGet(Type type, object objSelf, CQ_Value key, out CQ_Value returnValue){
 			if(type == null) {
-				returnValue = null;
+				returnValue = CQ_Value.Null;
 				return false;
 			}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 
@@ -96,7 +96,7 @@ namespace CQuark{
 		}
 		
 		public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-            returnValue = null;
+            returnValue = CQ_Value.Null;
 			for(int t = 2; t > 0; t--){
 				bool mustEqual = (t == 2);
 			}
@@ -105,7 +105,7 @@ namespace CQuark{
         }
 		
 		public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-            returnValue = null;
+            returnValue = CQ_Value.Null;
 			for(int t = 2; t > 0; t--){
 				bool mustEqual = (t == 2);
 			}
@@ -114,7 +114,7 @@ namespace CQuark{
         }
 		
 		public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-            returnValue = null;
+            returnValue = CQ_Value.Null;
 			for(int t = 2; t > 0; t--){
 				bool mustEqual = (t == 2);
 			}
@@ -123,7 +123,7 @@ namespace CQuark{
         }
 		
 		public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-            returnValue = null;
+            returnValue = CQ_Value.Null;
 			for(int t = 2; t > 0; t--){
 				bool mustEqual = (t == 2);
 			}
@@ -132,7 +132,7 @@ namespace CQuark{
         }
 		
 		public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-            returnValue = null;
+            returnValue = CQ_Value.Null;
 			for(int t = 2; t > 0; t--){
 				bool mustEqual = (t == 2);
 			}

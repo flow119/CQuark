@@ -52,7 +52,7 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
-            CQ_Value switchVal = null;
+            CQ_Value switchVal = CQ_Value.Null;
             //			CQ_Content.Value vrt = null;
             if(expr_switch != null)
                 switchVal = expr_switch.ComputeValue(content);//switch//
@@ -86,7 +86,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return CQ_Value.Null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 #if CQUARK_DEBUG
@@ -94,7 +94,7 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             ICQ_Expression expr_switch = _expressions[0] as ICQ_Expression;
-            CQ_Value switchVal = null;
+            CQ_Value switchVal = CQ_Value.Null;
             //			CQ_Content.Value vrt = null;
             if(expr_switch != null)
                 switchVal = expr_switch.ComputeValue(content);//switch//

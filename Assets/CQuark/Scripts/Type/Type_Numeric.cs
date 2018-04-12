@@ -151,7 +151,7 @@ namespace CQuark
 
 			}
 			catch(Exception) {
-                returnValue = null;
+                returnValue = CQ_Value.Null;
 				return false;
 			}
 		}
@@ -286,7 +286,7 @@ namespace CQuark
                 return returnValue;
             }
             else {
-                CQ_Value returnValue = null;
+                CQ_Value returnValue = CQ_Value.Null;
                 MethodInfo call = null;
 
                 //会走到这里说明不是简单的数学计算了

@@ -53,7 +53,7 @@ namespace CQuark {
 				content.OutStack(this);
 #endif
             //TODO 最好不要支持这种操作
-            return null;
+            return CQ_Value.Null;
         }
 
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
@@ -72,7 +72,7 @@ namespace CQuark {
                 }
             }
 
-            CQ_Value v = null;
+            CQ_Value v = CQ_Value.Null;
             Class_CQuark.Function retFunc = null;
             bool bFind = false;
             if(content.CallType != null)
@@ -88,7 +88,7 @@ namespace CQuark {
             }
             else {
                 v = content.GetQuiet(funcname);
-                if(v != null && v.value is Delegate) {
+                if(v.value != null && v.value is Delegate) {
                     //if(v.value is Delegate)
                     {
                         Delegate d = v.value as Delegate;
@@ -98,7 +98,7 @@ namespace CQuark {
                             obja[i] = list[i].value;
                         }
                         v.value = d.DynamicInvoke(obja);
-                        if(v.value == null) {
+                        if(v == CQ_Value.Null) {
                             v.SetCQType(null);
                         }
                         else {

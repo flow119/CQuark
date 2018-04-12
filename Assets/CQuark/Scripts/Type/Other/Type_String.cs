@@ -54,7 +54,7 @@ namespace CQuark
             {
                 CQ_Value returnValue = new CQ_Value();
                 returnValue.m_type = typeof(string);
-                if (right.value == null)
+                if(right == CQ_Value.Null)
                 {
                     returnValue.value = (string)left + "null";
                 }

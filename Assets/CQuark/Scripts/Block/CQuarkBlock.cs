@@ -12,8 +12,8 @@ public class CQuarkBlock
 
     public object Execute(string script){
 		var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
-		var value = expr.ComputeValue(content);//执行表达式
-        if (value == null) 
+		CQ_Value value = expr.ComputeValue(content);//执行表达式
+        if(value == CQ_Value.Null) 
 			return null;
         return value.value;
     }

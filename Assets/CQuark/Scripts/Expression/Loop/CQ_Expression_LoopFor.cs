@@ -58,14 +58,14 @@ namespace CQuark {
             ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 
             ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
-            CQ_Value vrt = null;
+            CQ_Value vrt = CQ_Value.Null;
             for(; ; ) {
                 if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).value) break;//expr2
 
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
-                        if(v != null) {
+                        if(v != CQ_Value.Null) {
 							if(v.breakBlock == BreakType.Return)
 								vrt = v;
 							if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
@@ -76,7 +76,7 @@ namespace CQuark {
                         content.DepthAdd();
                         bool bbreak = false;
                         var v = expr_block.ComputeValue(content);
-                        if(v != null) {
+                        if(v != CQ_Value.Null) {
 							if(v.breakBlock == BreakType.Return)
 								vrt = v;
 							if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
@@ -126,7 +126,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v != null) {
+                            if(v.value != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
 									break;
@@ -141,7 +141,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v != null) {
+                            if(v.value != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) bbreak = true;
                             }

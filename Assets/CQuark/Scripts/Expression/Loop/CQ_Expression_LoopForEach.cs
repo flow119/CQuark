@@ -60,14 +60,14 @@ namespace CQuark {
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
             var it = emu.GetEnumerator();
-            CQ_Value vrt = null;
+            CQ_Value vrt = CQ_Value.Null;
             while(it.MoveNext()) {
 
                 content.Set(define.value_name, it.Current);
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
-                        if(v != null) {
+                        if(v != CQ_Value.Null) {
 							if(v.breakBlock == BreakType.Return)
 								vrt = v;
 							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) break;
@@ -77,7 +77,7 @@ namespace CQuark {
                         content.DepthAdd();
                         bool bbreak = false;
                         var v = expr_block.ComputeValue(content);
-                        if(v != null) {
+                        if(v != CQ_Value.Null) {
 							if(v.breakBlock == BreakType.Return)
 								vrt = v;
 							if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return) bbreak = true;
@@ -124,7 +124,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v != null) {
+                            if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
 									break;
@@ -139,7 +139,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v != null) {
+                            if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) bbreak = true;
 

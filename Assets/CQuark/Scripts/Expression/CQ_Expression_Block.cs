@@ -49,13 +49,13 @@ namespace CQuark {
             content.InStack(this);
 #endif
             content.DepthAdd();
-            CQ_Value value = null;
+            CQ_Value value = CQ_Value.Null;
             foreach(ICQ_Expression i in _expressions) {
                 ICQ_Expression e = i as ICQ_Expression;
                 if(e != null)
                     value = e.ComputeValue(content);
 
-                if(value != null && value.breakBlock != 0)
+                if(value.value != null && value.breakBlock != 0)
                     break;
             }
             content.DepthRemove();
@@ -69,7 +69,7 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             content.DepthAdd();
-            CQ_Value value = null;
+            CQ_Value value = CQ_Value.Null;
             foreach(ICQ_Expression i in _expressions) {
                 ICQ_Expression e = i as ICQ_Expression;
                 if(e != null) {
@@ -78,7 +78,7 @@ namespace CQuark {
                     }
                     else {
                         value = e.ComputeValue(content);
-                        if(value != null && value.breakBlock != 0)
+                        if(value.value != null && value.breakBlock != 0)
                             break;
                     }
                 }

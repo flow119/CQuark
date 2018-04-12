@@ -1,5 +1,6 @@
 ﻿using CQuark;
 using System;
+using System.Collections.Generic;
 
 namespace CQuark
 {
@@ -15,8 +16,19 @@ namespace CQuark
 	/// <summary>
 	/// 西瓜的值
 	/// </summary>
-    public class CQ_Value
+    public struct CQ_Value
     {
+        //public CQ_Value () {
+        //    if(lastFrame == UnityEngine.Time.frameCount)
+        //        t[t.Count - 1]++;
+        //    else {
+        //        lastFrame = UnityEngine.Time.frameCount;
+        //        t.Add(1);
+        //    }
+        //}
+        //static List<int> t = new List<int>();
+        //static int lastFrame = -1;
+
         public CQ_Type cq_type {
             get {
                 if(m_type != null)
@@ -49,7 +61,7 @@ namespace CQuark
 
         public object value;
 
-		public BreakType breakBlock = BreakType.None;
+		public BreakType breakBlock ;//= BreakType.None;
 
         public bool TypeIsEmpty {
             get {
@@ -68,12 +80,10 @@ namespace CQuark
         {
             get
             {
-                if (g_one == null)
-                {
-                    g_one = new CQ_Value();
-                    g_one.m_type = (typeof(int));
-                    g_one.value = (int)1;
-                }
+                CQ_Value g_one = new CQ_Value();
+                g_one.m_type = (typeof(int));
+                g_one.value = (int)1;
+
                 return g_one;
             }
         }
@@ -81,31 +91,31 @@ namespace CQuark
         {
             get
             {
-                if (g_oneM == null)
-                {
-                    g_oneM = new CQ_Value();
-                    g_oneM.m_type = (typeof(int));
-                    g_oneM.value = (int)-1;
-                }
+                CQ_Value g_oneM = new CQ_Value();
+                g_oneM.m_type = (typeof(int));
+                g_oneM.value = (int)-1;
+
                 return g_oneM;
+            }
+        }
+
+        public static CQ_Value Null {
+            get {
+                return new CQ_Value();
             }
         }
         public static CQ_Value Void
         {
             get
             {
-                if (g_void == null)
-                {
-                    g_void = new CQ_Value();
-                    g_void.m_type = (typeof(void));
-                    g_void.value = null;
-                }
+                CQ_Value g_void = new CQ_Value();
+                g_void.m_type = (typeof(void));
+                g_void.value = null;
+
                 return g_void;
             }
         }
-        static CQ_Value g_one = null;
-        static CQ_Value g_oneM = null;
-        static CQ_Value g_void = null;
+
 
         public override string ToString()
         {
@@ -196,6 +206,14 @@ namespace CQuark
 
         public bool EqualOrImplicateType (Type targetType) {
             return EqualType(targetType) || ImplicateType(targetType);            
+        }
+
+        public static bool operator==(CQ_Value a, CQ_Value b){
+            return a.m_type == b.m_type && a.m_stype == b.m_stype && a.value == b.value;
+        }
+
+        public static bool operator != (CQ_Value a, CQ_Value b) {
+            return a.m_type != b.m_type || a.m_stype != b.m_stype || a.value != b.value;
         }
     }
 }

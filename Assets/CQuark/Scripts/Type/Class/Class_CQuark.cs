@@ -61,16 +61,25 @@ namespace CQuark {
             foreach(KeyValuePair<string, Member> i in this.members) {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {
-                        sv.value_value.member[i.Key] = new CQ_Value();
-                        sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
-                        sv.value_value.member[i.Key].value = i.Value.type.defaultValue;
+                        CQ_Value val = new CQ_Value();
+                        val.SetCQType(i.Value.type.cqType);
+                        val.value = i.Value.type.defaultValue;
+                        sv.value_value.member[i.Key] = val;
+                        //sv.value_value.member[i.Key] = new CQ_Value();
+                        //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
+                        //sv.value_value.member[i.Key].value = i.Value.type.defaultValue;
                     }
                     else {
                         var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
                         if(i.Value.type.cqType != value.cq_type) {
-                            sv.value_value.member[i.Key] = new CQ_Value();
-                            sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
-                            sv.value_value.member[i.Key].value = value.ConvertTo(i.Value.type.cqType);
+                            CQ_Value val = new CQ_Value();
+                            val.SetCQType(i.Value.type.cqType);
+                            val.value = value.ConvertTo(i.Value.type.cqType);
+                            sv.value_value.member[i.Key] = val;
+                            //sv.value_value.member[i.Key] = val;
+                            //sv.value_value.member[i.Key] = new CQ_Value();
+                            //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
+                            //sv.value_value.member[i.Key].value = value.ConvertTo(i.Value.type.cqType);
                         }
                         else {
                             sv.value_value.member[i.Key] = value;
@@ -92,17 +101,25 @@ namespace CQuark {
                 foreach(var i in this.members) {
                     if(i.Value.bStatic == true) {
                         if(i.Value.expr_defvalue == null) {
-                            staticMemberInstance[i.Key] = new CQ_Value();
 
-                            staticMemberInstance[i.Key].SetCQType(i.Value.type.cqType);
-                            staticMemberInstance[i.Key].value = i.Value.type.defaultValue;
+                            CQ_Value val = new CQ_Value();
+                            val.SetCQType(i.Value.type.cqType);
+                            val.value = i.Value.type.defaultValue;
+                            staticMemberInstance[i.Key] = val;
+
                         }
                         else {
                             var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
                             if(i.Value.type.cqType != value.cq_type) {
-                                staticMemberInstance[i.Key] = new CQ_Value();
-                                staticMemberInstance[i.Key].SetCQType( i.Value.type.cqType);
-								staticMemberInstance[i.Key].value = value.ConvertTo(i.Value.type.cqType);
+
+                                CQ_Value val = new CQ_Value();
+                                val.SetCQType(i.Value.type.cqType);
+                                val.value = value.ConvertTo(i.Value.type.cqType);
+                                staticMemberInstance[i.Key] = val;
+
+                                //staticMemberInstance[i.Key] = new CQ_Value();
+                                //staticMemberInstance[i.Key].SetCQType( i.Value.type.cqType);
+                                //staticMemberInstance[i.Key].value = value.ConvertTo(i.Value.type.cqType);
                             }
                             else {
                                 staticMemberInstance[i.Key] = value;
@@ -137,7 +154,7 @@ namespace CQuark {
                         //i++;
                     }
                     //var value = this.functions[function].expr_runtime.ComputeValue(content);
-                    CQ_Value value = null;
+                    CQ_Value value = CQ_Value.Null;
                     if(this.functions[function].expr_runtime != null) {
                         value = this.functions[function].expr_runtime.ComputeValue(content);
                         //if(value != null)
@@ -173,7 +190,7 @@ namespace CQuark {
 
         public CQ_Value StaticValueGet (CQ_Content content, string valuename) {
             NewStatic();
-            CQ_Value temp = null;
+            CQ_Value temp = CQ_Value.Null;
             if(this.staticMemberInstance.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
                 v.m_type = temp.m_type;
@@ -200,7 +217,9 @@ namespace CQuark {
                         value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.cqType);
                     }
                 }
-                this.staticMemberInstance[valuename].value = value;
+                CQ_Value val = this.staticMemberInstance[valuename];
+                val.value = value;
+				this.staticMemberInstance[valuename] = val;
                 return true;
             }
             throw new NotImplementedException();
@@ -226,7 +245,7 @@ namespace CQuark {
                     for(int i = 0; i < funccache._paramtypes.Count; i++) {
                         content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].cqType, _params[i].value);
                     }
-                    CQ_Value value = null;
+                    CQ_Value value = CQ_Value.Null;
                     var funcobj = funccache;
                     if(this.bInterface) {
                         content.CallType = (object_this as CQClassInstance).type;
@@ -310,7 +329,7 @@ namespace CQuark {
 
         public CQ_Value MemberValueGet (CQ_Content content, object object_this, string valuename) {
             CQClassInstance sin = object_this as CQClassInstance;
-            CQ_Value temp = null;
+            CQ_Value temp = CQ_Value.Null;
             if(sin.member.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
                 v.m_type = temp.m_type;
@@ -337,7 +356,9 @@ namespace CQuark {
                         value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.cqType);
                     }
                 }
-                sin.member[valuename].value = value;
+                CQ_Value val = sin.member[valuename];
+                val.value = value;
+                sin.member[valuename] = val;
                 return true;
             }
             throw new NotImplementedException();

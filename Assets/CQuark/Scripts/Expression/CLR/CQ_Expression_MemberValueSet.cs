@@ -50,7 +50,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             var parent = _expressions[0].ComputeValue(content);
-            if(parent == null) {
+            if(parent == CQ_Value.Null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
             var value = _expressions[1].ComputeValue(content);
@@ -68,7 +68,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return null;
+            return CQ_Value.Null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("a.b = 不支持协程");

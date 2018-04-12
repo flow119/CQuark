@@ -10,7 +10,7 @@ namespace CQuark{
 	public partial class Wrap {
 		private static bool {WrapName}SGet (string memberName, out CQ_Value returnValue) {
 {WrapSGet}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
@@ -21,7 +21,7 @@ namespace CQuark{
 
 		private static bool {WrapName}MGet (object objSelf, string memberName, out CQ_Value returnValue) {
 {WrapMGet}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 	    }
 
@@ -32,26 +32,26 @@ namespace CQuark{
 		
 		private static bool {WrapName}New(List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
 {WrapNew}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
 		private static bool {WrapName}SCall (string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
 {WrapSCall}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
 		private static bool {WrapName}MCall (object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
 {WrapMCall}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
 		private static bool {WrapName}IGet(object objSelf, CQ_Value key, out CQ_Value returnValue){
 {WrapIGet}
 
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 
@@ -63,31 +63,31 @@ namespace CQuark{
 		
 		private static bool {WrapName}Add(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
 {WrapAdd}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
 		private static bool {WrapName}Sub(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
 {WrapSub}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
 		private static bool {WrapName}Mul(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
 {WrapMul}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
 		private static bool {WrapName}Div(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
 {WrapDiv}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
 		private static bool {WrapName}Mod(CQ_Value left, CQ_Value right, out CQ_Value returnValue, bool mustEqual){
 {WrapMod}
-			returnValue = null;
+			returnValue = CQ_Value.Null;
 			return false;
 		}
 	}

@@ -89,7 +89,7 @@ namespace CQuark {
 			#if CQUARK_DEBUG
 			content.OutStack(this);
 			#endif
-			if(rv.value == null)
+            if(rv == CQ_Value.Null)
 				yield return null;
 			else if(rv.m_type == typeof (IEnumerator))
 				yield return coroutine.StartCoroutine(rv.value as IEnumerator);

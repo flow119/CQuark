@@ -142,8 +142,8 @@ namespace CQuark {
         }
 
         public CQ_Value StaticValueGet (CQ_Content content, string valuename) {
-            var v = MemberValueGet(content, null, valuename);
-            if(v == null) {
+            CQ_Value v = MemberValueGet(content, null, valuename);
+            if(v == CQ_Value.Null) {
                 if(type.BaseType != null) {
 					return CQuark.AppDomain.GetITypeByType(type.BaseType)._class.StaticValueGet(content, valuename);
                 }
@@ -443,7 +443,7 @@ namespace CQuark {
                         c.einfo = type.GetEvent(valuename);
                         if(c.einfo == null) {
                             c.type = -1;
-                            return null;
+                            return CQ_Value.Null;
                         }
                         else {
                             c.type = 3;
@@ -459,7 +459,7 @@ namespace CQuark {
             }
 
             if(c.type < 0)
-                return null;
+                return CQ_Value.Null;
             CQ_Value v = new CQ_Value();
             switch(c.type) {
                 case 1:
