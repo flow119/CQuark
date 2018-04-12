@@ -293,7 +293,6 @@ namespace CQuark
                 CQ_Value leftcq = new CQ_Value();
                 leftcq.cq_type = this.cqType;
                 leftcq.value = left;
-                CQ_Value ret = null;
                 if(code == '+') {
                     if(Wrap.OpAddition(leftcq, right, out returnValue)) {
                         return returnValue;

@@ -414,7 +414,15 @@ public class WrapMakerGUI : WrapMaker {
         GUI.backgroundColor = Color.green;
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Add/Update Full project")) {
-            //   Reload();
+            //TODO，目前测试用，以后改成从Assembly里反射所有的类
+            OnlyAddClass("UnityEngine", "Vector3");
+            OnlyAddClass("UnityEngine", "Mathf");
+            OnlyAddClass("UnityEngine", "Transform");
+            OnlyAddClass("UnityEngine", "Time");
+            Reload();
+            UpdateWrapCore();
+            //Add完毕ReloadDataBase，会编译代码
+            AssetDatabase.Refresh();
         }
         if(GUILayout.Button("Update Registed wrap")) {
             //   Reload();
