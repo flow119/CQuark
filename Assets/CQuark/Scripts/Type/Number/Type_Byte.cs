@@ -23,15 +23,15 @@ namespace CQuark
 			return base.ConvertTo(src, targetType);
         }
 
-		public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
+		public override CQ_Value Math2Value(char code, object left, CQ_Value right)
         {
-            bool math2ValueSuccess = false;
-            object value = Math2Value<byte>(code, left, right, out returntype, out math2ValueSuccess);
-            if (math2ValueSuccess) {
-                return value;
+            CQ_Value returnValue = null;
+
+            if (Math2Value<byte>(code, left, right, out returnValue)) {
+                return returnValue;
             }
 
-			return base.Math2Value(code, left, right, out returntype);
+            return base.Math2Value(code, left, right);
         }
 
 		public override bool MathLogic(LogicToken code, object left, CQ_Value right)

@@ -31,13 +31,13 @@ namespace CQuark
         {
             return null;
         }
-        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
-        {
-           
+        public CQ_Value Math2Value (char code, object left, CQ_Value right) {
             if ((Type)right.cq_type == typeof(string))
             {
-                returntype = typeof(String);
-                return "null" + right.value;
+                CQ_Value returnValue = new CQ_Value();
+                returnValue.cq_type = typeof(String);
+                returnValue.value = "null" + right.value;
+                return returnValue;
             }
             throw new NotImplementedException();
         }

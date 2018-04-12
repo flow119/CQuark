@@ -46,9 +46,9 @@ namespace CQuark {
             var v = content.Get(value_name);
 			IType type = CQuark.AppDomain.GetITypeByCQType(v.cq_type);
             CQ_Type returntype;
-            object value = type.Math2Value(mathop, v.value, CQ_Value.One, out returntype);
-            value = type.ConvertTo(value, v.cq_type);
-            content.Set(value_name, value);
+            CQ_Value retVal = type.Math2Value(mathop, v.value, CQ_Value.One);
+            retVal.value = type.ConvertTo(retVal.value, v.cq_type);
+            content.Set(value_name, retVal.value);
 
             //操作变量之
             //做数学计算
@@ -57,7 +57,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            return content.Get(value_name);
+            return retVal;
         }
 
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {

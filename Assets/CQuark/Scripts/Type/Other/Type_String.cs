@@ -49,19 +49,20 @@ namespace CQuark
             return null;
         }
 
-        public object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
-        {
-            returntype = typeof(string);
+        public CQ_Value Math2Value (char code, object left, CQ_Value right) {
             if (code == '+')
             {
+                CQ_Value returnValue = new CQ_Value();
+                returnValue.cq_type = typeof(string);
                 if (right.value == null)
                 {
-                    return (string)left + "null";
+                    returnValue.value = (string)left + "null";
                 }
                 else
                 {
-                    return (string)left + right.value.ToString();
+                    returnValue.value = (string)left + right.value.ToString();
                 }
+                return returnValue;
             }
             throw new NotImplementedException();
         }

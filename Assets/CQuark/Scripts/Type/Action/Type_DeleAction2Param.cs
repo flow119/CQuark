@@ -14,10 +14,8 @@ namespace CQuark
         }
 
 
-        public override object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
+        public override CQ_Value Math2Value(char code, object left, CQ_Value right)
         {
-            returntype = null;
-
             if (left is DeleEvent)
             {
                 DeleEvent info = left as DeleEvent;
@@ -62,7 +60,9 @@ namespace CQuark
                     //if (!(rightValue is Delegate)) {
                     //    Dele_Map_Delegate.Map(rightValue as IDeleBase, calldele);
                     //}
-                    return info;
+                    CQ_Value ret = new CQ_Value();//type保持null
+                    ret.value = info;
+                    return ret;
                 }
                 else if (code == '-')
                 {
@@ -70,7 +70,9 @@ namespace CQuark
                     //if (!(rightValue is Delegate)) {
                     //    Dele_Map_Delegate.Destroy(rightValue as IDeleBase);
                     //}
-                    return info;
+                    CQ_Value ret = new CQ_Value();//type保持null
+                    ret.value = info;
+                    return ret;
                 }
 
             }
@@ -86,14 +88,18 @@ namespace CQuark
                     calldele = right.value as Delegate;
                 if (code == '+')
                 {
-                    return Delegate.Combine(info, calldele); ;
+                    CQ_Value ret = new CQ_Value();//type保持null
+                    ret.value = Delegate.Combine(info, calldele);
+                    return ret;
                 }
                 else if (code == '-')
                 {
-                    return Delegate.Remove(info, calldele);
+                    CQ_Value ret = new CQ_Value();//type保持null
+                    ret.value = Delegate.Remove(info, calldele);
+                    return ret;
                 }
             }
-            return new NotSupportedException();
+            throw new NotSupportedException();
         }
         public override Delegate CreateDelegate(DeleFunction delefunc)
         {

@@ -117,10 +117,10 @@ namespace CQuark
 		}
 
 		//快速计算
-		protected static object Math2Value<LeftType> (char opCode, object left, CQ_Value right, out CQ_Type returntype, out bool math2ValueSuccess) where LeftType : struct {
+		protected static bool Math2Value<LeftType> (char opCode, object left, CQ_Value right, out CQ_Value returnValue) where LeftType : struct {
 			try {
-				math2ValueSuccess = true;
-				returntype = GetReturnType_Math2Value(typeof(LeftType), right.cq_type);
+                returnValue = new CQ_Value();
+                returnValue.cq_type = GetReturnType_Math2Value(typeof(LeftType), right.cq_type);
 				double leftValue = GetDouble(typeof(LeftType), left);
 				double rightValue = GetDouble(right.cq_type, right.value);
 				double finalValue;
@@ -145,13 +145,13 @@ namespace CQuark
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
 
-				return Double2TargetType(returntype, finalValue);
+                returnValue.value = Double2TargetType(returnValue.cq_type, finalValue);
+                return true;
 
 			}
 			catch(Exception) {
-				math2ValueSuccess = false;
-				returntype = null;
-				return null;
+                returnValue = null;
+				return false;
 			}
 		}
 		/// <summary>
@@ -273,73 +273,76 @@ namespace CQuark
 
             return null;
         }
-		public virtual object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
+		public virtual CQ_Value Math2Value(char code, object left, CQ_Value right)
         {
-            returntype = cqType;
-            MethodInfo call = null;
+           
             //var m = ((Type)type).GetMembers();
             Type rightType = (Type)right.cq_type;
             if(rightType == typeof(string) && code == '+') {
-                returntype = typeof(string);
-                return left.ToString() + right.value as string;
+                CQ_Value returnValue = new CQ_Value();
+                returnValue.cq_type = typeof(string);
+                returnValue.value = left.ToString() + right.value as string;
+                return returnValue;
             }
+            else {
+                CQ_Value returnValue = null;
+                MethodInfo call = null;
 
-            //会走到这里说明不是简单的数学计算了
-            //我们这里开始使用Wrap，如果再不行再走反射
-            CQ_Value leftcq = new CQ_Value();
-            leftcq.cq_type = this.cqType;
-            leftcq.value = left;
-            CQ_Value ret = null;
-            if(code == '+') {
-                if(Wrap.OpAddition(leftcq, right, out ret)) {
-                    returntype = ret.cq_type;
-                    return ret.value;
+                //会走到这里说明不是简单的数学计算了
+                //我们这里开始使用Wrap，如果再不行再走反射
+                CQ_Value leftcq = new CQ_Value();
+                leftcq.cq_type = this.cqType;
+                leftcq.value = left;
+                CQ_Value ret = null;
+                if(code == '+') {
+                    if(Wrap.OpAddition(leftcq, right, out returnValue)) {
+                        return returnValue;
+                    }
+                    else {
+                        call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
+                    }
                 }
-                else {
-                    call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
-                }
-            }
 
-            else if(code == '-'){
-                if(Wrap.OpSubtraction(leftcq, right, out ret)) {
-                    returntype = ret.cq_type;
-                    return ret.value;
+                else if(code == '-') {
+                    if(Wrap.OpSubtraction(leftcq, right, out returnValue)) {
+                        return returnValue;
+                    }
+                    else {
+                        call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
+                    }
                 }
-                else {
-                    call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
+                else if(code == '*') {
+                    if(Wrap.OpMultiply(leftcq, right, out returnValue)) {
+                        return returnValue;
+                    }
+                    else {
+                        call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
+                    }
                 }
-            }
-            else if(code == '*'){
-                if(Wrap.OpMultiply(leftcq, right, out ret)) {
-                    returntype = ret.cq_type;
-                    return ret.value;
+                else if(code == '/') {
+                    if(Wrap.OpDivision(leftcq, right, out returnValue)) {
+                        return returnValue;
+                    }
+                    else {
+                        call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
+                    }
                 }
-                else {
-                    call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
+                else if(code == '%') {
+                    if(Wrap.OpModulus(leftcq, right, out returnValue)) {
+                        return returnValue;
+                    }
+                    else {
+                        call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
+                    }
                 }
-            }
-            else if(code == '/'){
-                if(Wrap.OpDivision(leftcq, right, out ret)) {
-                    returntype = ret.cq_type;
-                    return ret.value;
-                }
-                else {
-                    call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
-                }
-            }
-            else if(code == '%') {
-                if(Wrap.OpModulus(leftcq, right, out ret)) {
-                    returntype = ret.cq_type;
-                    return ret.value;
-                }
-                else {
-                    call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
-                }
-            }
 
-            var obj = call.Invoke(null, new object[] { left, right.value });
-            //function.StaticCall(env,"op_Addtion",new List<ICL>{})
-            return obj;
+                //Wrap没走到，走反射
+                returnValue = new CQ_Value();
+                returnValue.cq_type = cqType;
+                returnValue.value = call.Invoke(null, new object[] { left, right.value });
+                //function.StaticCall(env,"op_Addtion",new List<ICL>{})
+                return returnValue;
+            }
         }
 		public virtual bool MathLogic(LogicToken code, object left, CQ_Value right)
         {

@@ -52,7 +52,7 @@ namespace CQuark
         {
 			throw new NotImplementedException();
         }
-		public virtual object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype)
+		public virtual CQ_Value Math2Value(char code, object left, CQ_Value right)
         {
 			throw new NotImplementedException();
         }

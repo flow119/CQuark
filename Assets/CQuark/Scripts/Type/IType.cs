@@ -33,7 +33,7 @@ namespace CQuark
 		object ConvertTo(object src, CQ_Type targetType);
 
 		//数学计算能力
-		object Math2Value(char code, object left, CQ_Value right, out CQ_Type returntype);
+		CQ_Value Math2Value(char code, object left, CQ_Value right);
 
 		//逻辑计算能力
 		bool MathLogic(LogicToken code, object left, CQ_Value right);

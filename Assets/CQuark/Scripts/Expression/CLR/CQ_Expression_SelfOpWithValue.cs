@@ -55,12 +55,8 @@ namespace CQuark {
 			IType type = CQuark.AppDomain.GetITypeByCQType(left.cq_type);
             
             CQ_Type returntype;
-            object value = type.Math2Value(mathop, left.value, right, out returntype);
-            value = type.ConvertTo(value, left.cq_type);
-
-			CQ_Value val = new CQ_Value();
-			val.cq_type = returntype;
-			val.value = value;
+            CQ_Value val = type.Math2Value(mathop, left.value, right);
+            val.value = type.ConvertTo(val.value, left.cq_type);
             
             if(_expressions[0] is CQ_Expression_MemberValueGet) {
                 CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
@@ -73,7 +69,7 @@ namespace CQuark {
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
 				if(!Wrap.MemberValueSet(parent.cq_type.type, parent.value, f.membername, val)){
 					var ptype = CQuark.AppDomain.GetITypeByCQType(parent.cq_type);
-                	ptype._class.MemberValueSet(content, parent.value, f.membername, value);
+                    ptype._class.MemberValueSet(content, parent.value, f.membername, val.value);
 				}
             }
             if(_expressions[0] is CQ_Expression_StaticValueGet) {
@@ -81,7 +77,7 @@ namespace CQuark {
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
 				if(!Wrap.StaticValueSet(type.cqType.type, f.staticmembername, val)){
-					f.type._class.StaticValueSet(content, f.staticmembername, value);
+                    f.type._class.StaticValueSet(content, f.staticmembername, val.value);
 				}
             }
             
