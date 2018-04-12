@@ -17,7 +17,35 @@ namespace CQuark
 	/// </summary>
     public class CQ_Value
     {
-        public CQ_Type cq_type;
+        public CQ_Type cq_type {
+            get {
+                if(type != null)
+                    return type;
+                if(stype != null)
+                    return type;
+                return null;
+            }
+            set {
+                if(value == null) {
+                    type = null;
+                    stype = null;
+                }
+                else if(value.type != null) {
+                    type = value.type;
+                }
+                else if(value.stype != null) {
+                    stype = value.stype;
+                }
+                else{
+                    type = null;
+                    stype = null;
+                }
+            }
+        }
+
+        public Type type;
+        public Class_CQuark stype;
+
         public object value;
 
 		public BreakType breakBlock = BreakType.None;
