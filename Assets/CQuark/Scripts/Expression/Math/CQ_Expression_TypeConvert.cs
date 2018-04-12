@@ -66,9 +66,6 @@ namespace CQuark {
             throw new Exception("as 不支持套用协程");
         }
 
-        public CQ_Type type {
-            get { return null; }
-        }
         public CQ_Type targettype;
 
         public override string ToString () {
