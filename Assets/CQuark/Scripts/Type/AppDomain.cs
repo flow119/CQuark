@@ -163,6 +163,13 @@ namespace CQuark{
 				return GetITypeByClassCQ (type.stype);
 			return null;
 		}
+        public static IType GetITypeByCQValue (CQ_Value val) {
+            if(val.m_type != null)
+                return GetITypeByType(val.m_type);
+            else if(val.m_stype != null)
+                return GetITypeByClassCQ(val.m_stype);
+            return null;
+        }
 		public static IType GetITypeByClassCQ (Class_CQuark type) {
 			if(type == null)
 				return str2itype["null"];

@@ -50,8 +50,8 @@ namespace CQuark {
 
 			CQ_Value value = null;
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.IndexGet(parent.cq_type.type, parent.value, key, out value)){
-				IType type = CQuark.AppDomain.GetITypeByCQType(parent.cq_type);
+			if(!Wrap.IndexGet(parent.m_type, parent.value, key, out value)){
+                IType type = CQuark.AppDomain.GetITypeByCQValue(parent);
 				value = type._class.IndexGet(content, parent.value, key.value);
 			}
            

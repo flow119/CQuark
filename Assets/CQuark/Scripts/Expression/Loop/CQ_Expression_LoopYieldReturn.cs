@@ -55,12 +55,13 @@ namespace CQuark {
             if(_expressions.Count > 0 && _expressions[0] != null) {
                 var v = _expressions[0].ComputeValue(content);
                 {
-                    rv.cq_type = v.cq_type;
+                    rv.m_type = v.m_type;
+                    rv.m_stype = v.m_stype;
                     rv.value = v.value;
                 }
             }
             else {
-                rv.cq_type = typeof(void);
+                rv.m_type = typeof(void);
             }
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -77,19 +78,20 @@ namespace CQuark {
 			if(_expressions.Count > 0 && _expressions[0] != null) {
 				var v = _expressions[0].ComputeValue(content);
 				{
-					rv.cq_type = v.cq_type;
+                    rv.m_type = v.m_type;
+                    rv.m_stype = v.m_stype;
 					rv.value = v.value;
 				}
 			}
 			else {
-				rv.cq_type = typeof(void);
+                rv.m_type = typeof(void);
 			}
 			#if CQUARK_DEBUG
 			content.OutStack(this);
 			#endif
 			if(rv.value == null)
 				yield return null;
-			else if(rv.cq_type.type == typeof (IEnumerator))
+			else if(rv.m_type == typeof (IEnumerator))
 				yield return coroutine.StartCoroutine(rv.value as IEnumerator);
 			else
 				yield return rv.value;//这里Unity会非常智能的自动去转型

@@ -211,7 +211,7 @@ namespace CQuark
             }
 				
             CQ_Value v = new CQ_Value();
-            v.cq_type = type;
+            v.SetCQType(type);
             values[name] = v;
             if (tvalues != null && tvalues.Count > 0)
             {
@@ -255,8 +255,8 @@ namespace CQuark
                 throw new Exception("值没有定义过" + name + "," + err);
 
             }
-            if ((Type)retV.cq_type == typeof(Type_Var.var) && value != null)
-                retV.cq_type = value.GetType();
+            if (retV.m_type == typeof(Type_Var.var) && value != null)
+                retV.m_type = value.GetType();
             retV.value = value;
         }
         public void DefineAndSet(string name,CQ_Type type,object value)
@@ -271,7 +271,7 @@ namespace CQuark
             }
                 
             CQ_Value v = new CQ_Value();
-            v.cq_type = type;
+            v.SetCQType(type);
             v.value = value;
             values[name] = v;
 
@@ -292,7 +292,7 @@ namespace CQuark
             if (name == "this")
             {
                 CQ_Value v = new CQ_Value();
-                v.cq_type = CallType;
+                v.m_stype = CallType;
                 v.value = CallThis;
                 return v;
             }
@@ -333,7 +333,7 @@ namespace CQuark
                     //dele.calltype = CallType;
                     //dele.callthis = CallThis;
                     v.value = dele;
-                    v.cq_type = typeof(DeleFunction);
+                    v.m_type = typeof(DeleFunction);
                     return v;
 
                 }

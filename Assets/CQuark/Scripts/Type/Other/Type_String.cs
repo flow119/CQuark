@@ -53,7 +53,7 @@ namespace CQuark
             if (code == '+')
             {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.cq_type = typeof(string);
+                returnValue.m_type = typeof(string);
                 if (right.value == null)
                 {
                     returnValue.value = (string)left + "null";

@@ -45,7 +45,8 @@ namespace CQuark {
 
             var v = _expressions[0].ComputeValue(content);
             {
-                rv.cq_type = v.cq_type;
+                rv.m_type = v.m_type;
+                rv.m_stype = v.m_stype;
                 rv.value = v.value;
             }
             Exception err = v.value as Exception;

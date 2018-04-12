@@ -58,7 +58,7 @@ namespace CQuark {
                 CQ_Value v = __expressions[0].ComputeValue(content);
                 object val = v.value;
                 if((Type)value_type == typeof(Type_Var.var)) {
-                    if(v.cq_type != null)
+                    if(!v.TypeIsEmpty)
                         value_type = v.cq_type;
 
                 }
@@ -89,7 +89,7 @@ namespace CQuark {
                     CQ_Value v = __expressions[0].ComputeValue(content);
                     object val = v.value;
                     if((Type)value_type == typeof(Type_Var.var)) {
-                        if(v.cq_type != null)
+                        if(!v.TypeIsEmpty)
                             value_type = v.cq_type;
 
                     }

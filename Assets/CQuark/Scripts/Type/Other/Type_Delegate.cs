@@ -36,7 +36,7 @@ namespace CQuark
 
 
         public CQ_Value Math2Value (char code, object left, CQ_Value right) {
-            throw new NotImplementedException("code:" + code + " right:+" + right.cq_type.ToString() + "=" + right.value);
+            throw new NotImplementedException("code:" + code + " right:+"  + "=" + right.value);
         }
 
         public bool MathLogic(LogicToken code, object left, CQ_Value right)

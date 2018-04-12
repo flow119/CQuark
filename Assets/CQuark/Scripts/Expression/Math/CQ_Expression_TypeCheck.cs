@@ -50,9 +50,9 @@ namespace CQuark {
             content.InStack(this);
 #endif
             var right = _expressions[0].ComputeValue(content);
-			IType type = CQuark.AppDomain.GetITypeByCQType(right.cq_type);
+            IType type = CQuark.AppDomain.GetITypeByCQValue(right);
             CQ_Value value = new CQ_Value();
-            value.cq_type = typeof(bool);
+            value.m_type = typeof(bool);
             value.value = type.ConvertTo(right.value, targettype) != null;
 
 #if CQUARK_DEBUG

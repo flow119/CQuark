@@ -32,10 +32,10 @@ namespace CQuark
             return null;
         }
         public CQ_Value Math2Value (char code, object left, CQ_Value right) {
-            if ((Type)right.cq_type == typeof(string))
+            if (right.m_type == typeof(string))
             {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.cq_type = typeof(String);
+                returnValue.m_type = typeof(String);
                 returnValue.value = "null" + right.value;
                 return returnValue;
             }

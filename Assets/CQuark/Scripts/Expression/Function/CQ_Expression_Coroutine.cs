@@ -99,10 +99,10 @@ namespace CQuark {
                         }
                         v.value = d.DynamicInvoke(obja);
                         if(v.value == null) {
-                            v.cq_type = null;
+                            v.SetCQType(null);
                         }
                         else {
-                            v.cq_type = v.value.GetType();
+                            v.m_type = v.value.GetType();
                         }
                     }
                     //else

@@ -47,12 +47,12 @@ namespace CQuark {
             if(parent == null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-			IType type = CQuark.AppDomain.GetITypeByCQType(parent.cq_type);
+            IType type = CQuark.AppDomain.GetITypeByCQValue(parent);
 
 			CQ_Value getvalue = null;
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.MemberValueGet(parent.cq_type.type, parent.value, membername, out getvalue)){
+			if(!Wrap.MemberValueGet(parent.m_type, parent.value, membername, out getvalue)){
 				getvalue = type._class.MemberValueGet(content, parent.value, membername);
 			}
 
@@ -61,11 +61,11 @@ namespace CQuark {
                 vright = _expressions[1].ComputeValue(content);
             }
 
-			var mtype = CQuark.AppDomain.GetITypeByCQType(getvalue.cq_type);
+            IType mtype = CQuark.AppDomain.GetITypeByCQValue(getvalue);
             CQ_Value vout = mtype.Math2Value(mathop, getvalue.value, vright);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.MemberValueSet(parent.cq_type.type, parent.value, membername, vout)){
+			if(!Wrap.MemberValueSet(parent.m_type, parent.value, membername, vout)){
          	   type._class.MemberValueSet(content, parent.value, membername, vout.value);
 			}
 

@@ -52,7 +52,7 @@ namespace CQuark {
 
             CQ_Value left = _expressions[0].ComputeValue(content);
             CQ_Value right = _expressions[1].ComputeValue(content);
-			IType type = CQuark.AppDomain.GetITypeByCQType(left.cq_type);
+            IType type = CQuark.AppDomain.GetITypeByCQValue(left);
             
             CQ_Value val = type.Math2Value(mathop, left.value, right);
             val.value = type.ConvertTo(val.value, left.cq_type);
@@ -66,8 +66,8 @@ namespace CQuark {
                 }
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
-				if(!Wrap.MemberValueSet(parent.cq_type.type, parent.value, f.membername, val)){
-					var ptype = CQuark.AppDomain.GetITypeByCQType(parent.cq_type);
+				if(!Wrap.MemberValueSet(parent.m_type, parent.value, f.membername, val)){
+                    var ptype = CQuark.AppDomain.GetITypeByCQValue(parent);
                     ptype._class.MemberValueSet(content, parent.value, f.membername, val.value);
 				}
             }

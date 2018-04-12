@@ -50,7 +50,7 @@ namespace CQuark {
             if(count == 0)
                 throw new Exception("不能创建0长度数组");
             CQ_Value vcount = new CQ_Value();
-            vcount.cq_type = typeof(int);
+            vcount.m_type = (typeof(int));
             vcount.value = count;
             for(int i = 1; i < _expressions.Count; i++) {
                 //if (_expressions[i] != null)

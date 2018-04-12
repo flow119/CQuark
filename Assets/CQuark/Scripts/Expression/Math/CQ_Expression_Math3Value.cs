@@ -55,7 +55,7 @@ namespace CQuark {
             {
                 result = new CQ_Value();
                 var value = _expressions[0].ComputeValue(content);
-                if((Type)value.cq_type != typeof(bool)) {
+                if(value.m_type != typeof(bool)) {
                     throw new Exception("三元表达式要求条件为bool型");
                 }
                 bool bv = (bool)value.value;
