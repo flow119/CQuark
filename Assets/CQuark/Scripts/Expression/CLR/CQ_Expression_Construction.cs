@@ -52,16 +52,16 @@ namespace CQuark {
             //TODO 这些_expressions一开始就做非空判断，那么List全部可以换成数组了
             foreach(ICQ_Expression p in _expressions) {
                 if(p != null) {
-					param.Add(p.ComputeValue(content));
+                    param.Add(p.ComputeValue(content));
                 }
             }
 
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.New(type.cqType.type, param, out value)){
-				value = type._class.New(content, param);
-			}
+            if(!Wrap.New(type.cqType.type, param, out value)) {
+                value = type._class.New(content, param);
+            }
 
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -69,7 +69,7 @@ namespace CQuark {
             return value;
 
         }
-		public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
+        public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("new function不支持套用协程");
         }
         public CQuark.IType type;
