@@ -31,18 +31,7 @@ namespace CQuark
 			}
 		}
 
-		public string GetKey()
-		{
-			string key = "";
-			foreach (string item in paramNames)
-			{
-				key += item + "_";
-			}
-			key += expr_func.tokenBegin + "_" + expr_func.tokenEnd + "_" + expr_func.lineBegin + "_" + expr_func.lineEnd;
-
-			return key;
-		}
-
+		
 		public List<Type> paramTypes = new List<Type>();
 		public List<string> paramNames = new List<string>();
 		public CQ_Content content;

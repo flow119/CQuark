@@ -50,8 +50,8 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             CQ_Value value = CQ_Value.Null;
-            foreach(ICQ_Expression i in _expressions) {
-                ICQ_Expression e = i as ICQ_Expression;
+            for(int i = 0; i < _expressions.Count; i++){
+                ICQ_Expression e = _expressions[i];
                 if(e != null)
                     value = e.ComputeValue(content);
 
