@@ -50,7 +50,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		RegisterMember("gameObject", typeof(GameObject));
 		RegisterMember("transform", typeof(Transform));
 
-        inst = type._class.New(content, FixedList<CQuark.CQ_Value>.Null).value as CQuark.CQClassInstance;
+        inst = type._class.New(content, null).value as CQuark.CQClassInstance;
 
         SetMember("gameObject", typeof(GameObject), this.gameObject);
         SetMember("transform", typeof(Transform), this.transform);
@@ -87,12 +87,12 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		if (useCoroutine) {
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName)){
                 //this.StartNewCoroutine (type._class.CoroutineCall (content, inst, methodName, null, this));
-                StartCoroutine(type._class.CoroutineCall(content, inst, methodName, FixedList<CQuark.CQ_Value>.Null, this));
+                StartCoroutine(type._class.CoroutineCall(content, inst, methodName, null, this));
 			}
 		}
 		else {
 			if (cclass.functions.ContainsKey (methodName) || cclass.members.ContainsKey (methodName)){
-                type._class.MemberCall(content, inst, methodName, FixedList<CQuark.CQ_Value>.Null);
+                type._class.MemberCall(content, inst, methodName, null);
 			}
 		}
 	}

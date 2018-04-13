@@ -48,7 +48,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            FixedList<CQ_Value> param = new FixedList<CQ_Value>(_expressions.Count);
+            List<CQ_Value> param = new List<CQ_Value>(_expressions.Count);
             //TODO 这些_expressions一开始就做非空判断，那么List全部可以换成数组了
             foreach(ICQ_Expression p in _expressions) {
                 if(p != null) {
