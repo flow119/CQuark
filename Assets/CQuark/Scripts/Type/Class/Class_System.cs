@@ -14,7 +14,7 @@ namespace CQuark {
         public Class_System (Type type) {
             this.type = type;
         }
-        public CQ_Value New (CQ_Content content, List<CQ_Value> _params) {
+        public CQ_Value New (CQ_Content content, FixedList<CQ_Value> _params) {
             Type[] types = new Type[_params.Count];
             object[] objparams = new object[_params.Count];
             for(int i = 0; i < _params.Count; i++) {
@@ -34,10 +34,10 @@ namespace CQuark {
         }
 
 
-        public CQ_Value StaticCall (CQ_Content content, string function, List<CQ_Value> _params) {
+        public CQ_Value StaticCall (CQ_Content content, string function, FixedList<CQ_Value> _params) {
             return StaticCall(content, function, _params, null);
         }
-        public CQ_Value StaticCall (CQ_Content content, string function, List<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCall (CQ_Content content, string function, FixedList<CQ_Value> _params, MethodCache cache) {
             //TODO 这里应该优先匹配类型完全相同（含默认参），没有的话再匹配隐式
             bool needConvert = false;
             List<object> _oparams = new List<object>();
@@ -115,7 +115,7 @@ namespace CQuark {
             return v;
         }
 
-        public CQ_Value StaticCallCache (CQ_Content content, List<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCallCache (CQ_Content content, FixedList<CQ_Value> _params, MethodCache cache) {
             List<object> _oparams = new List<object>();
 
             foreach(var p in _params) {
@@ -173,10 +173,10 @@ namespace CQuark {
         }
 
 
-        public CQ_Value MemberCall (CQ_Content content, object object_this, string function, List<CQ_Value> _params) {
+        public CQ_Value MemberCall (CQ_Content content, object object_this, string function, FixedList<CQ_Value> _params) {
             return MemberCall(content, object_this, function, _params, null);
         }
-        public CQ_Value MemberCall (CQ_Content content, object object_this, string function, List<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCall (CQ_Content content, object object_this, string function, FixedList<CQ_Value> _params, MethodCache cache) {
             //TODO 这里应该优先匹配类型完全相同（含默认参），没有的话再匹配隐式
             bool needConvert = false;
             List<Type> types = new List<Type>();
@@ -252,7 +252,7 @@ namespace CQuark {
             return v;
         }
 
-        System.Reflection.MethodInfo FindMethod (Type type, string func, List<CQ_Value> _params, Type[] gtypes) {
+        System.Reflection.MethodInfo FindMethod (Type type, string func, FixedList<CQ_Value> _params, Type[] gtypes) {
             string hashkey = func + "_" + _params.Count + ":";
             foreach(var p in _params) {
                 hashkey += p.m_type.ToString();
@@ -294,7 +294,7 @@ namespace CQuark {
             return null;
         }
 
-        public IEnumerator CoroutineCall (CQ_Content content, object object_this, string function, List<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
+        public IEnumerator CoroutineCall (CQ_Content content, object object_this, string function, FixedList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
             //TODO 不存在這樣的調用
             MemberCall(content, object_this, function, _params, null);
             yield return null;
@@ -387,7 +387,7 @@ namespace CQuark {
 
         }
 		//TODO 函数调用优先级需要重写。优先类型全等，再是隐式转换
-        public CQ_Value MemberCallCache (CQ_Content content, object object_this, List<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCallCache (CQ_Content content, object object_this, FixedList<CQ_Value> _params, MethodCache cache) {
             System.Reflection.MethodInfo methodInfo = cache.info;
             CQ_Value v = new CQ_Value();
             if(cache.needConvert) {

@@ -201,7 +201,7 @@ namespace CQuark
             }
 
             //继承
-            return (targetType.IsAssignableFrom(from));
+            return (from.IsAssignableFrom(targetType));
         }
 
         public bool EqualOrImplicateType (Type targetType) {

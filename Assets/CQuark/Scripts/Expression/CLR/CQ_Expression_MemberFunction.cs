@@ -51,15 +51,17 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            CQ_Value parent = _expressions[0].ComputeValue(content);
-
-#if CQUARK_DEBUG
+            var parent = _expressions[0].ComputeValue(content);
             if(parent == CQ_Value.Null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
-#endif
 
-            List<CQ_Value> _params = new List<CQ_Value>(_expressions.Count);
+//            CQClassInstance s = parent.value as CQClassInstance;
+//            if(s != null) {
+//                iclass = s.type;
+//            }
+
+            FixedList<CQ_Value> _params = new FixedList<CQ_Value>(_expressions.Count);
             for(int i = 1; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }
@@ -67,16 +69,17 @@ namespace CQuark {
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(!Wrap.MemberCall(parent.m_type, parent.value, functionName, _params, out value)) {
+			if(!Wrap.MemberCall(parent.m_type, parent.value, functionName, _params, out value)){
                 var iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
-                if(cache == null || cache.cachefail) {
-                    cache = new MethodCache();
-                    value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
-                }
-                else {
-                    value = iclass.MemberCallCache(content, parent.value, _params, cache);
-                }
-            }
+				if(cache == null || cache.cachefail) {
+					cache = new MethodCache();
+					value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
+				}
+				else {
+					value = iclass.MemberCallCache(content, parent.value, _params, cache);
+				}
+			}
+            
 
 #if CQUARK_DEBUG
             content.OutStack(this);

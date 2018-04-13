@@ -45,7 +45,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            List<object> list = new List<object>(_expressions.Count);
+            FixedList<object> list = new FixedList<object>(_expressions.Count);
             int count = _expressions[0] == null ? (_expressions.Count - 1) : (int)_expressions[0].ComputeValue(content).value;
             if(count == 0)
                 throw new Exception("不能创建0长度数组");
@@ -56,7 +56,7 @@ namespace CQuark {
                  list.Add(_expressions[i].ComputeValue(content).value);
             }
 
-            List<CQ_Value> param = new List<CQ_Value>(1);
+            FixedList<CQ_Value> param = new FixedList<CQ_Value>(1);
 			param.Add(vcount);
             CQ_Value outvalue = CQ_Value.Null;
 

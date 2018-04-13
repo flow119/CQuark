@@ -44,7 +44,7 @@ namespace CQuark{
 
 		#endregion
 		
-        private static bool MatchType (List<CQ_Value> param, Type[] types, bool mustEqual) {
+        private static bool MatchType (FixedList<CQ_Value> param, Type[] types, bool mustEqual) {
             //这里没有做长度判断，因为外面判断过了
             if(mustEqual) {
                 for(int i = 0; i < types.Length; i++) {

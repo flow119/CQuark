@@ -51,7 +51,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
 
-            List<CQ_Value> _params = new List<CQ_Value>(_expressions.Count);
+            FixedList<CQ_Value> _params = new FixedList<CQ_Value>(_expressions.Count);
             for(int i = 0; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }

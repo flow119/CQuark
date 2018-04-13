@@ -296,37 +296,56 @@ namespace CQuark
         }
         public CQ_Value GetQuiet(string name)
         {
-            CQ_Value retV = new CQ_Value();
-
-            if (name == "this"){
-                retV.m_stype = CallType;
-                retV.value = CallThis;
-                return retV;
+            if (name == "this")
+            {
+                CQ_Value v = new CQ_Value();
+                v.m_stype = CallType;
+                v.value = CallThis;
+                return v;
             }
 
+            CQ_Value retV = CQ_Value.Null;
+            bool bFind = false;
             if (values != null)
-                if(values.TryGetValue(name, out retV))
+            {
+                bFind = values.TryGetValue(name, out retV);
+                if (bFind)//优先上下文变量
                     return retV;
+            }
 
-            if (CallType != null){
+            if (CallType != null)
+            {
                 Class_CQuark.Member retM = null;
-                if (CallType.members.TryGetValue(name, out retM)){
-                    if (retM.bStatic){
+                bFind = CallType.members.TryGetValue(name, out retM);
+                if (bFind)
+                {
+                    if (retM.bStatic)
+                    {
                         return CallType.staticMemberInstance[name];
                     }
-                    else{
+                    else
+                    {
                         return CallThis.member[name];
                     }
                 }
-                if (CallType.functions.ContainsKey(name)){
+                if (CallType.functions.ContainsKey(name))
+                {
+                    CQ_Value v = new CQ_Value();
                     //如果直接得到代理实例，
                     DeleFunction dele = new DeleFunction(CallType,this.CallThis,name);
-                    retV.value = dele;
-                    retV.m_type = typeof(DeleFunction);
-                    return retV;
+
+
+                    //DeleScript dele =new DeleScript();
+                    //dele.function = name;
+                    //dele.calltype = CallType;
+                    //dele.callthis = CallThis;
+                    v.value = dele;
+                    v.m_type = typeof(DeleFunction);
+                    return v;
+
                 }
             }
-            return retV;
+            return CQ_Value.Null;
         }
 
         public void DepthAdd()//控制变量作用域，深一层
@@ -346,5 +365,7 @@ namespace CQuark
                 values.Remove(v);
             }
         }
+
+       
     }
 }
