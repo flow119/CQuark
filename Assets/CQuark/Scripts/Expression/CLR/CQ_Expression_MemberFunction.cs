@@ -61,7 +61,7 @@ namespace CQuark {
 //                iclass = s.type;
 //            }
 
-            FixedList<CQ_Value> _params = new FixedList<CQ_Value>(_expressions.Count);
+            List<CQ_Value> _params = new List<CQ_Value>(_expressions.Count);
             for(int i = 1; i < _expressions.Count; i++) {
                 _params.Add(_expressions[i].ComputeValue(content));
             }

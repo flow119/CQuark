@@ -45,7 +45,7 @@ namespace CQuark{
 			return false;
 	    }
 		
-		public static bool New (Type type, FixedList<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool New (Type type, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = CQ_Value.Null;
 				return false;
@@ -55,7 +55,7 @@ namespace CQuark{
 	        return false;
 	    }
 		
-		public static bool StaticCall (Type type, string functionName, FixedList<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool StaticCall (Type type, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = CQ_Value.Null;
 				return false;
@@ -67,7 +67,7 @@ namespace CQuark{
 
 		
 
-		public static bool MemberCall (Type type, object objSelf, string functionName, FixedList<CQ_Value> param, out CQ_Value returnValue) {
+		public static bool MemberCall (Type type, object objSelf, string functionName, List<CQ_Value> param, out CQ_Value returnValue) {
 			if(type == null){
 				returnValue = CQ_Value.Null;
 				return false;
