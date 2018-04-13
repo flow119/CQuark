@@ -407,9 +407,9 @@ public class WrapMaker : EditorWindow{
 				continue;
 
 			if(staticMethods[i].m_inType.Length == 0)
-				wrapSCall += "\t\t\tif(param.Count == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
+				wrapSCall += "\t\t\tif(paramCount == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
 			else {
-				wrapSCall += "\t\t\tif(param.Count == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+				wrapSCall += "\t\t\tif(paramCount == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
 				for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
 					wrapSCall += "typeof(" + staticMethods[i].m_inType[j] + ")";
 					if(j != staticMethods[i].m_inType.Length - 1)
@@ -433,6 +433,8 @@ public class WrapMaker : EditorWindow{
 			wrapSCall += ");\n";
 			wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
 		}
+		if (!string.IsNullOrEmpty (wrapSCall))
+			wrapSCall = "\t\t\tint paramCount = param.Count;\n" + wrapSCall;
 		return wrapSCall;
 	}
 
@@ -514,9 +516,9 @@ public class WrapMaker : EditorWindow{
 				continue;
 
 			if(instanceMethods[i].m_inType.Length == 0)
-				wrapMCall += "\t\t\tif(param.Count == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
+				wrapMCall += "\t\t\tif(paramCount == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
 			else {
-				wrapMCall += "\t\t\tif(param.Count == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
+				wrapMCall += "\t\t\tif(paramCount == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
 				for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
 					wrapMCall += "typeof(" + instanceMethods[i].m_inType[j] + ")";
 					if(j != instanceMethods[i].m_inType.Length - 1)
@@ -542,6 +544,7 @@ public class WrapMaker : EditorWindow{
 		}
 		if(!string.IsNullOrEmpty(wrapMCall)) {
 			wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
+				+ "\t\t\tint paramCount = param.Count;\n"
 				+ wrapMCall;
 		}
 		return wrapMCall;

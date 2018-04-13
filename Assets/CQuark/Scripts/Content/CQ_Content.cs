@@ -12,8 +12,8 @@ namespace CQuark
 		public Class_CQuark CallType;
 		public CQClassInstance CallThis;
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
-		Stack<List<string>> tvalues = null;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
-		public Dictionary<string, CQ_Value> values = null;//new Dictionary<string, CQ_Value>();
+		Stack<List<string>> tvalues ;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
+		public Dictionary<string, CQ_Value> values ;//new Dictionary<string, CQ_Value>();
 
 #if CQUARK_DEBUG
         private Stack<ICQ_Expression> stackExpr = new Stack<ICQ_Expression>();
@@ -365,5 +365,7 @@ namespace CQuark
                 values.Remove(v);
             }
         }
+
+       
     }
 }

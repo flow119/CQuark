@@ -43,15 +43,11 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            CQ_Value result = CQ_Value.Null;
 
+            var left = _expressions[0].ComputeValue(content);
+            var right = _expressions[1].ComputeValue(content);
+            CQ_Value result = CQuark.AppDomain.GetITypeByCQValue(left).Math2Value(mathop, left.value, right);
 
-            {
-                var left = _expressions[0].ComputeValue(content);
-                var right = _expressions[1].ComputeValue(content);
-				result = CQuark.AppDomain.GetITypeByCQValue(left).Math2Value(mathop, left.value, right);
-
-            }
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
