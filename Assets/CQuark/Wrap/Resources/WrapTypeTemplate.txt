@@ -4,10 +4,14 @@ using UnityEngine;
 using CQuark;
 using System;
 
-//这个类是Wrap的工具，请不要删除
+//这个类由工具自动生成，不需要手动修改
 
 namespace CQuark{
 	public partial class Wrap {
+		#region Types
+{wrapTypes}
+		#endregion
+		
         private static bool MatchType (List<CQ_Value> param, Type[] types, bool mustEqual) {
             //这里没有做长度判断，因为外面判断过了
             if(mustEqual) {
@@ -26,3 +30,4 @@ namespace CQuark{
         }
 	}
 }
+

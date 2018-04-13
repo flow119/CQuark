@@ -1,5 +1,9 @@
-﻿变量
-属性
+﻿
+字段
+
+静态属性
+
+实例属性
 public UnityEngine.Vector3 position{get;set;}
 public UnityEngine.Vector3 localPosition{get;set;}
 public UnityEngine.Vector3 eulerAngles{get;set;}
@@ -44,8 +48,9 @@ public UnityEngine.HideFlags hideFlags{get;set;}
 
 构造函数
 
+静态方法
 
-方法
+成员方法
 public void SetParent(UnityEngine.Transform parent)
 public void SetParent(UnityEngine.Transform parent, bool worldPositionStays)
 public void SetPositionAndRotation(UnityEngine.Vector3 position, UnityEngine.Quaternion rotation)
@@ -92,29 +97,29 @@ public void RotateAroundLocal(UnityEngine.Vector3 axis, float angle)
 public UnityEngine.Transform GetChild(int index)
 public int GetChildCount()
 public UnityEngine.Component GetComponent(System.Type type)
-public T GetComponent()
+public T GetComponent<T>()
 public UnityEngine.Component GetComponent(string type)
 public UnityEngine.Component GetComponentInChildren(System.Type t, bool includeInactive)
 public UnityEngine.Component GetComponentInChildren(System.Type t)
-public T GetComponentInChildren()
-public T GetComponentInChildren(bool includeInactive)
+public T GetComponentInChildren<T>()
+public T GetComponentInChildren<T>(bool includeInactive)
 public UnityEngine.Component[] GetComponentsInChildren(System.Type t)
 public UnityEngine.Component[] GetComponentsInChildren(System.Type t, bool includeInactive)
-public T[] GetComponentsInChildren(bool includeInactive)
-public void GetComponentsInChildren(bool includeInactive, System.Collections.Generic.List`1[T] result)
-public T[] GetComponentsInChildren()
-public void GetComponentsInChildren(System.Collections.Generic.List`1[T] results)
+public T[] GetComponentsInChildren<T>(bool includeInactive)
+public void GetComponentsInChildren<T>(bool includeInactive, System.Collections.Generic.List`1[T] result)
+public T[] GetComponentsInChildren<T>()
+public void GetComponentsInChildren<T>(System.Collections.Generic.List`1[T] results)
 public UnityEngine.Component GetComponentInParent(System.Type t)
-public T GetComponentInParent()
+public T GetComponentInParent<T>()
 public UnityEngine.Component[] GetComponentsInParent(System.Type t)
 public UnityEngine.Component[] GetComponentsInParent(System.Type t, bool includeInactive)
-public T[] GetComponentsInParent(bool includeInactive)
-public void GetComponentsInParent(bool includeInactive, System.Collections.Generic.List`1[T] results)
-public T[] GetComponentsInParent()
+public T[] GetComponentsInParent<T>(bool includeInactive)
+public void GetComponentsInParent<T>(bool includeInactive, System.Collections.Generic.List`1[T] results)
+public T[] GetComponentsInParent<T>()
 public UnityEngine.Component[] GetComponents(System.Type type)
 public void GetComponents(System.Type type, System.Collections.Generic.List`1[UnityEngine.Component] results)
-public void GetComponents(System.Collections.Generic.List`1[T] results)
-public T[] GetComponents()
+public void GetComponents<T>(System.Collections.Generic.List`1[T] results)
+public T[] GetComponents<T>()
 public bool CompareTag(string tag)
 public void SendMessageUpwards(string methodName, object value, UnityEngine.SendMessageOptions options)
 public void SendMessageUpwards(string methodName, object value)
@@ -133,3 +138,5 @@ public int GetInstanceID()
 public int GetHashCode()
 public bool Equals(object other)
 public System.Type GetType()
+
+运算符

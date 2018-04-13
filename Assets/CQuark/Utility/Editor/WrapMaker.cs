@@ -8,6 +8,9 @@ using System.IO;
 
 public class WrapMaker : EditorWindow{
 
+	//把Type数组写到WrapTypes里，key是hashcode，value是text行
+	static Dictionary<int, string> regionTypes = new Dictionary<int, string>();
+
 	protected class Property{
 		public string m_type;
 		public bool m_isStatic;
@@ -25,7 +28,10 @@ public class WrapMaker : EditorWindow{
 	}
 	
 	protected class Method {
-		public string m_methodType;//"New, SCall, MCall, Op..."
+		/// <summary>
+		/// "New, SCall, MCall, Op..."
+		/// </summary>
+		public string m_methodType;
 		public string m_returnType;
 		public string m_methodName;
 		public string[] m_inType;
@@ -322,13 +328,8 @@ public class WrapMaker : EditorWindow{
 			if(constructor[i].m_inType.Length == 0)
 				wrapNew += "\t\t\tif(param.Count == 0){\n";
 			else{
-				wrapNew += "\t\t\tif(param.Count == " + constructor[i].m_inType.Length + " && MatchType(param, new Type[] {";
-				for(int j = 0; j < constructor[i].m_inType.Length; j++) {
-					wrapNew += "typeof(" + constructor[i].m_inType[j] + ")";
-					if(j != constructor[i].m_inType.Length - 1)
-						wrapNew += ",";
-				}
-				wrapNew += "}, mustEqual)){\n";
+				string typehash = GetHashCodeByTypes (constructor [i].m_inType);
+				wrapNew += "\t\t\tif(param.Count == " + constructor[i].m_inType.Length + " && MatchType(param, " + typehash + ", mustEqual)){\n";
 			}
 			wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
             wrapNew += "\t\t\t\treturnValue.m_type = typeof(" + classFullName + ");\n";
@@ -343,7 +344,7 @@ public class WrapMaker : EditorWindow{
 		}
 		return wrapNew;
 	}
-		
+
 	protected List<Method> GetStaticMethods(Type type, ref string log, List<Property> ignoreProperty){
 		List<Method> saveMethods = new List<Method> ();
 		//静态函数，成员函数
@@ -409,13 +410,8 @@ public class WrapMaker : EditorWindow{
 			if(staticMethods[i].m_inType.Length == 0)
 				wrapSCall += "\t\t\tif(paramCount == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
 			else {
-				wrapSCall += "\t\t\tif(paramCount == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
-				for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
-					wrapSCall += "typeof(" + staticMethods[i].m_inType[j] + ")";
-					if(j != staticMethods[i].m_inType.Length - 1)
-						wrapSCall += ",";
-				}
-				wrapSCall += "}, mustEqual)){\n";
+				string typehash = GetHashCodeByTypes (staticMethods [i].m_inType);
+				wrapSCall += "\t\t\tif(paramCount == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, " + typehash + ", mustEqual)){\n";
 			}
 			if(staticMethods[i].m_returnType == "void"){
 				wrapSCall += "\t\t\t\treturnValue = CQ_Value.Null;\n";
@@ -518,13 +514,8 @@ public class WrapMaker : EditorWindow{
 			if(instanceMethods[i].m_inType.Length == 0)
 				wrapMCall += "\t\t\tif(paramCount == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
 			else {
-				wrapMCall += "\t\t\tif(paramCount == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, new Type[] {";
-				for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
-					wrapMCall += "typeof(" + instanceMethods[i].m_inType[j] + ")";
-					if(j != instanceMethods[i].m_inType.Length - 1)
-						wrapMCall += ",";
-				}
-				wrapMCall += "}, mustEqual)){\n";
+				string typehash = GetHashCodeByTypes (instanceMethods [i].m_inType);
+				wrapMCall += "\t\t\tif(paramCount == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, " + typehash + ", mustEqual)){\n";
 			}
 			if(instanceMethods[i].m_returnType == "void"){
 				wrapMCall += "\t\t\t\treturnValue = CQ_Value.Null;\n\t\t\t\t";
@@ -548,6 +539,37 @@ public class WrapMaker : EditorWindow{
 				+ wrapMCall;
 		}
 		return wrapMCall;
+	}
+
+	protected void CallTypes2TypeStr(List<Method> methods, List<string> typeDic){
+		for (int i = 0; i < methods.Count; i++) {
+			if (methods [i].m_inType.Length == 0)
+				continue;
+
+			if(!Finish(methods[i].m_inType))
+				continue;
+
+			string hashCode = GetHashCodeByTypes(methods [i].m_inType);
+			string text = "static Type[] " + hashCode + " = new Type[]{";
+			for (int j = 0; j < methods [i].m_inType.Length; j++) {
+				text += "typeof(" + methods [i].m_inType [j] + ")";
+				if (j != methods [i].m_inType.Length - 1)
+					text += ", ";
+			}
+			text += "};";
+			if (!typeDic.Contains (text)) {
+				typeDic.Add (text);
+			}
+		}
+	}
+
+	static string GetHashCodeByTypes(string[] types){
+		string hashkey = "";
+		foreach(string s in types) {
+			hashkey += s;
+		}
+		//返回类似 t75CC8236 这样的值
+		return "t" + hashkey.GetHashCode ().ToString("x8");
 	}
 
 	protected List<Method> GetIndex(Type type, ref string log){
@@ -802,7 +824,6 @@ public class WrapMaker : EditorWindow{
 			return false;	
 		return true;
 	}
-
 	protected static bool Finish (string[] types) {
 		for(int j = 0; j < types.Length; j++) {
 			if(!Finish(types[j]))

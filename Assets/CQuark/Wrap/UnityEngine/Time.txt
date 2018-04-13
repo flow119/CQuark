@@ -1,5 +1,7 @@
-﻿变量
-属性
+﻿
+字段
+
+静态属性
 public static float time{get;}
 public static float timeSinceLevelLoad{get;}
 public static float deltaTime{get;}
@@ -19,12 +21,19 @@ public static float realtimeSinceStartup{get;}
 public static int captureFramerate{get;set;}
 public static bool inFixedTimeStep{get;}
 
+实例属性
+
 构造函数
 UnityEngine.Time()
 
+静态方法
 
-方法
+成员方法
 public bool Equals(object obj)
 public int GetHashCode()
 public System.Type GetType()
 public string ToString()
+
+索引
+
+运算符

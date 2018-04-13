@@ -9,10 +9,10 @@ using System.IO;
 public class WrapMakerGUI : WrapMaker {
 
     List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
-    List<string> _deleteClasses = new List<string>();       //准备删除的类
+//    List<string> _deleteClasses = new List<string>();       //准备删除的类
     
     const string WRAP_CORE_NAME = "WrapCore";
-    const string WRAP_UTIL_NAME = "WrapUtil";
+	const string WRAP_TYPE_NAME = "WrapType";
 
 	[MenuItem("CQuark/Wrap Maker", false, 9)]
 	[MenuItem("Assets/CQuark/Wrap Maker", false, 0)]
@@ -32,6 +32,11 @@ public class WrapMakerGUI : WrapMaker {
 		}
 	}
 
+	static void WriteAllText(string folder, string name, string content){
+		if(!Directory.Exists(folder))
+			Directory.CreateDirectory(folder);
+		File.WriteAllText(folder + "/" + name, content, System.Text.Encoding.UTF8);
+	}
 
 	void Reload(){
 		if(string.IsNullOrEmpty(_wrapFolder)){
@@ -44,7 +49,7 @@ public class WrapMakerGUI : WrapMaker {
 		for(int i = 0; i < files.Length; i++){
 			string classname = files[i].Name.Split('.')[0];
 			if(files[i].Directory.ToString().Length == WrapFolder.Length){
-                if(classname == WRAP_CORE_NAME || classname == WRAP_UTIL_NAME) {
+				if(classname == WRAP_CORE_NAME || classname == WRAP_TYPE_NAME) {
 					continue;
 				}
 
@@ -63,6 +68,19 @@ public class WrapMakerGUI : WrapMaker {
                     m_wrapClasses.Add(wc);
                 }
                 wc.AddClass(classname);
+			}
+		}
+
+//		_typeDic.Clear ();
+		string wrapType = File.ReadAllText(WrapFolder + "/" + WRAP_TYPE_NAME + ".cs", System.Text.Encoding.UTF8);
+		int startIndex = wrapType.IndexOf ("#region Types") + "#region Types".Length;
+		int endIndex = wrapType.IndexOf ("#endregion");
+		if(startIndex < endIndex){
+			string types = wrapType.Substring(startIndex, endIndex - startIndex);
+			string[] typeLines = types.Replace("\t","").Replace("\r","").Split ('\n');
+			for (int i = 0; i < typeLines.Length; i++) {
+				if (!_typeDic.Contains (typeLines [i]))
+					_typeDic.Add (typeLines [i]);
 			}
 		}
 		PlayerPrefs.SetString("WrapFolder", _wrapFolder);
@@ -86,14 +104,17 @@ public class WrapMakerGUI : WrapMaker {
 		//构造函数，
 		List<Method> constructMethods = GetConstructor(type, ref log);
 		string wrapNew = Constructor2PartStr(classFullName, constructMethods);
+		CallTypes2TypeStr (constructMethods, _typeDic);
 
 		//静态方法（最后的参数是忽略属性，因为属性也是一种方法）
 		List<Method> staticMethods = GetStaticMethods (type, ref log, savePropertys);
 		string wrapSCall = SCall2PartStr(classFullName, staticMethods);
+		CallTypes2TypeStr (staticMethods, _typeDic);
 
 		//成员方法
 		List<Method> memberMethods = GetInstanceMethods (type, ref log, savePropertys);
 		string wrapMCall = MCall2PartStr(classFullName, memberMethods);
+		CallTypes2TypeStr (memberMethods, _typeDic);
 
 		//索引
 		List<Method> indexMethods = GetIndex (type, ref log);
@@ -114,23 +135,13 @@ public class WrapMakerGUI : WrapMaker {
             wrapNew, wrapSCall, wrapMCall, wrapIndex, wrapOp);
 	}
 
-	static void WriteAllText(string folder, string name, string content){
-		if(!Directory.Exists(folder))
-			Directory.CreateDirectory(folder);
-		File.WriteAllText(folder + "/" + name, content, System.Text.Encoding.UTF8);
-	}
-
-   
-
-
-
 	void OnlyRemoveClass(string assemblyName, string classname){
 		if(string.IsNullOrEmpty(assemblyName))
 			File.Delete(WrapFolder + "/" + classname + ".cs");
 		else
 			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
 	}
-
+		
 	void UpdateWrapPart(string assemblyName, string classname, string[] propertys, 
 		string wrapNew, string wrapSCall, string wrapMCall, string[] wrapIndex, string[] wrapOp){
 
@@ -167,9 +178,7 @@ public class WrapMakerGUI : WrapMaker {
 			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".cs", text);
 		}
 	}
-
-
-
+		
 	void UpdateWrapCore(){
 //		//测试
 //		return;
@@ -296,10 +305,22 @@ public class WrapMakerGUI : WrapMaker {
         File.WriteAllText(WrapFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}
 
+	List<string> _typeDic = new List<string> ();
+	void UpdateWrapTypes(){
+		string text = (Resources.Load("WrapTypeTemplate") as TextAsset).text;
+		string types = "";
+		for (int i = 0; i < _typeDic.Count; i++) {
+			types += "\t\t\t" + _typeDic [i] + "\n";
+		}
+		text = text.Replace ("{wrapTypes}", types);
+		File.WriteAllText(WrapFolder + "/" + WRAP_TYPE_NAME + ".cs", text, System.Text.Encoding.UTF8);
+	}
+
 	void AddClass(string assemblyName, string classname){
 		OnlyAddClass(assemblyName, classname);
 		Reload();
 		UpdateWrapCore();
+		UpdateWrapTypes ();
         
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
@@ -341,11 +362,25 @@ public class WrapMakerGUI : WrapMaker {
         AssetDatabase.Refresh();
     }
 
-    void ClearAll () {
-        m_wrapClasses.Clear();
+	void AddFullProject(){
+		//TODO，目前测试用，以后改成从Assembly里反射所有的类
+		OnlyAddClass("UnityEngine", "Vector3");
+		OnlyAddClass("UnityEngine", "Mathf");
+		OnlyAddClass("UnityEngine", "Transform");
+		OnlyAddClass("UnityEngine", "Time");
 		Reload();
-        UpdateWrapCore();
-        AssetDatabase.Refresh();
+		UpdateWrapCore();
+		UpdateWrapTypes ();
+		//Add完毕ReloadDataBase，会编译代码
+		AssetDatabase.Refresh();
+	}
+    void ClearAll () {
+//        m_wrapClasses.Clear();
+//		Reload();
+//        UpdateWrapCore();
+//		_typeDic.Clear ();
+//		UpdateWrapTypes ();
+//        AssetDatabase.Refresh();
     }
 
 	// Use this for initialization
@@ -414,22 +449,14 @@ public class WrapMakerGUI : WrapMaker {
         GUI.backgroundColor = Color.green;
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Add/Update Full project")) {
-            //TODO，目前测试用，以后改成从Assembly里反射所有的类
-            OnlyAddClass("UnityEngine", "Vector3");
-            OnlyAddClass("UnityEngine", "Mathf");
-            OnlyAddClass("UnityEngine", "Transform");
-            OnlyAddClass("UnityEngine", "Time");
-            Reload();
-            UpdateWrapCore();
-            //Add完毕ReloadDataBase，会编译代码
-            AssetDatabase.Refresh();
+			AddFullProject ();
         }
         if(GUILayout.Button("Update Registed wrap")) {
             //   Reload();
         }
         GUI.backgroundColor = Color.red;
         if(GUILayout.Button("Clear All wraps")) {
-            //   Reload();
+			ClearAll ();
         }
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
