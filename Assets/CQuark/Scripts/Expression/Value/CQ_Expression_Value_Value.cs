@@ -5,14 +5,21 @@ using System.Collections;
 
 namespace CQuark {
     public class CQ_Expression_Value_Value<T> : ICQ_Expression_Value {
-        public CQ_Expression_Value_Value (CQ_Value val) {
-            cq_value = val;
+        public CQ_Type type {
+            get { return typeof(T); }
         }
-        public CQ_Value cq_value = CQ_Value.Null;
 
-        public override string ToString () {
-            return cq_value.m_type.Name + "|" + cq_value.value.ToString();
+
+        public T value_value;
+        public object value {
+            get {
+                return value_value;
+            }
         }
+        public override string ToString () {
+            return type.Name + "|" + value_value.ToString();
+        }
+
 
         public List<ICQ_Expression> _expressions {
             get { return null; }
@@ -39,7 +46,16 @@ namespace CQuark {
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
-            return cq_value;
+#if CQUARK_DEBUG
+            content.InStack(this);
+#endif
+            CQ_Value v = new CQ_Value();
+            v.SetCQType(this.type);
+            v.value = this.value_value;
+#if CQUARK_DEBUG
+            content.OutStack(this);
+#endif
+            return v;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("暂时不支持套用协程");
