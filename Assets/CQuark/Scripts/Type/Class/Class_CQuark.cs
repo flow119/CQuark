@@ -54,10 +54,18 @@ namespace CQuark {
             if(contentMemberCalc == null)
                 contentMemberCalc = new CQ_Content();
             NewStatic();
+            //CQ_Expression_Value_ScriptValue sv = new CQ_Expression_Value_ScriptValue();
+            //sv.value_type = this;
+            //sv.value_value = new CQClassInstance();
+            //sv.value_value.type = this;
+
+
             CQ_Expression_Value_ScriptValue sv = new CQ_Expression_Value_ScriptValue();
             sv.value_type = this;
             sv.value_value = new CQClassInstance();
             sv.value_value.type = this;
+
+
             foreach(KeyValuePair<string, Member> i in this.members) {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {

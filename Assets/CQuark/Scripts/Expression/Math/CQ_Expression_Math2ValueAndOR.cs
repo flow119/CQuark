@@ -49,24 +49,16 @@ namespace CQuark {
             {
                 bool bleft = false;
                 bool bright = false;
-                if(_expressions[0] is ICQ_Expression_Value) {
-                    bleft = (bool)((_expressions[0] as ICQ_Expression_Value).value);
-                }
-                else {
-                    bleft = (bool)_expressions[0].ComputeValue(content).value;
-                }
+
+                bleft = (bool)_expressions[0].ComputeValue(content).value;
+
                 result.m_type = typeof(bool);
                 if(mathop == '&') {
                     if(!bleft) {
                         result.value = false;
                     }
                     else {
-                        if(_expressions[1] is ICQ_Expression_Value) {
-                            bright = (bool)((_expressions[1] as ICQ_Expression_Value).value);
-                        }
-                        else {
-                            bright = (bool)_expressions[1].ComputeValue(content).value;
-                        }
+                        bright = (bool)_expressions[1].ComputeValue(content).value;
                         result.value = (bool)(bleft && bright);
                     }
                 }
@@ -75,12 +67,7 @@ namespace CQuark {
                         result.value = true;
                     }
                     else {
-                        if(_expressions[1] is ICQ_Expression_Value) {
-                            bright = (bool)((_expressions[1] as ICQ_Expression_Value).value);
-                        }
-                        else {
-                            bright = (bool)_expressions[1].ComputeValue(content).value;
-                        }
+                        bright = (bool)_expressions[1].ComputeValue(content).value;
                         result.value = (bool)(bleft || bright);
                     }
 

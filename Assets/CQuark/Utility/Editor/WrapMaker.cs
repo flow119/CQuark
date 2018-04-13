@@ -8,9 +8,6 @@ using System.IO;
 
 public class WrapMaker : EditorWindow{
 
-	//把Type数组写到WrapTypes里，key是hashcode，value是text行
-	static Dictionary<int, string> regionTypes = new Dictionary<int, string>();
-
 	protected class Property{
 		public string m_type;
 		public bool m_isStatic;

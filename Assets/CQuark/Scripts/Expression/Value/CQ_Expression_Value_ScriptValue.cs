@@ -5,19 +5,14 @@ using System.Collections;
 
 namespace CQuark {
     public class CQ_Expression_Value_ScriptValue : ICQ_Expression_Value {
-        public CQ_Type type {
-            get { return value_type; }
-        }
-        public Class_CQuark value_type;
 
+        public Class_CQuark value_type;
         public CQClassInstance value_value;
-        public object value {
-            get {
-                return value_value;
-            }
-        }
+
+
+   
         public override string ToString () {
-            return type.Name + "|" + value_value.ToString();
+            return value_type.Name + "|" + value_value.ToString();
         }
 
 
@@ -46,15 +41,11 @@ namespace CQuark {
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
-#if CQUARK_DEBUG
-			content.InStack(this);
-#endif
+
             CQ_Value v = new CQ_Value();
-            v.SetCQType(this.type);
+            v.m_stype = this.value_type;
             v.value = this.value_value;
-#if CQUARK_DEBUG
-			content.OutStack(this);
-#endif
+
             return v;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {

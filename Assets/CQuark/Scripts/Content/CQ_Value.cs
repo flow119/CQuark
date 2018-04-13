@@ -2,32 +2,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace CQuark
-{
-	public enum BreakType{
-		None = 0,
-		Continue = 1,
-		Break = 1,
-		Return = 10,
-		YieldBreak = 11,
-		YieldReturn = 12,
-	}
+namespace CQuark {
+    public enum BreakType {
+        None = 0,
+        Continue = 1,
+        Break = 1,
+        Return = 10,
+        YieldBreak = 11,
+        YieldReturn = 12,
+    }
 
-	/// <summary>
-	/// 西瓜的值
-	/// </summary>
-    public struct CQ_Value
-    {
-        //public CQ_Value () {
-        //    if(lastFrame == UnityEngine.Time.frameCount)
-        //        t[t.Count - 1]++;
-        //    else {
-        //        lastFrame = UnityEngine.Time.frameCount;
-        //        t.Add(1);
-        //    }
-        //}
-        //static List<int> t = new List<int>();
-        //static int lastFrame = -1;
+    /// <summary>
+    /// 西瓜的值
+    /// </summary>
+    public struct CQ_Value {
+
+        public Type m_type;
+        public Class_CQuark m_stype;
+        public object value;
+        public BreakType breakBlock;//= BreakType.None;
 
         public CQ_Type cq_type {
             get {
@@ -38,9 +31,6 @@ namespace CQuark
                 return null;
             }
         }
-
-        public Type m_type;
-        public Class_CQuark m_stype;
 
         public void SetCQType (CQ_Type type) {//TODO 这些调用都要被废除
             if(type == null) {
@@ -59,27 +49,18 @@ namespace CQuark
             }
         }
 
-        public object value;
-
-		public BreakType breakBlock ;//= BreakType.None;
-
         public bool TypeIsEmpty {
             get {
                 return m_type == null && m_stype == null;
             }
         }
 
-        public static CQ_Value FromICQ_Value(ICQ_Expression_Value value)
-        {
-            CQ_Value v = new CQ_Value();
-            v.SetCQType(value.type);
-            v.value = value.value;
-            return v;
+        public static CQ_Value FromICQ_Value (CQ_Expression_Value_ScriptValue value) {
+            return value.ComputeValue(null);
         }
-        public static CQ_Value One
-        {
-            get
-            {
+
+        public static CQ_Value One {
+            get {
                 CQ_Value g_one = new CQ_Value();
                 g_one.m_type = (typeof(int));
                 g_one.value = (int)1;
@@ -87,10 +68,8 @@ namespace CQuark
                 return g_one;
             }
         }
-        public static CQ_Value OneMinus
-        {
-            get
-            {
+        public static CQ_Value OneMinus {
+            get {
                 CQ_Value g_oneM = new CQ_Value();
                 g_oneM.m_type = (typeof(int));
                 g_oneM.value = (int)-1;
@@ -98,27 +77,14 @@ namespace CQuark
                 return g_oneM;
             }
         }
-
         public static CQ_Value Null {
             get {
                 return new CQ_Value();
             }
         }
-        public static CQ_Value Void
-        {
-            get
-            {
-                CQ_Value g_void = new CQ_Value();
-                g_void.m_type = (typeof(void));
-                g_void.value = null;
-
-                return g_void;
-            }
-        }
 
 
-        public override string ToString()
-        {
+        public override string ToString () {
             if(m_type != null)
                 return "<" + m_type.ToString() + ">" + value;
             else if(m_stype != null)
@@ -126,8 +92,8 @@ namespace CQuark
             return "<null>" + value;
         }
 
-		public object ConvertTo(CQ_Type targetType){
-            if(value == null )
+        public object ConvertTo (CQ_Type targetType) {
+            if(value == null)
                 return value;
             if(m_type == targetType.type && m_stype == targetType.stype)
                 return value;
@@ -137,8 +103,8 @@ namespace CQuark
             else if(m_stype != null)
                 return AppDomain.GetITypeByCQType(m_stype).ConvertTo(value, targetType);
             return null;
-//			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
-		}
+            //			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
+        }
 
         public object ConvertTo (Type targetType) {
             if(value == null)
@@ -147,7 +113,7 @@ namespace CQuark
                 return value;
             if(m_type != null)
                 return AppDomain.GetITypeByType(m_type).ConvertTo(value, targetType);
-           
+
             return null;
         }
 
@@ -205,10 +171,10 @@ namespace CQuark
         }
 
         public bool EqualOrImplicateType (Type targetType) {
-            return EqualType(targetType) || ImplicateType(targetType);            
+            return EqualType(targetType) || ImplicateType(targetType);
         }
 
-        public static bool operator==(CQ_Value a, CQ_Value b){
+        public static bool operator == (CQ_Value a, CQ_Value b) {
             return a.m_type == b.m_type && a.m_stype == b.m_stype && a.value == b.value;
         }
 
