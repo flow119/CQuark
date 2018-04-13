@@ -44,7 +44,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            List<string> depth__;
+            List<string> depth__ = new List<string>(0);
             content.Record(out depth__);
             try {
                 ICQ_Expression expr = _expressions[0];

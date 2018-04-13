@@ -99,7 +99,7 @@ namespace CQuark
         {
             if (tvalues != null)
             {
-                while (tvalues.Peek() != depth)
+                while(tvalues.Peek().Count != depth.Count)
                 {
                     tvalues.Pop();
                 }

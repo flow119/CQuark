@@ -2,14 +2,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 /// <summary>
-/// 一种效率高于List<T>的List形式，只能对最后一位做写操作（但和Queue不同，可以取前面的位）。声明的时候必须知道最大大小（不存在Alloc）
+/// 一种固定长度的List形式，只能对最后一位做写操作（但和Queue不同，可以取前面的位）。声明的时候必须知道最大大小（不存在Alloc）
 /// </summary>
-public struct FastList<T> {
+public struct FixedList<T> {
+
+    public static FixedList<T> Null {
+        get {
+            return new FixedList<T>(0);
+        }
+    }
 
 	public int Count {get; private set;}
 	private T[] buffer;
 
-	public FastList(int maxCount){
+    public FixedList (int maxCount) {
 		buffer = new T[maxCount];
 		Count = 0;
 	}

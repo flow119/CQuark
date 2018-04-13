@@ -50,7 +50,7 @@ namespace CQuark {
 
         #region Script IMPL
         CQ_Content contentMemberCalc = null;
-        public CQ_Value New (CQ_Content content, IList<CQ_Value> _params) {
+        public CQ_Value New (CQ_Content content, FixedList<CQ_Value> _params) {
             if(contentMemberCalc == null)
                 contentMemberCalc = new CQ_Content();
             NewStatic();
@@ -129,10 +129,10 @@ namespace CQuark {
                 }
             }
         }
-        public CQ_Value StaticCall (CQ_Content contentParent, string function, IList<CQ_Value> _params) {
+        public CQ_Value StaticCall (CQ_Content contentParent, string function, FixedList<CQ_Value> _params) {
             return StaticCall(contentParent, function, _params, null);
         }
-        public CQ_Value StaticCall (CQ_Content contentParent, string function, IList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCall (CQ_Content contentParent, string function, FixedList<CQ_Value> _params, MethodCache cache) {
             if(cache != null) {
                 cache.cachefail = true;
             }
@@ -224,10 +224,10 @@ namespace CQuark {
             }
             throw new NotImplementedException();
         }
-        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params) {
+        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params) {
             return MemberCall(contentParent, object_this, func, _params, null);
         }
-        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params, MethodCache cache) {
             if(cache != null) {
                 cache.cachefail = true;
             }
@@ -285,7 +285,7 @@ namespace CQuark {
         }
 
 
-		public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, IList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
+        public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
             //TODO
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
@@ -399,12 +399,12 @@ namespace CQuark {
 
 
 
-        public CQ_Value StaticCallCache (CQ_Content content, IList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCallCache (CQ_Content content, FixedList<CQ_Value> _params, MethodCache cache) {
             throw new NotImplementedException();
         }
 
 
-        public CQ_Value MemberCallCache (CQ_Content content, object object_this, IList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCallCache (CQ_Content content, object object_this, FixedList<CQ_Value> _params, MethodCache cache) {
             throw new NotImplementedException();
         }
 

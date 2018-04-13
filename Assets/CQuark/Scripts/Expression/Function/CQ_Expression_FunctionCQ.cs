@@ -48,7 +48,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            List<CQ_Value> list = new List<CQ_Value>();
+            FixedList<CQ_Value> list = new FixedList<CQ_Value>(_expressions.Count);
             foreach(ICQ_Expression p in _expressions) {
                 if(p != null) {
                     list.Add(p.ComputeValue(content));
