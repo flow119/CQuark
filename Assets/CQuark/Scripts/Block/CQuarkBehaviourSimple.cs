@@ -5,8 +5,6 @@ using CQuark;
 
 public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 
-	//FunctionsText
-	public CQuarkBlock m_script = new CQuarkBlock();
 	public string m_Awake = "";
 	public string m_OnEnable = "";
 	public string m_OnDisable = "";
@@ -25,6 +23,7 @@ public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
 		BuildBlock ("FixedUpdate", m_FixedUpdate);
 		BuildBlock ("OnDestroy", m_OnDestroy);
 		content = new CQ_Content();//创建上下文，并设置变量给脚本访问
+        content.DepthAdd();
 		content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
 		content.DefineAndSet ("transform", typeof(Transform), this.transform);
 	}

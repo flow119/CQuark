@@ -12,23 +12,26 @@ namespace CQuark
             {
                 if (value.text[value.text.Length - 1] == 'f')
                 {
-                    CQ_Expression_Value_Value<float> number = new CQ_Expression_Value_Value<float>();
-                    number.value_value = float.Parse(value.text.Substring(0, value.text.Length - 1));
-                    return number;
+                    CQ_Value v = new CQ_Value();
+                    v.m_type = typeof(float);
+                    v.value = float.Parse(value.text.Substring(0, value.text.Length - 1));
+                    return new CQ_Expression_Value(v);
                 }
                 else if (value.text.Contains("."))
                 {
-                    CQ_Expression_Value_Value<double> number = new CQ_Expression_Value_Value<double>();
-                    number.value_value = double.Parse(value.text);
-                    return number;
+                    CQ_Value v = new CQ_Value();
+                    v.m_type = typeof(double);
+                    v.value = double.Parse(value.text);
+                    return new CQ_Expression_Value(v);
                 }
                 else
                 {
                     if (value.text.Contains("'"))
                     {
-                        CQ_Expression_Value_Value<char> number = new CQ_Expression_Value_Value<char>();
-                        number.value_value = (char)value.text[1];
-                        return number;
+                        CQ_Value v = new CQ_Value();
+                        v.m_type = typeof(char);
+                        v.value = (char)value.text[1];
+                        return new CQ_Expression_Value(v);
                     }
 
                     else
@@ -36,17 +39,17 @@ namespace CQuark
                         ulong lv = ulong.Parse(value.text);
                         if (lv > uint.MaxValue)
                         {
-                            CQ_Expression_Value_Value<long> number = new CQ_Expression_Value_Value<long>();
-                            number.value_value = (long)lv;
-                            return number;
+                            CQ_Value v = new CQ_Value();
+                            v.m_type = typeof(long);
+                            v.value = (long)lv;
+                            return new CQ_Expression_Value(v);
                         }
                         else
                         {
-
-                            CQ_Expression_Value_Value<int> number = new CQ_Expression_Value_Value<int>();
-                            number.value_value = (int)lv;
-                            return number;
-
+                            CQ_Value v = new CQ_Value();
+                            v.m_type = typeof(int);
+                            v.value = (int)lv;
+                            return new CQ_Expression_Value(v);
                         }
                     }
 
@@ -54,9 +57,10 @@ namespace CQuark
             }
             else if (value.type == TokenType.STRING)
             {
-                CQ_Expression_Value_Value<string> str = new CQ_Expression_Value_Value<string>();
-                str.value_value = value.text.Substring(1, value.text.Length - 2);
-                return str;
+                CQ_Value v = new CQ_Value();
+                v.m_type = typeof(string);
+                v.value = value.text.Substring(1, value.text.Length - 2);
+                return new CQ_Expression_Value(v);
             }
             else if (value.type == TokenType.IDENTIFIER)
             {
@@ -89,31 +93,34 @@ namespace CQuark
             {
                 if (value.text[value.text.Length - 1] == 'f')
                 {
-                    CQ_Expression_Value_Value<float> number = new CQ_Expression_Value_Value<float>();
-                    number.value_value = -float.Parse(value.text.Substring(0, value.text.Length - 1));
-                    return number;
+                    CQ_Value v = new CQ_Value();
+                    v.m_type = typeof(float);
+                    v.value = -float.Parse(value.text.Substring(0, value.text.Length - 1));
+                    return new CQ_Expression_Value(v);
                 }
                 else if (value.text.Contains("."))
                 {
-                    CQ_Expression_Value_Value<double> number = new CQ_Expression_Value_Value<double>();
-                    number.value_value = -double.Parse(value.text);
-                    return number;
+                    CQ_Value v = new CQ_Value();
+                    v.m_type = typeof(double);
+                    v.value = -double.Parse(value.text);
+                    return new CQ_Expression_Value(v);
                 }
                 else
                 {
                     ulong lv = ulong.Parse(value.text);
                     if (lv > uint.MaxValue)
                     {
-                        CQ_Expression_Value_Value<long> number = new CQ_Expression_Value_Value<long>();
-                        number.value_value = -(long)lv;
-                        return number;
+                        CQ_Value v = new CQ_Value();
+                        v.m_type = typeof(long);
+                        v.value = -(long)lv;
+                        return new CQ_Expression_Value(v);
                     }
                     else
                     {
-
-                        CQ_Expression_Value_Value<int> number = new CQ_Expression_Value_Value<int>();
-                        number.value_value = -(int)lv;
-                        return number;
+                        CQ_Value v = new CQ_Value();
+                        v.m_type = typeof(int);
+                        v.value = -(int)lv;
+                        return new CQ_Expression_Value(v);
 
                     }
                 }

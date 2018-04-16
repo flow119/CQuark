@@ -217,19 +217,25 @@ namespace CQuark
                         }
                         else if (tlist[expbegin].text == "true")
                         {
-                            CQ_Expression_Value_Value<bool> subvalue = new CQ_Expression_Value_Value<bool>();
-                            subvalue.value_value = true;
+                            CQ_Value v = new CQ_Value();
+                            v.m_type = typeof(bool);
+                            v.value = true;
+                            CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
+
                             values.Add(subvalue);
                         }
                         else if (tlist[expbegin].text == "false")
                         {
-                            CQ_Expression_Value_Value<bool> subvalue = new CQ_Expression_Value_Value<bool>();
-                            subvalue.value_value = false;
+                            CQ_Value v = new CQ_Value();
+                            v.m_type = typeof(bool);
+                            v.value = false;
+                            CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
+
                             values.Add(subvalue);
                         }
                         else if (tlist[expbegin].text == "null")
                         {
-                            CQ_Expression_Value_Null subvalue = new CQ_Expression_Value_Null();
+                            CQ_Expression_Value subvalue = new CQ_Expression_Value(CQ_Value.Null);
                             values.Add(subvalue);
                         }
 

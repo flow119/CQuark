@@ -7,7 +7,12 @@ using System.Collections;
 /// 演示包括如何注册一个函数，如何调用，如何修改CQ_content
 /// </summary>
 public class CQuarkBlock {
-    CQ_Content content = new CQ_Content();
+    CQ_Content content;// = new CQ_Content();
+
+    public CQuarkBlock () {
+        content = new CQ_Content();
+        content.DepthAdd();
+    }
 
     public object Execute (string script) {
         var expr = CQuark.AppDomain.BuildBlock(script);//语法分析

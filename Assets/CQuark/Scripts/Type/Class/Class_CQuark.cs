@@ -60,10 +60,13 @@ namespace CQuark {
             //sv.value_value.type = this;
 
 
-            CQ_Expression_Value_ScriptValue sv = new CQ_Expression_Value_ScriptValue();
-            sv.value_type = this;
-            sv.value_value = new CQClassInstance();
-            sv.value_value.type = this;
+            
+
+            
+            CQClassInstance c = new CQClassInstance();
+            c.type = this;
+            
+          
 
 
             foreach(KeyValuePair<string, Member> i in this.members) {
@@ -72,7 +75,7 @@ namespace CQuark {
                         CQ_Value val = new CQ_Value();
                         val.SetCQType(i.Value.type.cqType);
                         val.value = i.Value.type.defaultValue;
-                        sv.value_value.member[i.Key] = val;
+                        c.member[i.Key] = val;
                         //sv.value_value.member[i.Key] = new CQ_Value();
                         //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
                         //sv.value_value.member[i.Key].value = i.Value.type.defaultValue;
@@ -83,23 +86,27 @@ namespace CQuark {
                             CQ_Value val = new CQ_Value();
                             val.SetCQType(i.Value.type.cqType);
                             val.value = value.ConvertTo(i.Value.type.cqType);
-                            sv.value_value.member[i.Key] = val;
+                            c.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = new CQ_Value();
                             //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
                             //sv.value_value.member[i.Key].value = value.ConvertTo(i.Value.type.cqType);
                         }
                         else {
-                            sv.value_value.member[i.Key] = value;
+                            c.member[i.Key] = value;
                         }
                     }
                 }
             }
             if(this.functions.ContainsKey(this.Name))//有同名函数就调用
             {
-                MemberCall(content, sv.value_value, this.Name, _params);
+                MemberCall(content, c, this.Name, _params);
             }
-            return CQ_Value.FromICQ_Value(sv);
+
+            CQ_Value v = new CQ_Value();
+            v.m_stype = this;
+            v.value = c;
+            return v;
         }
         void NewStatic () {
             if(contentMemberCalc == null)

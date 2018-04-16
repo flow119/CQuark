@@ -55,10 +55,6 @@ namespace CQuark {
             }
         }
 
-        public static CQ_Value FromICQ_Value (CQ_Expression_Value_ScriptValue value) {
-            return value.ComputeValue(null);
-        }
-
         public static CQ_Value One {
             get {
                 CQ_Value g_one = new CQ_Value();

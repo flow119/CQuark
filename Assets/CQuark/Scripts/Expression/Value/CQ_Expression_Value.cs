@@ -4,22 +4,20 @@ using System.Text;
 using System.Collections;
 
 namespace CQuark {
-    public class CQ_Expression_Value_ScriptValue : ICQ_Expression_Value {
-        public CQ_Type type {
-            get { return value_type; }
-        }
-        public Class_CQuark value_type;
+    public class CQ_Expression_Value : ICQ_Expression {
 
-        public CQClassInstance value_value;
-        public object value {
-            get {
-                return value_value;
-            }
+        public CQ_Value value;
+        public CQ_Expression_Value (CQ_Value val) {
+            value = val;
         }
+
         public override string ToString () {
-            return type.Name + "|" + value_value.ToString();
+            if(value.m_type != null)
+                return value.m_type.Name + "|" + value.value.ToString();
+            else if(value.m_stype != null)
+                return value.m_stype.Name + "|" + value.value.ToString();
+            return "<unknown> null";
         }
-
 
         public List<ICQ_Expression> _expressions {
             get { return null; }
@@ -46,19 +44,10 @@ namespace CQuark {
             }
         }
         public CQ_Value ComputeValue (CQ_Content content) {
-#if CQUARK_DEBUG
-			content.InStack(this);
-#endif
-            CQ_Value v = new CQ_Value();
-            v.SetCQType(this.type);
-            v.value = this.value_value;
-#if CQUARK_DEBUG
-			content.OutStack(this);
-#endif
-            return v;
+            return value;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
-            throw new Exception("不支持套用协程");
+            throw new Exception("Value不支持套用协程");
         }
     }
 }
