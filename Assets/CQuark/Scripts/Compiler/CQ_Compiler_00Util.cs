@@ -31,8 +31,7 @@ namespace CQuark {
             depstyle = 0;
             for(int i = pos; i < tokens.Count; i++) {
 
-                if(tokens[i].type == TokenType.COMMENT) //注释忽略
-                {
+                if(tokens[i].type == TokenType.COMMENT) { //注释忽略
                     continue;
                 }
                 if(start == null) {
@@ -77,14 +76,8 @@ namespace CQuark {
                         dep--;
                         if(depstyle == 1 && dep == 0) {
                             if(start.Value.text == "(" && dep == 0) {
-                                //if (i == (pos + 2) && tokens[i - 1].type == TokenType.TYPE)
-                                //{
-                                //    depstyle = 0;
-                                //}
-                                //else
-                                {
-                                    return i;
-                                }
+
+                                return i;
                             }
                         }
                         if(dep < 0)
@@ -104,13 +97,7 @@ namespace CQuark {
                             return i - 1;
                     }
                     if(depstyle == 0) {
-                        //if (tokens[i].text =="."&& start.Value.type == TokenType.TYPE)
-                        //{
-                        //    if (dep == 0)
-                        //        return i - 1;
-                        //}
-                        if(tokens[i].text == ",")//，结束的表达式
-                        {
+                        if(tokens[i].text == ",") {//，结束的表达式
                             if(dep == 0)
                                 return i - 1;
                         }
@@ -134,8 +121,7 @@ namespace CQuark {
             depstyle = 0;
             for(int i = pos; i < tokens.Count; i++) {
 
-                if(tokens[i].type == TokenType.COMMENT) //注释忽略
-                {
+                if(tokens[i].type == TokenType.COMMENT) {//注释忽略
                     continue;
                 }
                 if(start == null) {
@@ -156,15 +142,6 @@ namespace CQuark {
                         if(index > 0)
                             return index;
                     }
-                    //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
-                    //{
-                    //    if(tokens[i+1].type== TokenType.PUNCTUATION&&tokens[i+1].text==".")
-                    //    {
-                    //        //staticcall = true;
-                    //        i++;
-                    //        continue;
-                    //    }
-                    //}
                 }
 
                 if(tokens[i].type == TokenType.PUNCTUATION) {
@@ -189,11 +166,6 @@ namespace CQuark {
                                 if(i < tokens.Count && tokens[i + 1].text == ".") {
                                     depstyle = 0;
                                 }
-
-                                //if (i == (pos + 2) && tokens[i - 1].type == TokenType.TYPE)
-                                //{
-                                //    depstyle = 0;
-                                //}
                                 else {
                                     return i;
                                 }
@@ -216,11 +188,6 @@ namespace CQuark {
                             return i - 1;
                     }
                     if(depstyle == 0) {
-                        //if (tokens[i].text =="."&& start.Value.type == TokenType.TYPE)
-                        //{
-                        //    if (dep == 0)
-                        //        return i - 1;
-                        //}
                         if(tokens[i].text == ",") {//，结束的表达式
                             if(dep == 0)
                                 return i - 1;
@@ -266,15 +233,6 @@ namespace CQuark {
                         if(index > 0)
                             return index;
                     }
-                    //if (start.Value.type == TokenType.TYPE && i < tokens.Count-1)
-                    //{
-                    //    if(tokens[i+1].type== TokenType.PUNCTUATION&&tokens[i+1].text==".")
-                    //    {
-                    //        //staticcall = true;
-                    //        i++;
-                    //        continue;
-                    //    }
-                    //}
                 }
 
                 if(tokens[i].type == TokenType.PUNCTUATION) {
@@ -296,14 +254,7 @@ namespace CQuark {
                         dep--;
                         if(depstyle == 1 && dep == 0) {
                             if(start.Value.text == "(" && dep == 0) {
-                                //if (i == (pos + 2) && tokens[i - 1].type == TokenType.TYPE)
-                                {
-                                    depstyle = 0;
-                                }
-                                //else
-                                {
-                                    //return i;
-                                }
+                                depstyle = 0;
                             }
                         }
                         if(dep < 0)
@@ -438,7 +389,7 @@ namespace CQuark {
                 return tokens.Count - 1;
         }
 
-       
+
         static int FindCodeKeyWord_New (IList<Token> tokens, int pos) {
             int b1;
             int fs1 = pos + 2;
