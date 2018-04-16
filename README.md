@@ -45,6 +45,11 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 ## 版本更新记录
 
+2018-04-16 v0.9.5
+
+    Expression_Value重构，现在会在编译时就把值创建出，节省30/324kGC
+    Content里的stack<List<string>>改成了stack<string>和stack<int>，由西瓜维护深度，节省70/394k GC
+
 2018-04-13 v0.9.4
 
     大部分List改为FixedList，节省10%GC
