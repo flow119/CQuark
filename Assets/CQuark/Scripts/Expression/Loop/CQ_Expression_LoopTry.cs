@@ -44,8 +44,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            List<string> depth__ = new List<string>(0);
-            content.Record(out depth__);
+            int oldDepthCount = content.Record();
             try {
                 ICQ_Expression expr = _expressions[0];
                 if(expr is CQ_Expression_Block) {
@@ -78,7 +77,7 @@ namespace CQuark {
                     throw err;
                 }
             }
-            content.Restore(depth__, this);
+            content.Restore(oldDepthCount, this);
             //while((bool)expr_continue.value);
 
 #if CQUARK_DEBUG

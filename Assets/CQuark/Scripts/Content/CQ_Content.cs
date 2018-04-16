@@ -10,8 +10,10 @@ namespace CQuark {
         public Class_CQuark CallType;
         public CQClassInstance CallThis;
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
-        Stack<List<string>> tvalues;//new Stack<List<string>>();//所有values的名字，Stack表示作用域
-        public Dictionary<string, CQ_Value> values;//new Dictionary<string, CQ_Value>();
+
+        Stack<string> tvalues;  //所有values的名字
+        Stack<int> tvalueDepth; //每一层作用域里变量的数量
+        public Dictionary<string, CQ_Value> values;//所有变量暂存
 
 #if CQUARK_DEBUG
         private Stack<ICQ_Expression> stackExpr = new Stack<ICQ_Expression>();
@@ -83,15 +85,18 @@ namespace CQuark {
             stackExpr.Pop();
         }
 #endif
-        public void Record (out List<string> depth) {
-            depth = tvalues.Peek();
+        public int Record () {
+            return tvalueDepth.Peek();
         }
-        public void Restore (List<string> depth, ICQ_Expression expr) {
-            if(tvalues != null) {
-                while(tvalues.Peek().Count != depth.Count) {
-                    tvalues.Pop();
-                }
+        public void Restore (int depthCount, ICQ_Expression expr) {
+            int newCount = tvalueDepth.Pop();
+            tvalueDepth.Push(depthCount);
+            int needRemove = newCount - depthCount;
+            for(; needRemove > 0; needRemove--) {
+                string name = tvalues.Pop();
+                values.Remove(name);
             }
+
 #if CQUARK_DEBUG
             while(stackExpr.Peek()!=expr)
             {
@@ -192,10 +197,12 @@ namespace CQuark {
             CQ_Value v = new CQ_Value();
             v.SetCQType(type);
             values[name] = v;
-            if(tvalues != null && tvalues.Count > 0) {
-                tvalues.Peek().Add(name);//暂存临时变量
-            }
+
+            int newdepth = tvalueDepth.Pop() + 1;
+            tvalueDepth.Push(newdepth);
+            tvalues.Push(name);
         }
+
         public void Set (string name, object value) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
@@ -249,9 +256,9 @@ namespace CQuark {
             v.value = value;
             values[name] = v;
 
-            if(tvalues != null && tvalues.Count > 0) {
-                tvalues.Peek().Add(name);//暂存临时变量
-            }
+            int newdepth = tvalueDepth.Pop() + 1;
+            tvalueDepth.Push(newdepth);
+            tvalues.Push(name);
         }
         public CQ_Value Get (string name) {
             CQ_Value v = GetQuiet(name);
@@ -297,20 +304,21 @@ namespace CQuark {
         public void DepthAdd ()//控制变量作用域，深一层
         {
             if(tvalues == null)
-                tvalues = new Stack<List<string>>();
+                tvalues = new Stack<string>();
+            if(tvalueDepth == null)
+                tvalueDepth = new Stack<int>();
 
-            tvalues.Push(new List<string>());
+            tvalueDepth.Push(0);
         }
         public void DepthRemove ()//控制变量作用域，退出一层，上一层的变量都清除
         {
-            if(tvalues == null || tvalues.Count == 0)
+            if(tvalues == null)
                 return;
-            List<string> list = tvalues.Pop();
-            foreach(var v in list) {
-                values.Remove(v);
+            int depth = tvalueDepth.Pop();
+            for(; depth > 0; depth--) {
+                string name = tvalues.Pop();
+                values.Remove(name);
             }
         }
-
-
     }
 }
