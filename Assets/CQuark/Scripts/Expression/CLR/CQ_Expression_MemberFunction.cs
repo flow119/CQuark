@@ -68,14 +68,14 @@ namespace CQuark {
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(!Wrap.MemberCall(parent.m_type, parent.value, functionName, _params, out value)) {
+            if(!Wrap.MemberCall(parent.m_type, parent.m_value, functionName, _params, out value)) {
                 var iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
                 if(cache == null || cache.cachefail) {
                     cache = new MethodCache();
-                    value = iclass.MemberCall(content, parent.value, functionName, _params, cache);
+                    value = iclass.MemberCall(content, parent.m_value, functionName, _params, cache);
                 }
                 else {
-                    value = iclass.MemberCallCache(content, parent.value, _params, cache);
+                    value = iclass.MemberCallCache(content, parent.m_value, _params, cache);
                 }
             }
 

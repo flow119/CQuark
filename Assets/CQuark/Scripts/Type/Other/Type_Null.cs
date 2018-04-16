@@ -36,7 +36,7 @@ namespace CQuark
             {
                 CQ_Value returnValue = new CQ_Value();
                 returnValue.m_type = typeof(String);
-                returnValue.value = "null" + right.value;
+                returnValue.m_value = "null" + right.m_value;
                 return returnValue;
             }
             throw new NotImplementedException();
@@ -45,11 +45,11 @@ namespace CQuark
         {
             if (code == LogicToken.equal)
             {
-                return null == right.value;
+                return null == right.m_value;
             }
             else if(code== LogicToken.not_equal)
             {
-                return null != right.value;
+                return null != right.m_value;
             }
             throw new NotImplementedException();
         }

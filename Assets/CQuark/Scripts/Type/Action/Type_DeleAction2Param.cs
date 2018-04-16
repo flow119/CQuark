@@ -26,7 +26,7 @@ namespace CQuark
                 else if (right.value is DeleLambda) calldele = CreateDelegate(right.value as DeleLambda);
                 else if (right.value is Delegate) calldele = right.value as Delegate;*/
 
-                object rightValue = right.value;
+                object rightValue = right.m_value;
                 if (rightValue is DeleFunction)
                 {
                     if (code == '+')
@@ -61,7 +61,7 @@ namespace CQuark
                     //    Dele_Map_Delegate.Map(rightValue as IDeleBase, calldele);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.value = info;
+                    ret.m_value = info;
                     return ret;
                 }
                 else if (code == '-')
@@ -71,7 +71,7 @@ namespace CQuark
                     //    Dele_Map_Delegate.Destroy(rightValue as IDeleBase);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.value = info;
+                    ret.m_value = info;
                     return ret;
                 }
 
@@ -80,22 +80,22 @@ namespace CQuark
             {
                 Delegate info = left as Delegate;
                 Delegate calldele = null;
-                if (right.value is DeleFunction)
-                    calldele = CreateDelegate(right.value as DeleFunction);
-                else if (right.value is DeleLambda)
-                    calldele = CreateDelegate(right.value as DeleLambda);
-                else if (right.value is Delegate)
-                    calldele = right.value as Delegate;
+                if (right.m_value is DeleFunction)
+                    calldele = CreateDelegate(right.m_value as DeleFunction);
+                else if (right.m_value is DeleLambda)
+                    calldele = CreateDelegate(right.m_value as DeleLambda);
+                else if (right.m_value is Delegate)
+                    calldele = right.m_value as Delegate;
                 if (code == '+')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.value = Delegate.Combine(info, calldele);
+                    ret.m_value = Delegate.Combine(info, calldele);
                     return ret;
                 }
                 else if (code == '-')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.value = Delegate.Remove(info, calldele);
+                    ret.m_value = Delegate.Remove(info, calldele);
                     return ret;
                 }
             }

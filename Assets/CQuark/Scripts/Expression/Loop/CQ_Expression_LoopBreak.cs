@@ -44,7 +44,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-			rv.breakBlock = BreakType.Break;
+			rv.m_breakBlock = BreakType.Break;
 
 #if CQUARK_DEBUG
             content.OutStack(this);

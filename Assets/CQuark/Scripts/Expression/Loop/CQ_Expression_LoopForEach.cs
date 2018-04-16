@@ -55,7 +55,7 @@ namespace CQuark {
             }
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).value as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).m_value as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
@@ -68,9 +68,9 @@ namespace CQuark {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
                         if(v != CQ_Value.Null) {
-							if(v.breakBlock == BreakType.Return)
+							if(v.m_breakBlock == BreakType.Return)
 								vrt = v;
-							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) break;
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) break;
                         }
                     }
                     else {
@@ -78,9 +78,9 @@ namespace CQuark {
                         bool bbreak = false;
                         var v = expr_block.ComputeValue(content);
                         if(v != CQ_Value.Null) {
-							if(v.breakBlock == BreakType.Return)
+							if(v.m_breakBlock == BreakType.Return)
 								vrt = v;
-							if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return) bbreak = true;
+							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) bbreak = true;
 
                         }
                         content.DepthRemove();
@@ -108,7 +108,7 @@ namespace CQuark {
             }
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).value as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).m_value as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
@@ -126,7 +126,7 @@ namespace CQuark {
                             var v = expr_block.ComputeValue(content);
                             if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
+								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
 									break;
                             }
                         }
@@ -141,7 +141,7 @@ namespace CQuark {
                             var v = expr_block.ComputeValue(content);
                             if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-								if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) bbreak = true;
+								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) bbreak = true;
 
                             }
                         }

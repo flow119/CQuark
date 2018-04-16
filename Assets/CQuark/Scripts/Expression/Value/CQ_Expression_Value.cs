@@ -13,9 +13,9 @@ namespace CQuark {
 
         public override string ToString () {
             if(value.m_type != null)
-                return value.m_type.Name + "|" + value.value.ToString();
+                return value.m_type.Name + "|" + value.m_value.ToString();
             else if(value.m_stype != null)
-                return value.m_stype.Name + "|" + value.value.ToString();
+                return value.m_stype.Name + "|" + value.m_value.ToString();
             return "<unknown> null";
         }
 

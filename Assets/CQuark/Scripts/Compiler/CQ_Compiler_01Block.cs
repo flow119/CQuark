@@ -175,7 +175,7 @@ namespace CQuark {
                         else if(tlist[expbegin].text == "true") {
                             CQ_Value v = new CQ_Value();
                             v.m_type = typeof(bool);
-                            v.value = true;
+                            v.m_value = true;
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);
@@ -183,7 +183,7 @@ namespace CQuark {
                         else if(tlist[expbegin].text == "false") {
                             CQ_Value v = new CQ_Value();
                             v.m_type = typeof(bool);
-                            v.value = false;
+                            v.m_value = false;
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);

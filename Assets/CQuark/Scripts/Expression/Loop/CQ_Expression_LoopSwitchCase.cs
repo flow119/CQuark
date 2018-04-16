@@ -60,7 +60,7 @@ namespace CQuark {
             for(int i = 1; i < _expressions.Count - 1; i += 2) {
                 if(_expressions[i] != null) {
                     //case xxx://
-                    if(switchVal.value.Equals(_expressions[i].ComputeValue(content).value)) {
+                    if(switchVal.m_value.Equals(_expressions[i].ComputeValue(content).m_value)) {
                         while(_expressions[i + 1] == null) {
                             i += 2;
                         }
@@ -102,7 +102,7 @@ namespace CQuark {
             for(int i = 1; i < _expressions.Count - 1; i += 2) {
                 if(_expressions[i] != null) {
                     //case xxx://
-                    if(switchVal.value.Equals(_expressions[i].ComputeValue(content).value)) {
+                    if(switchVal.m_value.Equals(_expressions[i].ComputeValue(content).m_value)) {
                         while(_expressions[i + 1] == null) {
                             i += 2;
                         }

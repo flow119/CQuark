@@ -123,7 +123,7 @@ namespace CQuark
                 Type retType = GetReturnType_Math2Value(typeof(LeftType), right.m_type);
                 returnValue.m_type = retType;
 				double leftValue = GetDouble(typeof(LeftType), left);
-				double rightValue = GetDouble(right.m_type, right.value);
+				double rightValue = GetDouble(right.m_type, right.m_value);
 				double finalValue;
 
 				switch(opCode) {
@@ -146,7 +146,7 @@ namespace CQuark
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
 
-                returnValue.value = Double2TargetType(retType, finalValue);
+                returnValue.m_value = Double2TargetType(retType, finalValue);
                 return true;
 
 			}
@@ -198,7 +198,7 @@ namespace CQuark
 
 			try {
 				double leftValue = GetDouble(typeof(LeftType), left);
-				double rightValue = GetDouble(right.m_type, right.value);
+				double rightValue = GetDouble(right.m_type, right.m_value);
 
 				switch(logicCode) {
 				case LogicToken.equal:
@@ -282,7 +282,7 @@ namespace CQuark
             if(rightType == typeof(string) && code == '+') {
                 CQ_Value returnValue = new CQ_Value();
                 returnValue.m_type = typeof(string);
-                returnValue.value = left.ToString() + right.value as string;
+                returnValue.m_value = left.ToString() + right.m_value as string;
                 return returnValue;
             }
             else {
@@ -293,7 +293,7 @@ namespace CQuark
                 //我们这里开始使用Wrap，如果再不行再走反射
                 CQ_Value leftcq = new CQ_Value();
                 leftcq.SetCQType(this.cqType);
-                leftcq.value = left;
+                leftcq.m_value = left;
                 if(code == '+') {
                     if(Wrap.OpAddition(leftcq, right, out returnValue)) {
                         return returnValue;
@@ -339,7 +339,7 @@ namespace CQuark
                 //Wrap没走到，走反射
                 returnValue = new CQ_Value();
                 returnValue.SetCQType(cqType);
-                returnValue.value = call.Invoke(null, new object[] { left, right.value });
+                returnValue.m_value = call.Invoke(null, new object[] { left, right.m_value });
                 //function.StaticCall(env,"op_Addtion",new List<ICL>{})
                 return returnValue;
             }
@@ -361,28 +361,28 @@ namespace CQuark
             {
                 if (left == null || right.TypeIsEmpty)
                 {
-                    return left == right.value;
+                    return left == right.m_value;
                 }
 
                 call = _type.GetMethod("op_Equality");
                 if (call == null)
                 {
-                    return left.Equals(right.value);
+                    return left.Equals(right.m_value);
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if (left == null || right.TypeIsEmpty)
                 {
-                    return left != right.value;
+                    return left != right.m_value;
                 }
                 call = _type.GetMethod("op_Inequality");
                 if (call == null)
                 {
-                    return !left.Equals(right.value);
+                    return !left.Equals(right.m_value);
                 }
             }
-            var obj = call.Invoke(null, new object[] { left, right.value });
+            var obj = call.Invoke(null, new object[] { left, right.m_value });
             return (bool)obj;
         }
     }

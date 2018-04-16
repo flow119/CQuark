@@ -38,14 +38,14 @@ public class Demo4 : MonoBehaviour {
 
 			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//调用脚本类构造创造一个实例
-			var thisOfScript = typeOfScript._class.New(content, FixedList<CQuark.CQ_Value>.Null).value;
+			var thisOfScript = typeOfScript._class.New(content, FixedList<CQuark.CQ_Value>.Null).m_value;
 			//调用脚本类成员变量赋值
 			//Debug.LogWarning(thisOfScript+","+ typeOfScript+","+ typeOfScript.function);
 			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", 200);
 			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", 300);
 			//调用脚本类成员函数
             var returnvalue = typeOfScript._class.MemberCall(content, thisOfScript, "GetHP", FixedList<CQuark.CQ_Value>.Null);
-			object i = returnvalue.value;
+			object i = returnvalue.m_value;
 			result = "result=" + i;
 		}
 

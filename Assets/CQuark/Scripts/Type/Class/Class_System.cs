@@ -19,16 +19,16 @@ namespace CQuark {
             object[] objparams = new object[_params.Count];
             for(int i = 0; i < _params.Count; i++) {
                 types[i] = _params[i].m_type;
-                objparams[i] = _params[i].value;
+                objparams[i] = _params[i].m_value;
             }
             CQ_Value value = new CQ_Value();
             value.m_type = type;
             var con = this.type.GetConstructor(types);
             if(con == null) {
-                value.value = Activator.CreateInstance(this.type);
+                value.m_value = Activator.CreateInstance(this.type);
             }
             else {
-                value.value = con.Invoke(objparams);
+                value.m_value = con.Invoke(objparams);
             }
             return value;
         }
@@ -44,7 +44,7 @@ namespace CQuark {
             List<Type> types = new List<Type>();
             bool pIsEmpty = false;
             foreach(CQ_Value p in _params) {
-                _oparams.Add(p.value);
+                _oparams.Add(p.m_value);
                 if(p.m_stype != null) {
                     types.Add(typeof(object));
                 }
@@ -110,7 +110,7 @@ namespace CQuark {
 
 
             CQ_Value v = new CQ_Value();
-            v.value = methodInfo.Invoke(null, _oparams.ToArray());
+            v.m_value = methodInfo.Invoke(null, _oparams.ToArray());
             v.m_type = methodInfo.ReturnType;
             return v;
         }
@@ -119,7 +119,7 @@ namespace CQuark {
             List<object> _oparams = new List<object>();
 
             foreach(var p in _params) {
-                _oparams.Add(p.value);
+                _oparams.Add(p.m_value);
             }
             System.Reflection.MethodInfo methodInfo = cache.info;
             if(cache.needConvert) {
@@ -136,7 +136,7 @@ namespace CQuark {
                 }
             }
             CQ_Value v = new CQ_Value();
-            v.value = methodInfo.Invoke(null, _oparams.ToArray());
+            v.m_value = methodInfo.Invoke(null, _oparams.ToArray());
             v.m_type = methodInfo.ReturnType;
             return v;
         }
@@ -184,7 +184,7 @@ namespace CQuark {
             bool pIsEmpty = false;
             foreach(CQ_Value p in _params) {
                 {
-                    _oparams.Add(p.value);
+                    _oparams.Add(p.m_value);
                 }
                 if(p.m_stype != null) {
                     types.Add(typeof(object));
@@ -247,7 +247,7 @@ namespace CQuark {
             if(methodInfo == null) {
                 throw new Exception("函数不存在function:" + type.ToString() + "." + function);
             }
-            v.value = methodInfo.Invoke(object_this, _oparams.ToArray());
+            v.m_value = methodInfo.Invoke(object_this, _oparams.ToArray());
             v.m_type = methodInfo.ReturnType;
             return v;
         }
@@ -393,7 +393,7 @@ namespace CQuark {
             if(cache.needConvert) {
                 List<object> _oparams = new List<object>();
                 foreach(var p in _params) {
-                    _oparams.Add(p.value);
+                    _oparams.Add(p.m_value);
                 }
                 var pp = methodInfo.GetParameters();
                 for(int i = 0; i < pp.Length; i++) {
@@ -406,15 +406,15 @@ namespace CQuark {
                         }
                     }
                 }
-                v.value = methodInfo.Invoke(object_this, _oparams.ToArray());
+                v.m_value = methodInfo.Invoke(object_this, _oparams.ToArray());
                 v.m_type = methodInfo.ReturnType;
             }
             else {
                 object[] _oparams = new object[_params.Count];
                 for(int i = 0; i < _params.Count; i++) {
-                    _oparams[i] = _params[i].value;
+                    _oparams[i] = _params[i].m_value;
                 }
-                v.value = methodInfo.Invoke(object_this, _oparams);
+                v.m_value = methodInfo.Invoke(object_this, _oparams);
                 v.m_type = methodInfo.ReturnType;
             }
 
@@ -464,16 +464,16 @@ namespace CQuark {
             switch(c.type) {
                 case 1:
 
-                    v.value = c.finfo.GetValue(object_this);
+                    v.m_value = c.finfo.GetValue(object_this);
                     v.m_type = c.finfo.FieldType;
                     break;
                 case 2:
 
-                    v.value = c.minfo.Invoke(object_this, null);
+                    v.m_value = c.minfo.Invoke(object_this, null);
                     v.m_type = c.minfo.ReturnType;
                     break;
                 case 3:
-                    v.value = new DeleEvent(object_this, c.einfo);
+                    v.m_value = new DeleEvent(object_this, c.einfo);
                     v.m_type = c.einfo.EventHandlerType;
                     break;
 
@@ -560,7 +560,7 @@ namespace CQuark {
                 v.m_type = indexGetCacheType;
                 if(key != null && key.GetType() != indexGetCachetypeindex)
                     key = CQuark.AppDomain.ConvertTo(key, (CQuark.CQ_Type)indexGetCachetypeindex);
-                v.value = indexGetCache.Invoke(object_this, new object[] { key });
+                v.m_value = indexGetCache.Invoke(object_this, new object[] { key });
                 return v;
             }
             //throw new NotImplementedException();

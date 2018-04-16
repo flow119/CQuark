@@ -53,7 +53,7 @@ namespace CQuark {
             IType type = CQuark.AppDomain.GetITypeByCQValue(right);
             CQ_Value value = new CQ_Value();
             value.m_type = typeof(bool);
-            value.value = type.ConvertTo(right.value, targettype) != null;
+            value.m_value = type.ConvertTo(right.m_value, targettype) != null;
 
 #if CQUARK_DEBUG
             content.OutStack(this);

@@ -54,14 +54,14 @@ namespace CQuark {
             ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
             ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
             CQ_Value vrt = CQ_Value.Null;
-            while((bool)expr_while.ComputeValue(content).value) {
+            while((bool)expr_while.ComputeValue(content).m_value) {
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
                         if(v != CQ_Value.Null) {
-							if(v.breakBlock == BreakType.Return)
+							if(v.m_breakBlock == BreakType.Return)
 								vrt = v;
-							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break) 
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) 
 								break;
                         }
                     }
@@ -70,9 +70,9 @@ namespace CQuark {
                         bool bbreak = false;
                         var v = expr_block.ComputeValue(content);
                         if(v != CQ_Value.Null) {
-							if(v.breakBlock == BreakType.Return) 
+							if(v.m_breakBlock == BreakType.Return) 
 								vrt = v;
-							if(v.breakBlock == BreakType.Return || v.breakBlock == BreakType.Break)
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break)
 								bbreak = true;
                         }
                         content.DepthRemove();
@@ -101,7 +101,7 @@ namespace CQuark {
             ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
             ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
             //			CQ_Content.Value vrt = null;
-            while((bool)expr_while.ComputeValue(content).value) {
+            while((bool)expr_while.ComputeValue(content).m_value) {
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         if(expr_block.hasCoroutine) {
@@ -111,7 +111,7 @@ namespace CQuark {
                             var v = expr_block.ComputeValue(content);
                             if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return)
+								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
 									break;
                             }
                         }
@@ -126,7 +126,7 @@ namespace CQuark {
                             var v = expr_block.ComputeValue(content);
                             if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-								if(v.breakBlock == BreakType.Break || v.breakBlock == BreakType.Return) bbreak = true;
+								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) bbreak = true;
                             }
                             content.DepthRemove();
                             if(bbreak) break;

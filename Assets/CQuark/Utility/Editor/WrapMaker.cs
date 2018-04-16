@@ -232,7 +232,7 @@ public class WrapMaker : EditorWindow{
 					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
 					wrapSVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
                     wrapSVGet += "\t\t\t\treturnValue.m_type = typeof(" + propertys[i].m_type + ");\n";
-					wrapSVGet += "\t\t\t\treturnValue.value = ";
+					wrapSVGet += "\t\t\t\treturnValue.m_value = ";
 					wrapSVGet += classFullName + "." + propertys[i].m_name + ";\n";
 					wrapSVGet += "\t\t\t\treturn true;\n";
 				}
@@ -248,7 +248,7 @@ public class WrapMaker : EditorWindow{
 					wrapMVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
 					wrapMVGet += "\t\t\t\treturnValue = new CQ_Value();\n";
                     wrapMVGet += "\t\t\t\treturnValue.m_type = typeof(" + propertys[i].m_type + ");\n";
-					wrapMVGet += "\t\t\t\treturnValue.value = ";
+					wrapMVGet += "\t\t\t\treturnValue.m_value = ";
 					wrapMVGet += "obj." + propertys[i].m_name + ";\n";
 					wrapMVGet += "\t\t\t\treturn true;\n";
 				}
@@ -330,7 +330,7 @@ public class WrapMaker : EditorWindow{
 			}
 			wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
             wrapNew += "\t\t\t\treturnValue.m_type = typeof(" + classFullName + ");\n";
-			wrapNew += "\t\t\t\treturnValue.value = new " + classFullName + "(";
+			wrapNew += "\t\t\t\treturnValue.m_value = new " + classFullName + "(";
 			for(int j = 0; j < constructor[i].m_inType.Length; j++) {
 				wrapNew += "(" + constructor[i].m_inType[j] + ")param[" + j + "].ConvertTo(typeof(" + constructor[i].m_inType[j] + "))";
 				if(j != constructor[i].m_inType.Length - 1)
@@ -415,7 +415,7 @@ public class WrapMaker : EditorWindow{
 			}else{
 				wrapSCall += "\t\t\t\treturnValue = new CQ_Value();\n";
                 wrapSCall += "\t\t\t\treturnValue.m_type = typeof(" + staticMethods[i].m_returnType + ");\n";
-				wrapSCall += "\t\t\t\treturnValue.value = ";
+				wrapSCall += "\t\t\t\treturnValue.m_value = ";
 			}
 			wrapSCall += classFullName + "." + staticMethods[i].m_methodName + "(";
 			for(int j = 0; j < staticMethods[i].m_inType.Length; j++) {
@@ -519,7 +519,7 @@ public class WrapMaker : EditorWindow{
 			}else{
 				wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
                 wrapMCall += "\t\t\t\treturnValue.m_type = typeof(" + instanceMethods[i].m_returnType + ");\n";
-				wrapMCall += "\t\t\t\treturnValue.value = ";
+				wrapMCall += "\t\t\t\treturnValue.m_value = ";
 			}
 			wrapMCall += "obj." + instanceMethods[i].m_methodName + "(";
 			for(int j = 0; j < instanceMethods[i].m_inType.Length; j++) {
@@ -628,7 +628,7 @@ public class WrapMaker : EditorWindow{
 				wrapIGet += "\t\t\tif(key.EqualOrImplicateType(typeof(" + indexMethods[i].m_inType[0]+ "))){\n";
 				wrapIGet += "\t\t\t\treturnValue = new CQ_Value();\n";
                 wrapIGet += "\t\t\t\treturnValue.m_type = typeof(" + indexMethods[i].m_returnType + ");\n";
-				wrapIGet += "\t\t\t\treturnValue.value = ";
+				wrapIGet += "\t\t\t\treturnValue.m_value = ";
 				wrapIGet += "obj[(" + indexMethods[i].m_inType[0] + ")key.ConvertTo(typeof(" + indexMethods[i].m_inType[0] + "))];\n";
 				wrapIGet += "\t\t\t\treturn true;\n\t\t\t}";
 			}
@@ -698,7 +698,7 @@ public class WrapMaker : EditorWindow{
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
                 + "\t\t\t\treturnValue.m_type = typeof(" + opMethods[i].m_returnType + ");\n"
-                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) + (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturnValue.m_value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) + (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
             }
@@ -707,7 +707,7 @@ public class WrapMaker : EditorWindow{
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
                 + "\t\t\t\treturnValue.m_type = typeof(" + opMethods[i].m_returnType + ");\n"
-                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) - (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturnValue.m_value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) - (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
             }
@@ -716,7 +716,7 @@ public class WrapMaker : EditorWindow{
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
                 + "\t\t\t\treturnValue.m_type = typeof(" + opMethods[i].m_returnType + ");\n"
-                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) * (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturnValue.m_value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) * (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
             }
@@ -725,7 +725,7 @@ public class WrapMaker : EditorWindow{
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
                 + "\t\t\t\treturnValue.m_type = typeof(" + opMethods[i].m_returnType + ");\n"
-                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) / (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturnValue.m_value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) / (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
             }
@@ -734,7 +734,7 @@ public class WrapMaker : EditorWindow{
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
                 + "\t\t\t\treturnValue = new CQ_Value();\n"
                 + "\t\t\t\treturnValue.m_type = typeof(" + opMethods[i].m_returnType + ");\n"
-                + "\t\t\t\treturnValue.value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) % (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
+                + "\t\t\t\treturnValue.m_value = (" + opMethods[i].m_inType[0] + ")left.ConvertTo(typeof(" + opMethods[i].m_inType[0] + ")) % (" + opMethods[i].m_inType[1] + ")right.ConvertTo(typeof(" + opMethods[i].m_inType[1] + "));\n"
                 + "\t\t\t\treturn true;\n"
                 + "\t\t\t}\n";
             }

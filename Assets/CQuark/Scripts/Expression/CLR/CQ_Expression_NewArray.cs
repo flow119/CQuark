@@ -46,14 +46,14 @@ namespace CQuark {
             content.InStack(this);
 #endif
             FixedList<object> list = new FixedList<object>(_expressions.Count);
-            int count = _expressions[0] == null ? (_expressions.Count - 1) : (int)_expressions[0].ComputeValue(content).value;
+            int count = _expressions[0] == null ? (_expressions.Count - 1) : (int)_expressions[0].ComputeValue(content).m_value;
             if(count == 0)
                 throw new Exception("不能创建0长度数组");
             CQ_Value vcount = new CQ_Value();
             vcount.m_type = (typeof(int));
-            vcount.value = count;
+            vcount.m_value = count;
             for(int i = 1; i < _expressions.Count; i++) {
-                 list.Add(_expressions[i].ComputeValue(content).value);
+                 list.Add(_expressions[i].ComputeValue(content).m_value);
             }
 
             FixedList<CQ_Value> param = new FixedList<CQ_Value>(1);
@@ -67,7 +67,7 @@ namespace CQuark {
 			}
 
             for(int i = 0; i < list.Count; i++) {
-                type._class.IndexSet(content, outvalue.value, i, list[i]);
+                type._class.IndexSet(content, outvalue.m_value, i, list[i]);
             }
 
 #if CQUARK_DEBUG

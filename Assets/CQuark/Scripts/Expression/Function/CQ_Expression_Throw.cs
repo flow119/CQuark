@@ -47,9 +47,9 @@ namespace CQuark {
             {
                 rv.m_type = v.m_type;
                 rv.m_stype = v.m_stype;
-                rv.value = v.value;
+                rv.m_value = v.m_value;
             }
-            Exception err = v.value as Exception;
+            Exception err = v.m_value as Exception;
             if(err != null) {
                 throw err;
             }

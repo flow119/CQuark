@@ -47,7 +47,7 @@ namespace CQuark {
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!Wrap.StaticValueSet(type.cqType.type, staticmembername, value)){
-				type._class.StaticValueSet(content, staticmembername, value.value);
+				type._class.StaticValueSet(content, staticmembername, value.m_value);
 			}
             
 #if CQUARK_DEBUG

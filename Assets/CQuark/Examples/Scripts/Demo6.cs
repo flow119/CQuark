@@ -23,7 +23,7 @@ public class Demo6 : MonoBehaviour {
 			//得到脚本类型
 			var typeOfScript = CQuark.AppDomain.GetTypeByKeyword(m_className);
 			//调用脚本类构造创造一个实例
-            var thisOfScript = typeOfScript._class.New(content, FixedList<CQuark.CQ_Value>.Null).value;
+            var thisOfScript = typeOfScript._class.New(content, FixedList<CQuark.CQ_Value>.Null).m_value;
 
 			//调用脚本类成员函数
             StartCoroutine(typeOfScript._class.CoroutineCall(content, thisOfScript, "GetHP", FixedList<CQuark.CQ_Value>.Null, this));

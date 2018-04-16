@@ -54,7 +54,7 @@ namespace CQuark {
                 CQ_Value v = _expressions[0].ComputeValue(content);
 
                 {
-                    object val = v.value;
+                    object val = v.m_value;
                     CQ_Type value_type = null;
                     if(content.values != null && content.values.ContainsKey(value_name)) {
                         value_type = content.values[value_name].cq_type;
@@ -99,7 +99,7 @@ namespace CQuark {
                 CQ_Value v = _expressions[0].ComputeValue(content);
 
                 {
-                    object val = v.value;
+                    object val = v.m_value;
                     CQ_Type value_type = null;
                     if(content.values != null && content.values.ContainsKey(value_name)) {
                         value_type = content.values[value_name].cq_type;

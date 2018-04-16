@@ -51,13 +51,13 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-			rv.breakBlock = BreakType.YieldReturn;
+			rv.m_breakBlock = BreakType.YieldReturn;
             if(_expressions.Count > 0 && _expressions[0] != null) {
                 var v = _expressions[0].ComputeValue(content);
                 {
                     rv.m_type = v.m_type;
                     rv.m_stype = v.m_stype;
-                    rv.value = v.value;
+                    rv.m_value = v.m_value;
                 }
             }
             else {
@@ -74,13 +74,13 @@ namespace CQuark {
 			content.InStack(this);
 			#endif
 			CQ_Value rv = new CQ_Value();
-			rv.breakBlock = BreakType.YieldReturn;
+			rv.m_breakBlock = BreakType.YieldReturn;
 			if(_expressions.Count > 0 && _expressions[0] != null) {
 				var v = _expressions[0].ComputeValue(content);
 				{
                     rv.m_type = v.m_type;
                     rv.m_stype = v.m_stype;
-					rv.value = v.value;
+					rv.m_value = v.m_value;
 				}
 			}
 			else {
@@ -92,9 +92,9 @@ namespace CQuark {
             if(rv == CQ_Value.Null)
 				yield return null;
 			else if(rv.m_type == typeof (IEnumerator))
-				yield return coroutine.StartCoroutine(rv.value as IEnumerator);
+				yield return coroutine.StartCoroutine(rv.m_value as IEnumerator);
 			else
-				yield return rv.value;//这里Unity会非常智能的自动去转型
+				yield return rv.m_value;//这里Unity会非常智能的自动去转型
 		}
 
         public override string ToString () {

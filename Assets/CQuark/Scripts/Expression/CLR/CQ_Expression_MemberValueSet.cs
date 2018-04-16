@@ -56,14 +56,14 @@ namespace CQuark {
             var value = _expressions[1].ComputeValue(content);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.MemberValueSet(parent.m_type, parent.value, membername, value)){
+			if(!Wrap.MemberValueSet(parent.m_type, parent.m_value, membername, value)){
                 IClass iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
 	            
-	            CQClassInstance s = parent.value as CQClassInstance;
+	            CQClassInstance s = parent.m_value as CQClassInstance;
 	            if(s != null) {
 	                iclass = s.type;
 	            }
-				iclass.MemberValueSet(content, parent.value, membername, value.value);
+				iclass.MemberValueSet(content, parent.m_value, membername, value.m_value);
 			}
 #if CQUARK_DEBUG
             content.OutStack(this);

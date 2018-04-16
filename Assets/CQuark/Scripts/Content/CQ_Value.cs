@@ -19,8 +19,8 @@ namespace CQuark {
 
         public Type m_type;
         public Class_CQuark m_stype;
-        public object value;
-        public BreakType breakBlock;//= BreakType.None;
+        public object m_value;
+        public BreakType m_breakBlock;//= BreakType.None;
 
         public CQ_Type cq_type {
             get {
@@ -59,7 +59,7 @@ namespace CQuark {
             get {
                 CQ_Value g_one = new CQ_Value();
                 g_one.m_type = (typeof(int));
-                g_one.value = (int)1;
+                g_one.m_value = (int)1;
 
                 return g_one;
             }
@@ -68,7 +68,7 @@ namespace CQuark {
             get {
                 CQ_Value g_oneM = new CQ_Value();
                 g_oneM.m_type = (typeof(int));
-                g_oneM.value = (int)-1;
+                g_oneM.m_value = (int)-1;
 
                 return g_oneM;
             }
@@ -82,40 +82,40 @@ namespace CQuark {
 
         public override string ToString () {
             if(m_type != null)
-                return "<" + m_type.ToString() + ">" + value;
+                return "<" + m_type.ToString() + ">" + m_value;
             else if(m_stype != null)
-                return "<" + m_stype.ToString() + ">" + value;
-            return "<null>" + value;
+                return "<" + m_stype.ToString() + ">" + m_value;
+            return "<null>" + m_value;
         }
 
         public object ConvertTo (CQ_Type targetType) {
-            if(value == null)
-                return value;
+            if(m_value == null)
+                return m_value;
             if(m_type == targetType.type && m_stype == targetType.stype)
-                return value;
+                return m_value;
             //TODO 这个流程太长了，最好简化
             if(m_type != null)
-                return AppDomain.GetITypeByType(m_type).ConvertTo(value, targetType);
+                return AppDomain.GetITypeByType(m_type).ConvertTo(m_value, targetType);
             else if(m_stype != null)
-                return AppDomain.GetITypeByCQType(m_stype).ConvertTo(value, targetType);
+                return AppDomain.GetITypeByCQType(m_stype).ConvertTo(m_value, targetType);
             return null;
             //			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
         }
 
         public object ConvertTo (Type targetType) {
-            if(value == null)
-                return value;
+            if(m_value == null)
+                return m_value;
             if(m_type == targetType)
-                return value;
+                return m_value;
             if(m_type != null)
-                return AppDomain.GetITypeByType(m_type).ConvertTo(value, targetType);
+                return AppDomain.GetITypeByType(m_type).ConvertTo(m_value, targetType);
 
             return null;
         }
 
         //类型是否等于targetType
         public bool EqualType (Type targetType) {
-            if(value == null && !targetType.IsValueType)
+            if(m_value == null && !targetType.IsValueType)
                 return true;
 
             if(m_type == targetType)
@@ -171,11 +171,11 @@ namespace CQuark {
         }
 
         public static bool operator == (CQ_Value a, CQ_Value b) {
-            return a.m_type == b.m_type && a.m_stype == b.m_stype && a.value == b.value;
+            return a.m_type == b.m_type && a.m_stype == b.m_stype && a.m_value == b.m_value;
         }
 
         public static bool operator != (CQ_Value a, CQ_Value b) {
-            return a.m_type != b.m_type || a.m_stype != b.m_stype || a.value != b.value;
+            return a.m_type != b.m_type || a.m_stype != b.m_stype || a.m_value != b.m_value;
         }
     }
 }

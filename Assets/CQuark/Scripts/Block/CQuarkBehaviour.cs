@@ -50,7 +50,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 		RegisterMember("gameObject", typeof(GameObject));
 		RegisterMember("transform", typeof(Transform));
 
-        inst = type._class.New(content, FixedList<CQuark.CQ_Value>.Null).value as CQuark.CQClassInstance;
+        inst = type._class.New(content, FixedList<CQuark.CQ_Value>.Null).m_value as CQuark.CQClassInstance;
 
         SetMember("gameObject", typeof(GameObject), this.gameObject);
         SetMember("transform", typeof(Transform), this.transform);
@@ -68,7 +68,7 @@ public class CQuarkBehaviour : MonoBehaviourAdapter {
 	CQ_Value SetMember(string name, System.Type type, Object obj){
 		CQ_Value val = new CQ_Value ();
         val.m_type = type;
-		val.value = obj;
+		val.m_value = obj;
 		inst.member[name] = val;
 		return val;
 	}
