@@ -12,7 +12,7 @@ namespace CQuark
             //function = new RegHelper_TypeFunction(typeof(float));
         }
 
-        public override object ConvertTo(object src, CQ_Type targetType)
+        public override object ConvertTo(object src, TypeBridge targetType)
         {
             bool convertSuccess = false;
             object convertedObject = TryConvertTo<float>(src, targetType, out convertSuccess);

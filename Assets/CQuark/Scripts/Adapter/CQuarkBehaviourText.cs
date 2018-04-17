@@ -14,7 +14,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 
 	public ECodeType m_codeType = ECodeType.FileName;
 	CQuark.IType type;
-	CQuark.CQClassInstance inst;//脚本实例
+	CQuark.CQ_ClassInstance inst;//脚本实例
 	public string m_className;
 	Class_CQuark cclass;
 
@@ -50,7 +50,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 		RegisterMember("gameObject", typeof(GameObject));
 		RegisterMember("transform", typeof(Transform));
 
-        inst = type._class.New(content, FixedList<CQuark.CQ_Value>.Null).m_value as CQuark.CQClassInstance;
+        inst = type._class.New(content, FixedList<CQuark.CQ_Value>.Null).m_value as CQuark.CQ_ClassInstance;
 
         SetMember("gameObject", typeof(GameObject), this.gameObject);
         SetMember("transform", typeof(Transform), this.transform);

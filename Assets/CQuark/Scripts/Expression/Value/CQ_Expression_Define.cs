@@ -59,10 +59,10 @@ namespace CQuark {
                 object val = v.m_value;
                 if((Type)value_type == typeof(Type_Var.var)) {
                     if(!v.TypeIsEmpty)
-                        value_type = v.cq_type;
+                        value_type = v.typeBridge;
 
                 }
-                else if(v.cq_type != value_type) {
+                else if(v.typeBridge != value_type) {
                     val = v.ConvertTo(value_type);
 
                 }
@@ -90,10 +90,10 @@ namespace CQuark {
                     object val = v.m_value;
                     if((Type)value_type == typeof(Type_Var.var)) {
                         if(!v.TypeIsEmpty)
-                            value_type = v.cq_type;
+                            value_type = v.typeBridge;
 
                     }
-                    else if(v.cq_type != value_type) {
+                    else if(v.typeBridge != value_type) {
                         val = v.ConvertTo(value_type);
 
                     }
@@ -111,7 +111,7 @@ namespace CQuark {
 
 
         public string value_name;
-        public CQ_Type value_type;
+        public TypeBridge value_type;
         public override string ToString () {
             string outs = "Define|" + value_type.Name + " " + value_name;
             if(__expressions != null) {

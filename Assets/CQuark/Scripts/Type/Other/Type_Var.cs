@@ -18,7 +18,7 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public CQ_Type cqType
+        public TypeBridge typeBridge
         {
             get { return (typeof(var)); }
         }
@@ -31,7 +31,7 @@ namespace CQuark
             get { return null; }
         }
 
-        public object ConvertTo(object src, CQ_Type targetType)
+        public object ConvertTo(object src, TypeBridge targetType)
         {
             throw new NotImplementedException();
         }

@@ -63,7 +63,7 @@ namespace CQuark {
             
 
             
-            CQClassInstance c = new CQClassInstance();
+            CQ_ClassInstance c = new CQ_ClassInstance();
             c.type = this;
             
           
@@ -73,7 +73,7 @@ namespace CQuark {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {
                         CQ_Value val = new CQ_Value();
-                        val.SetCQType(i.Value.type.cqType);
+                        val.SetCQType(i.Value.type.typeBridge);
                         val.m_value = i.Value.type.defaultValue;
                         c.member[i.Key] = val;
                         //sv.value_value.member[i.Key] = new CQ_Value();
@@ -82,10 +82,10 @@ namespace CQuark {
                     }
                     else {
                         var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                        if(i.Value.type.cqType != value.cq_type) {
+                        if(i.Value.type.typeBridge != value.typeBridge) {
                             CQ_Value val = new CQ_Value();
-                            val.SetCQType(i.Value.type.cqType);
-                            val.m_value = value.ConvertTo(i.Value.type.cqType);
+                            val.SetCQType(i.Value.type.typeBridge);
+                            val.m_value = value.ConvertTo(i.Value.type.typeBridge);
                             c.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = new CQ_Value();
@@ -118,18 +118,18 @@ namespace CQuark {
                         if(i.Value.expr_defvalue == null) {
 
                             CQ_Value val = new CQ_Value();
-                            val.SetCQType(i.Value.type.cqType);
+                            val.SetCQType(i.Value.type.typeBridge);
                             val.m_value = i.Value.type.defaultValue;
                             staticMemberInstance[i.Key] = val;
 
                         }
                         else {
                             var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                            if(i.Value.type.cqType != value.cq_type) {
+                            if(i.Value.type.typeBridge != value.typeBridge) {
 
                                 CQ_Value val = new CQ_Value();
-                                val.SetCQType(i.Value.type.cqType);
-                                val.m_value = value.ConvertTo(i.Value.type.cqType);
+                                val.SetCQType(i.Value.type.typeBridge);
+                                val.m_value = value.ConvertTo(i.Value.type.typeBridge);
                                 staticMemberInstance[i.Key] = val;
 
                                 //staticMemberInstance[i.Key] = new CQ_Value();
@@ -165,7 +165,7 @@ namespace CQuark {
                     for(int i = 0; i < functions[function]._paramtypes.Count; i++)
                     //foreach (var p in this.functions[function]._params)
                     {
-                        content.DefineAndSet(functions[function]._paramnames[i], functions[function]._paramtypes[i].cqType, _params[i].m_value);
+                        content.DefineAndSet(functions[function]._paramnames[i], functions[function]._paramtypes[i].typeBridge, _params[i].m_value);
                         //i++;
                     }
                     //var value = this.functions[function].expr_runtime.ComputeValue(content);
@@ -219,17 +219,17 @@ namespace CQuark {
         public bool StaticValueSet (CQ_Content content, string valuename, object value) {
             NewStatic();
             if(this.staticMemberInstance.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].type.cqType) {
-                    if(value is CQClassInstance) {
-                        if((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.cqType) {
-							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
+                if(value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge) {
+                    if(value is CQ_ClassInstance) {
+                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge) {
+							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }
                     }
                     else if(value is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.cqType);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
                     }
                 }
                 CQ_Value val = this.staticMemberInstance[valuename];
@@ -252,19 +252,19 @@ namespace CQuark {
                     CQ_Content content = new CQ_Content();
 
                     content.CallType = this;
-                    content.CallThis = object_this as CQClassInstance;
+                    content.CallThis = object_this as CQ_ClassInstance;
 #if CQUARK_DEBUG
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 #endif
                     for(int i = 0; i < funccache._paramtypes.Count; i++) {
-                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].cqType, _params[i].m_value);
+                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].m_value);
                     }
                     CQ_Value value = CQ_Value.Null;
                     var funcobj = funccache;
                     if(this.bInterface) {
-                        content.CallType = (object_this as CQClassInstance).type;
-                        funcobj = (object_this as CQClassInstance).type.functions[func];
+                        content.CallType = (object_this as CQ_ClassInstance).type;
+                        funcobj = (object_this as CQ_ClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
                         value = funcobj.expr_runtime.ComputeValue(content);
@@ -280,7 +280,7 @@ namespace CQuark {
             }
             else if(this.members.ContainsKey(func)) {
                 if(this.members[func].bStatic == false) {
-                    Delegate dele = (object_this as CQClassInstance).member[func].m_value as Delegate;
+                    Delegate dele = (object_this as CQ_ClassInstance).member[func].m_value as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
                         object[] objs = new object[_params.Count];
@@ -308,7 +308,7 @@ namespace CQuark {
                     CQ_Content content = new CQ_Content();
 
                     content.CallType = this;
-                    content.CallThis = object_this as CQClassInstance;
+                    content.CallThis = object_this as CQ_ClassInstance;
 #if CQUARK_DEBUG
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
@@ -317,14 +317,14 @@ namespace CQuark {
                     //int i = 0;
                     //foreach (var p in this.functions[func]._params)
                     {
-                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].cqType, _params[i].m_value);
+                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].m_value);
                         //i++;
                     }
                     //CQ_Content.Value value = null;
                     var funcobj = funccache;
                     if(this.bInterface) {
-                        content.CallType = (object_this as CQClassInstance).type;
-                        funcobj = (object_this as CQClassInstance).type.functions[func];
+                        content.CallType = (object_this as CQ_ClassInstance).type;
+                        funcobj = (object_this as CQ_ClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
                         yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
@@ -343,7 +343,7 @@ namespace CQuark {
         }
 
         public CQ_Value MemberValueGet (CQ_Content content, object object_this, string valuename) {
-            CQClassInstance sin = object_this as CQClassInstance;
+            CQ_ClassInstance sin = object_this as CQ_ClassInstance;
             CQ_Value temp = CQ_Value.Null;
             if(sin.member.TryGetValue(valuename, out temp)) {
                 CQ_Value v = new CQ_Value();
@@ -356,19 +356,19 @@ namespace CQuark {
         }
 
         public bool MemberValueSet (CQ_Content content, object object_this, string valuename, object value) {
-            CQClassInstance sin = object_this as CQClassInstance;
+            CQ_ClassInstance sin = object_this as CQ_ClassInstance;
             if(sin.member.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].type.cqType) {
-                    if(value is CQClassInstance) {
-                        if((value as CQClassInstance).type != (Class_CQuark)this.members[valuename].type.cqType) {
-                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQClassInstance).type).ConvertTo(value, this.members[valuename].type.cqType);
+                if(value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge) {
+                    if(value is CQ_ClassInstance) {
+                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge) {
+                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
                         }
                     }
                     else if(value is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.cqType);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
                     }
                 }
                 CQ_Value val = sin.member[valuename];
@@ -393,7 +393,6 @@ namespace CQuark {
             public bool bStatic;
             public List<string> _paramnames = new List<string>();
             public List<IType> _paramtypes = new List<IType>();
-            //public Dictionary<string, ICQ_Type> _params = new Dictionary<string, ICQ_Type>();
             public IType _returntype;
             public ICQ_Expression expr_runtime;
            

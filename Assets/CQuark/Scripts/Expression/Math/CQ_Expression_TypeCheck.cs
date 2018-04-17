@@ -64,10 +64,7 @@ namespace CQuark {
             throw new Exception("is 不支持套用协程");
         }
 
-        public CQ_Type type {
-            get { return null; }
-        }
-        public CQ_Type targettype;
+        public TypeBridge targettype;
 
         public override string ToString () {
             return "convert<" + targettype.Name + ">";

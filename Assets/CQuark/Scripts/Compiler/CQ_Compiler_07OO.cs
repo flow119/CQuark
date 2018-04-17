@@ -244,7 +244,7 @@ namespace CQuark {
 
 
                                 int start = funcparambegin + 1;
-                                //Dictionary<string, ICQ_Type> _params = new Dictionary<string, ICQ_Type>();
+ 
                                 for(int j = funcparambegin + 1; j <= funcparamend; j++) {
                                     if(tokens[j].text == "," || tokens[j].text == ")") {
                                         string ptype = "";

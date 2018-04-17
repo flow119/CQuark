@@ -12,7 +12,7 @@ namespace CQuark
             //function = new RegHelper_TypeFunction(typeof(uint));
         }
 
-        public override object ConvertTo(object src, CQ_Type targetType)
+        public override object ConvertTo(object src, TypeBridge targetType)
         {
             bool convertSuccess = false;
             object convertedObject = TryConvertTo<byte>(src, targetType, out convertSuccess);

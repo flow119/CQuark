@@ -22,7 +22,7 @@ namespace CQuark {
         public object m_value;
         public BreakType m_breakBlock;//= BreakType.None;
 
-        public CQ_Type cq_type {
+        public TypeBridge typeBridge {
             get {
                 if(m_type != null)
                     return m_type;
@@ -32,16 +32,16 @@ namespace CQuark {
             }
         }
 
-        public void SetCQType (CQ_Type type) {//TODO 这些调用都要被废除
-            if(type == null) {
+        public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
+            if(typeBridge == null) {
                 m_type = null;
                 m_stype = null;
             }
-            else if(type.type != null) {
-                m_type = type.type;
+            else if(typeBridge.type != null) {
+                m_type = typeBridge.type;
             }
-            else if(type.stype != null) {
-                m_stype = type.stype;
+            else if(typeBridge.stype != null) {
+                m_stype = typeBridge.stype;
             }
             else {
                 m_type = null;
@@ -88,7 +88,7 @@ namespace CQuark {
             return "<null>" + m_value;
         }
 
-        public object ConvertTo (CQ_Type targetType) {
+        public object ConvertTo (TypeBridge targetType) {
             if(m_value == null)
                 return m_value;
             if(m_type == targetType.type && m_stype == targetType.stype)
@@ -99,7 +99,6 @@ namespace CQuark {
             else if(m_stype != null)
                 return AppDomain.GetITypeByClassCQ(m_stype).ConvertTo(m_value, targetType);
             return null;
-            //			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
         }
 
         public object ConvertTo (Type targetType) {

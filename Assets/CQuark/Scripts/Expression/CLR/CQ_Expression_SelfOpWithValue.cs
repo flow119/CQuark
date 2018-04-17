@@ -55,7 +55,7 @@ namespace CQuark {
             IType type = CQuark.AppDomain.GetITypeByCQValue(left);
             
             CQ_Value val = type.Math2Value(mathop, left.m_value, right);
-            val.m_value = type.ConvertTo(val.m_value, left.cq_type);
+            val.m_value = type.ConvertTo(val.m_value, left.typeBridge);
             
             if(_expressions[0] is CQ_Expression_MemberValueGet) {
                 CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
@@ -75,7 +75,7 @@ namespace CQuark {
                 CQ_Expression_StaticValueGet f = _expressions[0] as CQ_Expression_StaticValueGet;
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
-				if(!Wrap.StaticValueSet(type.cqType.type, f.staticmembername, val)){
+				if(!Wrap.StaticValueSet(type.typeBridge.type, f.staticmembername, val)){
                     f.type._class.StaticValueSet(content, f.staticmembername, val.m_value);
 				}
             }

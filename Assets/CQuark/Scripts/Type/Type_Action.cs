@@ -14,9 +14,9 @@ namespace CQuark
         }
         public string _namespace
         {
-            get { return cqType.NameSpace; }
+            get { return typeBridge.NameSpace; }
         }
-        public CQ_Type cqType
+        public TypeBridge typeBridge
         {
             get;
             protected set;
@@ -44,11 +44,11 @@ namespace CQuark
             {
                 keyword = type.Name;
             }
-            this.cqType = type;
+            this.typeBridge = type;
             this._type = type;
         }
 
-        public virtual object ConvertTo(object src, CQ_Type targetType)
+        public virtual object ConvertTo(object src, TypeBridge targetType)
         {
 			throw new NotImplementedException();
         }

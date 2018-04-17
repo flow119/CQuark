@@ -12,7 +12,7 @@ namespace CQuark
 
         }
 
-        public override object ConvertTo(object src, CQ_Type targetType)
+        public override object ConvertTo(object src, TypeBridge targetType)
         {
             bool convertSuccess = false;
             object convertedObject = TryConvertTo<long>(src, targetType, out convertSuccess);

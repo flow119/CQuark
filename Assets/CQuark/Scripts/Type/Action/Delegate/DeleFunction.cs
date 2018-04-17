@@ -5,7 +5,7 @@ using System.Text;
 namespace CQuark{
 	public class DeleFunction// : IDeleBase //指向脚本中的函数
 	{
-		public DeleFunction(Class_CQuark stype, CQClassInstance _this, string function)
+		public DeleFunction(Class_CQuark stype, CQ_ClassInstance _this, string function)
 		{
 			this.calltype = stype;
 			this.callthis = _this;
@@ -17,7 +17,7 @@ namespace CQuark{
 		//}
 
 		public Class_CQuark calltype;
-		public CQClassInstance callthis;
+		public CQ_ClassInstance callthis;
 		public string function;
 		public Delegate cacheFunction(Type deletype, Delegate dele)
 		{

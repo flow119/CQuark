@@ -55,18 +55,18 @@ namespace CQuark {
 
                 {
                     object val = v.m_value;
-                    CQ_Type value_type = null;
+                    TypeBridge value_type = null;
                     if(content.values != null && content.values.ContainsKey(value_name)) {
-                        value_type = content.values[value_name].cq_type;
+                        value_type = content.values[value_name].typeBridge;
                     }
                     else {
                         if(content.CallType != null) {
                             if(content.CallType.members.ContainsKey(value_name)) {
                                 if(content.CallType.members[value_name].bStatic) {
-                                    value_type = content.CallType.staticMemberInstance[value_name].cq_type;
+                                    value_type = content.CallType.staticMemberInstance[value_name].typeBridge;
                                 }
                                 else {
-                                    value_type = content.CallThis.member[value_name].cq_type;
+                                    value_type = content.CallThis.member[value_name].typeBridge;
                                 }
 
                             }
@@ -74,7 +74,7 @@ namespace CQuark {
                         }
                     }
                     //val = v.value;
-                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.cq_type) {
+                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
                         val = v.ConvertTo(value_type);
                     }
 
@@ -100,18 +100,18 @@ namespace CQuark {
 
                 {
                     object val = v.m_value;
-                    CQ_Type value_type = null;
+                    TypeBridge value_type = null;
                     if(content.values != null && content.values.ContainsKey(value_name)) {
-                        value_type = content.values[value_name].cq_type;
+                        value_type = content.values[value_name].typeBridge;
                     }
                     else {
                         if(content.CallType != null) {
                             if(content.CallType.members.ContainsKey(value_name)) {
                                 if(content.CallType.members[value_name].bStatic) {
-                                    value_type = content.CallType.staticMemberInstance[value_name].cq_type;
+                                    value_type = content.CallType.staticMemberInstance[value_name].typeBridge;
                                 }
                                 else {
-                                    value_type = content.CallThis.member[value_name].cq_type;
+                                    value_type = content.CallThis.member[value_name].typeBridge;
                                 }
 
                             }
@@ -119,7 +119,7 @@ namespace CQuark {
                         }
                     }
                     //val = v.value;
-                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.cq_type) {
+                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
                         val = v.ConvertTo(value_type);
                     }
 

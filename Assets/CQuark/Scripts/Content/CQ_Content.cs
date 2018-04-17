@@ -8,7 +8,7 @@ namespace CQuark {
     /// </summary>
     public class CQ_Content {
         public Class_CQuark CallType;
-        public CQClassInstance CallThis;
+        public CQ_ClassInstance CallThis;
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
 
         Stack<string> tvalues;  //所有values的名字
@@ -186,7 +186,7 @@ namespace CQuark {
         }
 
 
-        public void Define (string name, CQ_Type type) {
+        public void Define (string name, TypeBridge type) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
             }
@@ -243,7 +243,7 @@ namespace CQuark {
                 values[name] = retV;
             }
         }
-        public void DefineAndSet (string name, CQ_Type type, object value) {
+        public void DefineAndSet (string name, TypeBridge type, object value) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
             }

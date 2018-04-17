@@ -74,7 +74,7 @@ namespace CQuark {
                     }
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(pos, posend, tlist[pos].line, tlist[posend].line);
                     convert._expressions.Add(v);
-                    convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).cqType;
+                    convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
                     return convert;
                 }
@@ -95,14 +95,14 @@ namespace CQuark {
                 else if(tkCur.text == "as") {
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     convert._expressions.Add(valueleft);
-                    convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).cqType;
+                    convert.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
                     return convert;
                 }
                 else if(tkCur.text == "is") {
                     CQ_Expression_TypeCheck check = new CQ_Expression_TypeCheck(left, oppos + 1, tlist[left].line, tlist[oppos + 1].line);
                     check._expressions.Add(valueleft);
-                    check.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).cqType;
+                    check.targettype = CQuark.AppDomain.GetTypeByKeyword(tlist[oppos + 1].text).typeBridge;
 
 
                     return check;

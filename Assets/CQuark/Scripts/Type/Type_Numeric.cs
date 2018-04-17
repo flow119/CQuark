@@ -15,9 +15,9 @@ namespace CQuark
         }
         public string _namespace
         {
-            get { return cqType.NameSpace; }
+            get { return typeBridge.NameSpace; }
         }
-        public CQ_Type cqType
+        public TypeBridge typeBridge
         {
             get;
             protected set;
@@ -45,14 +45,14 @@ namespace CQuark
             {
                 keyword = type.Name;
             }
-            this.cqType = type;
+            this.typeBridge = type;
             this._type = type;
         }
 
 		/// <summary>
 		/// 类型转换.
 		/// </summary>
-		protected static object TryConvertTo<OriginalType> (object src, CQ_Type targetType, out bool convertSuccess) where OriginalType : struct {
+		protected static object TryConvertTo<OriginalType> (object src, TypeBridge targetType, out bool convertSuccess) where OriginalType : struct {
 			convertSuccess = true;
 			try {
 				double srcValue = GetDouble(typeof(OriginalType), src);
@@ -225,7 +225,7 @@ namespace CQuark
 
 
 
-        public virtual object ConvertTo(object src, CQ_Type targetType)
+        public virtual object ConvertTo(object src, TypeBridge targetType)
         {
             Type targettype = (Type)targetType;
             if (this._type == targettype) return src;
@@ -292,14 +292,14 @@ namespace CQuark
                 //会走到这里说明不是简单的数学计算了
                 //我们这里开始使用Wrap，如果再不行再走反射
                 CQ_Value leftcq = new CQ_Value();
-                leftcq.SetCQType(this.cqType);
+                leftcq.SetCQType(this.typeBridge);
                 leftcq.m_value = left;
                 if(code == '+') {
                     if(Wrap.OpAddition(leftcq, right, out returnValue)) {
                         return returnValue;
                     }
                     else {
-                        call = _type.GetMethod("op_Addition", new Type[] { this.cqType, rightType });
+                        call = _type.GetMethod("op_Addition", new Type[] { this.typeBridge, rightType });
                     }
                 }
 
@@ -308,7 +308,7 @@ namespace CQuark
                         return returnValue;
                     }
                     else {
-                        call = _type.GetMethod("op_Subtraction", new Type[] { this.cqType, rightType });
+                        call = _type.GetMethod("op_Subtraction", new Type[] { this.typeBridge, rightType });
                     }
                 }
                 else if(code == '*') {
@@ -316,7 +316,7 @@ namespace CQuark
                         return returnValue;
                     }
                     else {
-                        call = _type.GetMethod("op_Multiply", new Type[] { this.cqType, rightType });
+                        call = _type.GetMethod("op_Multiply", new Type[] { this.typeBridge, rightType });
                     }
                 }
                 else if(code == '/') {
@@ -324,7 +324,7 @@ namespace CQuark
                         return returnValue;
                     }
                     else {
-                        call = _type.GetMethod("op_Division", new Type[] { this.cqType, rightType });
+                        call = _type.GetMethod("op_Division", new Type[] { this.typeBridge, rightType });
                     }
                 }
                 else if(code == '%') {
@@ -332,13 +332,13 @@ namespace CQuark
                         return returnValue;
                     }
                     else {
-                        call = _type.GetMethod("op_Modulus", new Type[] { this.cqType, rightType });
+                        call = _type.GetMethod("op_Modulus", new Type[] { this.typeBridge, rightType });
                     }
                 }
 
                 //Wrap没走到，走反射
                 returnValue = new CQ_Value();
-                returnValue.SetCQType(cqType);
+                returnValue.SetCQType(typeBridge);
                 returnValue.m_value = call.Invoke(null, new object[] { left, right.m_value });
                 //function.StaticCall(env,"op_Addtion",new List<ICL>{})
                 return returnValue;

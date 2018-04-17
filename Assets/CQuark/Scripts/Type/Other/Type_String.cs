@@ -15,7 +15,7 @@ namespace CQuark
         {
             get { return ""; }
         }
-        public CQ_Type cqType
+        public TypeBridge typeBridge
         {
             get { return typeof(string); }
         }
@@ -34,7 +34,7 @@ namespace CQuark
             _class = new Class_System(typeof(string));
         }
 
-        public object ConvertTo(object src, CQ_Type targetType)
+        public object ConvertTo(object src, TypeBridge targetType)
         {
             if ((Type)targetType == typeof(string)) return src;
             if ((Type)targetType == typeof(void))

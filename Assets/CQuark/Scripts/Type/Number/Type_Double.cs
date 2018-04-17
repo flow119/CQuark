@@ -13,7 +13,7 @@ namespace CQuark
             //function = new RegHelper_TypeFunction(typeof(double));
         }
   
-        public override object ConvertTo(object src, CQ_Type targetType)
+        public override object ConvertTo(object src, TypeBridge targetType)
         {
             bool convertSuccess = false;
             object convertedObject = TryConvertTo<double>(src, targetType, out convertSuccess);

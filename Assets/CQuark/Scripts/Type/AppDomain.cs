@@ -8,8 +8,6 @@ namespace CQuark{
 	//参考了ILRuntime，把以前Environment和Content整合到了一起。
 	//整个项目只需要一个AppDomain,所以改成了全部静态
     public class AppDomain {
-        //CQ_Content contentGloabl = null;
-//        static Dictionary<CQ_Type, IType> cqtype2itype = new Dictionary<CQ_Type, IType>();
 		static Dictionary<Class_CQuark, IType> ccq2itype = new Dictionary<Class_CQuark, IType> ();
 		static Dictionary<Type, IType> type2itype = new Dictionary<Type, IType> ();
         static Dictionary<string, IType> str2itype = new Dictionary<string, IType>();
@@ -121,10 +119,10 @@ namespace CQuark{
             RegisterType(MakeIType(type, keyword));
         }
         public static void RegisterType (IType type) {
-			if (type.cqType.type != null)
-				type2itype [type.cqType.type] = type;
-			else if (type.cqType.stype != null)
-				ccq2itype [type.cqType.stype] = type;
+			if (type.typeBridge.type != null)
+				type2itype [type.typeBridge.type] = type;
+			else if (type.typeBridge.stype != null)
+				ccq2itype [type.typeBridge.stype] = type;
 //			cqtype2itype[type.cqType] = type;
 
             string typename = type.keyword;
@@ -143,24 +141,12 @@ namespace CQuark{
                 CQ_TokenParser.AddType(typename);
             }
         }
-//        public static IType GetType (CQ_Type type) {
-//            if(type == null)
-//				return str2itype["null"];
-//			
-//			IType ret = null;
-//			if(cqtype2itype.TryGetValue(type, out ret) == false) {
-//                DebugUtil.LogWarning("(CQcript)类型未注册,将自动注册一份匿名:" + type.ToString());
-//                ret = MakeIType(type, "");
-//                RegisterType(ret);
-//            }
-//            return ret;
-//        }
 
-		public static IType GetITypeByCQType(CQ_Type type){
-			if (type.type != null)
-				return GetITypeByType (type.type);
-			else if (type.stype != null)
-				return GetITypeByClassCQ (type.stype);
+		public static IType GetITypeByCQType(TypeBridge typeBridge){
+			if (typeBridge.type != null)
+				return GetITypeByType (typeBridge.type);
+			else if (typeBridge.stype != null)
+				return GetITypeByClassCQ (typeBridge.stype);
 			return null;
 		}
         public static IType GetITypeByCQValue (CQ_Value val) {
@@ -170,15 +156,13 @@ namespace CQuark{
                 return GetITypeByClassCQ(val.m_stype);
             return null;
         }
-		public static IType GetITypeByClassCQ (Class_CQuark type) {
-			if(type == null)
+		public static IType GetITypeByClassCQ (Class_CQuark stype) {
+			if(stype == null)
 				return str2itype["null"];
 			
 			IType ret = null;
-			if(ccq2itype.TryGetValue(type, out ret) == false) {
-				DebugUtil.LogWarning("(Class_CQuark)类型未注册,将自动注册一份匿名:" + type.ToString());
-//				ret = MakeIType(type, "");
-//				RegisterType(ret);
+			if(ccq2itype.TryGetValue(stype, out ret) == false) {
+				DebugUtil.LogWarning("(Class_CQuark)类型未注册,将自动注册一份匿名:" + stype.ToString());
 			}
 			return ret;
 		}
@@ -232,11 +216,11 @@ namespace CQuark{
 
                     //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
 					if(str2itype.ContainsKey(func)) {
-                        Type gentype = GetTypeByKeyword(func).cqType;
+                        Type gentype = GetTypeByKeyword(func).typeBridge;
                         if(gentype.IsGenericTypeDefinition) {
                             Type[] types = new Type[_types.Count];
                             for(int i = 0; i < types.Length; i++) {
-                                CQ_Type t = GetTypeByKeyword(_types[i]).cqType;
+                                TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
                                 Type rt = t;
                                 if(rt == null && t != null) {
                                     rt = typeof(object);
@@ -262,7 +246,7 @@ namespace CQuark{
             return ret;
         }
 
-		public static object ConvertTo(object obj, CQ_Type targetType){
+		public static object ConvertTo(object obj, TypeBridge targetType){
 //			return GetType(obj.GetType()).ConvertTo(obj, targetType);
 			return GetITypeByType(obj.GetType()).ConvertTo(obj, targetType);
 		}

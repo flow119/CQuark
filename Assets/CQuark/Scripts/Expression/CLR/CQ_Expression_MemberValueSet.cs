@@ -59,7 +59,7 @@ namespace CQuark {
 			if(!Wrap.MemberValueSet(parent.m_type, parent.m_value, membername, value)){
                 IClass iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
 	            
-	            CQClassInstance s = parent.m_value as CQClassInstance;
+	            CQ_ClassInstance s = parent.m_value as CQ_ClassInstance;
 	            if(s != null) {
 	                iclass = s.type;
 	            }
