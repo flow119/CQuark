@@ -42,7 +42,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var parent = _expressions[0].ComputeValue(content);
+            CQ_Value parent = _expressions[0].ComputeValue(content);
             if(parent == CQ_Value.Null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
@@ -59,16 +59,7 @@ namespace CQuark {
             content.OutStack(this);
 #endif
 
-            //IndexGet返回的值类型是 System.Object.
-            //在这里需要将类型明确化.
-            //value.type = value.value.GetType();
-
             return value;
-            //return type.function.MemberValueGet(CQuark.AppDomain, parent.value, membername);
-            //做数学计算
-            //从上下文取值
-            //_value = null;
-            //return null;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
             throw new Exception("IndexFind[]不支持套用协程");

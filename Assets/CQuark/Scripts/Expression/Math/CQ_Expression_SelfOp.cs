@@ -43,16 +43,12 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var v = content.Get(value_name);
+            CQ_Value v = content.Get(value_name);
             IType type = CQuark.AppDomain.GetITypeByCQValue(v);
             CQ_Value retVal = type.Math2Value(mathop, v.m_value, CQ_Value.One);
             retVal.m_value = type.ConvertTo(retVal.m_value, v.cq_type);
             content.Set(value_name, retVal.m_value);
 
-            //操作变量之
-            //做数学计算
-            //从上下文取值
-            //_value = null;
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

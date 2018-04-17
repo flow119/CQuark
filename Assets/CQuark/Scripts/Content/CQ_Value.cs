@@ -97,7 +97,7 @@ namespace CQuark {
             if(m_type != null)
                 return AppDomain.GetITypeByType(m_type).ConvertTo(m_value, targetType);
             else if(m_stype != null)
-                return AppDomain.GetITypeByCQType(m_stype).ConvertTo(m_value, targetType);
+                return AppDomain.GetITypeByClassCQ(m_stype).ConvertTo(m_value, targetType);
             return null;
             //			return AppDomain.GetITypeByCQType (cq_type).ConvertTo (value, targetType);
         }
