@@ -6,10 +6,10 @@ using System.Collections;
 /// 它演示了西瓜工作的基本原理，它包括一个CQ_content
 /// 演示包括如何注册一个函数，如何调用，如何修改CQ_content
 /// </summary>
-public class CQuarkBlock {
+public class CQuarkParagraph {
     CQ_Content content;// = new CQ_Content();
 
-    public CQuarkBlock () {
+    public CQuarkParagraph () {
         content = new CQ_Content();
         content.DepthAdd();
     }

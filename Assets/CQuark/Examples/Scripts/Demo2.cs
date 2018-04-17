@@ -21,7 +21,7 @@ public class Demo2 : MonoBehaviour {
 	
 	//这个函数展示了执行一个函数块，且函数块再调用Unity的Debug类
 	void Execute1(){
-		CQuarkBlock block = new CQuarkBlock();
+		CQuarkParagraph block = new CQuarkParagraph();
 		block.Execute (
 			"int a = 2;\n" +
 			"if(a == 0)\n" +
@@ -32,7 +32,7 @@ public class Demo2 : MonoBehaviour {
 
 	//这个函数展示了执行一个函数块，且函数块再调用一个方法
 	void Execute2(){
-		CQuarkBlock block = new CQuarkBlock();
+		CQuarkParagraph block = new CQuarkParagraph();
 		int ret = (int)block.Execute (
 			"Debug.Log(\"Today is \" + Demo2.Today());\n" +
             "return Demo2.Today();");

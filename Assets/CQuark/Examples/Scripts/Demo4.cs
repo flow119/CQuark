@@ -6,7 +6,7 @@ public class Demo4 : MonoBehaviour {
 	
 	// Use this for initialization
 	public string m_blockFilePath;
-	CQuarkBlock block = new CQuarkBlock();
+	CQuarkParagraph block = new CQuarkParagraph();
 	void Start()
 	{
         CQuark.AppDomain.Reset();

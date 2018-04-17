@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CQuark;
 
-public class CQuarkBehaviourSimple : MonoBehaviourAdapter {
+public class CQuarkBehaviourSimple : CQuarkBehaviourBase {
 
 	public string m_Awake = "";
 	public string m_OnEnable = "";

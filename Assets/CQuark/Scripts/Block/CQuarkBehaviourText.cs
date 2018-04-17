@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CQuark;
 
-public class CQuarkBehaviour : MonoBehaviourAdapter {
+public class CQuarkBehaviourText : CQuarkBehaviourBase {
 
 	public enum ECodeType
 	{

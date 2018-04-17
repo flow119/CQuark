@@ -3,7 +3,7 @@ using System.Collections;
 using CQuark;
 
 namespace CQuark{
-	public class MonoBehaviourAdapter : MonoBehaviour {
+	public class CQuarkBehaviourBase : MonoBehaviour {
 		
 		protected CQ_Content content;
 //		protected MethodCache cache = new MethodCache();

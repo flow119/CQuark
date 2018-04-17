@@ -27,7 +27,7 @@ public class Demo3 : MonoBehaviour {
 
 	// 这个函数展示了如何执行一个文件（作为函数块）
 	void ExecuteFile () {
-		CQuarkBlock block = new CQuarkBlock();
+		CQuarkParagraph block = new CQuarkParagraph();
 
         block.SetValue("HP1", 200);
         block.SetValue("HP2", 300);
