@@ -323,10 +323,10 @@ public class WrapMaker : EditorWindow{
 		string wrapNew = "";
 		for(int i = 0; i < constructor.Count; i++) {
 			if(constructor[i].m_inType.Length == 0)
-				wrapNew += "\t\t\tif(param.Count == 0){\n";
+                wrapNew += "\t\t\tif(param.Length == 0){\n";
 			else{
 				string typehash = GetHashCodeByTypes (constructor [i].m_inType);
-				wrapNew += "\t\t\tif(param.Count == " + constructor[i].m_inType.Length + " && MatchType(param, " + typehash + ", mustEqual)){\n";
+                wrapNew += "\t\t\tif(param.Length == " + constructor[i].m_inType.Length + " && MatchType(param, " + typehash + ", mustEqual)){\n";
 			}
 			wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
             wrapNew += "\t\t\t\treturnValue.m_type = typeof(" + classFullName + ");\n";
@@ -427,7 +427,7 @@ public class WrapMaker : EditorWindow{
 			wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
 		}
 		if (!string.IsNullOrEmpty (wrapSCall))
-			wrapSCall = "\t\t\tint paramCount = param.Count;\n" + wrapSCall;
+            wrapSCall = "\t\t\tint paramCount = param.Length;\n" + wrapSCall;
 		return wrapSCall;
 	}
 
@@ -532,7 +532,7 @@ public class WrapMaker : EditorWindow{
 		}
 		if(!string.IsNullOrEmpty(wrapMCall)) {
 			wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
-				+ "\t\t\tint paramCount = param.Count;\n"
+                + "\t\t\tint paramCount = param.Length;\n"
 				+ wrapMCall;
 		}
 		return wrapMCall;

@@ -50,7 +50,7 @@ namespace CQuark {
 
         #region Script IMPL
         CQ_Content contentMemberCalc = null;
-        public CQ_Value New (CQ_Content content, FixedList<CQ_Value> _params) {
+        public CQ_Value New (CQ_Content content, CQ_Value[] _params) {
             if(contentMemberCalc == null)
                 contentMemberCalc = new CQ_Content();
             NewStatic();
@@ -144,10 +144,10 @@ namespace CQuark {
                 }
             }
         }
-        public CQ_Value StaticCall (CQ_Content contentParent, string function, FixedList<CQ_Value> _params) {
+        public CQ_Value StaticCall (CQ_Content contentParent, string function, CQ_Value[] _params) {
             return StaticCall(contentParent, function, _params, null);
         }
-        public CQ_Value StaticCall (CQ_Content contentParent, string function, FixedList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCall (CQ_Content contentParent, string function, CQ_Value[] _params, MethodCache cache) {
             if(cache != null) {
                 cache.cachefail = true;
             }
@@ -187,8 +187,8 @@ namespace CQuark {
                     Delegate dele = this.staticMemberInstance[function].m_value as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
-                        object[] objs = new object[_params.Count];
-                        for(int i = 0; i < _params.Count; i++) {
+                        object[] objs = new object[_params.Length];
+                        for(int i = 0; i < _params.Length; i++) {
                             objs[i] = _params[i].m_value;
                         }
                         value.m_value = dele.DynamicInvoke(objs);
@@ -239,10 +239,10 @@ namespace CQuark {
             }
             throw new NotImplementedException();
         }
-        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params) {
+        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, CQ_Value[] _params) {
             return MemberCall(contentParent, object_this, func, _params, null);
         }
-        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCall (CQ_Content contentParent, object object_this, string func, CQ_Value[] _params, MethodCache cache) {
             if(cache != null) {
                 cache.cachefail = true;
             }
@@ -283,8 +283,8 @@ namespace CQuark {
                     Delegate dele = (object_this as CQ_ClassInstance).member[func].m_value as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
-                        object[] objs = new object[_params.Count];
-                        for(int i = 0; i < _params.Count; i++) {
+                        object[] objs = new object[_params.Length];
+                        for(int i = 0; i < _params.Length; i++) {
                             objs[i] = _params[i].m_value;
                         }
                         value.m_value = dele.DynamicInvoke(objs);
@@ -300,7 +300,7 @@ namespace CQuark {
         }
 
 
-        public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, FixedList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutine) {
+        public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, CQ_Value[] _params, UnityEngine.MonoBehaviour coroutine) {
             //TODO
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
@@ -413,12 +413,12 @@ namespace CQuark {
 
 
 
-        public CQ_Value StaticCallCache (CQ_Content content, FixedList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value StaticCallCache (CQ_Content content, CQ_Value[] _params, MethodCache cache) {
             throw new NotImplementedException();
         }
 
 
-        public CQ_Value MemberCallCache (CQ_Content content, object object_this, FixedList<CQ_Value> _params, MethodCache cache) {
+        public CQ_Value MemberCallCache (CQ_Content content, object object_this, CQ_Value[] _params, MethodCache cache) {
             throw new NotImplementedException();
         }
 

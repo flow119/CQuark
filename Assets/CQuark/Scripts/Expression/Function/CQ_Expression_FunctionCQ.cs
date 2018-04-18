@@ -48,12 +48,12 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            FixedList<CQ_Value> list = new FixedList<CQ_Value>(_expressions.Count);
-            foreach(ICQ_Expression p in _expressions) {
-                if(p != null) {
-                    list.Add(p.ComputeValue(content));
-                }
+
+            CQ_Value[] parameters = new CQ_Value[_expressions.Count];
+            for(int i = 0; i < _expressions.Count; i++) {
+                parameters[i] = _expressions[i].ComputeValue(content);
             }
+
             CQ_Value v = CQ_Value.Null;
 
             Class_CQuark.Function retFunc = null;
@@ -63,10 +63,10 @@ namespace CQuark {
 
             if(bFind) {
                 if(retFunc.bStatic) {
-                    v = content.CallType.StaticCall(content, funcname, list);
+                    v = content.CallType.StaticCall(content, funcname, parameters);
                 }
                 else {
-                    v = content.CallType.MemberCall(content, content.CallThis, funcname, list);
+                    v = content.CallType.MemberCall(content, content.CallThis, funcname, parameters);
                 }
             }
             else {
@@ -76,9 +76,9 @@ namespace CQuark {
                     {
                         Delegate d = v.m_value as Delegate;
                         v = new CQ_Value();
-                        object[] obja = new object[list.Count];
-                        for(int i = 0; i < list.Count; i++) {
-                            obja[i] = list[i].m_value;
+                        object[] obja = new object[parameters.Length];
+                        for(int i = 0; i < parameters.Length; i++) {
+                            obja[i] = parameters[i].m_value;
                         }
                         v.m_value = d.DynamicInvoke(obja);
                         if(v == CQ_Value.Null) {

@@ -51,21 +51,21 @@ namespace CQuark {
             content.InStack(this);
 #endif
 
-            FixedList<CQ_Value> _params = new FixedList<CQ_Value>(_expressions.Count);
+            CQ_Value[] parameters = new CQ_Value[_expressions.Count];
             for(int i = 0; i < _expressions.Count; i++) {
-                _params.Add(_expressions[i].ComputeValue(content));
+                parameters[i] = _expressions[i].ComputeValue(content);
             }
 
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.StaticCall(type.typeBridge.type, functionName, _params, out value)){
+            if(!Wrap.StaticCall(type.typeBridge.type, functionName, parameters, out value)) {
 	            if(cache == null || cache.cachefail) {
 	                cache = new MethodCache();
-	                value = type._class.StaticCall(content, functionName, _params, cache);
+                    value = type._class.StaticCall(content, functionName, parameters, cache);
 	            }
 	            else {
-	                value = type._class.StaticCallCache(content, _params, cache);
+                    value = type._class.StaticCallCache(content, parameters, cache);
 	            }
 			}
 #if CQUARK_DEBUG

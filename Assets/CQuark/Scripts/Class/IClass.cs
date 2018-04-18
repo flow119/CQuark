@@ -7,19 +7,19 @@ namespace CQuark
 {
 	public interface IClass
 	{
-        CQ_Value New (CQ_Content content, FixedList<CQ_Value> _params);
+        CQ_Value New (CQ_Content content, CQ_Value[] _params);
 
-        CQ_Value StaticCall (CQ_Content content, string function, FixedList<CQ_Value> _params);
-        CQ_Value StaticCall (CQ_Content content, string function, FixedList<CQ_Value> _params, MethodCache cache);
-        CQ_Value StaticCallCache (CQ_Content content, FixedList<CQ_Value> _params, MethodCache cache);
+        CQ_Value StaticCall (CQ_Content content, string function, CQ_Value[] _params);
+        CQ_Value StaticCall (CQ_Content content, string function, CQ_Value[] _params, MethodCache cache);
+        CQ_Value StaticCallCache (CQ_Content content, CQ_Value[] _params, MethodCache cache);
 
 		CQ_Value StaticValueGet(CQ_Content content, string valuename);
 		bool StaticValueSet(CQ_Content content, string valuename, object value);
 
-        CQ_Value MemberCall (CQ_Content content, object object_this, string func, FixedList<CQ_Value> _params);
-        IEnumerator CoroutineCall (CQ_Content content, object object_this, string func, FixedList<CQ_Value> _params, UnityEngine.MonoBehaviour coroutin);
-        CQ_Value MemberCall (CQ_Content content, object object_this, string func, FixedList<CQ_Value> _params, MethodCache cache);
-        CQ_Value MemberCallCache (CQ_Content content, object object_this, FixedList<CQ_Value> _params, MethodCache cache);
+        CQ_Value MemberCall (CQ_Content content, object object_this, string func, CQ_Value[] _params);
+        IEnumerator CoroutineCall (CQ_Content content, object object_this, string func, CQ_Value[] _params, UnityEngine.MonoBehaviour coroutin);
+        CQ_Value MemberCall (CQ_Content content, object object_this, string func, CQ_Value[] _params, MethodCache cache);
+        CQ_Value MemberCallCache (CQ_Content content, object object_this, CQ_Value[] _params, MethodCache cache);
 
 		CQ_Value MemberValueGet(CQ_Content content, object object_this, string valuename);
 		bool MemberValueSet(CQ_Content content, object object_this, string valuename, object value);

@@ -60,22 +60,22 @@ namespace CQuark {
 #endif
 
 
-            FixedList<CQ_Value> _params = new FixedList<CQ_Value>(_expressions.Count);
-            for(int i = 1; i < _expressions.Count; i++) {
-                _params.Add(_expressions[i].ComputeValue(content));
+            CQ_Value[] parameters = new CQ_Value[_expressions.Count - 1];
+            for(int i = 0; i < _expressions.Count - 1; i++) {
+                parameters[i] = _expressions[i + 1].ComputeValue(content);
             }
 
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(!Wrap.MemberCall(parent.m_type, parent.m_value, functionName, _params, out value)) {
+            if(!Wrap.MemberCall(parent.m_type, parent.m_value, functionName, parameters, out value)) {
                 var iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
                 if(cache == null || cache.cachefail) {
                     cache = new MethodCache();
-                    value = iclass.MemberCall(content, parent.m_value, functionName, _params, cache);
+                    value = iclass.MemberCall(content, parent.m_value, functionName, parameters, cache);
                 }
                 else {
-                    value = iclass.MemberCallCache(content, parent.m_value, _params, cache);
+                    value = iclass.MemberCallCache(content, parent.m_value, parameters, cache);
                 }
             }
 

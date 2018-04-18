@@ -30,19 +30,19 @@ namespace CQuark{
 			return false;
 	    }
 		
-		private static bool {WrapName}New(FixedList<CQ_Value> param, out CQ_Value returnValue, bool mustEqual){
+		private static bool {WrapName}New(CQ_Value[] param, out CQ_Value returnValue, bool mustEqual){
 {WrapNew}
 			returnValue = CQ_Value.Null;
 			return false;
 		}
 		
-		private static bool {WrapName}SCall (string functionName, FixedList<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+		private static bool {WrapName}SCall (string functionName, CQ_Value[] param, out CQ_Value returnValue, bool mustEqual) {
 {WrapSCall}
 			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
-		private static bool {WrapName}MCall (object objSelf, string functionName, FixedList<CQ_Value> param, out CQ_Value returnValue, bool mustEqual) {
+		private static bool {WrapName}MCall (object objSelf, string functionName, CQ_Value[] param, out CQ_Value returnValue, bool mustEqual) {
 {WrapMCall}
 			returnValue = CQ_Value.Null;
 	        return false;

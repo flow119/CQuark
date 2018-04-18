@@ -48,19 +48,16 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            FixedList<CQ_Value> param = new FixedList<CQ_Value>(_expressions.Count);
-            //TODO 这些_expressions一开始就做非空判断，那么List全部可以换成数组了
-            foreach(ICQ_Expression p in _expressions) {
-                if(p != null) {
-					param.Add(p.ComputeValue(content));
-                }
+            CQ_Value[] parameters = new CQ_Value[_expressions.Count];
+            for(int i = 0; i < _expressions.Count; i++) {
+                parameters[i] = _expressions[i].ComputeValue(content);
             }
 
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.New(type.typeBridge.type, param, out value)){
-				value = type._class.New(content, param);
+            if(!Wrap.New(type.typeBridge.type, parameters, out value)) {
+                value = type._class.New(content, parameters);
 			}
 
 #if CQUARK_DEBUG
