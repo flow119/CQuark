@@ -56,11 +56,11 @@ namespace CQuark
                 returnValue.m_type = typeof(string);
                 if(right == CQ_Value.Null)
                 {
-                    returnValue.m_value = (string)left + "null";
+                    returnValue.SetValue((string)left + "null");
                 }
                 else
                 {
-                    returnValue.m_value = (string)left + right.m_value.ToString();
+                    returnValue.SetValue((string)left + right.GetValue().ToString());
                 }
                 return returnValue;
             }
@@ -71,11 +71,11 @@ namespace CQuark
         {
             if (code == LogicToken.equal)
             {
-                return (string)left == (string)right.m_value;
+                return (string)left == (string)right.GetValue();
             }
             else if(code== LogicToken.not_equal)
             {
-                return (string)left != (string)right.m_value;
+                return (string)left != (string)right.GetValue();
             }
             throw new NotImplementedException();
         }

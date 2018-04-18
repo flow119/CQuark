@@ -50,25 +50,25 @@ namespace CQuark {
                 bool bleft = false;
                 bool bright = false;
 
-                bleft = (bool)_expressions[0].ComputeValue(content).m_value;
+                bleft = (bool)_expressions[0].ComputeValue(content).GetValue();
 
                 result.m_type = typeof(bool);
                 if(mathop == '&') {
                     if(!bleft) {
-                        result.m_value = false;
+                        result.SetValue(false);
                     }
                     else {
-                        bright = (bool)_expressions[1].ComputeValue(content).m_value;
-                        result.m_value = (bool)(bleft && bright);
+                        bright = (bool)_expressions[1].ComputeValue(content).GetValue();
+                        result.SetValue((bool)(bleft && bright));
                     }
                 }
                 else if(mathop == '|') {
                     if(bleft) {
-                        result.m_value = true;
+                        result.SetValue(true);
                     }
                     else {
-                        bright = (bool)_expressions[1].ComputeValue(content).m_value;
-                        result.m_value = (bool)(bleft || bright);
+                        bright = (bool)_expressions[1].ComputeValue(content).GetValue();
+                        result.SetValue((bool)(bleft || bright));
                     }
 
                 }

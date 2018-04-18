@@ -55,7 +55,7 @@ namespace CQuark {
             }
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).m_value as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
@@ -108,7 +108,7 @@ namespace CQuark {
             }
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).m_value as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 

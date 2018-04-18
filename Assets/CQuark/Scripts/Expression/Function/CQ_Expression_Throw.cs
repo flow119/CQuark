@@ -41,15 +41,9 @@ namespace CQuark {
         }
         public CQ_Value ComputeValue (CQ_Content content) {
 
-            CQ_Value rv = new CQ_Value();
+            CQ_Value v = _expressions[0].ComputeValue(content);
 
-            var v = _expressions[0].ComputeValue(content);
-            {
-                rv.m_type = v.m_type;
-                rv.m_stype = v.m_stype;
-                rv.m_value = v.m_value;
-            }
-            Exception err = v.m_value as Exception;
+            Exception err = v.GetValue() as Exception;
             if(err != null) {
                 throw err;
             }

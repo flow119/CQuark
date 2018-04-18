@@ -217,12 +217,12 @@ namespace CQuark {
                     if(bRet) {
                         if(retM.bStatic) {
                             CQ_Value val = CallType.staticMemberInstance[name];
-                            val.m_value = value;
+                            val.SetValue(value);
                             CallType.staticMemberInstance[name] = val;
                         }
                         else {
                             CQ_Value val = CallThis.member[name];
-                            val.m_value = value;
+                            val.SetValue( value);
                             CallThis.member[name] = val;
                         }
                         return;
@@ -239,7 +239,7 @@ namespace CQuark {
             else {
                 if(retV.m_type == typeof(Type_Var.var) && value != null)
                     retV.m_type = value.GetType();
-                retV.m_value = value;
+                retV.SetValue(value);
                 values[name] = retV;
             }
         }
@@ -253,7 +253,7 @@ namespace CQuark {
 
             CQ_Value v = new CQ_Value();
             v.SetCQType(type);
-            v.m_value = value;
+            v.SetValue( value);
             values[name] = v;
 
             int newdepth = tvalueDepth.Pop() + 1;
@@ -270,7 +270,7 @@ namespace CQuark {
             CQ_Value retV = new CQ_Value();
             if(name == "this") {
                 retV.m_stype = CallType;
-                retV.m_value = CallThis;
+                retV.SetValue( CallThis);
                 return retV;
             }
 
@@ -292,7 +292,7 @@ namespace CQuark {
                 if(CallType.functions.ContainsKey(name)) {
                     //如果直接得到代理实例，
                     DeleFunction dele = new DeleFunction(CallType, this.CallThis, name);
-                    retV.m_value = dele;
+                    retV.SetValue(dele);
                     retV.m_type = typeof(DeleFunction);
                     return retV;
 

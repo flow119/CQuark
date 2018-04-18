@@ -57,9 +57,9 @@ namespace CQuark {
             //}
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-			if(!Wrap.IndexSet(parent.m_type, parent.m_value, key, value)){
+            if(!Wrap.IndexSet(parent.m_type, parent.GetValue(), key, value)) {
                 var type = CQuark.AppDomain.GetITypeByCQValue(parent);
-				type._class.IndexSet(content, parent.m_value, key.m_value, value.m_value);
+                type._class.IndexSet(content, parent.GetValue(), key.GetValue(), value.GetValue());
 			}
 
 #if CQUARK_DEBUG

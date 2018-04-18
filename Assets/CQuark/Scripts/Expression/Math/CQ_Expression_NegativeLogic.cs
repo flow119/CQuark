@@ -51,7 +51,7 @@ namespace CQuark {
             r2.m_type = r.m_type;
             r2.m_stype = r.m_stype;
             r2.m_breakBlock = r.m_breakBlock;
-            r2.m_value = !(bool)r.m_value;
+            r2.SetValue(!(bool)r.GetValue());
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

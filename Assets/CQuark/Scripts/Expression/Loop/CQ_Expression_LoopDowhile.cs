@@ -82,7 +82,7 @@ namespace CQuark {
                     //if (v.breakBlock == 2) break;
                     //if (v.breakBlock == 10) return v;
                 }
-            } while((bool)expr_while.ComputeValue(content).m_value);
+            } while((bool)expr_while.ComputeValue(content).GetValue());
             content.DepthRemove();
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -136,7 +136,7 @@ namespace CQuark {
                     //if (v.breakBlock == 10) return v;
                 }
             }
-            while((bool)expr_while.ComputeValue(content).m_value);
+            while((bool)expr_while.ComputeValue(content).GetValue());
             //while ((bool)expr_while.ComputeValue(content).value);
             content.DepthRemove();
 #if CQUARK_DEBUG

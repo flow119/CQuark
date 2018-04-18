@@ -56,7 +56,7 @@ namespace CQuark {
                 {
                     rv.m_type = v.m_type;
                     rv.m_stype = v.m_stype;
-                    rv.m_value = v.m_value;
+                    rv.SetValue(v.GetValue());
                 }
             }
             else {

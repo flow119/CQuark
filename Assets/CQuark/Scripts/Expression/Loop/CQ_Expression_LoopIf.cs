@@ -50,7 +50,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
             ICQ_Expression expr_if = _expressions[0];
-            bool bif = (bool)expr_if.ComputeValue(content).m_value;
+            bool bif = (bool)expr_if.ComputeValue(content).GetValue();
             //if (expr_init != null) expr_init.ComputeValue(content);
             ICQ_Expression expr_go1 = _expressions[1];
             ICQ_Expression expr_go2 = null;
@@ -90,7 +90,7 @@ namespace CQuark {
 			content.InStack(this);
 #endif
             ICQ_Expression expr_if = _expressions[0];
-            bool bif = (bool)expr_if.ComputeValue(content).m_value;
+            bool bif = (bool)expr_if.ComputeValue(content).GetValue();
             //if (expr_init != null) expr_init.ComputeValue(content);
             ICQ_Expression expr_go1 = _expressions[1];
             ICQ_Expression expr_go2 = null;

@@ -79,22 +79,22 @@ namespace CQuark
             {
                 if (left == null || right.TypeIsEmpty)
                 {
-                    return left == right.m_value;
+                    return left == right.GetValue();
                 }
                 else
                 {
-                    return left == right.m_value;
+                    return left == right.GetValue();
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
                 if(left == null || right.TypeIsEmpty)
                 {
-                    return left != right.m_value;
+                    return left != right.GetValue();
                 }
                 else
                 {
-                    return left != right.m_value;
+                    return left != right.GetValue();
                 }
             }
             throw new NotImplementedException();

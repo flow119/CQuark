@@ -19,7 +19,7 @@ namespace CQuark {
 
         public Type m_type;
         public Class_CQuark m_stype;
-        public object m_value;
+        private object m_value;
         public BreakType m_breakBlock;//= BreakType.None;
 
         public TypeBridge typeBridge {
@@ -53,6 +53,18 @@ namespace CQuark {
             get {
                 return m_type == null && m_stype == null;
             }
+        }
+
+        public object GetValue () {
+            return m_value;
+        }
+
+        public void SetValue (Object obj) {
+            m_value = obj;
+        }
+
+        public void CopyValue (CQ_Value val) {
+            m_value = val.m_value;
         }
 
         public static CQ_Value One {

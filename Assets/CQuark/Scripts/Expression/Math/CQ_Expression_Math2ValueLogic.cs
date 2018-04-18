@@ -53,19 +53,19 @@ namespace CQuark {
                 var right = _expressions[1].ComputeValue(content);
                 if(left.TypeIsEmpty|| right.TypeIsEmpty) {
                     if(mathop == LogicToken.equal) {
-                        result.m_value = left.m_value == right.m_value;
+                        result.SetValue(left.GetValue() == right.GetValue());
                     }
                     if(mathop == LogicToken.not_equal) {
-                        result.m_value = left.m_value != right.m_value;
+                        result.SetValue(left.GetValue() != right.GetValue());
                     }
                 }
                 else if(left.m_type == typeof(bool) && right.m_type == typeof(bool)) {
                     if(mathop == LogicToken.equal) {
-                        result.m_value = (bool)left.m_value == (bool)right.m_value;
+                        result.SetValue((bool)left.GetValue() == (bool)right.GetValue());
                         //return result;
                     }
                     else if(mathop == LogicToken.not_equal) {
-                        result.m_value = (bool)left.m_value != (bool)right.m_value;
+                        result.SetValue((bool)left.GetValue() != (bool)right.GetValue());
                         //return result;
                     }
                     else {
@@ -74,7 +74,7 @@ namespace CQuark {
                 }
                 else {
 
-                    result.m_value = CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left.m_value, right);
+                    result.SetValue( CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left.GetValue(), right));
 
                 }
             }

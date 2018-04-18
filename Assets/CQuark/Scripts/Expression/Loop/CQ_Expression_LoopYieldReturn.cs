@@ -57,7 +57,7 @@ namespace CQuark {
                 {
                     rv.m_type = v.m_type;
                     rv.m_stype = v.m_stype;
-                    rv.m_value = v.m_value;
+                    rv.SetValue(v.GetValue());
                 }
             }
             else {
@@ -80,7 +80,7 @@ namespace CQuark {
 				{
                     rv.m_type = v.m_type;
                     rv.m_stype = v.m_stype;
-					rv.m_value = v.m_value;
+                    rv.SetValue(v.GetValue());
 				}
 			}
 			else {
@@ -92,9 +92,9 @@ namespace CQuark {
             if(rv == CQ_Value.Null)
 				yield return null;
 			else if(rv.m_type == typeof (IEnumerator))
-				yield return coroutine.StartCoroutine(rv.m_value as IEnumerator);
+                yield return coroutine.StartCoroutine(rv.GetValue() as IEnumerator);
 			else
-				yield return rv.m_value;//这里Unity会非常智能的自动去转型
+                yield return rv.GetValue();//这里Unity会非常智能的自动去转型
 		}
 
         public override string ToString () {

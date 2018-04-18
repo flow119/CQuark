@@ -19,7 +19,7 @@ public class CQuarkParagraph {
         CQ_Value value = expr.ComputeValue(content);//执行表达式
         if(value == CQ_Value.Null)
             return null;
-        return value.m_value;
+        return value.GetValue();
     }
     public IEnumerator StartCoroutine (string script, UnityEngine.MonoBehaviour coroutine) {
         var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
