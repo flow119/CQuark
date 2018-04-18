@@ -349,7 +349,7 @@ namespace CQuark {
                 CQ_Value v = new CQ_Value();
                 v.m_type = temp.m_type;
                 v.m_stype = temp.m_stype;
-                v.SetValue(temp.GetValue());
+                v.CopyValue(temp);
                 return v;
             }
             throw new NotImplementedException();

@@ -20,6 +20,8 @@ namespace CQuark {
         public Type m_type;
         public Class_CQuark m_stype;
         private object m_value;
+        private double _num;
+        private bool _isNum;
         public BreakType m_breakBlock;//= BreakType.None;
 
         public TypeBridge typeBridge {
@@ -56,11 +58,148 @@ namespace CQuark {
         }
 
         public object GetValue () {
+            if(_isNum)
+                return _num;
             return m_value;
         }
 
         public void SetValue (Object obj) {
             m_value = obj;
+        }
+
+        public void SetDouble (double num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetFloat (float num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetLong (long num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetULong (ulong num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetInt (int num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetUInt (uint num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetShort (short num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+        public void SetUShort (ushort num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetSByte (sbyte num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetByte (byte num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetChar (char num) {
+            _isNum = true;
+            _num = num;
+            m_value = null;
+        }
+
+        public void SetBool (bool num) {
+            _isNum = true;
+            _num = num ? 1 : 0;
+            m_value = null;
+        }
+        public double GetDouble () {
+            if(_isNum)
+                return _num;
+            return (double)ConvertTo(typeof(double));
+        }
+
+        public float GetFloat () {
+            if(_isNum)
+                return (float)_num;
+            return (float)ConvertTo(typeof(float));
+        }
+
+        public long GetLong () {
+            if(_isNum)
+                return (long)_num;
+            return (long)ConvertTo(typeof(long));
+        }
+
+        public ulong GetULong () {
+            if(_isNum)
+                return (ulong)_num;
+            return (ulong)ConvertTo(typeof(ulong));
+        }
+
+        public int GetInt () {
+            if(_isNum)
+                return (int)_num;
+            return (int)ConvertTo(typeof(int));
+        }
+
+        public uint GetUInt () {
+            if(_isNum)
+                return (uint)_num;
+            return (uint)ConvertTo(typeof(uint));
+        }
+
+        public long GetShort () {
+            if(_isNum)
+                return (short)_num;
+            return (short)ConvertTo(typeof(short));
+        }
+
+        public sbyte GetSByte () {
+            if(_isNum)
+                return (sbyte)_num;
+            return (sbyte)ConvertTo(typeof(sbyte));
+        }
+
+        public byte GetByte () {
+            if(_isNum)
+                return (byte)_num;
+            return (byte)ConvertTo(typeof(byte));
+        }
+
+        public char GetChar () {
+            if(_isNum)
+                return (char)_num;
+            return (char)ConvertTo(typeof(char));
+        }
+        public bool GetBool () {
+            if(_isNum)
+                return _num == 1;
+            return (bool)ConvertTo(typeof(bool));
         }
 
         public void CopyValue (CQ_Value val) {
