@@ -183,8 +183,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 下个版本
 
-* 完善Wrap注册工具
-* 减少GC
+* 完善Wrap注册GUI工具
+* 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 
 
 下下个版本
@@ -195,13 +195,9 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
 * 2 劫持GetComponent和AddComponent，重写。
 
-* yield return使用方式Unity来
 
 下下下个版本
 
-* 类似XLua和Bridge，把项目里的cs文件转换成可以动态替换为西瓜的脚本
-
-* 优化编译速度，减少gc alloc以及重复的GetCodeKey
 
 
 ## 联系我
