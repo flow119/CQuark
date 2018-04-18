@@ -52,11 +52,11 @@ namespace CQuark
         {
 			throw new NotImplementedException();
         }
-		public virtual CQ_Value Math2Value(char code, object left, CQ_Value right)
+        public virtual CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right)
         {
 			throw new NotImplementedException();
         }
-		public virtual bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public virtual bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
 			throw new NotImplementedException();
         }

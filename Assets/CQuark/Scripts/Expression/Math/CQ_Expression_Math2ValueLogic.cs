@@ -74,7 +74,7 @@ namespace CQuark {
                 }
                 else {
 
-                    result.SetValue( CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left.GetValue(), right));
+                    result.SetValue( CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left, right));
 
                 }
             }

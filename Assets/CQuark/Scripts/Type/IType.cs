@@ -26,9 +26,9 @@ namespace CQuark {
         object ConvertTo (object src, TypeBridge targetType);
 
         //数学计算能力
-        CQ_Value Math2Value (char code, object left, CQ_Value right);
+        CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right);
 
         //逻辑计算能力
-        bool MathLogic (LogicToken code, object left, CQ_Value right);
+        bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right);
     }
 }

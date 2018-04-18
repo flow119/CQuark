@@ -32,12 +32,13 @@ namespace CQuark
             throw new NotImplementedException();
         }
 
-        public CQ_Value Math2Value (char code, object left, CQ_Value right) {
+        public CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right) {
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public bool MathLogic(LogicToken code, CQ_Value left, CQ_Value right)
         {
+            //TODO
             throw new NotImplementedException();
         }
     }

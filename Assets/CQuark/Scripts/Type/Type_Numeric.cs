@@ -117,12 +117,12 @@ namespace CQuark
 		}
 
 		//快速计算
-		protected static bool Math2Value<LeftType> (char opCode, object left, CQ_Value right, out CQ_Value returnValue) where LeftType : struct {
+		protected static bool NumberMath2Value (char opCode, CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
 			try {
                 returnValue = new CQ_Value();
-                Type retType = GetReturnType_Math2Value(typeof(LeftType), right.m_type);
+                Type retType = GetReturnType_Math2Value(left.m_type, right.m_type);
                 returnValue.m_type = retType;
-				double leftValue = GetDouble(typeof(LeftType), left);
+                double leftValue = GetDouble(left.m_type, left.GetValue());
                 double rightValue = GetDouble(right.m_type, right.GetValue());
 				double finalValue;
 
@@ -193,11 +193,11 @@ namespace CQuark
 			//在C#类型系统中，即使是两个 ushort 结合返回的也是int类型。
 			return typeof(int);
 		}
-		protected static bool MathLogic<LeftType> (LogicToken logicCode, object left, CQ_Value right, out bool mathLogicSuccess) {
+        protected static bool NumberMathLogic (LogicToken logicCode, CQ_Value left, CQ_Value right, out bool mathLogicSuccess) {
 			mathLogicSuccess = true;
 
 			try {
-				double leftValue = GetDouble(typeof(LeftType), left);
+                double leftValue = GetDouble(left.m_type, left.GetValue());
                 double rightValue = GetDouble(right.m_type, right.GetValue());
 
 				switch(logicCode) {
@@ -274,7 +274,7 @@ namespace CQuark
 
             return null;
         }
-		public virtual CQ_Value Math2Value(char code, object left, CQ_Value right)
+        public virtual CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right)
         {
            
             //var m = ((Type)type).GetMembers();
@@ -282,7 +282,7 @@ namespace CQuark
             if(rightType == typeof(string) && code == '+') {
                 CQ_Value returnValue = new CQ_Value();
                 returnValue.m_type = typeof(string);
-                returnValue.SetValue(left.ToString() + right.GetValue() as string);
+                returnValue.SetValue(left.GetValue().ToString() + right.GetValue() as string);
                 return returnValue;
             }
             else {
@@ -293,7 +293,7 @@ namespace CQuark
                 //我们这里开始使用Wrap，如果再不行再走反射
                 CQ_Value leftcq = new CQ_Value();
                 leftcq.SetCQType(this.typeBridge);
-                leftcq.SetValue(left);
+                leftcq.CopyValue(left);
                 if(code == '+') {
                     if(Wrap.OpAddition(leftcq, right, out returnValue)) {
                         return returnValue;
@@ -339,12 +339,12 @@ namespace CQuark
                 //Wrap没走到，走反射
                 returnValue = new CQ_Value();
                 returnValue.SetCQType(typeBridge);
-                returnValue.SetValue(call.Invoke(null, new object[] { left, right.GetValue() }));
+                returnValue.SetValue(call.Invoke(null, new object[] { left.GetValue(), right.GetValue() }));
                 //function.StaticCall(env,"op_Addtion",new List<ICL>{})
                 return returnValue;
             }
         }
-		public virtual bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public virtual bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             System.Reflection.MethodInfo call = null;
 
@@ -359,30 +359,30 @@ namespace CQuark
                 call = _type.GetMethod("op_LessThanOrEqual");
             else if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.TypeIsEmpty)
+                if(left.GetValue() == null || right.TypeIsEmpty)
                 {
-                    return left == right.GetValue();
+                    return left.GetValue() == right.GetValue();
                 }
 
                 call = _type.GetMethod("op_Equality");
                 if (call == null)
                 {
-                    return left.Equals(right.GetValue());
+                    return left.GetValue().Equals(right.GetValue());
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.TypeIsEmpty)
+                if(left.GetValue() == null || right.TypeIsEmpty)
                 {
-                    return left != right.GetValue();
+                    return left.GetValue() != right.GetValue();
                 }
                 call = _type.GetMethod("op_Inequality");
                 if (call == null)
                 {
-                    return !left.Equals(right.GetValue());
+                    return !left.GetValue().Equals(right.GetValue());
                 }
             }
-            var obj = call.Invoke(null, new object[] { left, right.GetValue() });
+            var obj = call.Invoke(null, new object[] { left.GetValue(), right.GetValue() });
             return (bool)obj;
         }
     }

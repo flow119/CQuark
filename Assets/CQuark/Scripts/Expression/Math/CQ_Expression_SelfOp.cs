@@ -45,7 +45,7 @@ namespace CQuark {
 #endif
             CQ_Value v = content.Get(value_name);
             IType type = CQuark.AppDomain.GetITypeByCQValue(v);
-            CQ_Value retVal = type.Math2Value(mathop, v.GetValue(), CQ_Value.One);
+            CQ_Value retVal = type.Math2Value(mathop, v, CQ_Value.One);
             retVal.SetValue(type.ConvertTo(retVal.GetValue(), v.typeBridge));
             content.Set(value_name, retVal.GetValue());
 

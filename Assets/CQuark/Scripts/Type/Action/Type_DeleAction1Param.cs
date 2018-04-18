@@ -13,11 +13,11 @@ namespace CQuark
 
         }
 
-        public override CQ_Value Math2Value(char code, object left, CQ_Value right)
+        public override CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right)
         {
-            if (left is DeleEvent)
+            if (left.GetValue() is DeleEvent)
             {
-                DeleEvent info = left as DeleEvent;
+                DeleEvent info = left.GetValue() as DeleEvent;
                 Delegate calldele = null;
 
                 //!--exist bug.
@@ -75,9 +75,9 @@ namespace CQuark
                 }
 
             }
-            else if (left is Delegate || left == null)
+            else if(left.GetValue() is Delegate || left.GetValue() == null)
             {
-                Delegate info = left as Delegate;
+                Delegate info = left.GetValue() as Delegate;
                 Delegate calldele = null;
                 if(right.GetValue() is DeleFunction)
                     calldele = CreateDelegate(right.GetValue() as DeleFunction);

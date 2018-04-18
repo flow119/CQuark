@@ -23,20 +23,20 @@ namespace CQuark
             return base.ConvertTo(src, targetType);
         }
 
-        public override CQ_Value Math2Value (char code, object left, CQ_Value right) {
+        public override CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right) {
             CQ_Value returnValue = CQ_Value.Null;
 
-            if(Math2Value<short>(code, left, right, out returnValue)) {
+            if(NumberMath2Value(code, left, right, out returnValue)) {
                 return returnValue;
             }
 
             return base.Math2Value(code, left, right);
         }
 
-        public override bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public override bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             bool mathLogicSuccess = false;
-            bool value = MathLogic<short>(code, left, right, out mathLogicSuccess);
+            bool value = NumberMathLogic(code, left, right, out mathLogicSuccess);
             if (mathLogicSuccess) {
                 return value;
             }

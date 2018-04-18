@@ -31,7 +31,7 @@ namespace CQuark
         {
             return null;
         }
-        public CQ_Value Math2Value (char code, object left, CQ_Value right) {
+        public CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right) {
             if (right.m_type == typeof(string))
             {
                 CQ_Value returnValue = new CQ_Value();
@@ -41,7 +41,7 @@ namespace CQuark
             }
             throw new NotImplementedException();
         }
-        public bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public bool MathLogic(LogicToken code, CQ_Value left, CQ_Value right)
         {
             if (code == LogicToken.equal)
             {

@@ -54,7 +54,7 @@ namespace CQuark {
             CQ_Value right = _expressions[1].ComputeValue(content);
             IType type = CQuark.AppDomain.GetITypeByCQValue(left);
 
-            CQ_Value val = type.Math2Value(mathop, left.GetValue(), right);
+            CQ_Value val = type.Math2Value(mathop, left, right);
             val.SetValue(type.ConvertTo(val.GetValue(), left.typeBridge));
             
             if(_expressions[0] is CQ_Expression_MemberValueGet) {

@@ -49,33 +49,33 @@ namespace CQuark
             return null;
         }
 
-        public CQ_Value Math2Value (char code, object left, CQ_Value right) {
+        public CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right) {
             if (code == '+')
             {
                 CQ_Value returnValue = new CQ_Value();
                 returnValue.m_type = typeof(string);
                 if(right == CQ_Value.Null)
                 {
-                    returnValue.SetValue((string)left + "null");
+                    returnValue.SetValue((string)left.GetValue() + "null");
                 }
                 else
                 {
-                    returnValue.SetValue((string)left + right.GetValue().ToString());
+                    returnValue.SetValue((string)left.GetValue() + right.GetValue().ToString());
                 }
                 return returnValue;
             }
             throw new NotImplementedException();
         }
 
-        public bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             if (code == LogicToken.equal)
             {
-                return (string)left == (string)right.GetValue();
+                return (string)left.GetValue() == (string)right.GetValue();
             }
             else if(code== LogicToken.not_equal)
             {
-                return (string)left != (string)right.GetValue();
+                return (string)left.GetValue() != (string)right.GetValue();
             }
             throw new NotImplementedException();
         }

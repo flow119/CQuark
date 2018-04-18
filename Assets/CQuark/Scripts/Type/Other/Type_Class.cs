@@ -69,32 +69,32 @@ namespace CQuark
 
             throw new NotImplementedException();
         }
-        public CQ_Value Math2Value(char code, object left, CQ_Value right)
+        public CQ_Value Math2Value(char code, CQ_Value left, CQ_Value right)
         {
             throw new NotImplementedException();
         }
-        public bool MathLogic(LogicToken code, object left, CQ_Value right)
+        public bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if (left == null || right.TypeIsEmpty)
+                if(left.GetValue() == null || right.TypeIsEmpty)
                 {
-                    return left == right.GetValue();
+                    return left.GetValue() == right.GetValue();
                 }
                 else
                 {
-                    return left == right.GetValue();
+                    return left.GetValue() == right.GetValue();
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if(left == null || right.TypeIsEmpty)
+                if(left.GetValue() == null || right.TypeIsEmpty)
                 {
-                    return left != right.GetValue();
+                    return left.GetValue() != right.GetValue();
                 }
                 else
                 {
-                    return left != right.GetValue();
+                    return left.GetValue() != right.GetValue();
                 }
             }
             throw new NotImplementedException();
