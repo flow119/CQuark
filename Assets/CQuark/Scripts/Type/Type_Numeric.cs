@@ -64,7 +64,7 @@ namespace CQuark
 			}
 		}
 		//虽然写法很奇怪，但是这样是最高效的处理方法
-		private static double GetDouble (Type type, object v) {
+		public static double GetDouble (Type type, object v) {
 			if(type == typeof(double))
 				return (double)v;
 			if(type == typeof(float))
@@ -122,8 +122,8 @@ namespace CQuark
                 returnValue = new CQ_Value();
                 Type retType = GetReturnType_Math2Value(left.m_type, right.m_type);
                 returnValue.m_type = retType;
-                double leftValue = GetDouble(left.m_type, left.GetValue());
-                double rightValue = GetDouble(right.m_type, right.GetValue());
+                double leftValue = left.GetDouble();// GetDouble(left.m_type, left.GetValue());
+                double rightValue = right.GetDouble();// GetDouble(right.m_type, right.GetValue());
 				double finalValue;
 
 				switch(opCode) {
@@ -197,8 +197,8 @@ namespace CQuark
 			mathLogicSuccess = true;
 
 			try {
-                double leftValue = GetDouble(left.m_type, left.GetValue());
-                double rightValue = GetDouble(right.m_type, right.GetValue());
+                double leftValue = left.GetDouble();// GetDouble(left.m_type, left.GetValue());
+                double rightValue = right.GetDouble();// GetDouble(right.m_type, right.GetValue());
 
 				switch(logicCode) {
 				case LogicToken.equal:

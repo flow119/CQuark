@@ -140,13 +140,13 @@ namespace CQuark {
         public double GetDouble () {
             if(_isNum)
                 return _num;
-            return (double)ConvertTo(typeof(double));
+            return Type_Numeric.GetDouble(m_type, m_value);
         }
 
         public float GetFloat () {
             if(_isNum)
                 return (float)_num;
-            return (float)ConvertTo(typeof(float));
+            return (float)Type_Numeric.GetDouble(m_type, m_value);
         }
 
         public long GetLong () {
