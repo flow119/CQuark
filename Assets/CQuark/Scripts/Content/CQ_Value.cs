@@ -34,8 +34,22 @@ namespace CQuark {
             }
         }
 
-        //public void SetValue (Type type, double num) {
+        //public CQ_Value (Type type, object obj) {
+        //    m_type = type;
+        //    m_stype = null;
+        //    m_value = obj;
+        //    _num = 0;
+        //    _isNum = false;
+        //    m_breakBlock = BreakType.None;
+        //}
 
+        //public CQ_Value () {
+        //    m_type = null;
+        //    m_stype = null;
+        //    m_value = null;
+        //    _num = 0;
+        //    _isNum = false;
+        //    m_breakBlock = BreakType.None;
         //}
 
         public void SetValue (Type type, object obj) {
