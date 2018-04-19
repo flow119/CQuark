@@ -269,8 +269,7 @@ namespace CQuark {
         public CQ_Value GetQuiet (string name) {
             CQ_Value retV = new CQ_Value();
             if(name == "this") {
-                retV.m_stype = CallType;
-                retV.SetValue( CallThis);
+                retV.SetValue(CallType, CallThis);
                 return retV;
             }
 
@@ -292,10 +291,8 @@ namespace CQuark {
                 if(CallType.functions.ContainsKey(name)) {
                     //如果直接得到代理实例，
                     DeleFunction dele = new DeleFunction(CallType, this.CallThis, name);
-                    retV.SetValue(dele);
-                    retV.m_type = typeof(DeleFunction);
+                    retV.SetValue(typeof(DeleFunction), dele);
                     return retV;
-
                 }
             }
             return retV;//null

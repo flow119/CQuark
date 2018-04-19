@@ -34,9 +34,9 @@ namespace CQuark {
             }
         }
 
-        public void SetValue (Type type, double num) {
+        //public void SetValue (Type type, double num) {
 
-        }
+        //}
 
         public void SetValue (Type type, object obj) {
             m_type = type;
@@ -93,139 +93,10 @@ namespace CQuark {
             m_value = obj;
         }
 
-        public void SetDouble (double num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetFloat (float num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetLong (long num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetULong (ulong num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetInt (int num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetUInt (uint num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetShort (short num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-        public void SetUShort (ushort num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetSByte (sbyte num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetByte (byte num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetChar (char num) {
-            _isNum = true;
-            _num = num;
-            m_value = null;
-        }
-
-        public void SetBool (bool num) {
-            _isNum = true;
-            _num = num ? 1 : 0;
-            m_value = null;
-        }
         public double GetDouble () {
             if(_isNum)
                 return _num;
             return Type_Numeric.GetDouble(m_type, m_value);
-        }
-
-        public float GetFloat () {
-            if(_isNum)
-                return (float)_num;
-            return (float)Type_Numeric.GetDouble(m_type, m_value);
-        }
-
-        public long GetLong () {
-            if(_isNum)
-                return (long)_num;
-            return (long)ConvertTo(typeof(long));
-        }
-
-        public ulong GetULong () {
-            if(_isNum)
-                return (ulong)_num;
-            return (ulong)ConvertTo(typeof(ulong));
-        }
-
-        public int GetInt () {
-            if(_isNum)
-                return (int)_num;
-            return (int)ConvertTo(typeof(int));
-        }
-
-        public uint GetUInt () {
-            if(_isNum)
-                return (uint)_num;
-            return (uint)ConvertTo(typeof(uint));
-        }
-
-        public long GetShort () {
-            if(_isNum)
-                return (short)_num;
-            return (short)ConvertTo(typeof(short));
-        }
-
-        public sbyte GetSByte () {
-            if(_isNum)
-                return (sbyte)_num;
-            return (sbyte)ConvertTo(typeof(sbyte));
-        }
-
-        public byte GetByte () {
-            if(_isNum)
-                return (byte)_num;
-            return (byte)ConvertTo(typeof(byte));
-        }
-
-        public char GetChar () {
-            if(_isNum)
-                return (char)_num;
-            return (char)ConvertTo(typeof(char));
-        }
-        public bool GetBool () {
-            if(_isNum)
-                return _num == 1;
-            return (bool)ConvertTo(typeof(bool));
         }
 
         public void CopyValue (CQ_Value val) {

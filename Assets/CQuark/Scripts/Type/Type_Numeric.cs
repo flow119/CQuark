@@ -145,8 +145,7 @@ namespace CQuark
 				default:
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
-                returnValue.m_type = retType;
-                returnValue.SetValue( Double2TargetType(retType, finalValue));
+                returnValue.SetValue(retType, Double2TargetType(retType, finalValue));
                 return true;
 
 			}
