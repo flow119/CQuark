@@ -83,13 +83,11 @@ namespace CQuark {
                         object obj = d.DynamicInvoke(obja);
                         
                         if(obj == null) {
-                            v.m_type = null;
-                            v.m_stype = null;
+                            v.SetNoneTypeValue(null);
                         }
                         else {
-                            v.m_type = v.GetValue().GetType();
+                            v.SetValue(obj.GetType(), obj);
                         }
-                        v.SetValue(obj);
                     }
                     //else
                     //{

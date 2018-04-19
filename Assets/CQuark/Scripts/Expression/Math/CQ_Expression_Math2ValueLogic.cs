@@ -45,27 +45,25 @@ namespace CQuark {
 #endif
             CQ_Value result = new CQ_Value();
 
-
             //if(mathop=="<"||mathop=="<="||mathop==">"||mathop==">="||mathop=="=="||mathop=="!=")
             {
-                result.m_type = typeof(bool);
                 var left = _expressions[0].ComputeValue(content);
                 var right = _expressions[1].ComputeValue(content);
                 if(left.TypeIsEmpty|| right.TypeIsEmpty) {
                     if(mathop == LogicToken.equal) {
-                        result.SetValue(left.GetValue() == right.GetValue());
+                        result.SetValue(typeof(bool), left.GetValue() == right.GetValue());
                     }
                     if(mathop == LogicToken.not_equal) {
-                        result.SetValue(left.GetValue() != right.GetValue());
+                        result.SetValue(typeof(bool), left.GetValue() != right.GetValue());
                     }
                 }
                 else if(left.m_type == typeof(bool) && right.m_type == typeof(bool)) {
                     if(mathop == LogicToken.equal) {
-                        result.SetValue((bool)left.GetValue() == (bool)right.GetValue());
+                        result.SetValue(typeof(bool), (bool)left.GetValue() == (bool)right.GetValue());
                         //return result;
                     }
                     else if(mathop == LogicToken.not_equal) {
-                        result.SetValue((bool)left.GetValue() != (bool)right.GetValue());
+                        result.SetValue(typeof(bool), (bool)left.GetValue() != (bool)right.GetValue());
                         //return result;
                     }
                     else {
@@ -73,9 +71,7 @@ namespace CQuark {
                     }
                 }
                 else {
-
-                    result.SetValue( CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left, right));
-
+                    result.SetValue(typeof(bool), CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left, right));
                 }
             }
 #if CQUARK_DEBUG

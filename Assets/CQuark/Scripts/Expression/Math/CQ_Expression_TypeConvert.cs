@@ -52,8 +52,13 @@ namespace CQuark {
             var right = _expressions[0].ComputeValue(content);
             IType type = CQuark.AppDomain.GetITypeByCQValue(right);
             CQ_Value value = new CQ_Value();
-            value.SetCQType(targettype);
-            value.SetValue(type.ConvertTo(right.GetValue(), targettype));
+
+            if(targettype.type != null) {
+                value.SetValue(targettype.type, type.ConvertTo(right.GetValue(), targettype));
+            }
+            else if(targettype.stype != null) {
+                value.SetValue(targettype.stype, type.ConvertTo(right.GetValue(), targettype));
+            }
 
 
 #if CQUARK_DEBUG

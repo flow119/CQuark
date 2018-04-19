@@ -53,14 +53,14 @@ namespace CQuark
             if (code == '+')
             {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.m_type = typeof(string);
+
                 if(right == CQ_Value.Null)
                 {
-                    returnValue.SetValue((string)left.GetValue() + "null");
+                    returnValue.SetValue(typeof(string), (string)left.GetValue() + "null");
                 }
                 else
                 {
-                    returnValue.SetValue((string)left.GetValue() + right.GetValue().ToString());
+                    returnValue.SetValue(typeof(string), (string)left.GetValue() + right.GetValue().ToString());
                 }
                 return returnValue;
             }

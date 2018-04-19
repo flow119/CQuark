@@ -168,22 +168,21 @@ namespace CQuark {
                         }
                         else if(tlist[expbegin].text == "continue") {
                             ICQ_Expression subvalue = Compiler_Expression_Loop_Continue(tlist, expbegin);
-                            if(null == subvalue) return false;
+                            if(null == subvalue) 
+                                return false;
                             else
                                 values.Add(subvalue);
                         }
                         else if(tlist[expbegin].text == "true") {
                             CQ_Value v = new CQ_Value();
-                            v.m_type = typeof(bool);
-                            v.SetValue(true);
+                            v.SetValue(typeof(bool), true);
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);
                         }
                         else if(tlist[expbegin].text == "false") {
                             CQ_Value v = new CQ_Value();
-                            v.m_type = typeof(bool);
-                            v.SetValue(false);
+                            v.SetValue(typeof(bool), false);
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);

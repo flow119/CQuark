@@ -35,8 +35,7 @@ namespace CQuark
             if (right.m_type == typeof(string))
             {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.m_type = typeof(String);
-                returnValue.SetValue( "null" + right.GetValue());
+                returnValue.SetValue(typeof(string), "null" + right.GetValue());
                 return returnValue;
             }
             throw new NotImplementedException();

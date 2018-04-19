@@ -39,15 +39,24 @@ namespace CQuark {
         }
 
         public void SetValue (Type type, object obj) {
-
+            m_type = type;
+            m_stype = null;
+            m_value = obj;
+            _isNum = false;
         }
 
         public void SetValue (Class_CQuark stype, object obj) {
-
+            m_type = null;
+            m_stype = stype;
+            m_value = obj;
+            _isNum = false;
         }
 
         public void SetNoneTypeValue (object obj) {
-
+            m_type = null;
+            m_stype = null;
+            m_value = obj;
+            _isNum = false;
         }
 
 

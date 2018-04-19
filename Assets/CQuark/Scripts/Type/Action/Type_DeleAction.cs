@@ -60,8 +60,7 @@ namespace CQuark
                     //    Dele_Map_Delegate.Map(rightValue as IDeleBase, calldele);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.m_type = null;
-                    ret.SetValue( info);
+                    ret.SetNoneTypeValue(info);
                     return ret;
                 }
                 else if (code == '-')
@@ -71,8 +70,7 @@ namespace CQuark
                     //    Dele_Map_Delegate.Destroy(rightValue as IDeleBase);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.m_type = null;
-                    ret.SetValue(info);
+                    ret.SetNoneTypeValue(info);
                     return ret;
                 }
 
@@ -90,15 +88,13 @@ namespace CQuark
                 if (code == '+')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.m_type = null;
-                    ret.SetValue(Delegate.Combine(info, calldele));
+                    ret.SetNoneTypeValue(Delegate.Combine(info, calldele));
                     return ret;
                 }
                 else if (code == '-')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.m_type = null;
-                    ret.SetValue( Delegate.Remove(info, calldele));
+                    ret.SetNoneTypeValue( Delegate.Remove(info, calldele));
                     return ret;
                 }
             }

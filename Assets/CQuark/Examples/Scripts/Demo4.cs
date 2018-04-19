@@ -41,8 +41,12 @@ public class Demo4 : MonoBehaviour {
             var thisOfScript = typeOfScript._class.New(content, new CQuark.CQ_Value[0]).GetValue();
 			//调用脚本类成员变量赋值
 			//Debug.LogWarning(thisOfScript+","+ typeOfScript+","+ typeOfScript.function);
-			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", 200);
-			typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", 300);
+            CQuark.CQ_Value val1 = new CQuark.CQ_Value();
+            val1.SetValue(typeof(int), 200);
+            CQuark.CQ_Value val2 = new CQuark.CQ_Value();
+            val2.SetValue(typeof(int), 300);
+            typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", val1);
+            typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", val2);
 			//调用脚本类成员函数
             var returnvalue = typeOfScript._class.MemberCall(content, thisOfScript, "GetHP", new CQuark.CQ_Value[0]);
 			object i = returnvalue.GetValue();

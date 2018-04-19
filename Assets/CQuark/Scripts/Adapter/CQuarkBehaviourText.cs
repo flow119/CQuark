@@ -67,8 +67,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 
 	CQ_Value SetMember(string name, System.Type type, Object obj){
 		CQ_Value val = new CQ_Value ();
-        val.m_type = type;
-		val.SetValue(obj);
+        val.SetValue(type, obj);
 		inst.member[name] = val;
 		return val;
 	}
