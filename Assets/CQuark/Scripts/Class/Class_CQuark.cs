@@ -196,11 +196,7 @@ namespace CQuark {
             NewStatic();
             CQ_Value temp = CQ_Value.Null;
             if(this.staticMemberInstance.TryGetValue(valuename, out temp)) {
-                CQ_Value v = new CQ_Value();
-                v.m_type = temp.m_type;
-                v.m_stype = temp.m_stype;
-                v.CopyValue(temp);
-                return v;
+				return temp;
             }
             throw new NotImplementedException();
         }
@@ -222,7 +218,6 @@ namespace CQuark {
                     }
                 }
                 CQ_Value val = this.staticMemberInstance[valuename];
-                //Copy Type
                 val.SetValue(value);
 				this.staticMemberInstance[valuename] = val;
                 return true;
@@ -339,11 +334,7 @@ namespace CQuark {
             CQ_ClassInstance sin = object_this as CQ_ClassInstance;
             CQ_Value temp = CQ_Value.Null;
             if(sin.member.TryGetValue(valuename, out temp)) {
-                CQ_Value v = new CQ_Value();
-                v.m_type = temp.m_type;
-                v.m_stype = temp.m_stype;
-                v.CopyValue(temp);
-                return v;
+                return temp;
             }
             throw new NotImplementedException();
         }
@@ -365,7 +356,6 @@ namespace CQuark {
                     }
                 }
                 CQ_Value val = sin.member[valuename];
-                //Copy Type
                 val.SetValue(value);
                 sin.member[valuename] = val;
                 return true;

@@ -210,7 +210,15 @@ namespace CQuark {
             CQ_Value retV = CQ_Value.Null;
 
             bool bFind = values.TryGetValue(name, out retV);
-            if(!bFind) {
+            if(bFind) {
+				//var第一次赋值类型
+				if(retV.m_type == typeof(Type_Var.var) && value != null){
+					retV.SetValue(value.GetType(), value);
+				}else{
+					retV.SetValue(value);
+				}
+				values[name] = retV;
+			}else{
                 if(CallType != null) {
                     Class_CQuark.Member retM = Class_CQuark.Member.Null;
                     bool bRet = CallType.members.TryGetValue(name, out retM);
@@ -227,21 +235,12 @@ namespace CQuark {
                         }
                         return;
                     }
-
                 }
                 string err = CallType.Name + "\n";
                 foreach(var m in CallType.members) {
                     err += m.Key + ",";
                 }
                 throw new Exception("值没有定义过" + name + "," + err);
-
-            }
-            else {
-                //var第一次赋值类型
-                if(retV.m_type == typeof(Type_Var.var) && value != null)
-                    retV.m_type = value.GetType();
-                retV.SetValue(value);
-                values[name] = retV;
             }
         }
         public void DefineAndSet (string name, TypeBridge type, object value) {

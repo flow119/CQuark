@@ -23,8 +23,10 @@ namespace CQuark {
         private object m_value;
         private double _num;
         private bool _isNum;
-        public BreakType m_breakBlock;//= BreakType.None;
+		//expression如果需要跳出，暂存在CQ_Value中
+        public BreakType m_breakBlock;
 
+		//类型桥，在不确定用Type还是CQClass时用
         public TypeBridge typeBridge {
             get {
                 if(m_type != null)
@@ -34,24 +36,33 @@ namespace CQuark {
                 return null;
             }
         }
+		//没有类型有2种情况，1本身是null，2是一种Action
+		public bool TypeIsEmpty {
+			get {
+				return m_type == null && m_stype == null;
+			}
+		}
+       
+		public void CopyValue (CQ_Value val) {
+			m_value = val.m_value;
+		}
 
-        //public CQ_Value (Type type, object obj) {
-        //    m_type = type;
-        //    m_stype = null;
-        //    m_value = obj;
-        //    _num = 0;
-        //    _isNum = false;
-        //    m_breakBlock = BreakType.None;
-        //}
-
-        //public CQ_Value () {
-        //    m_type = null;
-        //    m_stype = null;
-        //    m_value = null;
-        //    _num = 0;
-        //    _isNum = false;
-        //    m_breakBlock = BreakType.None;
-        //}
+		public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
+			if(typeBridge == null) {
+				m_type = null;
+				m_stype = null;
+			}
+			else if(typeBridge.type != null) {
+				m_type = typeBridge.type;
+			}
+			else if(typeBridge.stype != null) {
+				m_stype = typeBridge.stype;
+			}
+			else {
+				m_type = null;
+				m_stype = null;
+			}
+		}
 
         public void SetValue (Type type, object obj) {
             m_type = type;
@@ -83,11 +94,7 @@ namespace CQuark {
             _isNum = false;
         }
 
-        public bool TypeIsEmpty {
-            get {
-                return m_type == null && m_stype == null;
-            }
-        }
+        
 
         public object GetValue () {
             if(_isNum)
@@ -96,24 +103,16 @@ namespace CQuark {
         }
 
         public void SetValue (Object obj) {//TODO ，这个以后也会删除
-            m_value = obj;
+			if(m_type != null){
+				SetValue(m_type, obj);
+			}else if(m_stype != null){
+				SetValue(m_stype, obj);
+			}else{
+				throw new Exception("不允许在无类型的情况下赋值");
+			}
         }
-        public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
-            if(typeBridge == null) {
-                m_type = null;
-                m_stype = null;
-            }
-            else if(typeBridge.type != null) {
-                m_type = typeBridge.type;
-            }
-            else if(typeBridge.stype != null) {
-                m_stype = typeBridge.stype;
-            }
-            else {
-                m_type = null;
-                m_stype = null;
-            }
-        }
+
+        
 
         public double GetDouble () {
             if(_isNum)
@@ -121,9 +120,7 @@ namespace CQuark {
             return Type_Numeric.GetDouble(m_type, m_value);
         }
 
-        public void CopyValue (CQ_Value val) {
-            m_value = val.m_value;
-        }
+       
 
         public static CQ_Value One {
             get {

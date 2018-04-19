@@ -50,18 +50,13 @@ namespace CQuark {
             content.InStack(this);
 #endif
             CQ_Value rv = new CQ_Value();
-			rv.m_breakBlock = BreakType.Return;
             if(_expressions.Count > 0 && _expressions[0] != null) {
-                var v = _expressions[0].ComputeValue(content);
-                {
-                    rv.m_type = v.m_type;
-                    rv.m_stype = v.m_stype;
-                    rv.CopyValue(v);
-                }
+                rv = _expressions[0].ComputeValue(content);
             }
             else {
                 rv.m_type = typeof(void);
             }
+			rv.m_breakBlock = BreakType.Return;
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
