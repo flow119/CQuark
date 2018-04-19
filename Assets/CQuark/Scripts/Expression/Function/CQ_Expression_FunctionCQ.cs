@@ -80,14 +80,16 @@ namespace CQuark {
                         for(int i = 0; i < parameters.Length; i++) {
                             obja[i] = parameters[i].GetValue();
                         }
-                        v.SetValue(d.DynamicInvoke(obja));
-                        if(v == CQ_Value.Null) {
+                        object obj = d.DynamicInvoke(obja);
+                        
+                        if(obj == null) {
                             v.m_type = null;
                             v.m_stype = null;
                         }
                         else {
                             v.m_type = v.GetValue().GetType();
                         }
+                        v.SetValue(obj);
                     }
                     //else
                     //{

@@ -34,6 +34,23 @@ namespace CQuark {
             }
         }
 
+        public void SetValue (Type type, double num) {
+
+        }
+
+        public void SetValue (Type type, object obj) {
+
+        }
+
+        public void SetValue (Class_CQuark stype, object obj) {
+
+        }
+
+        public void SetNoneTypeValue (object obj) {
+
+        }
+
+
         public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
             if(typeBridge == null) {
                 m_type = null;

@@ -191,9 +191,10 @@ namespace CQuark {
                         for(int i = 0; i < _params.Length; i++) {
                             objs[i] = _params[i].GetValue();
                         }
-                        value.SetValue(dele.DynamicInvoke(objs));
-                        if(value.GetValue() != null)
-                            value.m_type = value.GetValue().GetType();
+                        object obj = dele.DynamicInvoke(objs);
+                        if(obj != null)
+                            value.m_type = obj.GetType();
+                        value.SetValue(obj);
                         //value.breakBlock = BreakType.None;
                         return value;
                     }
@@ -233,6 +234,7 @@ namespace CQuark {
                     }
                 }
                 CQ_Value val = this.staticMemberInstance[valuename];
+                //Copy Type
                 val.SetValue(value);
 				this.staticMemberInstance[valuename] = val;
                 return true;
@@ -287,9 +289,10 @@ namespace CQuark {
                         for(int i = 0; i < _params.Length; i++) {
                             objs[i] = _params[i].GetValue();
                         }
-                        value.SetValue(dele.DynamicInvoke(objs));
-                        if(value.GetValue() != null)
-                            value.m_type = value.GetValue().GetType();
+                        object obj = dele.DynamicInvoke(objs);
+                        if(obj != null)
+                            value.m_type = obj.GetType();
+                        value.SetValue(obj);
                         //value.breakBlock = BreakType.None;
                         return value;
                     }
@@ -372,6 +375,7 @@ namespace CQuark {
                     }
                 }
                 CQ_Value val = sin.member[valuename];
+                //Copy Type
                 val.SetValue(value);
                 sin.member[valuename] = val;
                 return true;

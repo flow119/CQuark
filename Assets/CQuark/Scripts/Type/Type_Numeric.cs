@@ -121,7 +121,7 @@ namespace CQuark
 			try {
                 returnValue = new CQ_Value();
                 Type retType = GetReturnType_Math2Value(left.m_type, right.m_type);
-                returnValue.m_type = retType;
+                
                 double leftValue = left.GetDouble();// GetDouble(left.m_type, left.GetValue());
                 double rightValue = right.GetDouble();// GetDouble(right.m_type, right.GetValue());
 				double finalValue;
@@ -145,7 +145,7 @@ namespace CQuark
 				default:
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
-
+                returnValue.m_type = retType;
                 returnValue.SetValue( Double2TargetType(retType, finalValue));
                 return true;
 
