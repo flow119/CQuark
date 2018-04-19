@@ -54,7 +54,7 @@ namespace CQuark {
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {
 			coroutine.StopCoroutine(CoroutineCompute(content, coroutine));
 			yield break;
-			//TODO 这里要想方设法把break抛出给上层
+			//TODO 这里要想方设法把yield break抛出给上层
         }
 
         public override string ToString () {

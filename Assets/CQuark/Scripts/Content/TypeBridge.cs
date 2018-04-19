@@ -22,7 +22,6 @@ namespace CQuark {
             return m.type;
         }
         public static implicit operator TypeBridge (Type type) {
-            //TODO 这里怎么优化
             TypeBridge retT = null;
             if(dicType_CQType.TryGetValue(type, out retT)) {
                 return retT;

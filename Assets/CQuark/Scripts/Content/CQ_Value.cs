@@ -11,8 +11,8 @@ namespace CQuark {
         public Type m_type;
         public Class_CQuark m_stype;
         //值obj与_num取其一
-        private object m_value;
-        private double _num;
+        private object _obj;
+        private double _num;	//如果是数字则存在_num里,可以避免装箱的消耗
         private bool _isNum;
 		//expression如果需要跳出，暂存在CQ_Value中
         public BreakType m_breakBlock;
@@ -36,16 +36,17 @@ namespace CQuark {
 
 
         public void SetValue (Type type, object obj) {
+			//TODO 如果是数字类型特殊处理
             m_type = type;
             m_stype = null;
-            m_value = obj;
+            _obj = obj;
             _isNum = false;
         }
 
         public void SetValue (Class_CQuark stype, object obj) {
             m_type = null;
             m_stype = stype;
-            m_value = obj;
+            _obj = obj;
             _isNum = false;
         }
 
@@ -61,23 +62,12 @@ namespace CQuark {
         public void SetNoneTypeValue (object obj) {
             m_type = null;
             m_stype = null;
-            m_value = obj;
+            _obj = obj;
             _isNum = false;
         }
 
-        
-
-        public object GetValue () {
-            if(_isNum)
-                return _num;
-            return m_value;
-        }
-
-//		public T GetValue<T>(){
-//
-//		}
-
-        public void SetValue (Object obj) {//TODO ，这个以后也会删除
+		public void SetValue (Object obj) {//TODO ，这个以后也会删除
+			//这里有个不安全的地方，比如m_type = float，存进来的万一是int，就取不出了
 			if(m_type != null){
 				SetValue(m_type, obj);
 			}else if(m_stype != null){
@@ -85,14 +75,26 @@ namespace CQuark {
 			}else{
 				throw new Exception("不允许在无类型的情况下赋值");
 			}
+		}
+
+        public object GetValue () {
+            if(_isNum)
+                return _num;
+            return _obj;
         }
+
+//		public T GetValue<T>(){
+//
+//		}
+
+       
 
         
 
         public double GetDouble () {
             if(_isNum)
                 return _num;
-            return Type_Numeric.GetDouble(m_type, m_value);
+            return Type_Numeric.GetDouble(m_type, _obj);
         }
 
        
@@ -101,7 +103,7 @@ namespace CQuark {
             get {
                 CQ_Value g_one = new CQ_Value();
                 g_one.m_type = (typeof(int));
-                g_one.m_value = (int)1;
+                g_one._obj = (int)1;
 
                 return g_one;
             }
@@ -110,7 +112,7 @@ namespace CQuark {
             get {
                 CQ_Value g_oneM = new CQ_Value();
                 g_oneM.m_type = (typeof(int));
-                g_oneM.m_value = (int)-1;
+                g_oneM._obj = (int)-1;
 
                 return g_oneM;
             }
@@ -124,39 +126,39 @@ namespace CQuark {
 
         public override string ToString () {
             if(m_type != null)
-                return "<" + m_type.ToString() + ">" + m_value;
+                return "<" + m_type.ToString() + ">" + _obj;
             else if(m_stype != null)
-                return "<" + m_stype.ToString() + ">" + m_value;
-            return "<null>" + m_value;
+                return "<" + m_stype.ToString() + ">" + _obj;
+            return "<null>" + _obj;
         }
 
         public object ConvertTo (TypeBridge targetType) {
-            if(m_value == null)
-                return m_value;
+            if(_obj == null)
+                return _obj;
             if(m_type == targetType.type && m_stype == targetType.stype)
-                return m_value;
+                return _obj;
             //TODO 这个流程太长了，最好简化
             if(m_type != null)
-                return AppDomain.GetITypeByType(m_type).ConvertTo(m_value, targetType);
+                return AppDomain.GetITypeByType(m_type).ConvertTo(_obj, targetType);
             else if(m_stype != null)
-                return AppDomain.GetITypeByClassCQ(m_stype).ConvertTo(m_value, targetType);
+                return AppDomain.GetITypeByClassCQ(m_stype).ConvertTo(_obj, targetType);
             return null;
         }
 
         public object ConvertTo (Type targetType) {
-            if(m_value == null)
-                return m_value;
+            if(_obj == null)
+                return _obj;
             if(m_type == targetType)
-                return m_value;
+                return _obj;
             if(m_type != null)
-                return AppDomain.GetITypeByType(m_type).ConvertTo(m_value, targetType);
+                return AppDomain.GetITypeByType(m_type).ConvertTo(_obj, targetType);
 
             return null;
         }
 
         //类型是否等于targetType
         public bool EqualType (Type targetType) {
-            if(m_value == null && !targetType.IsValueType)
+            if(_obj == null && !targetType.IsValueType)
                 return true;
 
             if(m_type == targetType)
@@ -212,11 +214,11 @@ namespace CQuark {
         }
 
         public static bool operator == (CQ_Value a, CQ_Value b) {
-            return a.m_type == b.m_type && a.m_stype == b.m_stype && a.m_value == b.m_value;
+            return a.m_type == b.m_type && a.m_stype == b.m_stype && a._obj == b._obj;
         }
 
         public static bool operator != (CQ_Value a, CQ_Value b) {
-            return a.m_type != b.m_type || a.m_stype != b.m_stype || a.m_value != b.m_value;
+            return a.m_type != b.m_type || a.m_stype != b.m_stype || a._obj != b._obj;
         }
     }
 }
