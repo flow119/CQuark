@@ -45,7 +45,7 @@ namespace CQuark {
 #endif
             CQ_Value r = _expressions[0].ComputeValue(content);
 			IType type = CQuark.AppDomain.GetITypeByCQValue(r);
-
+			//TODO 合理的方式应该是一元取反
             r = type.Math2Value('*', r, CQ_Value.OneMinus);
 #if CQUARK_DEBUG
             content.OutStack(this);
