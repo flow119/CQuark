@@ -289,11 +289,8 @@ namespace CQuark
 
                 //会走到这里说明不是简单的数学计算了
                 //我们这里开始使用Wrap，如果再不行再走反射
-                CQ_Value leftcq = new CQ_Value();
-                leftcq.SetCQType(this.typeBridge);
-                leftcq.CopyValue(left);
                 if(code == '+') {
-                    if(Wrap.OpAddition(leftcq, right, out returnValue)) {
+                    if(Wrap.OpAddition(left, right, out returnValue)) {
                         return returnValue;
                     }
                     else {
@@ -302,7 +299,7 @@ namespace CQuark
                 }
 
                 else if(code == '-') {
-                    if(Wrap.OpSubtraction(leftcq, right, out returnValue)) {
+                    if(Wrap.OpSubtraction(left, right, out returnValue)) {
                         return returnValue;
                     }
                     else {
@@ -310,7 +307,7 @@ namespace CQuark
                     }
                 }
                 else if(code == '*') {
-                    if(Wrap.OpMultiply(leftcq, right, out returnValue)) {
+                    if(Wrap.OpMultiply(left, right, out returnValue)) {
                         return returnValue;
                     }
                     else {
@@ -318,7 +315,7 @@ namespace CQuark
                     }
                 }
                 else if(code == '/') {
-                    if(Wrap.OpDivision(leftcq, right, out returnValue)) {
+                    if(Wrap.OpDivision(left, right, out returnValue)) {
                         return returnValue;
                     }
                     else {
@@ -326,7 +323,7 @@ namespace CQuark
                     }
                 }
                 else if(code == '%') {
-                    if(Wrap.OpModulus(leftcq, right, out returnValue)) {
+                    if(Wrap.OpModulus(left, right, out returnValue)) {
                         return returnValue;
                     }
                     else {

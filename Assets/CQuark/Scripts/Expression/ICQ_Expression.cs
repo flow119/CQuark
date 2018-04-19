@@ -4,6 +4,15 @@ using System.Text;
 using System.Collections;
 
 namespace CQuark {
+	public enum BreakType {
+		None = 0,
+		Continue = 1,
+		Break = 1,
+		Return = 10,
+		YieldBreak = 11,
+		YieldReturn = 12,
+	}
+
     //表达式是一个值
     public interface ICQ_Expression {
         /// <summary>

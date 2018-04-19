@@ -3,15 +3,6 @@ using System;
 using System.Collections.Generic;
 
 namespace CQuark {
-    public enum BreakType {
-        None = 0,
-        Continue = 1,
-        Break = 1,
-        Return = 10,
-        YieldBreak = 11,
-        YieldReturn = 12,
-    }
-
     /// <summary>
     /// 西瓜的值
     /// </summary>
@@ -42,27 +33,7 @@ namespace CQuark {
 				return m_type == null && m_stype == null;
 			}
 		}
-       
-		public void CopyValue (CQ_Value val) {
-			m_value = val.m_value;
-		}
 
-		public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
-			if(typeBridge == null) {
-				m_type = null;
-				m_stype = null;
-			}
-			else if(typeBridge.type != null) {
-				m_type = typeBridge.type;
-			}
-			else if(typeBridge.stype != null) {
-				m_stype = typeBridge.stype;
-			}
-			else {
-				m_type = null;
-				m_stype = null;
-			}
-		}
 
         public void SetValue (Type type, object obj) {
             m_type = type;
@@ -86,7 +57,7 @@ namespace CQuark {
             else
                 SetNoneTypeValue(obj);
         }
-
+		//没有类型有2种情况，1本身是null，2是一种Action
         public void SetNoneTypeValue (object obj) {
             m_type = null;
             m_stype = null;
@@ -101,6 +72,10 @@ namespace CQuark {
                 return _num;
             return m_value;
         }
+
+//		public T GetValue<T>(){
+//
+//		}
 
         public void SetValue (Object obj) {//TODO ，这个以后也会删除
 			if(m_type != null){

@@ -186,7 +186,7 @@ namespace CQuark {
         }
 
 
-        public void Define (string name, TypeBridge type) {
+        public void Define (string name, TypeBridge cqtype) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
             }
@@ -195,7 +195,12 @@ namespace CQuark {
             }
 
             CQ_Value v = new CQ_Value();
-            v.SetCQType(type);
+			if(cqtype != null){
+				if(cqtype.type != null)
+					v.m_type = cqtype.type;
+				else if(cqtype.stype != null)
+					v.m_stype = cqtype.stype;
+			}
             values[name] = v;
 
             int newdepth = tvalueDepth.Pop() + 1;
