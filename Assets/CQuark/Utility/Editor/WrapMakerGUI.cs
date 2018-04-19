@@ -168,7 +168,7 @@ public class WrapMakerGUI : WrapMaker {
         text = text.Replace("{WrapDiv}", wrapOp[3]);
         text = text.Replace("{WrapMod}", wrapOp[4]);
 
-		//TODO OP text = text.OP
+		//TODO OP 逻辑比较
      //  (op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
 		if(string.IsNullOrEmpty(assemblyName)) {
