@@ -280,8 +280,7 @@ namespace CQuark
             Type rightType = right.m_type;
             if(rightType == typeof(string) && code == '+') {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.m_type = typeof(string);
-                returnValue.SetValue(left.GetValue().ToString() + right.GetValue() as string);
+                returnValue.SetValue(typeof(string), left.GetValue().ToString() + right.GetValue() as string);
                 return returnValue;
             }
             else {

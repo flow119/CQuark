@@ -104,8 +104,7 @@ namespace CQuark {
             }
 
             CQ_Value v = new CQ_Value();
-            v.m_stype = this;
-            v.SetValue(c);
+            v.SetValue(this, c);
             return v;
         }
         void NewStatic () {
@@ -192,11 +191,14 @@ namespace CQuark {
                             objs[i] = _params[i].GetValue();
                         }
                         object obj = dele.DynamicInvoke(objs);
-                        if(obj != null)
-                            value.m_type = obj.GetType();
-                        value.SetValue(obj);
+                        if(obj == null) {
+                            return CQ_Value.Null;
+                        }
+                        else {
+                            value.SetValue(obj.GetType(), obj);
+                            return value;
+                        }
                         //value.breakBlock = BreakType.None;
-                        return value;
                     }
                 }
 
@@ -290,11 +292,13 @@ namespace CQuark {
                             objs[i] = _params[i].GetValue();
                         }
                         object obj = dele.DynamicInvoke(objs);
-                        if(obj != null)
-                            value.m_type = obj.GetType();
-                        value.SetValue(obj);
-                        //value.breakBlock = BreakType.None;
-                        return value;
+                        if(obj == null) {
+                            return CQ_Value.Null;
+                        }
+                        else {
+                            value.SetValue(obj.GetType(), obj);
+                            return value;
+                        }
                     }
                 }
 
