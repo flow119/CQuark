@@ -16,9 +16,10 @@ namespace CQuark {
     /// 西瓜的值
     /// </summary>
     public struct CQ_Value {
-
+        //类型Type与Class_CQuark取其一
         public Type m_type;
         public Class_CQuark m_stype;
+        //值obj与_num取其一
         private object m_value;
         private double _num;
         private bool _isNum;
@@ -64,6 +65,15 @@ namespace CQuark {
             m_stype = stype;
             m_value = obj;
             _isNum = false;
+        }
+
+        public void SetValue (TypeBridge cqType, object obj) {
+            if(cqType.type != null)
+                SetValue(cqType.type, obj);
+            else if(cqType.stype != null)
+                SetValue(cqType.stype, obj);
+            else
+                SetNoneTypeValue(obj);
         }
 
         public void SetNoneTypeValue (object obj) {

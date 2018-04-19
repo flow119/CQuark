@@ -77,7 +77,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 			Class_CQuark.Member m = new Class_CQuark.Member();
 			m.bPublic = true;
 			m.bReadOnly = true;
-			m.type = AppDomain.GetITypeByType(type);
+			m.m_itype = AppDomain.GetITypeByType(type);
 			cclass.members.Add(name, m);
 		}
 	}

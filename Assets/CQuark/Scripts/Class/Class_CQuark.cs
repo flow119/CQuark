@@ -63,8 +63,7 @@ namespace CQuark {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {
                         CQ_Value val = new CQ_Value();
-                        val.SetCQType(i.Value.type.typeBridge);
-                        val.SetValue(i.Value.type.defaultValue);
+                        val.SetValue(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
                         c.member[i.Key] = val;
                         //sv.value_value.member[i.Key] = new CQ_Value();
                         //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
@@ -72,10 +71,9 @@ namespace CQuark {
                     }
                     else {
                         var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                        if(i.Value.type.typeBridge != value.typeBridge) {
+                        if(i.Value.m_itype.typeBridge != value.typeBridge) {
                             CQ_Value val = new CQ_Value();
-                            val.SetCQType(i.Value.type.typeBridge);
-                            val.SetValue(value.ConvertTo(i.Value.type.typeBridge));
+                            val.SetValue(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
                             c.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = new CQ_Value();
@@ -107,18 +105,16 @@ namespace CQuark {
                         if(i.Value.expr_defvalue == null) {
 
                             CQ_Value val = new CQ_Value();
-                            val.SetCQType(i.Value.type.typeBridge);
-                            val.SetValue(i.Value.type.defaultValue);
+                            val.SetValue(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
                             staticMemberInstance[i.Key] = val;
 
                         }
                         else {
                             var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
-                            if(i.Value.type.typeBridge != value.typeBridge) {
+                            if(i.Value.m_itype.typeBridge != value.typeBridge) {
 
                                 CQ_Value val = new CQ_Value();
-                                val.SetCQType(i.Value.type.typeBridge);
-                                val.SetValue(value.ConvertTo(i.Value.type.typeBridge));
+                                val.SetValue(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
                                 staticMemberInstance[i.Key] = val;
 
                                 //staticMemberInstance[i.Key] = new CQ_Value();
@@ -212,17 +208,17 @@ namespace CQuark {
         public bool StaticValueSet (CQ_Content content, string valuename, object value) {
             NewStatic();
             if(this.staticMemberInstance.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge) {
+                if(value != null && value.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
                     if(value is CQ_ClassInstance) {
-                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge) {
-							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
+                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
+							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].m_itype.typeBridge);
                         }
                     }
                     else if(value is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].m_itype.typeBridge);
                     }
                 }
                 CQ_Value val = this.staticMemberInstance[valuename];
@@ -355,17 +351,17 @@ namespace CQuark {
         public bool MemberValueSet (CQ_Content content, object object_this, string valuename, object value) {
             CQ_ClassInstance sin = object_this as CQ_ClassInstance;
             if(sin.member.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].type.typeBridge) {
+                if(value != null && value.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
                     if(value is CQ_ClassInstance) {
-                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].type.typeBridge) {
-                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].type.typeBridge);
+                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
+                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].m_itype.typeBridge);
                         }
                     }
                     else if(value is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].type.typeBridge);
+                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].m_itype.typeBridge);
                     }
                 }
                 CQ_Value val = sin.member[valuename];
@@ -395,12 +391,18 @@ namespace CQuark {
             public ICQ_Expression expr_runtime;
            
         }
-        public class Member {
-            public IType type;
+        public struct Member {
+            public IType m_itype;
             public bool bPublic;
             public bool bStatic;
             public bool bReadOnly;
             public ICQ_Expression expr_defvalue;
+
+            public static Member Null {
+                get {
+                    return new Member();
+                }
+            }
         }
 
         public Dictionary<string, Function> functions = new Dictionary<string, Function>();

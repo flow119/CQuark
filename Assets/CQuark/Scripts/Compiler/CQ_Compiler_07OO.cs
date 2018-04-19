@@ -311,7 +311,7 @@ namespace CQuark {
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = !(haveset && setpublic);
-                            member.type = idtype;
+                            member.m_itype = idtype;
 #if CQUARK_DEBUG
                             DebugUtil.Log("发现Get/Set:" + idname);
 #endif
@@ -338,7 +338,7 @@ namespace CQuark {
                             member.bStatic = bStatic;
                             member.bPublic = bPublic;
                             member.bReadOnly = false;
-                            member.type = idtype;
+                            member.m_itype = idtype;
 
 
                             //ICQ_Expression expr = null;

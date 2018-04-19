@@ -212,7 +212,7 @@ namespace CQuark {
             bool bFind = values.TryGetValue(name, out retV);
             if(!bFind) {
                 if(CallType != null) {
-                    Class_CQuark.Member retM = null;
+                    Class_CQuark.Member retM = Class_CQuark.Member.Null;
                     bool bRet = CallType.members.TryGetValue(name, out retM);
                     if(bRet) {
                         if(retM.bStatic) {
@@ -253,8 +253,7 @@ namespace CQuark {
             }
 
             CQ_Value v = new CQ_Value();
-            v.SetCQType(type);
-            v.SetValue( value);
+            v.SetValue(type, value);
             values[name] = v;
 
             int newdepth = tvalueDepth.Pop() + 1;
@@ -280,7 +279,7 @@ namespace CQuark {
             }
 
             if(CallType != null) {
-                Class_CQuark.Member retM = null;
+                Class_CQuark.Member retM = Class_CQuark.Member.Null;
                 if(CallType.members.TryGetValue(name, out retM)) {
                     if(retM.bStatic) {
                         return CallType.staticMemberInstance[name];
