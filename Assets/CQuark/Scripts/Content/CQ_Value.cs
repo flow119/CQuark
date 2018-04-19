@@ -73,7 +73,21 @@ namespace CQuark {
             _isNum = false;
         }
 
+        public bool TypeIsEmpty {
+            get {
+                return m_type == null && m_stype == null;
+            }
+        }
 
+        public object GetValue () {
+            if(_isNum)
+                return _num;
+            return m_value;
+        }
+
+        public void SetValue (Object obj) {//TODO ，这个以后也会删除
+            m_value = obj;
+        }
         public void SetCQType (TypeBridge typeBridge) {//TODO 这些调用都要被废除
             if(typeBridge == null) {
                 m_type = null;
@@ -89,22 +103,6 @@ namespace CQuark {
                 m_type = null;
                 m_stype = null;
             }
-        }
-
-        public bool TypeIsEmpty {
-            get {
-                return m_type == null && m_stype == null;
-            }
-        }
-
-        public object GetValue () {
-            if(_isNum)
-                return _num;
-            return m_value;
-        }
-
-        public void SetValue (Object obj) {//TODO ，这个以后也会删除
-            m_value = obj;
         }
 
         public double GetDouble () {

@@ -237,6 +237,7 @@ namespace CQuark {
 
             }
             else {
+                //var第一次赋值类型
                 if(retV.m_type == typeof(Type_Var.var) && value != null)
                     retV.m_type = value.GetType();
                 retV.SetValue(value);

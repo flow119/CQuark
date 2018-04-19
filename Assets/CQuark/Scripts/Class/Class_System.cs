@@ -245,8 +245,7 @@ namespace CQuark {
             if(methodInfo == null) {
                 throw new Exception("函数不存在function:" + type.ToString() + "." + function);
             }
-            v.m_type = methodInfo.ReturnType;
-            v.SetValue(methodInfo.Invoke(object_this, _oparams.ToArray()));
+            v.SetValue(methodInfo.ReturnType, methodInfo.Invoke(object_this, _oparams.ToArray()));
             
             return v;
         }
@@ -405,8 +404,7 @@ namespace CQuark {
                         }
                     }
                 }
-                v.m_type = methodInfo.ReturnType;
-                v.SetValue(methodInfo.Invoke(object_this, _oparams.ToArray()));
+                v.SetValue(methodInfo.ReturnType, methodInfo.Invoke(object_this, _oparams.ToArray()));
                 
             }
             else {
