@@ -66,14 +66,19 @@ namespace CQuark {
             _isNum = false;
         }
 
-		public void SetValue (Object obj) {//TODO ，这个以后也会删除
-			//这里有个不安全的地方，比如m_type = float，存进来的万一是int，就取不出了
+		/// <summary>
+		/// 调用这个方法必须保证类型与obj匹配，比如m_type = float，存进来的万一是int，就取不出了，所以外面就必须做好转型
+		/// </summary>
+		public void SetValue (Object obj) {
 			if(m_type != null){
 				SetValue(m_type, obj);
 			}else if(m_stype != null){
 				SetValue(m_stype, obj);
 			}else{
-				throw new Exception("不允许在无类型的情况下赋值");
+				if(obj == null)
+					_obj = null;
+				else
+					throw new Exception("不允许在无类型的情况下赋值");
 			}
 		}
 

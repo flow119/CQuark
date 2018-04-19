@@ -73,12 +73,11 @@ namespace CQuark {
 
                         }
                     }
-                    //val = v.value;
+
+					//float a; int b =1; a = b;
                     if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
                         val = v.ConvertTo(value_type);
                     }
-
-
                     content.Set(value_name, val);
                 }
             }
@@ -118,12 +117,11 @@ namespace CQuark {
 
                         }
                     }
-                    //val = v.value;
+                    
+					//float a; int b =1; a = b;
                     if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
                         val = v.ConvertTo(value_type);
                     }
-
-
                     content.Set(value_name, val);
                 }
             }

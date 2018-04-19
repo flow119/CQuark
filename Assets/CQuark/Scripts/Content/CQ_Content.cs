@@ -208,6 +208,7 @@ namespace CQuark {
             tvalues.Push(name);
         }
 
+		//这里的obj的值必须和CQ_Value的类型一致，所以必须在外层做好转型
         public void Set (string name, object value) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
@@ -217,6 +218,7 @@ namespace CQuark {
             bool bFind = values.TryGetValue(name, out retV);
             if(bFind) {
 				//var第一次赋值类型
+				//和C#一样，var v = 1; v = 1.2f; 是编译不过的
 				if(retV.m_type == typeof(Type_Var.var) && value != null){
 					retV.SetValue(value.GetType(), value);
 				}else{
@@ -235,7 +237,7 @@ namespace CQuark {
                         }
                         else {
                             CQ_Value val = CallThis.member[name];
-                            val.SetValue( value);
+                            val.SetValue(value);
                             CallThis.member[name] = val;
                         }
                         return;

@@ -70,7 +70,8 @@ namespace CQuark {
                         if(v != CQ_Value.Null) {
 							if(v.m_breakBlock == BreakType.Return)
 								vrt = v;
-							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) break;
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) 
+								break;
                         }
                     }
                     else {
@@ -80,7 +81,8 @@ namespace CQuark {
                         if(v != CQ_Value.Null) {
 							if(v.m_breakBlock == BreakType.Return)
 								vrt = v;
-							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) bbreak = true;
+							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) 
+								bbreak = true;
 
                         }
                         content.DepthRemove();
