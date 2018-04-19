@@ -141,7 +141,8 @@ namespace CQuark {
                             var v = expr_block.ComputeValue(content);
                             if(v != CQ_Value.Null) {
                                 //								if (v.breakBlock > 2) vrt = v;
-								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) bbreak = true;
+								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break)
+                                    bbreak = true;
 
                             }
                         }

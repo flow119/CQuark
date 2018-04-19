@@ -103,7 +103,7 @@ namespace CQuark {
             return m_value;
         }
 
-        public void SetValue (Object obj) {
+        public void SetValue (Object obj) {//TODO ，这个以后也会删除
             m_value = obj;
         }
 

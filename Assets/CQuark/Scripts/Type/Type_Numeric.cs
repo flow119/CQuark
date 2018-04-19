@@ -336,8 +336,7 @@ namespace CQuark
 
                 //Wrap没走到，走反射
                 returnValue = new CQ_Value();
-                returnValue.SetCQType(typeBridge);
-                returnValue.SetValue(call.Invoke(null, new object[] { left.GetValue(), right.GetValue() }));
+                returnValue.SetValue(typeBridge.type, call.Invoke(null, new object[] { left.GetValue(), right.GetValue() }));
                 //function.StaticCall(env,"op_Addtion",new List<ICL>{})
                 return returnValue;
             }
