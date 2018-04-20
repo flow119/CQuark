@@ -83,7 +83,18 @@ namespace CQuark {
             else if(_expressions[0] is CQ_Expression_GetValue) {
                 CQ_Expression_GetValue f = _expressions[0] as CQ_Expression_GetValue;
                 content.Set(f.value_name, left);
-            }
+			}else if(_expressions[0] is CQ_Expression_IndexGet){
+				CQ_Expression_IndexGet f = _expressions[0] as CQ_Expression_IndexGet;
+				CQ_Value parent = f._expressions[0].ComputeValue(content);
+				object obj = parent.GetValue();
+				CQ_Value key = f._expressions[1].ComputeValue(content);
+
+				IType parenttype = CQuark.AppDomain.GetITypeByCQValue(parent);
+				parenttype._class.IndexSet(content, parent.GetValue(), key.GetValue(), left.GetValue());
+
+				CQ_Expression_GetValue g = f._expressions[0] as CQ_Expression_GetValue;
+				content.Set(g.value_name, parent);
+			}
 
             
             

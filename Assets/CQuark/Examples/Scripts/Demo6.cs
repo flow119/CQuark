@@ -10,7 +10,7 @@ public class Demo6 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CQuark.AppDomain.Reset();
-        CQuark.AppDomain.RegisterType(typeof(Debug), "Debug");
+        CQuark.AppDomain.RegisterType<Debug>("Debug");
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
 	}

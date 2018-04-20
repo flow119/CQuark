@@ -24,7 +24,8 @@ namespace CQuark
         }
         public virtual object defaultValue
         {
-            get { return null; }
+			get ;
+			protected set;
         }
         public IClass _class
         {
@@ -34,7 +35,7 @@ namespace CQuark
 
         public Type _type;
 
-        public Type_Numeric(Type type, string setkeyword, bool dele)
+		public Type_Numeric(Type type, string setkeyword, object defaultVal)
         {
             _class = new Class_System(type);
             if (setkeyword != null)
@@ -47,6 +48,7 @@ namespace CQuark
             }
             this.typeBridge = type;
             this._type = type;
+			this.defaultValue = defaultVal;
         }
 
 		/// <summary>

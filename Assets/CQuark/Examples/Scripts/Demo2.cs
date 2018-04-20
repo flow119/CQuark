@@ -7,7 +7,7 @@ public class Demo2 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CQuark.AppDomain.Reset();
-        CQuark.AppDomain.RegisterType(typeof(Debug), "Debug");
+		CQuark.AppDomain.RegisterType<Debug>("Debug");
 		Execute1 ();
 
 		//将函数Today()注册给脚本使用

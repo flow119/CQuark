@@ -57,76 +57,101 @@ namespace CQuark{
 //			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
 
             //对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
-            RegisterType(typeof(int[]), "int[]");	//数组要独立注册
-            RegisterType(typeof(string[]), "string[]");
-            RegisterType(typeof(float[]), "float[]");
-            RegisterType(typeof(bool[]), "bool[]");
-            RegisterType(typeof(byte[]), "byte[]");
+//            RegisterType<int[]>("int[]");	//数组要独立注册
+//            RegisterType<string[]>("string[]");
+//            RegisterType<float[]>("float[]");
+//            RegisterType<bool[]>("bool[]");
+//            RegisterType<byte[]>("byte[]");
 
-            RegisterType(typeof(System.DateTime), "DateTime");
-            RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
-            RegisterType(typeof(System.IO.Directory), "Directory");
-            RegisterType(typeof(System.IO.File), "File");
+            RegisterType<System.DateTime>("DateTime");
+            RegisterType<System.DayOfWeek>("DayOfWeek");
+
+			RegisterType(typeof(System.IO.Directory), "Directory");//静态类无法使用模板
+			RegisterType(typeof(System.IO.File),"File");
 
         }
+			
+		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
+		private static IType MakeIType<T>(string keyword){
+			Type type = typeof(T);
+			if(type.IsSubclassOf(typeof(Delegate))) 
+				return MakeITypeWithDelegate(type, keyword);
+			return new Type_Numeric(type, keyword, default(T));
+		}
 
 		private static IType MakeIType (Type type, string keyword) {
-            if(!type.IsSubclassOf(typeof(Delegate))) {
-                return new Type_Numeric(type, keyword, false);
-            }
-            var method = type.GetMethod("Invoke");
-            var pp = method.GetParameters();
-            if(method.ReturnType == typeof(void)) {
-                if(pp.Length == 0) {
-                    return new Type_DeleAction(type, keyword);
-                }
-                else if(pp.Length == 1) {
-                    var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-                    return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric;
-                }
-                else if(pp.Length == 2) {
-                    var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
-                }
-                else if(pp.Length == 3) {
-                    var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                    return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
-                }
-                else {
-                    throw new Exception("还没有支持这么多参数的委托");
-                }
-            }
-            else {
-                Type gtype = null;
-                if(pp.Length == 0) {
-                    gtype = typeof(Type_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
-                }
-                else if(pp.Length == 1) {
-                    gtype = typeof(Type_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
-                }
-                else if(pp.Length == 2) {
-                    gtype = typeof(Type_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
-                }
-                else if(pp.Length == 3) {
-                    gtype = typeof(Type_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-                }
-                else {
-                    throw new Exception("还没有支持这么多参数的委托");
-                }
-                return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
-            }
-        }
+			if(type.IsSubclassOf(typeof(Delegate))) 
+				return MakeITypeWithDelegate(type, keyword);
+			return new Type_Numeric(type, keyword, null);
+		}
 
-        //TODO 注册全改用这个方法，这样可以存默认值
+		private static IType MakeITypeWithDelegate(Type type, string keyword){
+			var method = type.GetMethod("Invoke");
+			var pp = method.GetParameters();
+			if(method.ReturnType == typeof(void)) {
+				if(pp.Length == 0) {
+					return new Type_DeleAction(type, keyword);
+				}
+				else if(pp.Length == 1) {
+					var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
+					return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric;
+				}
+				else if(pp.Length == 2) {
+					var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
+					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+				}
+				else if(pp.Length == 3) {
+					var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+				}
+				else {
+					throw new Exception("还没有支持这么多参数的委托");
+				}
+			}
+			else {
+				Type gtype = null;
+				if(pp.Length == 0) {
+					gtype = typeof(Type_DeleNonVoidAction<>).MakeGenericType(new Type[] { method.ReturnType });
+				}
+				else if(pp.Length == 1) {
+					gtype = typeof(Type_DeleNonVoidAction<,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType });
+				}
+				else if(pp.Length == 2) {
+					gtype = typeof(Type_DeleNonVoidAction<,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType });
+				}
+				else if(pp.Length == 3) {
+					gtype = typeof(Type_DeleNonVoidAction<,,,>).MakeGenericType(new Type[] { method.ReturnType, pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
+				}
+				else {
+					throw new Exception("还没有支持这么多参数的委托");
+				}
+				return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+			}
+		}
+
+
+		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
         public static void RegisterType<T> (string keyword) {
-            //default(T);
-            //typeof(T);
-            //string(namespace+class) - Type/ClassCQ - IType 互相关联，并且能对应到obj default 
+			RegisterType(MakeIType<T>(keyword));
+			RegisterType(MakeIType<T[]>(keyword+"[]"));
         }
-
+		//非静态类走这个函数注册不会报错，但是会取不到默认值
         public static void RegisterType (Type type, string keyword) {
             RegisterType(MakeIType(type, keyword));
         }
+
+		public static void RegisterCQType(IType type){
+			if (type.typeBridge.stype != null)
+				ccq2itype [type.typeBridge.stype] = type;
+			string typename = type.keyword;
+			if(string.IsNullOrEmpty(typename)) {//匿名自动注册
+				
+			}
+			else {
+				str2itype[typename] = type;
+				CQ_TokenParser.AddType(typename);
+			}
+		}
 
         public static void RegisterType (IType type) {
 			if (type.typeBridge.type != null)
@@ -266,7 +291,7 @@ namespace CQuark{
                 //先把所有代码里的类注册一遍
                 IList<IType> types = CQ_Expression_Compiler.FilePreCompile(f.Key, f.Value);
                 foreach(var type in types) {
-                    RegisterType(type);
+					RegisterCQType(type);
                 }
             }
             foreach(KeyValuePair<string, IList<Token>> f in project) {
@@ -291,7 +316,7 @@ namespace CQuark{
             IList<IType> types = CQ_Expression_Compiler.FileCompile(filename, listToken, embDebugToken);
             foreach(var type in types) {
                 if(GetTypeByKeywordQuiet(type.keyword) == null)
-                    RegisterType(type);
+					RegisterCQType(type);
             }
         }
         /// <summary>

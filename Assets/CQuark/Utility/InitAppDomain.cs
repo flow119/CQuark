@@ -71,7 +71,7 @@ public class InitAppDomain : MonoBehaviour {
         AppDomain.RegisterType(typeof(UnityEngine.Time), "Time");
 
         AppDomain.RegisterType(typeof(Vector2), "Vector2");
-        AppDomain.RegisterType(typeof(Vector3), "Vector3");
+        AppDomain.RegisterType<Vector3>("Vector3");
         AppDomain.RegisterType(typeof(Vector4), "Vector4");
         AppDomain.RegisterType(typeof(WWW), "WWW");
         AppDomain.RegisterType(typeof(WWWForm), "WWWForm");

@@ -8,7 +8,7 @@ public class Demo5 : MonoBehaviour {
 	CQuarkParagraph script = new CQuarkParagraph();
 	void Start(){
 		CQuark.AppDomain.Reset();
-        CQuark.AppDomain.RegisterType(typeof(Debug),"Debug");
+		CQuark.AppDomain.RegisterType<Debug>("Debug");
 		ExecuteFile ();
 	}
 
