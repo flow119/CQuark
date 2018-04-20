@@ -17,9 +17,6 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 项目最新地址：        https://github.com/flow119/CQuark
 
-疯光无线前辈的项目地址：https://github.com/lightszero/cslightcore
-
-以及疯光无线的Unity案例：https://github.com/lightszero/CSLightStudio
 
 
 ## 免责声明
@@ -33,7 +30,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 可以热更新。
 * 纯C#语法，你不用去学lua了。
 * 不像ILRuntime需要生成dll。如果你乐意，你直接拿.cs文件后缀改成.txt就能用。
-* 因为新版本使用了Wrap机制，效率与Lua一样。
+* 因为新版本使用了Wrap机制，<del>效率与Lua一样。</del>(目前效率比Xlua高20%，但GC是Xlua的2倍，在完成无装箱版本后GC将与Xlua一样)
 
 
 ## 下个版本预告
@@ -191,6 +188,8 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 下个版本
 
+* 无装箱CQ_Value（可能是历史上最大的改动）
+* 全新的注册机制（包含默认参、自动注册数组）
 * 完善Wrap注册GUI工具
 * 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 
@@ -204,9 +203,17 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 2 劫持GetComponent和AddComponent，重写。
 
 
-下下下个版本
+## 特别鸣谢
+
+疯光无线（李剑英） 没有他的CSLE的架构就没有西瓜
+
+疯光无线的git: https://github.com/lightszero/
+
+Jare（郭佳伟） 在我开发过程中提供了非常多的优化建议
+
+Jare的git: https://github.com/jareguo/
 
 
 
 ## 联系我
-QQ:181664367
+我的QQ:181664367
