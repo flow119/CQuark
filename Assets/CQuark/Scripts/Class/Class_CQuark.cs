@@ -201,24 +201,25 @@ namespace CQuark {
             throw new NotImplementedException();
         }
 
-        public bool StaticValueSet (CQ_Content content, string valuename, object value) {
+        public bool StaticValueSet (CQ_Content content, string valuename, CQ_Value value) {
             NewStatic();
+            object obj = value.GetValue();
             if(this.staticMemberInstance.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
-                    if(value is CQ_ClassInstance) {
-                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
-							value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].m_itype.typeBridge);
+                if(obj != null && obj.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
+                    if(obj is CQ_ClassInstance) {
+                        if((obj as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
+                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
                         }
                     }
-                    else if(value is DeleEvent) {
+                    else if(obj is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].m_itype.typeBridge);
+                        obj = CQuark.AppDomain.ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
                     }
                 }
                 CQ_Value val = this.staticMemberInstance[valuename];
-                val.SetValue(value);
+                val.SetValue(obj);
 				this.staticMemberInstance[valuename] = val;
                 return true;
             }
@@ -339,24 +340,25 @@ namespace CQuark {
             throw new NotImplementedException();
         }
 
-        public bool MemberValueSet (CQ_Content content, object object_this, string valuename, object value) {
+        public bool MemberValueSet (CQ_Content content, object object_this, string valuename, CQ_Value value) {
             CQ_ClassInstance sin = object_this as CQ_ClassInstance;
+            object obj = value.GetValue();
             if(sin.member.ContainsKey(valuename)) {
-                if(value != null && value.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
-                    if(value is CQ_ClassInstance) {
-                        if((value as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
-                            value = CQuark.AppDomain.GetITypeByClassCQ((value as CQ_ClassInstance).type).ConvertTo(value, this.members[valuename].m_itype.typeBridge);
+                if(obj != null && obj.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
+                    if(obj is CQ_ClassInstance) {
+                        if((obj as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
+                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
                         }
                     }
-                    else if(value is DeleEvent) {
+                    else if(obj is DeleEvent) {
 
                     }
                     else {
-                        value = CQuark.AppDomain.ConvertTo(value, this.members[valuename].m_itype.typeBridge);
+                        obj = CQuark.AppDomain.ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
                     }
                 }
                 CQ_Value val = sin.member[valuename];
-                val.SetValue(value);
+                val.SetValue(obj);
                 sin.member[valuename] = val;
                 return true;
             }

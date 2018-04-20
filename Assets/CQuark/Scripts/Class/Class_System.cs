@@ -154,7 +154,7 @@ namespace CQuark {
             }
         }
 
-        public bool StaticValueSet (CQ_Content content, string valuename, object value) {
+        public bool StaticValueSet (CQ_Content content, string valuename, CQ_Value value) {
             bool b = MemberValueSet(content, null, valuename, value);
             if(!b) {
                 if(type.BaseType != null) {
@@ -475,7 +475,7 @@ namespace CQuark {
 
 
         Dictionary<string, MemberValueCache> memberValueSetCaches = new Dictionary<string, MemberValueCache>();
-        public bool MemberValueSet (CQ_Content content, object object_this, string valuename, object value) {
+        public bool MemberValueSet (CQ_Content content, object object_this, string valuename, CQ_Value value) {
             MemberValueCache c;
 
             if(!memberValueSetCaches.TryGetValue(valuename, out c)) {
@@ -507,20 +507,22 @@ namespace CQuark {
             if(c.type < 0)
                 return false;
 
-            if(c.type == 1) {
-                if(value != null && value.GetType() != c.finfo.FieldType) {
+            object obj = value.GetValue();
 
-                    value = CQuark.AppDomain.ConvertTo(value, c.finfo.FieldType);
+            if(c.type == 1) {
+                if(obj != null && obj.GetType() != c.finfo.FieldType) {
+
+                    obj = CQuark.AppDomain.ConvertTo(obj, c.finfo.FieldType);
                 }
-                c.finfo.SetValue(object_this, value);
+                c.finfo.SetValue(object_this, obj);
             }
             else if(c.type == 2) {
                 var ptype = c.minfo.GetParameters()[0].ParameterType;
-                if(value != null && value.GetType() != ptype) {
+                if(obj != null && obj.GetType() != ptype) {
 
-                    value = CQuark.AppDomain.ConvertTo(value, ptype);
+                    obj = CQuark.AppDomain.ConvertTo(obj, ptype);
                 }
-                c.minfo.Invoke(object_this, new object[] { value });
+                c.minfo.Invoke(object_this, new object[] { obj });
             }
             return true;
         }

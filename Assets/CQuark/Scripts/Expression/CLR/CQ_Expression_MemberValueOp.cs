@@ -66,7 +66,7 @@ namespace CQuark {
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
             if(!Wrap.MemberValueSet(parent.m_type, parent.GetValue(), membername, vout)) {
-                type._class.MemberValueSet(content, parent.GetValue(), membername, vout.GetValue());
+                type._class.MemberValueSet(content, parent.GetValue(), membername, vout);
 			}
 
 #if CQUARK_DEBUG

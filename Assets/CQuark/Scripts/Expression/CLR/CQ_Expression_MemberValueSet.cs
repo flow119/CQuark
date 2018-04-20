@@ -63,7 +63,7 @@ namespace CQuark {
 	            if(s != null) {
 	                iclass = s.type;
 	            }
-                iclass.MemberValueSet(content, parent.GetValue(), membername, value.GetValue());
+                iclass.MemberValueSet(content, parent.GetValue(), membername, value);
 			}
 #if CQUARK_DEBUG
             content.OutStack(this);

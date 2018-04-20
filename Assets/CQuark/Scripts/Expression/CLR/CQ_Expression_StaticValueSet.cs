@@ -43,11 +43,11 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var value = _expressions[0].ComputeValue(content);
+            CQ_Value value = _expressions[0].ComputeValue(content);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
 			if(!Wrap.StaticValueSet(type.typeBridge.type, staticmembername, value)){
-                type._class.StaticValueSet(content, staticmembername, value.GetValue());
+                type._class.StaticValueSet(content, staticmembername, value);
 			}
             
 #if CQUARK_DEBUG
