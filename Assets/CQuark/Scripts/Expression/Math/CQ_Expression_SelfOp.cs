@@ -46,15 +46,13 @@ namespace CQuark {
             CQ_Value v = content.Get(value_name);
             IType type = CQuark.AppDomain.GetITypeByCQValue(v);
             CQ_Value retVal = type.Math2Value(mathop, v, CQ_Value.One);
-
-			object val = type.ConvertTo(retVal.GetValue(), v.typeBridge);
-			content.Set(value_name, val);
+            v.UsingValue(retVal);
+			content.Set(value_name, v);
 
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-			retVal.SetValue(v.typeBridge, val);
-            return retVal;
+            return v;
         }
 
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {

@@ -50,9 +50,6 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
-            if(define == null) {
-
-            }
             define.ComputeValue(content);
 
             System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
@@ -62,29 +59,32 @@ namespace CQuark {
             var it = emu.GetEnumerator();
             CQ_Value vrt = CQ_Value.Null;
             while(it.MoveNext()) {
+                //content.Set(define.value_name, it.Current);
+                CQ_Value val = new CQ_Value();
+                val.SetValue(define.value_type, it.Current);
+                content.Set(define.value_name, val);
 
-                content.Set(define.value_name, it.Current);
+
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
-                        var v = expr_block.ComputeValue(content);
-                        if(v != CQ_Value.Null) {
-							if(v.m_breakBlock == BreakType.Return)
-								vrt = v;
-							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) 
-								break;
-                        }
+                        CQ_Value v = expr_block.ComputeValue(content);
+                        
+						if(v.m_breakBlock == BreakType.Return)
+							vrt = v;
+						if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) 
+							break;
+
                     }
                     else {
                         content.DepthAdd();
                         bool bbreak = false;
-                        var v = expr_block.ComputeValue(content);
-                        if(v != CQ_Value.Null) {
-							if(v.m_breakBlock == BreakType.Return)
-								vrt = v;
-							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) 
-								bbreak = true;
+                        CQ_Value v = expr_block.ComputeValue(content);
 
-                        }
+						if(v.m_breakBlock == BreakType.Return)
+							vrt = v;
+						if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return) 
+							bbreak = true;
+
                         content.DepthRemove();
                         if(bbreak)
                             break;
@@ -105,9 +105,6 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
-            if(define == null) {
-
-            }
             define.ComputeValue(content);
 
             System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
@@ -115,22 +112,23 @@ namespace CQuark {
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
             var it = emu.GetEnumerator();
-            //			CQ_Content.Value vrt = null;
-            while(it.MoveNext()) {
 
-                content.Set(define.value_name, it.Current);
+            while(it.MoveNext()) {
+                //content.Set(define.value_name, it.Current);
+                CQ_Value val = new CQ_Value();
+                val.SetValue(define.value_type, it.Current);
+                content.Set(define.value_name, val);
+
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         if(expr_block.hasCoroutine) {
                             yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
-                            var v = expr_block.ComputeValue(content);
-                            if(v != CQ_Value.Null) {
-                                //								if (v.breakBlock > 2) vrt = v;
-								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
-									break;
-                            }
+                            CQ_Value v = expr_block.ComputeValue(content);
+
+							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
+								break;
                         }
                     }
                     else {
@@ -140,13 +138,10 @@ namespace CQuark {
                             yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
-                            var v = expr_block.ComputeValue(content);
-                            if(v != CQ_Value.Null) {
-                                //								if (v.breakBlock > 2) vrt = v;
-								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break)
-                                    bbreak = true;
+                            CQ_Value v = expr_block.ComputeValue(content);
 
-                            }
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break)
+                                bbreak = true;
                         }
                         content.DepthRemove();
                         if(bbreak)

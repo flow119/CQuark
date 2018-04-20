@@ -30,7 +30,9 @@ public class CQuarkParagraph {
         return content.Get(name);
     }
     public void SetValue (string name, object v) {
-        content.DefineAndSet(name, v.GetType(), v);
+        CQ_Value val = new CQ_Value();
+        val.SetValue(v.GetType(), v);
+        content.DefineAndSet(name, val);
     }
     public void ClearValue () {
         content = new CQ_Content();

@@ -36,12 +36,12 @@ namespace CQuark {
         }
         public bool hasCoroutine {
             get {
-                if(_expressions == null || _expressions.Count == 0)
-                    return false;
-                foreach(ICQ_Expression expr in _expressions) {
-                    if(expr.hasCoroutine)
-                        return true;
-                }
+                //if(_expressions == null || _expressions.Count == 0)
+                //    return false;
+                //foreach(ICQ_Expression expr in _expressions) {
+                //    if(expr.hasCoroutine)
+                //        return true;
+                //}
                 return false;
             }
         }
@@ -55,7 +55,8 @@ namespace CQuark {
             IType type = CQuark.AppDomain.GetITypeByCQValue(left);
 
             CQ_Value val = type.Math2Value(mathop, left, right);
-            val.SetValue(left.typeBridge, type.ConvertTo(val.GetValue(), left.typeBridge));
+            //val.SetValue(left.typeBridge, type.ConvertTo(val.GetValue(), left.typeBridge));
+            left.UsingValue(val);
             
             if(_expressions[0] is CQ_Expression_MemberValueGet) {
                 CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
@@ -71,7 +72,7 @@ namespace CQuark {
                     ptype._class.MemberValueSet(content, parent.GetValue(), f.membername, val);
 				}
             }
-            if(_expressions[0] is CQ_Expression_StaticValueGet) {
+            else if(_expressions[0] is CQ_Expression_StaticValueGet) {
                 CQ_Expression_StaticValueGet f = _expressions[0] as CQ_Expression_StaticValueGet;
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
@@ -79,6 +80,11 @@ namespace CQuark {
                     f.type._class.StaticValueSet(content, f.staticmembername, val);
 				}
             }
+            else if(_expressions[0] is CQ_Expression_GetValue) {
+                CQ_Expression_GetValue f = _expressions[0] as CQ_Expression_GetValue;
+                content.Set(f.value_name, left);
+            }
+
             
             
 #if CQUARK_DEBUG

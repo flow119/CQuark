@@ -51,8 +51,11 @@ namespace CQuark {
         #region Script IMPL
         CQ_Content contentMemberCalc = null;
         public CQ_Value New (CQ_Content content, CQ_Value[] _params) {
-            if(contentMemberCalc == null)
+            if(contentMemberCalc == null) {
                 contentMemberCalc = new CQ_Content();
+                contentMemberCalc.DepthAdd();
+            }
+               
             NewStatic();
 
             
@@ -148,22 +151,17 @@ namespace CQuark {
 #endif
                     // int i = 0;
                     for(int i = 0; i < functions[function]._paramtypes.Count; i++)
-                    //foreach (var p in this.functions[function]._params)
                     {
-                        content.DefineAndSet(functions[function]._paramnames[i], functions[function]._paramtypes[i].typeBridge, _params[i].GetValue());
-                        //i++;
+                        //content.DefineAndSet(functions[function]._paramnames[i], functions[function]._paramtypes[i].typeBridge, _params[i].GetValue());
+                        content.DefineAndSet(functions[function]._paramnames[i], _params[i]);
                     }
-                    //var value = this.functions[function].expr_runtime.ComputeValue(content);
                     CQ_Value value = CQ_Value.Null;
                     if(this.functions[function].expr_runtime != null) {
                         value = this.functions[function].expr_runtime.ComputeValue(content);
-                        //if(value != null)
-                        //    value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
-
                     return value;
                 }
             }
@@ -223,15 +221,16 @@ namespace CQuark {
             if(this.functions.TryGetValue(func, out funccache)) {
                 if(funccache.bStatic == false) {
                     CQ_Content content = new CQ_Content();
-
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
+                    content.DepthAdd();
 #if CQUARK_DEBUG
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 #endif
                     for(int i = 0; i < funccache._paramtypes.Count; i++) {
-                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
+                        //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
+                        content.DefineAndSet(funccache._paramnames[i], _params[i]);
                     }
                     CQ_Value value = CQ_Value.Null;
                     var funcobj = funccache;
@@ -241,13 +240,10 @@ namespace CQuark {
                     }
                     if(funcobj.expr_runtime != null) {
                         value = funcobj.expr_runtime.ComputeValue(content);
-                        //if(value != null)
-                        //    value.breakBlock = BreakType.None;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
-
                     return value;
                 }
             }
@@ -290,13 +286,11 @@ namespace CQuark {
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
 #endif
                     for(int i = 0; i < funccache._paramtypes.Count; i++)
-                    //int i = 0;
-                    //foreach (var p in this.functions[func]._params)
                     {
-                        content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
-                        //i++;
+                        //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
+                        content.DefineAndSet(funccache._paramnames[i], _params[i]);
                     }
-                    //CQ_Content.Value value = null;
+
                     var funcobj = funccache;
                     if(this.bInterface) {
                         content.CallType = (object_this as CQ_ClassInstance).type;
@@ -304,14 +298,10 @@ namespace CQuark {
                     }
                     if(funcobj.expr_runtime != null) {
                         yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
-                        //						if (value != null)
-                        //							value.breakBlock = 0;
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
-
-                    //					return value;
                 }
             }
             else

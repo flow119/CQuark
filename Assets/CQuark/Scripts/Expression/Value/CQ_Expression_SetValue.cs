@@ -52,34 +52,22 @@ namespace CQuark {
             {
 
                 CQ_Value v = _expressions[0].ComputeValue(content);
+                CQ_Value oldVal = CQ_Value.Null;
 
-                {
-                    object val = v.GetValue();
-                    TypeBridge value_type = null;
-                    if(content.values != null && content.values.ContainsKey(value_name)) {
-                        value_type = content.values[value_name].typeBridge;
+                if(content.values != null && content.values.ContainsKey(value_name)) {
+                    oldVal = content.values[value_name];
+                }
+                else if(content.CallType != null && content.CallType.members.ContainsKey(value_name)) {
+                    if(content.CallType.members[value_name].bStatic) {
+                        oldVal = content.CallType.staticMemberInstance[value_name];
                     }
                     else {
-                        if(content.CallType != null) {
-                            if(content.CallType.members.ContainsKey(value_name)) {
-                                if(content.CallType.members[value_name].bStatic) {
-                                    value_type = content.CallType.staticMemberInstance[value_name].typeBridge;
-                                }
-                                else {
-                                    value_type = content.CallThis.member[value_name].typeBridge;
-                                }
-
-                            }
-
-                        }
+                        oldVal = content.CallThis.member[value_name];
                     }
-
-					//float a; int b =1; a = b;
-                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
-                        val = v.ConvertTo(value_type);
-                    }
-                    content.Set(value_name, val);
                 }
+
+                oldVal.UsingValue(v);
+                content.Set(value_name, oldVal);
             }
 #if CQUARK_DEBUG
             content.OutStack(this);
@@ -96,34 +84,23 @@ namespace CQuark {
             }
             else {
                 CQ_Value v = _expressions[0].ComputeValue(content);
+                CQ_Value oldVal = CQ_Value.Null;
 
-                {
-                    object val = v.GetValue();
-                    TypeBridge value_type = null;
-                    if(content.values != null && content.values.ContainsKey(value_name)) {
-                        value_type = content.values[value_name].typeBridge;
+                if(content.values != null && content.values.ContainsKey(value_name)) {
+                    oldVal = content.values[value_name];
+                }
+                else if(content.CallType != null && content.CallType.members.ContainsKey(value_name)) {
+                    if(content.CallType.members[value_name].bStatic) {
+                        oldVal = content.CallType.staticMemberInstance[value_name];
                     }
                     else {
-                        if(content.CallType != null) {
-                            if(content.CallType.members.ContainsKey(value_name)) {
-                                if(content.CallType.members[value_name].bStatic) {
-                                    value_type = content.CallType.staticMemberInstance[value_name].typeBridge;
-                                }
-                                else {
-                                    value_type = content.CallThis.member[value_name].typeBridge;
-                                }
-
-                            }
-
-                        }
+                        oldVal = content.CallThis.member[value_name];
                     }
-                    
-					//float a; int b =1; a = b;
-                    if((Type)value_type != typeof(Type_Var.var) && value_type != v.typeBridge) {
-                        val = v.ConvertTo(value_type);
-                    }
-                    content.Set(value_name, val);
                 }
+
+                oldVal.UsingValue(v);
+                content.Set(value_name, oldVal);
+
             }
 #if CQUARK_DEBUG
 			content.OutStack(this);

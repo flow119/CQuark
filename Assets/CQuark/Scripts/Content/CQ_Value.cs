@@ -84,6 +84,7 @@ namespace CQuark {
 
         //保持原有的type，而使用别的CQ_Value的值（一般用于赋值）
         public void UsingValue (CQ_Value val) {
+            //TODO 如果类型是var 这里需要复制
             m_type = val.m_type;
             m_stype = val.m_stype;
 

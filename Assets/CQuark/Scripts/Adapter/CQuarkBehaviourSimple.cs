@@ -24,9 +24,15 @@ public class CQuarkBehaviourSimple : CQuarkBehaviourBase {
 		BuildBlock ("OnDestroy", m_OnDestroy);
 		content = new CQ_Content();//创建上下文，并设置变量给脚本访问
         content.DepthAdd();
-		content.DefineAndSet ("gameObject", typeof(GameObject), this.gameObject);
-		content.DefineAndSet ("transform", typeof(Transform), this.transform);
+        DefineAndSet("gameObject", typeof(GameObject), this.gameObject);
+        DefineAndSet("transform", typeof(Transform), this.transform);
 	}
+
+    void DefineAndSet (string name, System.Type type, Object obj) {
+        CQ_Value value = new CQ_Value();
+        value.SetValue(type, obj);
+        content.DefineAndSet(name, value);
+    }
 
 
 	protected override void CallScript(string key, bool useCoroutine){

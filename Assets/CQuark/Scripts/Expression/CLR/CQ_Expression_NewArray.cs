@@ -45,7 +45,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            object[] list = new object[_expressions.Count];
+            object[] list = new object[_expressions.Count - 1];
             int count = _expressions[0] == null ? (_expressions.Count - 1) : (int)_expressions[0].ComputeValue(content).GetValue();
             if(count == 0)
                 throw new Exception("不能创建0长度数组");

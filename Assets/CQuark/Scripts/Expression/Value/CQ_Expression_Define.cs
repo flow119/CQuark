@@ -56,18 +56,18 @@ namespace CQuark {
             if(__expressions != null && __expressions.Count > 0) {
 
                 CQ_Value v = __expressions[0].ComputeValue(content);
-                object val = v.GetValue();
-                if((Type)value_type == typeof(Type_Var.var)) {
-                    if(!v.TypeIsEmpty)
-                        value_type = v.typeBridge;
+                //object val = v.GetValue();
+                //if((Type)value_type == typeof(Type_Var.var)) {
+                //    if(!v.TypeIsEmpty)
+                //        value_type = v.typeBridge;
 
-                }
-                else if(v.typeBridge != value_type) {
-                    val = v.ConvertTo(value_type);
+                //}
+                //else if(v.typeBridge != value_type) {
+                //    val = v.ConvertTo(value_type);
 
-                }
+                //}
 
-                content.DefineAndSet(value_name, value_type, val);
+                content.DefineAndSet(value_name, v);
             }
             else {
                 content.Define(value_name, value_type);
@@ -87,18 +87,18 @@ namespace CQuark {
                 }
                 else {
                     CQ_Value v = __expressions[0].ComputeValue(content);
-                    object val = v.GetValue();
-                    if((Type)value_type == typeof(Type_Var.var)) {
-                        if(!v.TypeIsEmpty)
-                            value_type = v.typeBridge;
+                    //object val = v.GetValue();
+                    //if((Type)value_type == typeof(Type_Var.var)) {
+                    //    if(!v.TypeIsEmpty)
+                    //        value_type = v.typeBridge;
 
-                    }
-                    else if(v.typeBridge != value_type) {
-                        val = v.ConvertTo(value_type);
+                    //}
+                    //else if(v.typeBridge != value_type) {
+                    //    val = v.ConvertTo(value_type);
 
-                    }
+                    //}
 
-                    content.DefineAndSet(value_name, value_type, val);
+                    content.DefineAndSet(value_name, v);
                 }
             }
             else {

@@ -208,36 +208,37 @@ namespace CQuark {
             tvalues.Push(name);
         }
 
-		//这里的obj的值必须和CQ_Value的类型一致，所以必须在外层做好转型
-        public void Set (string name, object value) {
+        public void Set (string name, CQ_Value value) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
             }
-            CQ_Value retV = CQ_Value.Null;
-
-            bool bFind = values.TryGetValue(name, out retV);
+            CQ_Value oldVal = CQ_Value.Null;
+            bool bFind = values.TryGetValue(name, out oldVal);
             if(bFind) {
-				//var第一次赋值类型
-				//和C#一样，var v = 1; v = 1.2f; 是编译不过的
-				if(retV.m_type == typeof(Type_Var.var) && value != null){
-					retV.SetValue(value.GetType(), value);
-				}else{
-					retV.SetValue(value);
-				}
-				values[name] = retV;
-			}else{
+                //var第一次赋值类型
+                if(oldVal.m_type == typeof(Type_Var.var)){
+                    if(value.m_type != null)
+                        oldVal.m_type = value.m_type;
+                    else if(value.m_stype != null)
+                        oldVal.m_stype = value.m_stype;
+                }
+                
+                oldVal.UsingValue(value);
+                values[name] = oldVal;
+            }
+            else {
                 if(CallType != null) {
                     Class_CQuark.Member retM = Class_CQuark.Member.Null;
                     bool bRet = CallType.members.TryGetValue(name, out retM);
                     if(bRet) {
                         if(retM.bStatic) {
                             CQ_Value val = CallType.staticMemberInstance[name];
-                            val.SetValue(value);
+                            val.UsingValue(value);
                             CallType.staticMemberInstance[name] = val;
                         }
                         else {
                             CQ_Value val = CallThis.member[name];
-                            val.SetValue(value);
+                            val.UsingValue(value);
                             CallThis.member[name] = val;
                         }
                         return;
@@ -249,6 +250,20 @@ namespace CQuark {
                 }
                 throw new Exception("值没有定义过" + name + "," + err);
             }
+        }
+
+        public void DefineAndSet (string name, CQ_Value value) {
+            if(values == null) {
+                values = new Dictionary<string, CQ_Value>();
+            }
+            else if(values.ContainsKey(name)) {
+                throw new Exception(name + "已经定义过");
+            }
+            values[name] = value;
+
+            int newdepth = tvalueDepth.Pop() + 1;
+            tvalueDepth.Push(newdepth);
+            tvalues.Push(name);
         }
         public void DefineAndSet (string name, TypeBridge type, object value) {
             if(values == null) {

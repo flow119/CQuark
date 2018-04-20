@@ -45,6 +45,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 		}
 		cclass = type._class as Class_CQuark;
 		content = new CQ_Content();
+        content.DepthAdd();
 
 		//TODO 最好在编译的时候就做，不要在实例化的时候做
 		RegisterMember("gameObject", typeof(GameObject));

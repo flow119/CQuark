@@ -64,7 +64,9 @@ namespace CQuark {
                     CQ_Expression_Define def = _expressions[i] as CQ_Expression_Define;
                     if(err.GetType() == (Type)def.value_type || err.GetType().IsSubclassOf((Type)def.value_type)) {
                         content.DepthAdd();
-                        content.DefineAndSet(def.value_name, def.value_type, err);
+                        CQ_Value errVal = new CQ_Value();
+                        errVal.SetValue(def.value_type, err);
+                        content.DefineAndSet(def.value_name, errVal);
 
                         _expressions[i + 1].ComputeValue(content);
                         content.DepthRemove();
