@@ -45,6 +45,14 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 ## 版本更新记录
 
+2018-04-21 v0.9.7
+
+    由于CQ_Value改为struct出现一些引用问题，修复以下情况：
+    v += xxx, v[i] = xxx, v[i] += xxx 值没有赋回去
+    
+    增加新的MakeIType<T>(string keyword)。建议注册类型全部使用此方法（对于结构体，默认值不再是null）
+    以往的MakeIType(Type t, string keyword)依然保留，建议只有注册静态类才调用（静态类无法使用模板T）
+
 2018-04-18 v0.9.6
 
     感谢FixedList陪伴了我们那么久，这个版本把FixedList全部替换成了Array，节省了20/294k GC。效率也有提升
