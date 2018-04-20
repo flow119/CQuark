@@ -136,9 +136,17 @@ namespace CQuark
                         content.function = _func.function;
 						#endif
 
-                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].typeBridge, param0);
-                        content.DefineAndSet(func._paramnames[1], func._paramtypes[1].typeBridge, param1);
-                        content.DefineAndSet(func._paramnames[2], func._paramtypes[2].typeBridge, param2);
+                        CQ_Value p0 = new CQ_Value();
+                        p0.SetValue(func._paramtypes[0].typeBridge, param0);
+                        content.DefineAndSet(func._paramnames[0], p0);
+
+                        CQ_Value p1 = new CQ_Value();
+                        p1.SetValue(func._paramtypes[0].typeBridge, param1);
+                        content.DefineAndSet(func._paramnames[1], p1);
+
+                        CQ_Value p2 = new CQ_Value();
+                        p2.SetValue(func._paramtypes[0].typeBridge, param2);
+                        content.DefineAndSet(func._paramnames[2], p2);
 
                         CQ_Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
@@ -176,9 +184,18 @@ namespace CQuark
                     {
                         content.DepthAdd();
 
-                        content.DefineAndSet(pnames[0], typeof(T), param0);
-                        content.DefineAndSet(pnames[1], typeof(T1), param1);
-                        content.DefineAndSet(pnames[2], typeof(T2), param2);
+                        CQ_Value p0 = new CQ_Value();
+                        p0.SetValue(typeof(T), param0);
+                        content.DefineAndSet(pnames[0], p0);
+
+                        CQ_Value p1 = new CQ_Value();
+                        p1.SetValue(typeof(T1), param1);
+                        content.DefineAndSet(pnames[1], p1);
+
+                        CQ_Value p2 = new CQ_Value();
+                        p2.SetValue(typeof(T2), param2);
+                        content.DefineAndSet(pnames[2], p2);
+
                         CQ_Value retValue = expr.ComputeValue(content);
 
                         content.DepthRemove();

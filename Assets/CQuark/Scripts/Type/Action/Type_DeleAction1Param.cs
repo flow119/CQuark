@@ -121,7 +121,10 @@ namespace CQuark
 						#if CQUARK_DEBUG
                         content.function = _func.function;
 						#endif
-                        content.DefineAndSet(func._paramnames[0], func._paramtypes[0].typeBridge, param0);
+
+                        CQ_Value p0 = new CQ_Value();
+                        p0.SetValue(func._paramtypes[0].typeBridge, param0);
+                        content.DefineAndSet(func._paramnames[0], p0);
 
                         func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
@@ -163,8 +166,9 @@ namespace CQuark
                         {
                             content.DepthAdd();
 
-
-                            content.DefineAndSet(pnames[0], typeof(T), param0);
+                            CQ_Value p0 = new CQ_Value();
+                            p0.SetValue(typeof(T), param0);
+                            content.DefineAndSet(pnames[0], p0);
 
                             expr.ComputeValue(content);
 
