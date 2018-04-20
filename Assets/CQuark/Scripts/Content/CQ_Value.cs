@@ -82,6 +82,47 @@ namespace CQuark {
 			}
 		}
 
+        //保持原有的type，而使用别的CQ_Value的值（一般用于赋值）
+        public void UsingValue (CQ_Value val) {
+            m_type = val.m_type;
+            m_stype = val.m_stype;
+
+            _obj = val._obj;
+            _isNum = val._isNum;
+            _num = val._num;
+            return;
+
+            //TODO这里没有按照以前的转型处理, 如果按照以前的做法，这里还需要对数字转型做无装箱的优化
+            if(m_type == val.m_type && m_stype == val.m_stype) {
+                _obj = val._obj;
+                _isNum = val._isNum;
+                _num = val._num;
+            }
+            else if(val.m_type == null && val.m_stype == null) {
+                _obj = val._obj;
+                _isNum = val._isNum;
+                _num = val._num;
+            }
+            else {
+                object obj = val.GetValue();
+                IType itype = AppDomain.GetITypeByCQValue(this);
+                if(obj != null && obj.GetType() != (Type)itype.typeBridge) {
+                    if(obj is CQ_ClassInstance) {
+                        if((obj as CQ_ClassInstance).type != (Class_CQuark)itype.typeBridge) {
+                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, itype.typeBridge);
+                        }
+                    }
+                    else if(obj is DeleEvent) {
+
+                    }
+                    else {
+                        obj = CQuark.AppDomain.ConvertTo(obj, itype.typeBridge);
+                    }
+                }
+                SetValue(obj);
+            }
+        }
+
         public object GetValue () {
             if(_isNum)
                 return _num;

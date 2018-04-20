@@ -203,24 +203,11 @@ namespace CQuark {
 
         public bool StaticValueSet (CQ_Content content, string valuename, CQ_Value value) {
             NewStatic();
-            object obj = value.GetValue();
+           
             if(this.staticMemberInstance.ContainsKey(valuename)) {
-                if(obj != null && obj.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
-                    if(obj is CQ_ClassInstance) {
-                        if((obj as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
-                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
-                        }
-                    }
-                    else if(obj is DeleEvent) {
-
-                    }
-                    else {
-                        obj = CQuark.AppDomain.ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
-                    }
-                }
-                CQ_Value val = this.staticMemberInstance[valuename];
-                val.SetValue(obj);
-				this.staticMemberInstance[valuename] = val;
+                CQ_Value oldVal = this.staticMemberInstance[valuename];
+                oldVal.UsingValue(value);
+                this.staticMemberInstance[valuename] = oldVal;
                 return true;
             }
             throw new NotImplementedException();
@@ -342,24 +329,11 @@ namespace CQuark {
 
         public bool MemberValueSet (CQ_Content content, object object_this, string valuename, CQ_Value value) {
             CQ_ClassInstance sin = object_this as CQ_ClassInstance;
-            object obj = value.GetValue();
+           
             if(sin.member.ContainsKey(valuename)) {
-                if(obj != null && obj.GetType() != (Type)this.members[valuename].m_itype.typeBridge) {
-                    if(obj is CQ_ClassInstance) {
-                        if((obj as CQ_ClassInstance).type != (Class_CQuark)this.members[valuename].m_itype.typeBridge) {
-                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
-                        }
-                    }
-                    else if(obj is DeleEvent) {
-
-                    }
-                    else {
-                        obj = CQuark.AppDomain.ConvertTo(obj, this.members[valuename].m_itype.typeBridge);
-                    }
-                }
-                CQ_Value val = sin.member[valuename];
-                val.SetValue(obj);
-                sin.member[valuename] = val;
+                CQ_Value oldVal = sin.member[valuename];
+                oldVal.UsingValue(value);
+                sin.member[valuename] = oldVal;
                 return true;
             }
             throw new NotImplementedException();
