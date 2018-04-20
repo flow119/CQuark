@@ -67,6 +67,7 @@ namespace CQuark{
             RegisterType(typeof(System.DayOfWeek), "DayOfWeek");
             RegisterType(typeof(System.IO.Directory), "Directory");
             RegisterType(typeof(System.IO.File), "File");
+
         }
 
 		private static IType MakeIType (Type type, string keyword) {
@@ -115,9 +116,18 @@ namespace CQuark{
                 return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
             }
         }
+
+        //TODO 注册全改用这个方法，这样可以存默认值
+        public static void RegisterType<T> (string keyword) {
+            //default(T);
+            //typeof(T);
+            //string(namespace+class) - Type/ClassCQ - IType 互相关联，并且能对应到obj default 
+        }
+
         public static void RegisterType (Type type, string keyword) {
             RegisterType(MakeIType(type, keyword));
         }
+
         public static void RegisterType (IType type) {
 			if (type.typeBridge.type != null)
 				type2itype [type.typeBridge.type] = type;
