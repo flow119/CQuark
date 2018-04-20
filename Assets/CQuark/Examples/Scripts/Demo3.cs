@@ -14,7 +14,7 @@ public class Demo3 : MonoBehaviour {
 //		Type tt = typeof(UnityEngine.GameObject);
 //		Type t = Type.GetType ("UnityEngine.GameObject");
 		CQuark.AppDomain.RegisterType<Debug>("Debug");
-        CQuark.AppDomain.RegisterType(typeof(Demo3), "Demo3");
+        CQuark.AppDomain.RegisterType<Demo3>("Demo3");
 		//将函数Today()注册给脚本使用
 	
 		ExecuteFile ();

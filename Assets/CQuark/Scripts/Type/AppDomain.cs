@@ -39,21 +39,21 @@ namespace CQuark{
             RegisterType(new Type_Bool());
             RegisterType(new Type_Lambda());
             RegisterType(new Type_Delegate());
-            RegisterType(typeof(IEnumerator), "IEnumerator");
 
-            RegisterType(typeof(object), "object");
-
-            RegisterType(typeof(List<>), "List");	//模板类要独立注册
-            RegisterType(typeof(Dictionary<,>), "Dictionary");
-            RegisterType(typeof(Stack<>), "Stack");
-            RegisterType(typeof(Queue<>), "Queue");
+            RegisterType<IEnumerator>("IEnumerator");
+			RegisterType<object>("object");
+						
+			RegisterType(typeof(List<>), "List");	//模板类要独立注册
+			RegisterType(typeof(Dictionary<,>), "Dictionary");
+			RegisterType(typeof(Stack<>), "Stack");
+			RegisterType(typeof(Queue<>), "Queue");
 
 			str2itype["null"] = new Type_NULL();
 
 
-			RegisterType(typeof(WaitForSeconds),"WaitForSeconds");
-			RegisterType(typeof(WaitForEndOfFrame), "WaitForEndOfFrame");
-			RegisterType(typeof(WaitForFixedUpdate), "WaitForFixedUpdate");
+			RegisterType<WaitForSeconds>("WaitForSeconds");
+			RegisterType<WaitForEndOfFrame>("WaitForEndOfFrame");
+			RegisterType<WaitForFixedUpdate>("WaitForFixedUpdate");
 //			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
 
             //对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
