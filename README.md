@@ -209,6 +209,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 疯光无线的git: https://github.com/lightszero/
 
+![Image text](https://avatars1.githubusercontent.com/u/1503156?s=400&v=4）
 Jare（郭佳伟） 在我开发过程中提供了非常多的优化建议
 
 Jare的git: https://github.com/jareguo/
