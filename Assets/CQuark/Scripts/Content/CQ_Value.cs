@@ -127,6 +127,13 @@ namespace CQuark {
         public object GetValue () {
             if(_isNum)
                 return _num;
+            if(_obj == null) {
+                //TODO 如果为空，可能是没有赋过值，返回default
+                if(m_type == typeof(string))
+                    return "";
+                if(m_type == typeof(bool))
+                    return false;
+            }
             return _obj;
         }
 
