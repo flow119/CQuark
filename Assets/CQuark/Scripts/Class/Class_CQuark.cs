@@ -99,8 +99,6 @@ namespace CQuark {
             return v;
         }
         void NewStatic () {
-            if(contentMemberCalc == null)
-                contentMemberCalc = new CQ_Content();
             if(this.staticMemberInstance == null) {
                 staticMemberInstance = new Dictionary<string, CQ_Value>();
                 foreach(var i in this.members) {
@@ -143,8 +141,10 @@ namespace CQuark {
             if(this.functions.ContainsKey(function)) {
                 if(this.functions[function].bStatic == true) {
                     CQ_Content content = new CQ_Content();
+					content.DepthAdd();
                     content.CallType = this;
                     content.CallThis = null;
+
 #if CQUARK_DEBUG
                     content.function = function;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
@@ -221,9 +221,10 @@ namespace CQuark {
             if(this.functions.TryGetValue(func, out funccache)) {
                 if(funccache.bStatic == false) {
                     CQ_Content content = new CQ_Content();
+					content.DepthAdd();
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
-                    content.DepthAdd();
+                    
 #if CQUARK_DEBUG
                     content.function = func;
                     contentParent.InStack(content);//把这个上下文推给上层的上下文，这样如果崩溃是可以一层层找到原因的
@@ -278,7 +279,7 @@ namespace CQuark {
             if(this.functions.TryGetValue(func, out funccache)) {
                 if(funccache.bStatic == false) {
                     CQ_Content content = new CQ_Content();
-
+					content.DepthAdd();
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
 #if CQUARK_DEBUG

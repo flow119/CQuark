@@ -338,5 +338,14 @@ namespace CQuark {
                 values.Remove(name);
             }
         }
+		public void Clear(){
+			if(tvalues != null)
+				tvalues.Clear();
+			if(values != null)
+				values.Clear();
+			
+			tvalueDepth.Clear();
+			tvalueDepth.Push(0);
+		}
     }
 }

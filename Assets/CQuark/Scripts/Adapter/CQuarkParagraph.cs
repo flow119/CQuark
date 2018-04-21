@@ -36,5 +36,6 @@ public class CQuarkParagraph {
     }
     public void ClearValue () {
         content = new CQ_Content();
+		content.DepthAdd();
     }
 }

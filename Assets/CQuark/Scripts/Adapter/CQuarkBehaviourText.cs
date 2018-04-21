@@ -62,6 +62,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 		if(cclass.functions.ContainsKey("FixedUpdate"))
 			m_fixedpdate = cclass.functions["FixedUpdate"].expr_runtime;
 		_updateContent = new CQ_Content();
+		_updateContent.DepthAdd();
 		_updateContent.CallType = cclass;
 		_updateContent.CallThis = inst;
 	}
@@ -100,10 +101,12 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 	void Update(){
 		if(m_update != null)
 			m_update.ComputeValue(_updateContent);
+		_updateContent.Clear();
 	}
 
 	void FixedUpdate(){
 		if(m_fixedpdate != null)
 			m_fixedpdate.ComputeValue(_updateContent);
+		_updateContent.Clear();
 	}
 }
