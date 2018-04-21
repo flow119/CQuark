@@ -113,10 +113,9 @@ namespace CQuark
                 var func = _func.calltype.functions[_func.function];
                 if (func.expr_runtime != null)
                 {
-                    CQ_Content content = new CQ_Content();
+					CQ_Content content = CQ_ObjPool.PopContent();
                     try
                     {
-                        content.DepthAdd();
                         content.CallThis = _func.callthis;
                         content.CallType = _func.calltype;
 						#if CQUARK_DEBUG
@@ -137,6 +136,7 @@ namespace CQuark
                         DebugUtil.Log(errinfo + content.Dump());
                         throw err;
                     }
+					CQ_ObjPool.PushContent(content);
                 }
             };
             Delegate d = dele as Delegate;
@@ -164,7 +164,6 @@ namespace CQuark
                     try
                     {
                         content.DepthAdd();
-
 
                         //content.DefineAndSet(pnames[0], typeof(T), param0);
 

@@ -22,7 +22,6 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 	public TextAsset m_ta;
 	public string m_codeText = "";
 
-	private CQ_Content _updateContent = new CQ_Content();
 	public ICQ_Expression m_update;
 	public ICQ_Expression m_fixedpdate;
 
@@ -44,8 +43,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 			return;
 		}
 		cclass = type._class as Class_CQuark;
-		content = new CQ_Content();
-        content.DepthAdd();
+		content = CQ_ObjPool.PopContent();
 
 		//TODO 最好在编译的时候就做，不要在实例化的时候做
 		RegisterMember("gameObject", typeof(GameObject));
@@ -61,10 +59,6 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 			m_update = cclass.functions["Update"].expr_runtime;
 		if(cclass.functions.ContainsKey("FixedUpdate"))
 			m_fixedpdate = cclass.functions["FixedUpdate"].expr_runtime;
-		_updateContent = new CQ_Content();
-		_updateContent.DepthAdd();
-		_updateContent.CallType = cclass;
-		_updateContent.CallThis = inst;
 	}
 
 	CQ_Value SetMember(string name, System.Type type, Object obj){
@@ -99,14 +93,20 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 	}
 
 	void Update(){
+		CQ_Content updatecontent = CQ_ObjPool.PopContent();
+		updatecontent.CallType = cclass;
+		updatecontent.CallThis = inst;
 		if(m_update != null)
-			m_update.ComputeValue(_updateContent);
-		_updateContent.Clear();
+			m_update.ComputeValue(updatecontent);
+		CQ_ObjPool.PushContent(updatecontent);
 	}
 
 	void FixedUpdate(){
+		CQ_Content updatecontent = CQ_ObjPool.PopContent();
+		updatecontent.CallType = cclass;
+		updatecontent.CallThis = inst;
 		if(m_fixedpdate != null)
-			m_fixedpdate.ComputeValue(_updateContent);
-		_updateContent.Clear();
+			m_fixedpdate.ComputeValue(updatecontent);
+		CQ_ObjPool.PushContent(updatecontent);
 	}
 }

@@ -49,7 +49,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
 
-            CQ_Value[] parameters = CQValueArray.Pop(_expressions.Count);
+            CQ_Value[] parameters = CQ_ObjPool.PopArray(_expressions.Count);
             for(int i = 0; i < _expressions.Count; i++) {
                 parameters[i] = _expressions[i].ComputeValue(content);
             }
@@ -106,7 +106,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            CQValueArray.Push(parameters);
+            CQ_ObjPool.PushArray(parameters);
             return v;
         }
 

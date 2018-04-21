@@ -126,7 +126,7 @@ namespace CQuark
                 var func = _func.calltype.functions[_func.function];
                 if (func.expr_runtime != null)
                 {
-                    CQ_Content content = new CQ_Content();
+					CQ_Content content = CQ_ObjPool.PopContent();
                     try
                     {
                         content.DepthAdd();
@@ -154,6 +154,7 @@ namespace CQuark
                         DebugUtil.Log(errinfo + content.Dump()); 
                         throw err;
                     }
+					CQ_ObjPool.PushContent(content);
                 }
                 return default(ReturnType);
             };

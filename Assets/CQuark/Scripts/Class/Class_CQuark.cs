@@ -52,8 +52,7 @@ namespace CQuark {
         CQ_Content contentMemberCalc = null;
         public CQ_Value New (CQ_Content content, CQ_Value[] _params) {
             if(contentMemberCalc == null) {
-                contentMemberCalc = new CQ_Content();
-                contentMemberCalc.DepthAdd();
+				contentMemberCalc = CQ_ObjPool.PopContent();
             }
                
             NewStatic();
@@ -140,8 +139,7 @@ namespace CQuark {
             NewStatic();
             if(this.functions.ContainsKey(function)) {
                 if(this.functions[function].bStatic == true) {
-                    CQ_Content content = new CQ_Content();
-					content.DepthAdd();
+					CQ_Content content = CQ_ObjPool.PopContent();
                     content.CallType = this;
                     content.CallThis = null;
 
@@ -162,6 +160,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
+					CQ_ObjPool.PushContent(content);
                     return value;
                 }
             }
@@ -220,8 +219,7 @@ namespace CQuark {
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
                 if(funccache.bStatic == false) {
-                    CQ_Content content = new CQ_Content();
-					content.DepthAdd();
+					CQ_Content content = CQ_ObjPool.PopContent();
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
                     
@@ -245,6 +243,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
+					CQ_ObjPool.PushContent(content);
                     return value;
                 }
             }
@@ -278,8 +277,7 @@ namespace CQuark {
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
                 if(funccache.bStatic == false) {
-                    CQ_Content content = new CQ_Content();
-					content.DepthAdd();
+					CQ_Content content = CQ_ObjPool.PopContent();
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
 #if CQUARK_DEBUG
@@ -303,6 +301,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
 #endif
+					CQ_ObjPool.PushContent(content);
                 }
             }
             else

@@ -60,7 +60,7 @@ namespace CQuark {
 #endif
 
 
-            CQ_Value[] parameters = CQValueArray.Pop(_expressions.Count - 1);
+            CQ_Value[] parameters = CQ_ObjPool.PopArray(_expressions.Count - 1);
             for(int i = 0; i < _expressions.Count - 1; i++) {
                 parameters[i] = _expressions[i + 1].ComputeValue(content);
             }
@@ -92,7 +92,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif
-            CQValueArray.Push(parameters);
+            CQ_ObjPool.PushArray(parameters);
             return value;
         }
         public IEnumerator CoroutineCompute (CQ_Content content, UnityEngine.MonoBehaviour coroutine) {

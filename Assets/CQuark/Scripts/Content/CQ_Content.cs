@@ -11,9 +11,9 @@ namespace CQuark {
         public CQ_ClassInstance CallThis;
         //由于CQ_Content会频繁创建，而很多时候不需要values，所以lazy一下，只在使用时构造Stack和Dictionary
 
-        Stack<string> tvalues;  //所有values的名字
-        Stack<int> tvalueDepth; //每一层作用域里变量的数量
-        public Dictionary<string, CQ_Value> values;//所有变量暂存
+		Stack<string> tvalues = new Stack<string>();  //所有values的名字
+		Stack<int> tvalueDepth = new Stack<int>(); //每一层作用域里变量的数量
+		public Dictionary<string, CQ_Value> values = new Dictionary<string, CQ_Value>()  ;//所有变量暂存
 
 #if CQUARK_DEBUG
         private Stack<ICQ_Expression> stackExpr = new Stack<ICQ_Expression>();
@@ -35,13 +35,24 @@ namespace CQuark {
             }
         }
 
+		public CQ_Content(){
+			Restore();
+		}
+
+		public void Restore(){
+			tvalues.Clear();
+			values.Clear();
+			tvalueDepth.Clear();
+			tvalueDepth.Push(0);
+			CallType = null;
+			CallThis = null;
+		}
 
         public CQ_Content Clone () {
-            CQ_Content con = new CQ_Content();
-            if(values != null) {
-                foreach(var c in this.values) {
-                    con.values.Add(c.Key, c.Value);
-                }
+			CQ_Content con = CQ_ObjPool.PopContent();
+            
+            foreach(var c in this.values) {
+                con.values.Add(c.Key, c.Value);
             }
 
             con.CallThis = this.CallThis;
@@ -321,31 +332,15 @@ namespace CQuark {
 
         public void DepthAdd ()//控制变量作用域，深一层
         {
-            if(tvalues == null)
-                tvalues = new Stack<string>();
-            if(tvalueDepth == null)
-                tvalueDepth = new Stack<int>();
-
             tvalueDepth.Push(0);
         }
         public void DepthRemove ()//控制变量作用域，退出一层，上一层的变量都清除
         {
-            if(tvalues == null)
-                return;
             int depth = tvalueDepth.Pop();
             for(; depth > 0; depth--) {
                 string name = tvalues.Pop();
                 values.Remove(name);
             }
         }
-		public void Clear(){
-			if(tvalues != null)
-				tvalues.Clear();
-			if(values != null)
-				values.Clear();
-			
-			tvalueDepth.Clear();
-			tvalueDepth.Push(0);
-		}
     }
 }

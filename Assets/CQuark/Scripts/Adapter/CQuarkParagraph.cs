@@ -10,8 +10,7 @@ public class CQuarkParagraph {
     CQ_Content content;// = new CQ_Content();
 
     public CQuarkParagraph () {
-        content = new CQ_Content();
-        content.DepthAdd();
+		content = CQ_ObjPool.PopContent();
     }
 
     public object Execute (string script) {
@@ -35,7 +34,6 @@ public class CQuarkParagraph {
         content.DefineAndSet(name, val);
     }
     public void ClearValue () {
-        content = new CQ_Content();
-		content.DepthAdd();
+		content.Restore();
     }
 }

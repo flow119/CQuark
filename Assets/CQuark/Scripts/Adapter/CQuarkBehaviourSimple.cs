@@ -22,8 +22,7 @@ public class CQuarkBehaviourSimple : CQuarkBehaviourBase {
 		BuildBlock ("Update", m_Update);
 		BuildBlock ("FixedUpdate", m_FixedUpdate);
 		BuildBlock ("OnDestroy", m_OnDestroy);
-		content = new CQ_Content();//创建上下文，并设置变量给脚本访问
-        content.DepthAdd();
+		content = CQ_ObjPool.PopContent();//创建上下文，并设置变量给脚本访问
         DefineAndSet("gameObject", typeof(GameObject), this.gameObject);
         DefineAndSet("transform", typeof(Transform), this.transform);
 	}
