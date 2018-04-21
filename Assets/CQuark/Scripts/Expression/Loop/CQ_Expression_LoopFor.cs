@@ -61,7 +61,7 @@ namespace CQuark {
             ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
             CQ_Value vrt = CQ_Value.Null;
             for(; ; ) {
-                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetObject())
+				if(expr_continue != null && !expr_continue.ComputeValue(content).GetBool())
                     break;//expr2
 
                 if(expr_block != null) {
@@ -118,9 +118,10 @@ namespace CQuark {
             ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
 
             ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
-            //			CQ_Content.Value vrt = null;
+
             for(; ; ) {
-                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetObject()) break;//expr2
+				if(expr_continue != null && !expr_continue.ComputeValue(content).GetBool())//expr2
+					break;
 
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
@@ -128,12 +129,10 @@ namespace CQuark {
                             yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
-                            var v = expr_block.ComputeValue(content);
-                            if(v.GetObject() != null) {
-                                //								if (v.breakBlock > 2) vrt = v;
-								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
-									break;
-                            }
+							CQ_Value v = expr_block.ComputeValue(content);
+                            
+							if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
+								break;
                         }
                     }
                     else {
@@ -143,11 +142,11 @@ namespace CQuark {
                             yield return coroutine.StartCoroutine(expr_block.CoroutineCompute(content, coroutine));
                         }
                         else {
-                            var v = expr_block.ComputeValue(content);
-                            if(v.GetObject() != null) {
-                                //								if (v.breakBlock > 2) vrt = v;
-								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) bbreak = true;
-                            }
+							CQ_Value v = expr_block.ComputeValue(content);
+                            
+							if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) 
+								bbreak = true;
+
                         }
                         content.DepthRemove();
                         if(bbreak) break;

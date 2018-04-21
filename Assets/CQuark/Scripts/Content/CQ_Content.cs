@@ -129,7 +129,7 @@ namespace CQuark {
             strvalues += "DumpValue:" + this.CallName + "\n";
             if(values != null) {
                 foreach(var v in this.values) {
-                    strvalues += "V:" + v.Key + "=" + v.Value.ToString() + "\n";
+					strvalues += "V:" + v.Key + "=" + v.Value.DebugString() + "\n";
                 }
             }
 

@@ -167,6 +167,18 @@ namespace CQuark {
 			return _obj;
 		}
 
+		public bool IsDelegate{
+			get{
+				return _obj != null && _obj is Delegate;
+			}
+		}
+
+		public bool IsDeleEvent{
+			get{
+				return _obj != null && _obj is DeleEvent;
+			}
+		}
+
         public static CQ_Value One {
             get {
                 CQ_Value g_one = new CQ_Value();
@@ -192,13 +204,26 @@ namespace CQuark {
         }
 
 
-        public override string ToString () {
+        public string DebugString () {
             if(m_type != null)
 				return "<" + m_type.ToString() + ">" + (_isNum ? _num : _obj);
             else if(m_stype != null)
                 return "<" + m_stype.ToString() + ">" + _obj;
             return "<null>" + _obj;
         }
+
+		public override string ToString(){
+			if(_isNum){
+				if(m_type == typeof(bool))
+					return (_num == 1).ToString();
+				else
+					return _num.ToString();
+			}else if(m_type == typeof(string))
+				return (string)_obj;
+			if(_obj == null)
+				return "null";
+			return _obj.ToString();
+		}
 
         public object ConvertTo (TypeBridge targetType) {
             if(!_isNum && _obj == null)

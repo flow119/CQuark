@@ -110,7 +110,7 @@ namespace CQuark {
 
                         }
                         else {
-                            var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
+							CQ_Value value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
                             if(i.Value.m_itype.typeBridge != value.typeBridge) {
 
                                 CQ_Value val = new CQ_Value();

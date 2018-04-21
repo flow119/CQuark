@@ -51,19 +51,19 @@ namespace CQuark {
                 var right = _expressions[1].ComputeValue(content);
                 if(left.TypeIsEmpty|| right.TypeIsEmpty) {
                     if(mathop == LogicToken.equal) {
-                        result.SetObject(typeof(bool), left.GetObject() == right.GetObject());
+						result.SetBool(left.GetObject() == right.GetObject());
                     }
                     if(mathop == LogicToken.not_equal) {
-                        result.SetObject(typeof(bool), left.GetObject() != right.GetObject());
+						result.SetBool(left.GetObject() != right.GetObject());
                     }
                 }
                 else if(left.m_type == typeof(bool) && right.m_type == typeof(bool)) {
                     if(mathop == LogicToken.equal) {
-                        result.SetObject(typeof(bool), (bool)left.GetObject() == (bool)right.GetObject());
+						result.SetBool(left.GetBool() == right.GetBool());
                         //return result;
                     }
                     else if(mathop == LogicToken.not_equal) {
-                        result.SetObject(typeof(bool), (bool)left.GetObject() != (bool)right.GetObject());
+						result.SetBool(left.GetBool() != right.GetBool());
                         //return result;
                     }
                     else {
@@ -71,7 +71,7 @@ namespace CQuark {
                     }
                 }
                 else {
-                    result.SetObject(typeof(bool), CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left, right));
+					result.SetBool(CQuark.AppDomain.GetITypeByCQValue(left).MathLogic(mathop, left, right));
                 }
             }
 #if CQUARK_DEBUG

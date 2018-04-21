@@ -50,7 +50,6 @@ namespace CQuark {
                 else {
                     if(p.m_type == null) {
                         pIsEmpty = true;
-
                     }
                     types.Add(p.m_type);
                 }
@@ -181,9 +180,8 @@ namespace CQuark {
             List<object> _oparams = new List<object>();
             bool pIsEmpty = false;
             foreach(CQ_Value p in _params) {
-                {
-                    _oparams.Add(p.GetObject());
-                }
+                _oparams.Add(p.GetObject());
+                
                 if(p.m_stype != null) {
                     types.Add(typeof(object));
                 }
@@ -511,7 +509,6 @@ namespace CQuark {
 
             if(c.type == 1) {
                 if(obj != null && obj.GetType() != c.finfo.FieldType) {
-
                     obj = CQuark.AppDomain.ConvertTo(obj, c.finfo.FieldType);
                 }
                 c.finfo.SetValue(object_this, obj);

@@ -71,28 +71,21 @@ namespace CQuark {
             }
             else {
                 v = content.GetQuiet(funcname);
-                if(v.GetObject() != null && v.GetObject() is Delegate) {
-                    //if(v.value is Delegate)
-                    {
-                        Delegate d = v.GetObject() as Delegate;
-                        v = new CQ_Value();
-                        object[] obja = new object[parameters.Length];
-                        for(int i = 0; i < parameters.Length; i++) {
-                            obja[i] = parameters[i].GetObject();
-                        }
-                        object obj = d.DynamicInvoke(obja);
-                        
-                        if(obj == null) {
-                            v.SetNoneTypeObject(null);
-                        }
-                        else {
-                            v.SetObject(obj.GetType(), obj);
-                        }
+				if(v.IsDelegate) {
+                    Delegate d = v.GetObject() as Delegate;
+                    v = new CQ_Value();
+                    object[] obja = new object[parameters.Length];
+                    for(int i = 0; i < parameters.Length; i++) {
+                        obja[i] = parameters[i].GetObject();
                     }
-                    //else
-                    //{
-                    //    throw new Exception(funcname + "不是函数");
-                    //}
+                    object obj = d.DynamicInvoke(obja);
+                    
+                    if(obj == null) {
+                        v.SetNoneTypeObject(null);
+                    }
+                    else {
+                        v.SetObject(obj.GetType(), obj);
+                    }
                 }
                 else {
                     throw new Exception(funcname + "没有这样的方法");

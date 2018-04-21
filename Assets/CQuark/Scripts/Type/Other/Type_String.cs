@@ -53,15 +53,7 @@ namespace CQuark
             if (code == '+')
             {
                 CQ_Value returnValue = new CQ_Value();
-
-                if(right == CQ_Value.Null)
-                {
-                    returnValue.SetObject(typeof(string), (string)left.GetObject() + "null");
-                }
-                else
-                {
-                    returnValue.SetObject(typeof(string), (string)left.GetObject() + right.GetObject().ToString());
-                }
+				returnValue.SetObject(typeof(string), left.ToString() + right.ToString());
                 return returnValue;
             }
             throw new NotImplementedException();
@@ -71,11 +63,11 @@ namespace CQuark
         {
             if (code == LogicToken.equal)
             {
-                return (string)left.GetObject() == (string)right.GetObject();
+				return left.ToString() == right.ToString();
             }
             else if(code== LogicToken.not_equal)
             {
-                return (string)left.GetObject() != (string)right.GetObject();
+				return left.ToString() != right.ToString();
             }
             throw new NotImplementedException();
         }

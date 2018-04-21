@@ -15,7 +15,7 @@ namespace CQuark
 
         public override CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right)
         {
-            if (left.GetObject() is DeleEvent)
+            if (left.IsDeleEvent)
             {
                 DeleEvent info = left.GetObject() as DeleEvent;
                 Delegate calldele = null;

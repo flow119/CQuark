@@ -63,9 +63,6 @@ namespace CQuark {
                 type._class.IndexSet(content, parent.GetObject(), obj, value.GetObject());
 			}
 
-			IType parenttype = CQuark.AppDomain.GetITypeByCQValue(parent);
-			parenttype._class.IndexSet(content, parent.GetObject(), key.GetObject(), value.GetObject());
-
 			CQ_Expression_GetValue f = _expressions[0] as CQ_Expression_GetValue;
 			content.Set(f.value_name, parent);
 

@@ -12,11 +12,7 @@ namespace CQuark {
         }
 
         public override string ToString () {
-            if(value.m_type != null)
-                return value.m_type.Name + "|" + value.GetObject().ToString();
-            else if(value.m_stype != null)
-                return value.m_stype.Name + "|" + value.GetObject().ToString();
-            return "<unknown> null";
+			return value.DebugString();
         }
 
         public List<ICQ_Expression> _expressions {

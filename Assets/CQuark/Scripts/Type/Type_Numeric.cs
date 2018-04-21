@@ -132,6 +132,8 @@ namespace CQuark
 				||(type == typeof(char));
 		}
 
+
+
 		//快速计算
 		protected static bool NumberMath2Value (char opCode, CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
 			try {
@@ -161,7 +163,8 @@ namespace CQuark
 				default:
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
-                returnValue.SetObject(retType, Double2TargetType(retType, finalValue));
+				if(IsNumberType(retType))
+					returnValue.SetNumber(retType, finalValue);
                 return true;
 
 			}
@@ -296,7 +299,7 @@ namespace CQuark
             Type rightType = right.m_type;
             if(rightType == typeof(string) && code == '+') {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.SetObject(typeof(string), left.GetObject().ToString() + right.GetObject() as string);
+				returnValue.SetObject(typeof(string), left.ToString() + right.ToString());
                 return returnValue;
             }
             else {
@@ -392,8 +395,7 @@ namespace CQuark
                     return !left.GetObject().Equals(right.GetObject());
                 }
             }
-            var obj = call.Invoke(null, new object[] { left.GetObject(), right.GetObject() });
-            return (bool)obj;
+            return (bool) call.Invoke(null, new object[] { left.GetObject(), right.GetObject() });
         }
     }
 }

@@ -42,9 +42,9 @@ public class Demo4 : MonoBehaviour {
 			//调用脚本类成员变量赋值
 			//Debug.LogWarning(thisOfScript+","+ typeOfScript+","+ typeOfScript.function);
             CQuark.CQ_Value v1 = new CQuark.CQ_Value();
-            v1.SetObject(typeof(int), 150);
+			v1.SetNumber(typeof(int), 150);
             CQuark.CQ_Value v2 = new CQuark.CQ_Value();
-            v2.SetObject(typeof(int), 300);
+			v2.SetNumber(typeof(int), 300);
             typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", v1);
             typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", v2);
 			//调用脚本类成员函数

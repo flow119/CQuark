@@ -61,15 +61,16 @@ namespace CQuark {
             if(_expressions[0] is CQ_Expression_MemberValueGet) {
                 CQ_Expression_MemberValueGet f = _expressions[0] as CQ_Expression_MemberValueGet;
 
-                var parent = f._expressions[0].ComputeValue(content);
+				CQ_Value parent = f._expressions[0].ComputeValue(content);
                 if(parent == CQ_Value.Null) {
                     throw new Exception("调用空对象的方法:" + f._expressions[0].ToString() + ":" + ToString());
                 }
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
-                if(!Wrap.MemberValueSet(parent.m_type, parent.GetObject(), f.membername, val)) {
-                    var ptype = CQuark.AppDomain.GetITypeByCQValue(parent);
-                    ptype._class.MemberValueSet(content, parent.GetObject(), f.membername, val);
+				object obj = parent.GetObject();
+				if(!Wrap.MemberValueSet(parent.m_type, obj, f.membername, val)) {
+					IType ptype = CQuark.AppDomain.GetITypeByCQValue(parent);
+					ptype._class.MemberValueSet(content, obj, f.membername, val);
 				}
             }
             else if(_expressions[0] is CQ_Expression_StaticValueGet) {

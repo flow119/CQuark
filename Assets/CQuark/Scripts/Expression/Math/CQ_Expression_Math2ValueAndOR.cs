@@ -47,24 +47,24 @@ namespace CQuark {
 
             //if (mathop == "&&" || mathop == "||")
             {
-                bool bleft = (bool)_expressions[0].ComputeValue(content).GetObject();
+				bool bleft = _expressions[0].ComputeValue(content).GetBool();
 
                 if(mathop == '&') {
                     if(!bleft) {
-                        result.SetObject(typeof(bool), false);
+						result.SetBool(false);
                     }
                     else {
-                        bool bright = (bool)_expressions[1].ComputeValue(content).GetObject();
-                        result.SetObject(typeof(bool), bleft && bright);
+						bool bright = _expressions[1].ComputeValue(content).GetBool();
+						result.SetBool(bleft && bright);
                     }
                 }
                 else if(mathop == '|') {
                     if(bleft) {
-                        result.SetObject(typeof(bool), true);
+						result.SetBool(true);
                     }
                     else {
-                        bool bright = (bool)_expressions[1].ComputeValue(content).GetObject();
-                        result.SetObject(typeof(bool), bleft || bright);
+						bool bright = _expressions[1].ComputeValue(content).GetBool();
+						result.SetBool(bleft || bright);
                     }
                 }
 
