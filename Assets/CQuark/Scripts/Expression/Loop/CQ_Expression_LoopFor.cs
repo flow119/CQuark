@@ -52,7 +52,8 @@ namespace CQuark {
 #endif
             content.DepthAdd();
             ICQ_Expression expr_init = _expressions[0] as ICQ_Expression;
-            if(expr_init != null) expr_init.ComputeValue(content);//expr1
+            if(expr_init != null) 
+				expr_init.ComputeValue(content);//expr1
 
             ICQ_Expression expr_continue = _expressions[1] as ICQ_Expression;
             ICQ_Expression expr_step = _expressions[2] as ICQ_Expression;
@@ -60,7 +61,7 @@ namespace CQuark {
             ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
             CQ_Value vrt = CQ_Value.Null;
             for(; ; ) {
-                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetValue())
+                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetObject())
                     break;//expr2
 
                 if(expr_block != null) {
@@ -84,7 +85,8 @@ namespace CQuark {
 								bbreak = true;
                         }
                         content.DepthRemove();
-                        if(bbreak) break;
+                        if(bbreak)
+							break;
                     }
                     //if (v.breakBlock == 1) continue;
                     //if (v.breakBlock == 2) break;
@@ -118,7 +120,7 @@ namespace CQuark {
             ICQ_Expression expr_block = _expressions[3] as ICQ_Expression;
             //			CQ_Content.Value vrt = null;
             for(; ; ) {
-                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetValue()) break;//expr2
+                if(expr_continue != null && !(bool)expr_continue.ComputeValue(content).GetObject()) break;//expr2
 
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
@@ -127,7 +129,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v.GetValue() != null) {
+                            if(v.GetObject() != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.m_breakBlock == BreakType.Break || v.m_breakBlock == BreakType.Return)
 									break;
@@ -142,7 +144,7 @@ namespace CQuark {
                         }
                         else {
                             var v = expr_block.ComputeValue(content);
-                            if(v.GetValue() != null) {
+                            if(v.GetObject() != null) {
                                 //								if (v.breakBlock > 2) vrt = v;
 								if(v.m_breakBlock == BreakType.Return || v.m_breakBlock == BreakType.Break) bbreak = true;
                             }

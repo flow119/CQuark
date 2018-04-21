@@ -43,7 +43,7 @@ namespace CQuark {
 
             CQ_Value v = _expressions[0].ComputeValue(content);
 
-            Exception err = v.GetValue() as Exception;
+            Exception err = v.GetObject() as Exception;
             if(err != null) {
                 throw err;
             }

@@ -54,7 +54,7 @@ namespace CQuark {
             ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
             ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
             CQ_Value vrt = CQ_Value.Null;
-            while((bool)expr_while.ComputeValue(content).GetValue()) {
+            while((bool)expr_while.ComputeValue(content).GetObject()) {
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         var v = expr_block.ComputeValue(content);
@@ -101,7 +101,7 @@ namespace CQuark {
             ICQ_Expression expr_while = _expressions[0] as ICQ_Expression;
             ICQ_Expression expr_block = _expressions[1] as ICQ_Expression;
             //			CQ_Content.Value vrt = null;
-            while((bool)expr_while.ComputeValue(content).GetValue()) {
+            while((bool)expr_while.ComputeValue(content).GetObject()) {
                 if(expr_block != null) {
                     if(expr_block is CQ_Expression_Block) {
                         if(expr_block.hasCoroutine) {

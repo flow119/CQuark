@@ -175,14 +175,14 @@ namespace CQuark {
                         }
                         else if(tlist[expbegin].text == "true") {
                             CQ_Value v = new CQ_Value();
-                            v.SetValue(typeof(bool), true);
+                            v.SetObject(typeof(bool), true);
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);
                         }
                         else if(tlist[expbegin].text == "false") {
                             CQ_Value v = new CQ_Value();
-                            v.SetValue(typeof(bool), false);
+                            v.SetObject(typeof(bool), false);
                             CQ_Expression_Value subvalue = new CQ_Expression_Value(v);
 
                             values.Add(subvalue);

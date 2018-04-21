@@ -34,32 +34,54 @@ namespace CQuark {
 			}
 		}
 
+		//数字用这个方法，参考Lua，用double避免装箱
+		public void SetNumber(Type type, double val){
+			if(!Type_Numeric.IsNumberType(type))
+				throw new InvalidCastException();
+			m_type = type;
+			_isNum = true;
+			_num = val;
+		}
 
-        public void SetValue (Type type, object obj) {
-			//TODO 如果是数字类型特殊处理
+		public void SetBool(bool val){
+			m_type = typeof(bool);
+			_isNum = true;
+			_num = val ? 1 : 0;
+		}
+
+		public void SetObject (Type type, object val) {
             m_type = type;
-            m_stype = null;
-            _obj = obj;
-            _isNum = false;
+
+			if(type == typeof(bool)){
+				_isNum = true;
+				_num = (bool)val ? 1 : 0;
+			}
+			else if(Type_Numeric.IsNumberType(type)){
+				_isNum = true;
+				_num = Type_Numeric.GetDouble(type, val);
+			}else{
+				_isNum = false;
+				_obj = val;
+			}
         }
 
-        public void SetValue (Class_CQuark stype, object obj) {
+        public void SetObject (Class_CQuark stype, object obj) {
             m_type = null;
             m_stype = stype;
             _obj = obj;
             _isNum = false;
         }
 
-        public void SetValue (TypeBridge cqType, object obj) {
+        public void SetObject (TypeBridge cqType, object obj) {
             if(cqType.type != null)
-                SetValue(cqType.type, obj);
+                SetObject(cqType.type, obj);
             else if(cqType.stype != null)
-                SetValue(cqType.stype, obj);
+                SetObject(cqType.stype, obj);
             else
-                SetNoneTypeValue(obj);
+                SetNoneTypeObject(obj);
         }
 		//没有类型有2种情况，1本身是null，2是一种Action
-        public void SetNoneTypeValue (object obj) {
+        public void SetNoneTypeObject (object obj) {
             m_type = null;
             m_stype = null;
             _obj = obj;
@@ -69,18 +91,18 @@ namespace CQuark {
 		/// <summary>
 		/// 调用这个方法必须保证类型与obj匹配，比如m_type = float，存进来的万一是int，就取不出了，所以外面就必须做好转型
 		/// </summary>
-		public void SetValue (Object obj) {
-			if(m_type != null){
-				SetValue(m_type, obj);
-			}else if(m_stype != null){
-				SetValue(m_stype, obj);
-			}else{
-				if(obj == null)
-					_obj = null;
-				else
-					throw new Exception("不允许在无类型的情况下赋值");
-			}
-		}
+//		public void SetValue (Object obj) {
+//			if(m_type != null){
+//				SetValue(m_type, obj);
+//			}else if(m_stype != null){
+//				SetValue(m_stype, obj);
+//			}else{
+//				if(obj == null)
+//					_obj = null;
+//				else
+//					throw new Exception("不允许在无类型的情况下赋值");
+//			}
+//		}
 
         //保持原有的type，而使用别的CQ_Value的值（一般用于赋值）
         public void UsingValue (CQ_Value val) {
@@ -94,57 +116,56 @@ namespace CQuark {
             return;
 
             //TODO这里没有按照以前的转型处理, 如果按照以前的做法，这里还需要对数字转型做无装箱的优化
-            if(m_type == val.m_type && m_stype == val.m_stype) {
-                _obj = val._obj;
-                _isNum = val._isNum;
-                _num = val._num;
-            }
-            else if(val.m_type == null && val.m_stype == null) {
-                _obj = val._obj;
-                _isNum = val._isNum;
-                _num = val._num;
-            }
-            else {
-                object obj = val.GetValue();
-                IType itype = AppDomain.GetITypeByCQValue(this);
-                if(obj != null && obj.GetType() != (Type)itype.typeBridge) {
-                    if(obj is CQ_ClassInstance) {
-                        if((obj as CQ_ClassInstance).type != (Class_CQuark)itype.typeBridge) {
-                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, itype.typeBridge);
-                        }
-                    }
-                    else if(obj is DeleEvent) {
-
-                    }
-                    else {
-                        obj = CQuark.AppDomain.ConvertTo(obj, itype.typeBridge);
-                    }
-                }
-                SetValue(obj);
-            }
-        }
-
-        public object GetValue () {
-            if(_isNum)
-                return _num;
-            return _obj;
-        }
-
-//		public T GetValue<T>(){
+//            if(m_type == val.m_type && m_stype == val.m_stype) {
+//                _obj = val._obj;
+//                _isNum = val._isNum;
+//                _num = val._num;
+//            }
+//            else if(val.m_type == null && val.m_stype == null) {
+//                _obj = val._obj;
+//                _isNum = val._isNum;
+//                _num = val._num;
+//            }
+//            else {
+//                object obj = val.GetValue();
+//                IType itype = AppDomain.GetITypeByCQValue(this);
+//                if(obj != null && obj.GetType() != (Type)itype.typeBridge) {
+//                    if(obj is CQ_ClassInstance) {
+//                        if((obj as CQ_ClassInstance).type != (Class_CQuark)itype.typeBridge) {
+//                            obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, itype.typeBridge);
+//                        }
+//                    }
+//                    else if(obj is DeleEvent) {
 //
-//		}
-
-       
-
-        
-
-        public double GetDouble () {
-            if(_isNum)
-                return _num;
-            return Type_Numeric.GetDouble(m_type, _obj);
+//                    }
+//                    else {
+//                        obj = CQuark.AppDomain.ConvertTo(obj, itype.typeBridge);
+//                    }
+//                }
+//                SetValue(obj);
+//            }
         }
 
-       
+        public double GetNumber () {
+            if(_isNum)
+                return _num;
+			return Type_Numeric.GetDouble(m_type, _obj);
+        }
+
+		public bool GetBool(){
+			if(_isNum)
+				return _num == 1;
+			return (bool)_obj;
+		}
+
+		public object GetObject(){
+			if(_isNum){
+				if(m_type == typeof(bool))
+					return _num == 1;
+				return Type_Numeric.Double2TargetType(m_type, _num);
+			}
+			return _obj;
+		}
 
         public static CQ_Value One {
             get {
@@ -173,15 +194,22 @@ namespace CQuark {
 
         public override string ToString () {
             if(m_type != null)
-                return "<" + m_type.ToString() + ">" + _obj;
+				return "<" + m_type.ToString() + ">" + (_isNum ? _num : _obj);
             else if(m_stype != null)
                 return "<" + m_stype.ToString() + ">" + _obj;
             return "<null>" + _obj;
         }
 
         public object ConvertTo (TypeBridge targetType) {
-            if(_obj == null)
+            if(!_isNum && _obj == null)
                 return _obj;
+			if(_isNum ){
+				if(targetType.type == typeof(bool))
+					return _num == 1;
+				else if(Type_Numeric.IsNumberType(targetType.type)){
+					return Type_Numeric.Double2TargetType(targetType.type, _num);
+				}
+			}
             if(m_type == targetType.type && m_stype == targetType.stype)
                 return _obj;
             //TODO 这个流程太长了，最好简化
@@ -193,8 +221,15 @@ namespace CQuark {
         }
 
         public object ConvertTo (Type targetType) {
-            if(_obj == null)
-                return _obj;
+			if(!_isNum && _obj == null)
+				return _obj;
+			if(_isNum ){
+				if(targetType == typeof(bool))
+					return _num == 1;
+				else if(Type_Numeric.IsNumberType(targetType)){
+					return Type_Numeric.Double2TargetType(targetType, _num);
+				}
+			}
             if(m_type == targetType)
                 return _obj;
             if(m_type != null)
@@ -261,11 +296,21 @@ namespace CQuark {
         }
 
         public static bool operator == (CQ_Value a, CQ_Value b) {
-            return a.m_type == b.m_type && a.m_stype == b.m_stype && a._obj == b._obj;
+//			if(a.m_type != null && b.m_type != null){
+//				if(Type_Numeric.IsNumberType(a.m_type) && Type_Numeric.IsNumberType(b.m_type)){
+//					return a.GetDouble() == b.GetDouble();
+//				}else{
+//					return a._obj == b._obj;
+//				}
+//			}else if(a.m_stype != null && b.m_stype != null){
+//				return a._obj == b._obj;
+//			}
+//			return false;
+			return a.m_stype == b.m_stype && a._obj == b._obj && a._num == b._num && a._isNum == b._isNum;
         }
 
         public static bool operator != (CQ_Value a, CQ_Value b) {
-            return a.m_type != b.m_type || a.m_stype != b.m_stype || a._obj != b._obj;
+			return a.m_stype != b.m_stype || a._obj != b._obj || a._num != b._num || a._isNum != b._isNum;
         }
     }
 }

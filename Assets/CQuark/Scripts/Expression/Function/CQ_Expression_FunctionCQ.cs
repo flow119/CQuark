@@ -71,22 +71,22 @@ namespace CQuark {
             }
             else {
                 v = content.GetQuiet(funcname);
-                if(v.GetValue() != null && v.GetValue() is Delegate) {
+                if(v.GetObject() != null && v.GetObject() is Delegate) {
                     //if(v.value is Delegate)
                     {
-                        Delegate d = v.GetValue() as Delegate;
+                        Delegate d = v.GetObject() as Delegate;
                         v = new CQ_Value();
                         object[] obja = new object[parameters.Length];
                         for(int i = 0; i < parameters.Length; i++) {
-                            obja[i] = parameters[i].GetValue();
+                            obja[i] = parameters[i].GetObject();
                         }
                         object obj = d.DynamicInvoke(obja);
                         
                         if(obj == null) {
-                            v.SetNoneTypeValue(null);
+                            v.SetNoneTypeObject(null);
                         }
                         else {
-                            v.SetValue(obj.GetType(), obj);
+                            v.SetObject(obj.GetType(), obj);
                         }
                     }
                     //else

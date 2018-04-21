@@ -66,56 +66,70 @@ namespace CQuark
 			}
 		}
 		//虽然写法很奇怪，但是这样是最高效的处理方法
-		public static double GetDouble (Type type, object v) {
-			if(type == typeof(double))
+		public static double GetDouble (Type srctype, object v) {
+			if(srctype == typeof(double))
 				return (double)v;
-			if(type == typeof(float))
+			if(srctype == typeof(float))
 				return (float)v;
-			if(type == typeof(long))
+			if(srctype == typeof(long))
 				return (long)v;
-			if(type == typeof(ulong))
+			if(srctype == typeof(ulong))
 				return (ulong)v;
-			if(type == typeof(int))
+			if(srctype == typeof(int))
 				return (int)v;
-			if(type == typeof(uint))
+			if(srctype == typeof(uint))
 				return (uint)v;
-			if(type == typeof(short))
+			if(srctype == typeof(short))
 				return (short)v;
-			if(type == typeof(ushort))
+			if(srctype == typeof(ushort))
 				return (ushort)v;
-			if(type == typeof(sbyte))
+			if(srctype == typeof(sbyte))
 				return (sbyte)v;
-			if(type == typeof(byte))
+			if(srctype == typeof(byte))
 				return (byte)v;
-			if(type == typeof(char))
+			if(srctype == typeof(char))
 				return (char)v;
 			return (double)v;
 		}
-		private static object Double2TargetType (Type type, double value) {
-			if(type == typeof(double))
+		public static object Double2TargetType (Type dsttype, double value) {
+			if(dsttype == typeof(double))
 				return (double)value;
-			if(type == typeof(float))
+			if(dsttype == typeof(float))
 				return (float)value;
-			if(type == typeof(long))
+			if(dsttype == typeof(long))
 				return (long)value;
-			if(type == typeof(ulong))
+			if(dsttype == typeof(ulong))
 				return (ulong)value;
-			if(type == typeof(int))
+			if(dsttype == typeof(int))
 				return (int)value;
-			if(type == typeof(uint))
+			if(dsttype == typeof(uint))
 				return (uint)value;
-			if(type == typeof(short))
+			if(dsttype == typeof(short))
 				return (short)value;
-			if(type == typeof(ushort))
+			if(dsttype == typeof(ushort))
 				return (ushort)value;
-			if(type == typeof(sbyte))
+			if(dsttype == typeof(sbyte))
 				return (sbyte)value;
-			if(type == typeof(byte))
+			if(dsttype == typeof(byte))
 				return (byte)value;
-			if(type == typeof(char))
+			if(dsttype == typeof(char))
 				return (char)value;
 
 			throw new Exception("unknown target type...");
+		}
+
+		public static bool IsNumberType(Type type){
+			return(type == typeof(double))
+				||(type == typeof(float))
+				||(type == typeof(long))
+				||(type == typeof(ulong))
+				||(type == typeof(int))
+				||(type == typeof(uint))
+				||(type == typeof(short))
+				||(type == typeof(ushort))
+				||(type == typeof(sbyte))
+				||(type == typeof(byte))
+				||(type == typeof(char));
 		}
 
 		//快速计算
@@ -124,8 +138,8 @@ namespace CQuark
                 returnValue = new CQ_Value();
                 Type retType = GetReturnType_Math2Value(left.m_type, right.m_type);
                 
-                double leftValue = left.GetDouble();// GetDouble(left.m_type, left.GetValue());
-                double rightValue = right.GetDouble();// GetDouble(right.m_type, right.GetValue());
+				double leftValue = left.GetNumber();// GetDouble(left.m_type, left.GetValue());
+				double rightValue = right.GetNumber();// GetDouble(right.m_type, right.GetValue());
 				double finalValue;
 
 				switch(opCode) {
@@ -147,7 +161,7 @@ namespace CQuark
 				default:
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
-                returnValue.SetValue(retType, Double2TargetType(retType, finalValue));
+                returnValue.SetObject(retType, Double2TargetType(retType, finalValue));
                 return true;
 
 			}
@@ -198,8 +212,8 @@ namespace CQuark
 			mathLogicSuccess = true;
 
 			try {
-                double leftValue = left.GetDouble();// GetDouble(left.m_type, left.GetValue());
-                double rightValue = right.GetDouble();// GetDouble(right.m_type, right.GetValue());
+				double leftValue = left.GetNumber();// GetDouble(left.m_type, left.GetValue());
+				double rightValue = right.GetNumber();// GetDouble(right.m_type, right.GetValue());
 
 				switch(logicCode) {
 				case LogicToken.equal:
@@ -282,7 +296,7 @@ namespace CQuark
             Type rightType = right.m_type;
             if(rightType == typeof(string) && code == '+') {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.SetValue(typeof(string), left.GetValue().ToString() + right.GetValue() as string);
+                returnValue.SetObject(typeof(string), left.GetObject().ToString() + right.GetObject() as string);
                 return returnValue;
             }
             else {
@@ -335,7 +349,7 @@ namespace CQuark
 
                 //Wrap没走到，走反射
                 returnValue = new CQ_Value();
-                returnValue.SetValue(typeBridge.type, call.Invoke(null, new object[] { left.GetValue(), right.GetValue() }));
+                returnValue.SetObject(typeBridge.type, call.Invoke(null, new object[] { left.GetObject(), right.GetObject() }));
                 //function.StaticCall(env,"op_Addtion",new List<ICL>{})
                 return returnValue;
             }
@@ -355,30 +369,30 @@ namespace CQuark
                 call = _type.GetMethod("op_LessThanOrEqual");
             else if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if(left.GetValue() == null || right.TypeIsEmpty)
+                if(left.GetObject() == null || right.TypeIsEmpty)
                 {
-                    return left.GetValue() == right.GetValue();
+                    return left.GetObject() == right.GetObject();
                 }
 
                 call = _type.GetMethod("op_Equality");
                 if (call == null)
                 {
-                    return left.GetValue().Equals(right.GetValue());
+                    return left.GetObject().Equals(right.GetObject());
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if(left.GetValue() == null || right.TypeIsEmpty)
+                if(left.GetObject() == null || right.TypeIsEmpty)
                 {
-                    return left.GetValue() != right.GetValue();
+                    return left.GetObject() != right.GetObject();
                 }
                 call = _type.GetMethod("op_Inequality");
                 if (call == null)
                 {
-                    return !left.GetValue().Equals(right.GetValue());
+                    return !left.GetObject().Equals(right.GetObject());
                 }
             }
-            var obj = call.Invoke(null, new object[] { left.GetValue(), right.GetValue() });
+            var obj = call.Invoke(null, new object[] { left.GetObject(), right.GetObject() });
             return (bool)obj;
         }
     }

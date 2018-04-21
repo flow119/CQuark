@@ -31,9 +31,9 @@ namespace CQuark
 
         public override CQ_Value Math2Value(char code, CQ_Value left, CQ_Value right)
         {
-            if(left.GetValue() is DeleEvent)
+            if(left.GetObject() is DeleEvent)
             {
-                DeleEvent info = left.GetValue() as DeleEvent;
+                DeleEvent info = left.GetObject() as DeleEvent;
                 Delegate calldele = null;
 
                 //!--exist bug.
@@ -41,7 +41,7 @@ namespace CQuark
                 else if (right.value is DeleLambda) calldele = CreateDelegate(right.value as DeleLambda);
                 else if (right.value is Delegate) calldele = right.value as Delegate;*/
 
-                object rightValue = right.GetValue();
+                object rightValue = right.GetObject();
                 if (rightValue is DeleFunction)
                 {
                     if (code == '+')
@@ -76,7 +76,7 @@ namespace CQuark
                     //    Dele_Map_Delegate.Map(rightValue as IDeleBase, calldele);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.SetNoneTypeValue(info);
+                    ret.SetNoneTypeObject(info);
                     return ret;
                 }
                 else if (code == '-')
@@ -86,31 +86,31 @@ namespace CQuark
                     //    Dele_Map_Delegate.Destroy(rightValue as IDeleBase);
                     //}
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.SetNoneTypeValue(info);
+                    ret.SetNoneTypeObject(info);
                     return ret;
                 }
 
             }
-            else if(left.GetValue() is Delegate || left.GetValue() == null)
+            else if(left.GetObject() is Delegate || left.GetObject() == null)
             {
-                Delegate info = left.GetValue() as Delegate;
+                Delegate info = left.GetObject() as Delegate;
                 Delegate calldele = null;
-                if(right.GetValue() is DeleFunction)
-                    calldele = CreateDelegate(right.GetValue() as DeleFunction);
-                else if(right.GetValue() is DeleLambda)
-                    calldele = CreateDelegate(right.GetValue() as DeleLambda);
-                else if(right.GetValue() is Delegate)
-                    calldele = right.GetValue() as Delegate;
+                if(right.GetObject() is DeleFunction)
+                    calldele = CreateDelegate(right.GetObject() as DeleFunction);
+                else if(right.GetObject() is DeleLambda)
+                    calldele = CreateDelegate(right.GetObject() as DeleLambda);
+                else if(right.GetObject() is Delegate)
+                    calldele = right.GetObject() as Delegate;
                 if (code == '+')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.SetNoneTypeValue(Delegate.Combine(info, calldele));
+                    ret.SetNoneTypeObject(Delegate.Combine(info, calldele));
                     return ret;
                 }
                 else if (code == '-')
                 {
                     CQ_Value ret = new CQ_Value();//type保持null
-                    ret.SetNoneTypeValue(Delegate.Remove(info, calldele));
+                    ret.SetNoneTypeObject(Delegate.Remove(info, calldele));
                     return ret;
                 }
             }
@@ -137,7 +137,7 @@ namespace CQuark
 
                         CQ_Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
-                        return (ReturnType)retValue.GetValue();
+                        return (ReturnType)retValue.GetObject();
                     }
                     catch (Exception err)
                     {
@@ -171,7 +171,7 @@ namespace CQuark
                         content.DepthAdd();
                         CQ_Value retValue = expr.ComputeValue(content);
                         content.DepthRemove();
-                        return (ReturnType)retValue.GetValue();
+                        return (ReturnType)retValue.GetObject();
                     }
                     catch (Exception err)
                     {

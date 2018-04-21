@@ -65,7 +65,7 @@ namespace CQuark {
                 if(i.Value.bStatic == false) {
                     if(i.Value.expr_defvalue == null) {
                         CQ_Value val = new CQ_Value();
-                        val.SetValue(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
+                        val.SetObject(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
                         c.member[i.Key] = val;
                         //sv.value_value.member[i.Key] = new CQ_Value();
                         //sv.value_value.member[i.Key].SetCQType(i.Value.type.cqType);
@@ -75,7 +75,7 @@ namespace CQuark {
                         var value = i.Value.expr_defvalue.ComputeValue(contentMemberCalc);
                         if(i.Value.m_itype.typeBridge != value.typeBridge) {
                             CQ_Value val = new CQ_Value();
-                            val.SetValue(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
+                            val.SetObject(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
                             c.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = val;
                             //sv.value_value.member[i.Key] = new CQ_Value();
@@ -94,7 +94,7 @@ namespace CQuark {
             }
 
             CQ_Value v = new CQ_Value();
-            v.SetValue(this, c);
+            v.SetObject(this, c);
             return v;
         }
         void NewStatic () {
@@ -105,7 +105,7 @@ namespace CQuark {
                         if(i.Value.expr_defvalue == null) {
 
                             CQ_Value val = new CQ_Value();
-                            val.SetValue(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
+                            val.SetObject(i.Value.m_itype.typeBridge, i.Value.m_itype.defaultValue);
                             staticMemberInstance[i.Key] = val;
 
                         }
@@ -114,7 +114,7 @@ namespace CQuark {
                             if(i.Value.m_itype.typeBridge != value.typeBridge) {
 
                                 CQ_Value val = new CQ_Value();
-                                val.SetValue(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
+                                val.SetObject(i.Value.m_itype.typeBridge, value.ConvertTo(i.Value.m_itype.typeBridge));
                                 staticMemberInstance[i.Key] = val;
 
                                 //staticMemberInstance[i.Key] = new CQ_Value();
@@ -166,19 +166,19 @@ namespace CQuark {
             }
             else if(this.members.ContainsKey(function)) {
                 if(this.members[function].bStatic == true) {
-                    Delegate dele = this.staticMemberInstance[function].GetValue() as Delegate;
+                    Delegate dele = this.staticMemberInstance[function].GetObject() as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
                         object[] objs = new object[_params.Length];
                         for(int i = 0; i < _params.Length; i++) {
-                            objs[i] = _params[i].GetValue();
+                            objs[i] = _params[i].GetObject();
                         }
                         object obj = dele.DynamicInvoke(objs);
                         if(obj == null) {
                             return CQ_Value.Null;
                         }
                         else {
-                            value.SetValue(obj.GetType(), obj);
+                            value.SetObject(obj.GetType(), obj);
                             return value;
                         }
                         //value.breakBlock = BreakType.None;
@@ -249,19 +249,19 @@ namespace CQuark {
             }
             else if(this.members.ContainsKey(func)) {
                 if(this.members[func].bStatic == false) {
-                    Delegate dele = (object_this as CQ_ClassInstance).member[func].GetValue() as Delegate;
+                    Delegate dele = (object_this as CQ_ClassInstance).member[func].GetObject() as Delegate;
                     if(dele != null) {
                         CQ_Value value = new CQ_Value();
                         object[] objs = new object[_params.Length];
                         for(int i = 0; i < _params.Length; i++) {
-                            objs[i] = _params[i].GetValue();
+                            objs[i] = _params[i].GetObject();
                         }
                         object obj = dele.DynamicInvoke(objs);
                         if(obj == null) {
                             return CQ_Value.Null;
                         }
                         else {
-                            value.SetValue(obj.GetType(), obj);
+                            value.SetObject(obj.GetType(), obj);
                             return value;
                         }
                     }

@@ -33,7 +33,7 @@ public class Demo2 : MonoBehaviour {
 	//这个函数展示了执行一个函数块，且函数块再调用一个方法
 	void Execute2(){
 		CQuarkParagraph block = new CQuarkParagraph();
-		int ret = (int)block.Execute (
+		CQuark.CQ_Value ret = block.Execute (
 			"Debug.Log(\"Today is \" + Demo2.Today());\n" +
             "return Demo2.Today();");
 		Debug.Log("return = " + ret);

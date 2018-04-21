@@ -67,9 +67,9 @@ namespace CQuark {
                 }
 
 				//这几行是为了快速获取Unity的静态变量，而不需要反射
-                if(!Wrap.MemberValueSet(parent.m_type, parent.GetValue(), f.membername, val)) {
+                if(!Wrap.MemberValueSet(parent.m_type, parent.GetObject(), f.membername, val)) {
                     var ptype = CQuark.AppDomain.GetITypeByCQValue(parent);
-                    ptype._class.MemberValueSet(content, parent.GetValue(), f.membername, val);
+                    ptype._class.MemberValueSet(content, parent.GetObject(), f.membername, val);
 				}
             }
             else if(_expressions[0] is CQ_Expression_StaticValueGet) {
@@ -86,11 +86,11 @@ namespace CQuark {
 			}else if(_expressions[0] is CQ_Expression_IndexGet){
 				CQ_Expression_IndexGet f = _expressions[0] as CQ_Expression_IndexGet;
 				CQ_Value parent = f._expressions[0].ComputeValue(content);
-				object obj = parent.GetValue();
+				object obj = parent.GetObject();
 				CQ_Value key = f._expressions[1].ComputeValue(content);
 
 				IType parenttype = CQuark.AppDomain.GetITypeByCQValue(parent);
-				parenttype._class.IndexSet(content, parent.GetValue(), key.GetValue(), left.GetValue());
+				parenttype._class.IndexSet(content, parent.GetObject(), key.GetObject(), left.GetObject());
 
 				CQ_Expression_GetValue g = f._expressions[0] as CQ_Expression_GetValue;
 				content.Set(g.value_name, parent);

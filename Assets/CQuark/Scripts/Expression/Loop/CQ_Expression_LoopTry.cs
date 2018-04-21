@@ -65,7 +65,7 @@ namespace CQuark {
                     if(err.GetType() == (Type)def.value_type || err.GetType().IsSubclassOf((Type)def.value_type)) {
                         content.DepthAdd();
                         CQ_Value errVal = new CQ_Value();
-                        errVal.SetValue(def.value_type, err);
+                        errVal.SetObject(def.value_type, err);
                         content.DefineAndSet(def.value_name, errVal);
 
                         _expressions[i + 1].ComputeValue(content);

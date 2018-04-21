@@ -52,7 +52,7 @@ namespace CQuark {
             CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetObject() as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
@@ -61,7 +61,7 @@ namespace CQuark {
             while(it.MoveNext()) {
                 //content.Set(define.value_name, it.Current);
                 CQ_Value val = new CQ_Value();
-                val.SetValue(define.value_type, it.Current);
+                val.SetObject(define.value_type, it.Current);
                 content.Set(define.value_name, val);
 
 
@@ -107,7 +107,7 @@ namespace CQuark {
             CQ_Expression_Define define = _expressions[0] as CQ_Expression_Define;
             define.ComputeValue(content);
 
-            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetValue() as System.Collections.IEnumerable;
+            System.Collections.IEnumerable emu = _expressions[1].ComputeValue(content).GetObject() as System.Collections.IEnumerable;
 
             ICQ_Expression expr_block = _expressions[2] as ICQ_Expression;
 
@@ -116,7 +116,7 @@ namespace CQuark {
             while(it.MoveNext()) {
                 //content.Set(define.value_name, it.Current);
                 CQ_Value val = new CQ_Value();
-                val.SetValue(define.value_type, it.Current);
+                val.SetObject(define.value_type, it.Current);
                 content.Set(define.value_name, val);
 
                 if(expr_block != null) {

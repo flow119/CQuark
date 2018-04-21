@@ -54,10 +54,10 @@ namespace CQuark {
             CQ_Value value = new CQ_Value();
 
             if(targettype.type != null) {
-                value.SetValue(targettype.type, type.ConvertTo(right.GetValue(), targettype));
+                value.SetObject(targettype.type, type.ConvertTo(right.GetObject(), targettype));
             }
             else if(targettype.stype != null) {
-                value.SetValue(targettype.stype, type.ConvertTo(right.GetValue(), targettype));
+                value.SetObject(targettype.stype, type.ConvertTo(right.GetObject(), targettype));
             }
 
 

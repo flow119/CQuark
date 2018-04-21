@@ -83,9 +83,9 @@ namespace CQuark {
             if(rv == CQ_Value.Null)
 				yield return null;
 			else if(rv.m_type == typeof (IEnumerator))
-                yield return coroutine.StartCoroutine(rv.GetValue() as IEnumerator);
+                yield return coroutine.StartCoroutine(rv.GetObject() as IEnumerator);
 			else
-                yield return rv.GetValue();//这里Unity会非常智能的自动去转型
+                yield return rv.GetObject();//这里Unity会非常智能的自动去转型
 		}
 
         public override string ToString () {

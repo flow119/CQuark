@@ -16,7 +16,7 @@ public class Demo1 : MonoBehaviour {
 	//这个函数展示最简单的计算
 	void Eval1 () {
 		CQuarkParagraph block = new CQuarkParagraph();
-		int ret = (int)block.Execute ("1+2");
+		CQuark.CQ_Value ret = block.Execute ("1+2");
 		Debug.Log ("return = " + ret);
 	}
 
@@ -25,9 +25,9 @@ public class Demo1 : MonoBehaviour {
 		CQuarkParagraph block = new CQuarkParagraph();
 		block.SetValue ("HP1", 200);
 		block.SetValue ("HP2", 300);
-		double d = (double)block.Execute ("HP1 + HP2 * 0.5");
+		CQuark.CQ_Value d = block.Execute ("HP1 + HP2 * 0.5");
 		Debug.Log ("d = " + d);
-		float f = (float)block.Execute ("HP1 + HP2 * 0.5f");
+		CQuark.CQ_Value f = block.Execute ("HP1 + HP2 * 0.5f");
 		Debug.Log ("f = " + f);
 	}
 
@@ -40,7 +40,7 @@ public class Demo1 : MonoBehaviour {
 			"};\n" +
 			"return ret";
 		CQuarkParagraph block = new CQuarkParagraph();
-		string s = (string)block.Execute (method);
+		CQuark.CQ_Value s = block.Execute (method);
 		Debug.Log (s);
 	}
 }

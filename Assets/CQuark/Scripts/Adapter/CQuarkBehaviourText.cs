@@ -49,7 +49,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 		RegisterMember("gameObject", typeof(GameObject));
 		RegisterMember("transform", typeof(Transform));
 
-        inst = type._class.New(content, new CQuark.CQ_Value[0]).GetValue() as CQuark.CQ_ClassInstance;
+        inst = type._class.New(content, new CQuark.CQ_Value[0]).GetObject() as CQuark.CQ_ClassInstance;
 
         SetMember("gameObject", typeof(GameObject), this.gameObject);
         SetMember("transform", typeof(Transform), this.transform);
@@ -63,7 +63,7 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 
 	CQ_Value SetMember(string name, System.Type type, Object obj){
 		CQ_Value val = new CQ_Value ();
-        val.SetValue(type, obj);
+        val.SetObject(type, obj);
 		inst.member[name] = val;
 		return val;
 	}

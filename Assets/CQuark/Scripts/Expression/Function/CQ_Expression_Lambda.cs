@@ -47,7 +47,7 @@ namespace CQuark {
             //List<CQ_Content.Value> list = new List<CQ_Content.Value>();
             CQ_Value value = new CQ_Value();
             DeleLambda dele = new DeleLambda(content, (this._expressions[0] as CQ_Expression_Block)._expressions, this._expressions[1]);
-            value.SetValue(typeof(DeleLambda), dele);
+            value.SetObject(typeof(DeleLambda), dele);
 
 #if CQUARK_DEBUG
             content.OutStack(this);

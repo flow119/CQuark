@@ -13,12 +13,10 @@ public class CQuarkParagraph {
 		content = CQ_ObjPool.PopContent();
     }
 
-    public object Execute (string script) {
+	public CQ_Value Execute (string script) {
         var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
         CQ_Value value = expr.ComputeValue(content);//执行表达式
-        if(value == CQ_Value.Null)
-            return null;
-        return value.GetValue();
+        return value;
     }
     public IEnumerator StartCoroutine (string script, UnityEngine.MonoBehaviour coroutine) {
         var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
@@ -30,7 +28,7 @@ public class CQuarkParagraph {
     }
     public void SetValue (string name, object v) {
         CQ_Value val = new CQ_Value();
-        val.SetValue(v.GetType(), v);
+        val.SetObject(v.GetType(), v);
         content.DefineAndSet(name, val);
     }
     public void ClearValue () {

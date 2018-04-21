@@ -44,7 +44,7 @@ namespace CQuark {
             content.InStack(this);
 #endif
 			CQ_Value parent = _expressions[0].ComputeValue(content);
-			object obj = parent.GetValue();
+			object obj = parent.GetObject();
             if(parent == CQ_Value.Null) {
                 throw new Exception("调用空对象的方法:" + _expressions[0].ToString() + ":" + ToString());
             }
@@ -60,11 +60,11 @@ namespace CQuark {
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
             if(!Wrap.IndexSet(parent.m_type, obj, key, value)) {
                 var type = CQuark.AppDomain.GetITypeByCQValue(parent);
-                type._class.IndexSet(content, parent.GetValue(), obj, value.GetValue());
+                type._class.IndexSet(content, parent.GetObject(), obj, value.GetObject());
 			}
 
 			IType parenttype = CQuark.AppDomain.GetITypeByCQValue(parent);
-			parenttype._class.IndexSet(content, parent.GetValue(), key.GetValue(), value.GetValue());
+			parenttype._class.IndexSet(content, parent.GetObject(), key.GetObject(), value.GetObject());
 
 			CQ_Expression_GetValue f = _expressions[0] as CQ_Expression_GetValue;
 			content.Set(f.value_name, parent);

@@ -35,7 +35,7 @@ namespace CQuark
             if (right.m_type == typeof(string))
             {
                 CQ_Value returnValue = new CQ_Value();
-                returnValue.SetValue(typeof(string), "null" + right.GetValue());
+                returnValue.SetObject(typeof(string), "null" + right.GetObject());
                 return returnValue;
             }
             throw new NotImplementedException();
@@ -44,11 +44,11 @@ namespace CQuark
         {
             if (code == LogicToken.equal)
             {
-                return null == right.GetValue();
+                return null == right.GetObject();
             }
             else if(code== LogicToken.not_equal)
             {
-                return null != right.GetValue();
+                return null != right.GetObject();
             }
             throw new NotImplementedException();
         }

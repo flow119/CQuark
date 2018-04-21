@@ -77,24 +77,24 @@ namespace CQuark
         {
             if (code == LogicToken.equal)//[6] = {Boolean op_Equality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if(left.GetValue() == null || right.TypeIsEmpty)
+                if(left.GetObject() == null || right.TypeIsEmpty)
                 {
-                    return left.GetValue() == right.GetValue();
+                    return left.GetObject() == right.GetObject();
                 }
                 else
                 {
-                    return left.GetValue() == right.GetValue();
+                    return left.GetObject() == right.GetObject();
                 }
             }
             else if (code == LogicToken.not_equal)//[7] = {Boolean op_Inequality(CQcriptExt.Vector3, CQcriptExt.Vector3)}
             {
-                if(left.GetValue() == null || right.TypeIsEmpty)
+                if(left.GetObject() == null || right.TypeIsEmpty)
                 {
-                    return left.GetValue() != right.GetValue();
+                    return left.GetObject() != right.GetObject();
                 }
                 else
                 {
-                    return left.GetValue() != right.GetValue();
+                    return left.GetObject() != right.GetObject();
                 }
             }
             throw new NotImplementedException();

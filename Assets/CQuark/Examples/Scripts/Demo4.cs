@@ -27,7 +27,7 @@ public class Demo4 : MonoBehaviour {
 				"sc.defHP1=100;\n"+
 					"sc.defHP2=200;\n"+
 					"return sc.GetHP();";
-			object i = block.Execute(callExpr);
+			CQuark.CQ_Value i = block.Execute(callExpr);
 			result = "result=" + i;
 		}
 
@@ -38,18 +38,18 @@ public class Demo4 : MonoBehaviour {
 
 			CQuark.CQ_Content content = new CQuark.CQ_Content();
 			//调用脚本类构造创造一个实例
-            var thisOfScript = typeOfScript._class.New(content, new CQuark.CQ_Value[0]).GetValue();
+			var thisOfScript = typeOfScript._class.New(content, new CQuark.CQ_Value[0]).GetObject();
 			//调用脚本类成员变量赋值
 			//Debug.LogWarning(thisOfScript+","+ typeOfScript+","+ typeOfScript.function);
             CQuark.CQ_Value v1 = new CQuark.CQ_Value();
-            v1.SetValue(typeof(int), 150);
+            v1.SetObject(typeof(int), 150);
             CQuark.CQ_Value v2 = new CQuark.CQ_Value();
-            v2.SetValue(typeof(int), 300);
+            v2.SetObject(typeof(int), 300);
             typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP1", v1);
             typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", v2);
 			//调用脚本类成员函数
             var returnvalue = typeOfScript._class.MemberCall(content, thisOfScript, "GetHP", new CQuark.CQ_Value[0]);
-			object i = returnvalue.GetValue();
+			object i = returnvalue.GetObject();
 			result = "result=" + i;
 		}
 

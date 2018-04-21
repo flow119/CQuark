@@ -54,7 +54,7 @@ namespace CQuark {
                 if(e != null)
                     value = e.ComputeValue(content);
 
-                if(value.GetValue() != null && value.m_breakBlock != 0)
+                if(value.GetObject() != null && value.m_breakBlock != 0)
                     break;
             }
             content.DepthRemove();
@@ -76,7 +76,7 @@ namespace CQuark {
                     }
                     else {
                         value = e.ComputeValue(content);
-                        if(value.GetValue() != null && value.m_breakBlock != 0)
+                        if(value.GetObject() != null && value.m_breakBlock != 0)
                             break;
                     }
                 }

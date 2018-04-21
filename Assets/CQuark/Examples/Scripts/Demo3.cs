@@ -33,7 +33,7 @@ public class Demo3 : MonoBehaviour {
         block.SetValue("HP2", 300);
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		object obj = block.Execute (text);
+		CQuark.CQ_Value obj = block.Execute (text);
 		Debug.Log ("result = " + obj);
 	}
 }

@@ -52,8 +52,8 @@ namespace CQuark {
             CQ_Value getvalue = CQ_Value.Null;
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(!Wrap.MemberValueGet(parent.m_type, parent.GetValue(), membername, out getvalue)) {
-                getvalue = type._class.MemberValueGet(content, parent.GetValue(), membername);
+            if(!Wrap.MemberValueGet(parent.m_type, parent.GetObject(), membername, out getvalue)) {
+                getvalue = type._class.MemberValueGet(content, parent.GetObject(), membername);
 			}
 
             CQ_Value vright = CQ_Value.One;
@@ -65,8 +65,8 @@ namespace CQuark {
             CQ_Value vout = mtype.Math2Value(mathop, getvalue, vright);
 
 			//这几行是为了快速获取Unity的静态变量，而不需要反射
-            if(!Wrap.MemberValueSet(parent.m_type, parent.GetValue(), membername, vout)) {
-                type._class.MemberValueSet(content, parent.GetValue(), membername, vout);
+            if(!Wrap.MemberValueSet(parent.m_type, parent.GetObject(), membername, vout)) {
+                type._class.MemberValueSet(content, parent.GetObject(), membername, vout);
 			}
 
 #if CQUARK_DEBUG

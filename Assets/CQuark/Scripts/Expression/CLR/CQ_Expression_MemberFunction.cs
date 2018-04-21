@@ -68,12 +68,12 @@ namespace CQuark {
             CQ_Value value = CQ_Value.Null;
 
             //这几行是为了快速获取Unity的静态变量，而不需要反射
-            object obj = parent.GetValue();
+            object obj = parent.GetObject();
             if(!Wrap.MemberCall(parent.m_type, obj, functionName, parameters, out value)) {
                 //TODO 要么注册所有基本类型（bool,int,string...)要么这里特殊处理
                 if(functionName == "ToString" && parameters.Length == 0) {
                     CQ_Value ret = new CQ_Value();
-                    ret.SetValue(typeof(string), obj.ToString());
+                    ret.SetObject(typeof(string), obj.ToString());
                     return ret;
                 }
                 else {
