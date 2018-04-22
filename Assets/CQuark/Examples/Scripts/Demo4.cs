@@ -49,8 +49,7 @@ public class Demo4 : MonoBehaviour {
             typeOfScript._class.MemberValueSet(content, thisOfScript, "defHP2", v2);
 			//调用脚本类成员函数
             var returnvalue = typeOfScript._class.MemberCall(content, thisOfScript, "GetHP", new CQuark.CQ_Value[0]);
-			object i = returnvalue.GetObject();
-			result = "result=" + i;
+			result = "result=" + returnvalue;
 		}
 
 		GUI.Label(new Rect(0, 50, 200, 50), result);

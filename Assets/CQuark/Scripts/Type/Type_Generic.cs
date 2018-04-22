@@ -48,61 +48,6 @@ namespace CQuark
 			this.defaultValue = defaultVal;
         }
 
-		/// <summary>
-		/// 类型转换.
-		/// </summary>
-		protected static object TryConvertTo<OriginalType> (object src, TypeBridge targetType, out bool convertSuccess) where OriginalType : struct {
-			convertSuccess = true;
-			if(NumberUtil.IsNumberType(typeof(OriginalType)) && NumberUtil.IsNumberType(targetType.type)){
-				double srcValue = NumberUtil.GetDouble(typeof(OriginalType), src);
-				return NumberUtil.Double2TargetType(targetType, srcValue);
-			}
-			else {
-				convertSuccess = false;
-				return null;
-			}
-		}
-
-		//快速计算
-		protected static bool NumberMath2Value (char opCode, CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
-			try {
-                returnValue = new CQ_Value();
-				Type retType = NumberUtil.GetReturnType_Math2Value(left.m_type, right.m_type);
-                
-				double leftValue = left.GetNumber();// GetDouble(left.m_type, left.GetValue());
-				double rightValue = right.GetNumber();// GetDouble(right.m_type, right.GetValue());
-				double finalValue;
-
-				switch(opCode) {
-				case '+':
-					finalValue = leftValue + rightValue;
-					break;
-				case '-':
-					finalValue = leftValue - rightValue;
-					break;
-				case '*':
-					finalValue = leftValue * rightValue;
-					break;
-				case '/':
-					finalValue = leftValue / rightValue;
-					break;
-				case '%':
-					finalValue = leftValue % rightValue;
-					break;
-				default:
-					throw new Exception("Invalid math operation::opCode = " + opCode);
-				}
-				if(NumberUtil.IsNumberType(retType))
-					returnValue.SetNumber(retType,  NumberUtil.ConvertNumber(finalValue, retType));
-                return true;
-
-			}
-			catch(Exception) {
-                returnValue = CQ_Value.Null;
-				return false;
-			}
-		}
-
         public virtual object ConvertTo(object src, TypeBridge targetType)
         {
             Type targettype = (Type)targetType;
@@ -151,6 +96,7 @@ namespace CQuark
 
             return null;
         }
+
         public virtual CQ_Value Math2Value (char code, CQ_Value left, CQ_Value right)
         {
 			//会走到这里说明不是简单的数学计算了
@@ -214,6 +160,7 @@ namespace CQuark
                 return returnValue;
             }
         }
+
         public virtual bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             System.Reflection.MethodInfo call = null;

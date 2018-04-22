@@ -22,17 +22,17 @@ namespace CQuark{
         }
         public static void RegisterDefaultType () {
             //最好能默认
-            RegisterType(new Type_Int());
-            RegisterType(new Type_UInt());
-            RegisterType(new Type_Float());
-            RegisterType(new Type_Double());
-            RegisterType(new Type_Byte());
-            RegisterType(new Type_Char());
-            RegisterType(new Type_UShort());
-            RegisterType(new Type_Sbyte());
-            RegisterType(new Type_Short());
-            RegisterType(new Type_Long());
-            RegisterType(new Type_ULong());
+			RegisterType<double>("double");
+			RegisterType<float>("float");
+			RegisterType<long>("long");
+			RegisterType<ulong>("ulong");
+			RegisterType<int>("int");
+			RegisterType<uint>("uint");
+			RegisterType<short>("short");
+			RegisterType<ushort>("ushort");
+			RegisterType<byte>("byte");
+			RegisterType<sbyte>("sbyte");
+			RegisterType<char>("char");
 
             RegisterType(new Type_String());
             RegisterType(new Type_Var());
@@ -76,7 +76,10 @@ namespace CQuark{
 			Type type = typeof(T);
 			if(type.IsSubclassOf(typeof(Delegate))) 
 				return MakeITypeWithDelegate(type, keyword);
-			return new Type_Generic(type, keyword, default(T));
+			if(NumberUtil.IsNumberType(type))
+				return new Type_Number(type, keyword, default(T));
+			else
+				return new Type_Generic(type, keyword, default(T));
 		}
 
 		private static IType MakeIType (Type type, string keyword) {
