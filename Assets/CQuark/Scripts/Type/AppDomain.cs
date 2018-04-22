@@ -76,13 +76,13 @@ namespace CQuark{
 			Type type = typeof(T);
 			if(type.IsSubclassOf(typeof(Delegate))) 
 				return MakeITypeWithDelegate(type, keyword);
-			return new Type_Numeric(type, keyword, default(T));
+			return new Type_Generic(type, keyword, default(T));
 		}
 
 		private static IType MakeIType (Type type, string keyword) {
 			if(type.IsSubclassOf(typeof(Delegate))) 
 				return MakeITypeWithDelegate(type, keyword);
-			return new Type_Numeric(type, keyword, null);
+			return new Type_Generic(type, keyword, null);
 		}
 
 		private static IType MakeITypeWithDelegate(Type type, string keyword){
@@ -94,15 +94,15 @@ namespace CQuark{
 				}
 				else if(pp.Length == 1) {
 					var gtype = typeof(Type_DeleAction<>).MakeGenericType(new Type[] { pp[0].ParameterType });
-					return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric;
+					return gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Generic;
 				}
 				else if(pp.Length == 2) {
 					var gtype = typeof(Type_DeleAction<,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType });
-					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Generic);
 				}
 				else if(pp.Length == 3) {
 					var gtype = typeof(Type_DeleAction<,,>).MakeGenericType(new Type[] { pp[0].ParameterType, pp[1].ParameterType, pp[2].ParameterType });
-					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+					return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Generic);
 				}
 				else {
 					throw new Exception("还没有支持这么多参数的委托");
@@ -125,7 +125,7 @@ namespace CQuark{
 				else {
 					throw new Exception("还没有支持这么多参数的委托");
 				}
-				return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Numeric);
+				return (gtype.GetConstructors()[0].Invoke(new object[] { type, keyword }) as Type_Generic);
 			}
 		}
 

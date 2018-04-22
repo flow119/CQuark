@@ -36,7 +36,7 @@ namespace CQuark {
 
 		//数字用这个方法，参考Lua，用double避免装箱
 		public void SetNumber(Type type, double val){
-			if(!Type_Numeric.IsNumberType(type))
+			if(!NumberUtil.IsNumberType(type))
 				throw new InvalidCastException();
 			
 			if(m_type == typeof(Type_Var.var)){
@@ -52,7 +52,7 @@ namespace CQuark {
 			}else{
 				//可能存进来一个(int)1.5，这里要转到对应类型
 				_isNum = true;
-				_num = Type_Numeric.ConvertNumber(val, type);
+				_num = NumberUtil.ConvertNumber(val, type);
 			}
 		}
 
@@ -66,8 +66,8 @@ namespace CQuark {
 			if(type == typeof(bool)){
 				SetBool((bool)obj);
 			}
-			else if(Type_Numeric.IsNumberType(type)){
-				SetNumber(type, Type_Numeric.GetDouble(type, obj));
+			else if(NumberUtil.IsNumberType(type)){
+				SetNumber(type, NumberUtil.GetDouble(type, obj));
 			}
 			else{
 				if(m_type == typeof(Type_Var.var)){
@@ -150,7 +150,7 @@ namespace CQuark {
 
         //保持原有的type，而使用别的CQ_Value的值（一般用于赋值）
         public void UsingValue (CQ_Value val) {
-			if(Type_Numeric.IsNumberType(val.m_type)){
+			if(NumberUtil.IsNumberType(val.m_type)){
 				double d = val.GetNumber();
 				SetNumber(val.m_type, d);
 			}else if(val.m_type == typeof(bool)){
@@ -170,7 +170,7 @@ namespace CQuark {
             m_stype = val.m_stype;
 
 			if(m_type != val.m_type || m_stype != val.m_stype){
-				if(Type_Numeric.IsNumberType(val.m_type)){
+				if(NumberUtil.IsNumberType(val.m_type)){
 					//TODO
 				}else{
 					object obj = val.ConvertTo(typeBridge);
@@ -231,8 +231,8 @@ namespace CQuark {
 
         public double GetNumber () {
             if(_isNum)
-                return _num;
-			return Type_Numeric.GetDouble(m_type, _obj);
+				return NumberUtil.ConvertNumber(_num, m_type);
+			return NumberUtil.GetDouble(m_type, _obj);
         }
 
 		public bool GetBool(){
@@ -245,7 +245,7 @@ namespace CQuark {
 			if(_isNum){
 				if(m_type == typeof(bool))
 					return _num == 1;
-				return Type_Numeric.Double2TargetType(m_type, _num);
+				return NumberUtil.Double2TargetType(m_type, _num);
 			}
 			return _obj;
 		}
@@ -314,8 +314,8 @@ namespace CQuark {
 			if(_isNum ){
 				if(targetType.type == typeof(bool))
 					return _num == 1;
-				else if(Type_Numeric.IsNumberType(targetType.type)){
-					return Type_Numeric.Double2TargetType(targetType.type, _num);
+				else if(NumberUtil.IsNumberType(targetType.type)){
+					return NumberUtil.Double2TargetType(targetType.type, _num);
 				}
 			}
             if(m_type == targetType.type && m_stype == targetType.stype)
@@ -334,8 +334,8 @@ namespace CQuark {
 			if(_isNum ){
 				if(targetType == typeof(bool))
 					return _num == 1;
-				else if(Type_Numeric.IsNumberType(targetType)){
-					return Type_Numeric.Double2TargetType(targetType, _num);
+				else if(NumberUtil.IsNumberType(targetType)){
+					return NumberUtil.Double2TargetType(targetType, _num);
 				}
 			}
             if(m_type == targetType)

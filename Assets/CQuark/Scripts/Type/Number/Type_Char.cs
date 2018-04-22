@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark
 {
-    class Type_Char : Type_Numeric
+    class Type_Char : Type_Generic
     {
         public Type_Char()
             : base(typeof(char), "char", false)
@@ -36,7 +36,7 @@ namespace CQuark
         public override bool MathLogic (LogicToken code, CQ_Value left, CQ_Value right)
         {
             bool mathLogicSuccess = false;
-            bool value = NumberMathLogic(code, left, right, out mathLogicSuccess);
+			bool value = NumberUtil.NumberMathLogic(code, left, right, out mathLogicSuccess);
             if (mathLogicSuccess) {
                 return value;
             }
