@@ -191,7 +191,7 @@ namespace CQuark
 					throw new Exception("Invalid math operation::opCode = " + opCode);
 				}
 				if(IsNumberType(retType))
-					returnValue.SetNumber(retType, finalValue);
+					returnValue.SetNumber(retType,  ConvertNumber(finalValue, retType));
                 return true;
 
 			}
