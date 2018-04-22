@@ -137,11 +137,11 @@ namespace CQuark
 
                         CQ_Value p0 = new CQ_Value();
                         p0.SetObject(func._paramtypes[0].typeBridge, param);
-                        content.DefineAndSet(func._paramnames[0], p0);
+						content.DefineAndSet(func._paramnames[0], typeof(T), p0);
 
                         CQ_Value p1 = new CQ_Value();
                         p1.SetObject(func._paramtypes[0].typeBridge, param1);
-                        content.DefineAndSet(func._paramnames[1], p1);
+						content.DefineAndSet(func._paramnames[1], typeof(T1), p1);
 
                         CQ_Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
@@ -182,11 +182,11 @@ namespace CQuark
 
                         CQ_Value p0 = new CQ_Value();
                         p0.SetObject(typeof(T), param0);
-                        content.DefineAndSet(pnames[0], p0);
+						content.DefineAndSet(pnames[0], typeof(T), p0);
 
                         CQ_Value p1 = new CQ_Value();
                         p1.SetObject(typeof(T1), param1);
-                        content.DefineAndSet(pnames[1], p1);
+						content.DefineAndSet(pnames[1], typeof(T1), p1);
 
                         CQ_Value retValue = expr.ComputeValue(content);
 

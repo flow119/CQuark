@@ -67,7 +67,7 @@ namespace CQuark {
 
                 //}
 
-                content.DefineAndSet(value_name, v);
+				content.DefineAndSet(value_name, value_type, v);
             }
             else {
                 content.Define(value_name, value_type);
@@ -98,7 +98,7 @@ namespace CQuark {
 
                     //}
 
-                    content.DefineAndSet(value_name, v);
+                    content.DefineAndSet(value_name, value_type, v);
                 }
             }
             else {

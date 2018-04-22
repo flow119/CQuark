@@ -49,26 +49,25 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            {
 
-                CQ_Value v = _expressions[0].ComputeValue(content);
-                CQ_Value oldVal = CQ_Value.Null;
+            CQ_Value v = _expressions[0].ComputeValue(content);
+            CQ_Value oldVal = CQ_Value.Null;
 
-                if(content.values != null && content.values.ContainsKey(value_name)) {
-                    oldVal = content.values[value_name];
-                }
-                else if(content.CallType != null && content.CallType.members.ContainsKey(value_name)) {
-                    if(content.CallType.members[value_name].bStatic) {
-                        oldVal = content.CallType.staticMemberInstance[value_name];
-                    }
-                    else {
-                        oldVal = content.CallThis.member[value_name];
-                    }
-                }
-
-                oldVal.UsingValue(v);
-                content.Set(value_name, oldVal);
+            if(content.values != null && content.values.ContainsKey(value_name)) {
+                oldVal = content.values[value_name];
             }
+            else if(content.CallType != null && content.CallType.members.ContainsKey(value_name)) {
+                if(content.CallType.members[value_name].bStatic) {
+                    oldVal = content.CallType.staticMemberInstance[value_name];
+                }
+                else {
+                    oldVal = content.CallThis.member[value_name];
+                }
+            }
+
+            oldVal.UsingValue(v);
+            content.Set(value_name, oldVal);
+
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

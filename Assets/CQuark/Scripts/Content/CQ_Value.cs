@@ -38,9 +38,22 @@ namespace CQuark {
 		public void SetNumber(Type type, double val){
 			if(!Type_Numeric.IsNumberType(type))
 				throw new InvalidCastException();
-			m_type = type;
-			_isNum = true;
-			_num = val;
+			
+			if(m_type == typeof(Type_Var.var)){
+				m_type = type;
+				m_stype = null;
+				_isNum = true;
+				_num = val;
+			}else if(m_type == null){
+				m_type = type;
+				m_stype = null;
+				_isNum = true;
+				_num = val;
+			}else{
+				//可能存进来一个(int)1.5，这里要转到对应类型
+				_isNum = true;
+				_num = Type_Numeric.ConvertNumber(val, type);
+			}
 		}
 
 		public void SetBool(bool val){
@@ -49,27 +62,59 @@ namespace CQuark {
 			_num = val ? 1 : 0;
 		}
 
-		public void SetObject (Type type, object val) {
-            m_type = type;
-
+		public void SetObject (Type type, object obj) {
 			if(type == typeof(bool)){
-				_isNum = true;
-				_num = (bool)val ? 1 : 0;
+				SetBool((bool)obj);
 			}
 			else if(Type_Numeric.IsNumberType(type)){
-				_isNum = true;
-				_num = Type_Numeric.GetDouble(type, val);
-			}else{
-				_isNum = false;
-				_obj = val;
+				SetNumber(type, Type_Numeric.GetDouble(type, obj));
+			}
+			else{
+				if(m_type == typeof(Type_Var.var)){
+					m_type = type;
+					m_stype = null;
+					_isNum = false;
+					_obj = obj;
+				}else if(m_type == null){
+					m_type = type;
+					m_stype = null;
+					_isNum = false;
+					_obj = obj;
+				}else if(obj == null){
+					_isNum = false;
+					_obj = obj;
+				}else{
+					if(m_type != type){
+						obj = CQuark.AppDomain.ConvertTo(obj, m_type);
+					}
+					_obj = obj;
+					_isNum = false;
+				}
 			}
         }
 
         public void SetObject (Class_CQuark stype, object obj) {
-            m_type = null;
-            m_stype = stype;
-            _obj = obj;
-            _isNum = false;
+			if(m_type == typeof(Type_Var.var)){
+				m_type = null;
+				m_stype = stype;
+				_isNum = false;
+				_obj = obj;
+			}else if(m_stype == null){
+				m_type = null;
+				m_stype = stype;
+				_isNum = false;
+				_obj = obj;
+			}else if(obj == null){
+				_obj = obj;
+				_isNum = false;
+			}else{
+				IType itype = AppDomain.GetITypeByCQValue(this);
+				if((obj as CQ_ClassInstance).type != (Class_CQuark)itype.typeBridge) {
+                    obj = CQuark.AppDomain.GetITypeByClassCQ((obj as CQ_ClassInstance).type).ConvertTo(obj, itype.typeBridge);
+                }
+				_obj = obj;
+				_isNum = false;
+			}
         }
 
         public void SetObject (TypeBridge cqType, object obj) {
@@ -82,8 +127,7 @@ namespace CQuark {
         }
 		//没有类型有2种情况，1本身是null，2是一种Action
         public void SetNoneTypeObject (object obj) {
-            m_type = null;
-            m_stype = null;
+			//这里不要覆盖原本的类型
             _obj = obj;
             _isNum = false;
         }
@@ -106,16 +150,55 @@ namespace CQuark {
 
         //保持原有的type，而使用别的CQ_Value的值（一般用于赋值）
         public void UsingValue (CQ_Value val) {
+			if(Type_Numeric.IsNumberType(val.m_type)){
+				double d = val.GetNumber();
+				SetNumber(val.m_type, d);
+			}else if(val.m_type == typeof(bool)){
+				bool b = val.GetBool();
+				SetBool(b);
+			}else{
+				SetObject(val.typeBridge, val._obj);
+			}
+			return;
+
+
+
             //TODO 如果类型是var 这里需要复制
-            m_type = val.m_type;
+			if(m_type == null || m_type == typeof(Type_Var.var))
+				if(!val.TypeIsEmpty)
+					m_type = val.m_type;
             m_stype = val.m_stype;
+
+			if(m_type != val.m_type || m_stype != val.m_stype){
+				if(Type_Numeric.IsNumberType(val.m_type)){
+					//TODO
+				}else{
+					object obj = val.ConvertTo(typeBridge);
+					_obj = _obj;
+					_isNum = val._isNum;
+					_num = val._num;
+				}
+			}else{
+				_obj = val._obj;
+				_isNum = val._isNum;
+				_num = val._num;
+			}
+
+			//if((Type)value_type == typeof(Type_Var.var)) {
+			//    if(!v.TypeIsEmpty)
+			//        value_type = v.typeBridge;
+
+			//}
+			//else if(v.typeBridge != value_type) {
+			//    val = v.ConvertTo(value_type);
+
+			//}
 
             _obj = val._obj;
             _isNum = val._isNum;
             _num = val._num;
             return;
 
-            //TODO这里没有按照以前的转型处理, 如果按照以前的做法，这里还需要对数字转型做无装箱的优化
 //            if(m_type == val.m_type && m_stype == val.m_stype) {
 //                _obj = val._obj;
 //                _isNum = val._isNum;

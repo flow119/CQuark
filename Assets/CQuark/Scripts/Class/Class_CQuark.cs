@@ -151,7 +151,7 @@ namespace CQuark {
                     for(int i = 0; i < functions[function]._paramtypes.Count; i++)
                     {
                         //content.DefineAndSet(functions[function]._paramnames[i], functions[function]._paramtypes[i].typeBridge, _params[i].GetValue());
-                        content.DefineAndSet(functions[function]._paramnames[i], _params[i]);
+						content.DefineAndSet(functions[function]._paramnames[i], _params[i].typeBridge, _params[i]);
                     }
                     CQ_Value value = CQ_Value.Null;
                     if(this.functions[function].expr_runtime != null) {
@@ -229,7 +229,7 @@ namespace CQuark {
 #endif
                     for(int i = 0; i < funccache._paramtypes.Count; i++) {
                         //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
-                        content.DefineAndSet(funccache._paramnames[i], _params[i]);
+						content.DefineAndSet(funccache._paramnames[i], _params[i].typeBridge, _params[i]);
                     }
                     CQ_Value value = CQ_Value.Null;
                     var funcobj = funccache;
@@ -287,7 +287,7 @@ namespace CQuark {
                     for(int i = 0; i < funccache._paramtypes.Count; i++)
                     {
                         //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
-                        content.DefineAndSet(funccache._paramnames[i], _params[i]);
+						content.DefineAndSet(funccache._paramnames[i], _params[i].typeBridge, _params[i]);
                     }
 
                     var funcobj = funccache;

@@ -30,7 +30,7 @@ public class CQuarkBehaviourSimple : CQuarkBehaviourBase {
     void DefineAndSet (string name, System.Type type, Object obj) {
         CQ_Value value = new CQ_Value();
         value.SetObject(type, obj);
-        content.DefineAndSet(name, value);
+		content.DefineAndSet(name, type, value);
     }
 
 

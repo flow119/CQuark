@@ -66,7 +66,7 @@ namespace CQuark {
                         content.DepthAdd();
                         CQ_Value errVal = new CQ_Value();
                         errVal.SetObject(def.value_type, err);
-                        content.DefineAndSet(def.value_name, errVal);
+						content.DefineAndSet(def.value_name, def.value_type, errVal);
 
                         _expressions[i + 1].ComputeValue(content);
                         content.DepthRemove();

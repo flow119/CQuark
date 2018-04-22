@@ -42,7 +42,7 @@ namespace CQuark {
 #if CQUARK_DEBUG
             content.InStack(this);
 #endif
-            var value = content.Get(value_name);
+			CQ_Value value = content.Get(value_name);
 #if CQUARK_DEBUG
             content.OutStack(this);
 #endif

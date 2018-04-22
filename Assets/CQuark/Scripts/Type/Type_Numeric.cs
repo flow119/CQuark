@@ -118,6 +118,33 @@ namespace CQuark
 			throw new Exception("unknown target type...");
 		}
 
+		public static double ConvertNumber(double value, Type dsttype){
+			if(dsttype == typeof(double))
+				return (double)value;
+			if(dsttype == typeof(float))
+				return (float)value;
+			if(dsttype == typeof(long))
+				return (long)value;
+			if(dsttype == typeof(ulong))
+				return (ulong)value;
+			if(dsttype == typeof(int))
+				return (int)value;
+			if(dsttype == typeof(uint))
+				return (uint)value;
+			if(dsttype == typeof(short))
+				return (short)value;
+			if(dsttype == typeof(ushort))
+				return (ushort)value;
+			if(dsttype == typeof(sbyte))
+				return (sbyte)value;
+			if(dsttype == typeof(byte))
+				return (byte)value;
+			if(dsttype == typeof(char))
+				return (char)value;
+
+			throw new Exception("unknown target type...");
+		}
+
 		public static bool IsNumberType(Type type){
 			return(type == typeof(double))
 				||(type == typeof(float))

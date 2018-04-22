@@ -263,14 +263,22 @@ namespace CQuark {
             }
         }
 
-        public void DefineAndSet (string name, CQ_Value value) {
+		public void DefineAndSet (string name, TypeBridge type, CQ_Value value) {
             if(values == null) {
                 values = new Dictionary<string, CQ_Value>();
             }
             else if(values.ContainsKey(name)) {
                 throw new Exception(name + "已经定义过");
             }
-            values[name] = value;
+
+			CQ_Value v = new CQ_Value();
+			if(type.type != null)
+				v.m_type = type.type;
+			else if(type.stype != null)
+				v.m_stype = type.stype;
+
+			v.UsingValue(value);
+            values[name] = v;
 
             int newdepth = tvalueDepth.Pop() + 1;
             tvalueDepth.Push(newdepth);
