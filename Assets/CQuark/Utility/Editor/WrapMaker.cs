@@ -142,6 +142,37 @@ public class WrapMaker : EditorWindow{
 		return null;
 	}
 
+	//给出一个命名空间，返回所有Type。nameSpace可以为空
+	public Type[] GetTypesByNamespace(string nameSpace){
+		Assembly assembly = null;
+		try{
+			assembly = Assembly.Load( nameSpace );
+			if( assembly != null ){
+				return assembly.GetTypes();
+			}
+		}catch (Exception){
+			AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+			List<Type> types = new List<Type>();
+
+			foreach( var assemblyName in referencedAssemblies ){
+				assembly = Assembly.Load( assemblyName );
+				if(assembly != null ){
+					Type[] typeArray = assembly.GetTypes();
+					foreach(var t in typeArray){
+						if(string.IsNullOrEmpty(nameSpace) && string.IsNullOrEmpty(t.Namespace)){
+							types.Add(t);
+						}
+						else if(t.Namespace == nameSpace){
+							types.Add(t);
+						}
+					}
+				}
+			}
+			return types.ToArray();
+		}
+		return null;
+	}
+
 	protected static string Type2String(Type type){
 		string retType = type.ToString();
 		retType = retType.Replace('+','.');//A+Enum实际上是A.Enum

@@ -457,7 +457,18 @@ public class WrapMakerGUI : WrapMaker {
 
             _classInput = "";
         }
+
         GUI.enabled = true;
+
+		if(GUILayout.Button("AddAssembly", GUILayout.Width(100))){
+			string assemblyName = _classInput;
+			Type[] types = GetTypesByNamespace(assemblyName);
+			if(types != null){
+				for(int i = 0; i < types.Length; i++){
+					Debug.Log(types[i].ToString());
+				}
+			}
+		}
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
 
