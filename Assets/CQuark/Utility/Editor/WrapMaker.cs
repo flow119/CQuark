@@ -254,7 +254,7 @@ public class WrapMaker : EditorWindow{
 					if(IsNumberType(propertys[i].m_type))
 						wrapMVGet += "\t\t\t\treturnValue.SetNumber(typeof(" + propertys[i].m_type + "), ";
 					else if(IsBoolType(propertys[i].m_type))
-						wrapSVGet += "\t\t\t\treturnValue.SetBool(";
+						wrapMVGet += "\t\t\t\treturnValue.SetBool(";
 					else
 						wrapMVGet += "\t\t\t\treturnValue.SetObject(typeof(" + propertys[i].m_type + "), ";
 					wrapMVGet += "obj." + propertys[i].m_name + ");\n";
