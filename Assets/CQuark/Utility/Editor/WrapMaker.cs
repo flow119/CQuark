@@ -7,6 +7,10 @@ using System.Reflection;
 using System.IO;
 
 public class WrapMaker : EditorWindow{
+	//是否忽略Obsolete的方法
+	public bool m_ignoreObsolete = true;
+	//是否同时生成一个Log文件
+	public bool m_generateLog = false;
 
 	protected class Property{
 		public string m_type;
@@ -14,13 +18,15 @@ public class WrapMaker : EditorWindow{
 		public bool m_canGet;
 		public bool m_canSet;
 		public string m_name;
+		public bool m_obsolete;
 		
-		public Property(Type type, bool isStatic, bool canGet, bool canSet, string name){
+		public Property(Type type, bool isStatic, bool canGet, bool canSet, string name, bool obsolete){
 			m_type = Type2String(type);
 			m_isStatic = isStatic;
 			m_canGet = canGet;
 			m_canSet = canSet;
 			m_name = name;
+			m_obsolete = obsolete;
 		}
 	}
 	
@@ -33,7 +39,9 @@ public class WrapMaker : EditorWindow{
 		public string m_methodName;
 		public string[] m_inType;
 		public bool m_isGeneric = false; //是否是<T>
-		public Method (string methodType, Type returnType, string methodName, System.Reflection.ParameterInfo[] param, int paramLength, bool isGeneric = false) {
+		public bool m_obsolete;
+
+		public Method (string methodType, Type returnType, string methodName, System.Reflection.ParameterInfo[] param, int paramLength, bool isGeneric, bool obsolete) {
 			m_methodType = methodType;
 			if(returnType != null)
 				m_returnType = Type2String(returnType); ;
@@ -44,6 +52,7 @@ public class WrapMaker : EditorWindow{
 				m_inType[i] = Type2String(param[i].ParameterType);
 			}
 			m_isGeneric = isGeneric;
+			m_obsolete = obsolete;
 		}
 	}
 
@@ -158,6 +167,10 @@ public class WrapMaker : EditorWindow{
 		log += "\n字段\n";
 		FieldInfo[] fis = type.GetFields();
 		for(int i= 0; i < fis.Length; i++){
+			bool isObsolete = IsObsolete(fis[i]);
+			if(isObsolete)
+				log += "[Obsolete]";
+			
 			log += "public ";
 			string attributes = fis[i].Attributes.ToString();
 			bool isStatic = attributes.Contains("Static");
@@ -168,12 +181,16 @@ public class WrapMaker : EditorWindow{
 			if(isReadonly)
 				log += "readonly ";
 			log += Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
-			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name));
+			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name, isObsolete));
 		}
 		
 		log += "\n静态属性\n";
 		PropertyInfo[] spis = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
 		for(int i= 0; i < spis.Length; i++){
+			bool isObsolete = IsObsolete(spis[i]);
+			if(isObsolete)
+				log += "[Obsolete]";
+			
 			log += "public static ";
 //			string attributes = spis[i].Attributes.ToString();
 			log += Type2String(spis[i].PropertyType) + " " + spis[i].Name + "{";
@@ -183,7 +200,7 @@ public class WrapMaker : EditorWindow{
 				log += "set;";
 			log += "}\n";
 
-			savePropertys.Add(new Property(spis[i].PropertyType, true, spis[i].CanRead, spis[i].CanWrite, spis[i].Name));
+			savePropertys.Add(new Property(spis[i].PropertyType, true, spis[i].CanRead, spis[i].CanWrite, spis[i].Name, isObsolete));
 		}
 
 		log += "\n实例属性\n";
@@ -199,10 +216,14 @@ public class WrapMaker : EditorWindow{
 		}
 		
 		for(int i = 0; i < pis.Length; i++){
+			bool isObsolete = IsObsolete(pis[i]);
+
 			if(pis[i].Name == "Item" && hasIndex){
 				continue;//如果有get_Item或者set_Item，表示是[Index]，否则表示一个属性
 			}
 
+			if(isObsolete)
+				log += "[Obsolete]";
 			log += "public ";
 //			string attributes = pis[i].Attributes.ToString();
 			log += Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
@@ -213,7 +234,7 @@ public class WrapMaker : EditorWindow{
 			log += "}\n";
 
 				
-			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name));
+			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name, isObsolete));
 		}
 
 		return savePropertys;
@@ -225,8 +246,11 @@ public class WrapMaker : EditorWindow{
 		string wrapMVSet = "";
 
 		for(int i = 0; i < propertys.Count; i++){
+			if(propertys[i].m_obsolete && m_ignoreObsolete)
+				continue;
 			if(!Finish(propertys[i].m_type))
 				continue;
+
 			if(propertys[i].m_isStatic){
 				if(propertys[i].m_canGet){
 					wrapSVGet += "\t\t\tcase \"" + propertys[i].m_name + "\":\n";
@@ -300,14 +324,19 @@ public class WrapMaker : EditorWindow{
 		}
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
+			bool isObsolete = IsObsolete(construct[i]);
+
 			string s = "";
+			if(isObsolete)
+				log += "[Obsolete]";
+			s += "public ";
 			s += type.ToString() + "(";
 			System.Reflection.ParameterInfo[] param = construct[i].GetParameters();
 			if(param.Length == 0){
-				saveMethods.Add(new Method("New", null, "", param, 0));
+				saveMethods.Add(new Method("New", null, "", param, 0, false, isObsolete));
 			}else{
 				if(param[0].IsOptional)
-					saveMethods.Add(new Method("New", null, "", param, 0));
+					saveMethods.Add(new Method("New", null, "", param, 0, false, isObsolete));
 				
 				for(int j = 0; j < param.Length; j++){
 					s += param[j].ParameterType + " " +param[j].Name;
@@ -317,7 +346,7 @@ public class WrapMaker : EditorWindow{
 						s += " = " + param[j].DefaultValue;
 					
 					if(j == param.Length - 1 || param[j + 1].IsOptional) {
-						saveMethods.Add(new Method("New", null, "", param, j + 1));
+						saveMethods.Add(new Method("New", null, "", param, j + 1, false, isObsolete));
 					}
 				}
 			}
@@ -330,6 +359,9 @@ public class WrapMaker : EditorWindow{
 	protected string Constructor2PartStr(string classFullName, List<Method> constructor){
 		string wrapNew = "";
 		for(int i = 0; i < constructor.Count; i++) {
+			if(constructor[i].m_obsolete && m_ignoreObsolete)
+				continue;
+			
 			if(constructor[i].m_inType.Length == 0)
                 wrapNew += "\t\t\tif(param.Length == 0){\n";
 			else{
@@ -358,6 +390,8 @@ public class WrapMaker : EditorWindow{
 		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调用基类
 		for (int i = 0; i < smis.Length; i++) {
+			bool isObsolete = IsObsolete(smis[i]);
+
 			//属性上面已经获取过了 这里做个判断，是否包含这个属性，包含的话continue，否则表示有方法名是get_,set_开头
 			if (ContainsProperty (ignoreProperty, smis [i].Name))
 				continue;
@@ -367,7 +401,10 @@ public class WrapMaker : EditorWindow{
 
 			string retType = Type2String (smis [i].ReturnType);
 
-			string s = "public static " + retType + " " ;
+			string s = "";
+			if(isObsolete)
+				s += "[Obsolete]";
+			s += "public static " + retType + " " ;
 			s += smis [i].Name ;
 			bool isGeneric = (smis[i].ContainsGenericParameters && smis[i].IsGenericMethod);
 			if(isGeneric)
@@ -375,10 +412,10 @@ public class WrapMaker : EditorWindow{
             s += "(";
 			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
 			if (param.Length == 0) {
-				saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, 0, isGeneric));
+				saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, 0, isGeneric, isObsolete));
 			} else {
 				if (param [0].IsOptional)
-					saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, 0, isGeneric));
+					saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, 0, isGeneric, isObsolete));
 				for (int j = 0; j < param.Length; j++) {
 					string paramType = Type2String (param [j].ParameterType);
 					bool finish = true;
@@ -395,7 +432,7 @@ public class WrapMaker : EditorWindow{
 					
 					if (finish) {
 						if (j == param.Length - 1 || param [j + 1].IsOptional) {
-							saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, j + 1, isGeneric));
+							saveMethods.Add (new Method ("SCall", smis [i].ReturnType, smis [i].Name, param, j + 1, isGeneric, isObsolete));
 						}
 					}
 				}
@@ -408,6 +445,8 @@ public class WrapMaker : EditorWindow{
 	protected string SCall2PartStr(string classFullName, List<Method> staticMethods){
 		string wrapSCall = "";
 		for(int i = 0; i < staticMethods.Count; i++) {
+			if(staticMethods[i].m_obsolete && m_ignoreObsolete)
+				continue;
 			if(!Finish(staticMethods[i].m_returnType) || !Finish(staticMethods[i].m_inType))
 				continue;
 
@@ -467,6 +506,8 @@ public class WrapMaker : EditorWindow{
 			}
 		}
 		for (int i = 0; i < imis.Length; i++) {
+			bool isObsolete = IsObsolete(imis[i]);
+
 			//属性上面已经获取过了 这里做个判断，是否包含这个属性，包含的话continue，否则表示有方法名是get_,set_开头
 			if(ContainsProperty(ignoreProperty, imis[i].Name))
 				continue;
@@ -478,7 +519,10 @@ public class WrapMaker : EditorWindow{
 
 			string retType = Type2String (imis [i].ReturnType);
 
-			string s = "public " + retType + " ";
+			string s = "";
+			if(isObsolete)
+				s += "[Obsolete]";
+			s += "public " + retType + " ";
 			s += imis [i].Name ;
 			bool isGeneric = (imis[i].ContainsGenericParameters && imis[i].IsGenericMethod);
 			if(isGeneric)
@@ -487,10 +531,10 @@ public class WrapMaker : EditorWindow{
 			s += "(";
 			System.Reflection.ParameterInfo[] param = imis [i].GetParameters ();
 			if (param.Length == 0) {
-				saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, 0, isGeneric));
+				saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, 0, isGeneric, isObsolete));
 			} else {
 				if (param [0].IsOptional)
-					saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, 0, isGeneric));
+					saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, 0, isGeneric, isObsolete));
 				for (int j = 0; j < param.Length; j++) {
 					string paramType = Type2String (param [j].ParameterType);
 					bool finish = true;
@@ -507,7 +551,7 @@ public class WrapMaker : EditorWindow{
 					
 					if (finish) {
 						if (j == param.Length - 1 || param [j + 1].IsOptional) {
-							saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, j + 1, isGeneric));
+							saveMethods.Add (new Method ("MCall", imis [i].ReturnType, imis [i].Name, param, j + 1, isGeneric, isObsolete));
 						}
 					}
 				}
@@ -520,6 +564,8 @@ public class WrapMaker : EditorWindow{
 	protected string MCall2PartStr(string classFullName, List<Method> instanceMethods){
 		string wrapMCall = "";
 		for(int i = 0; i < instanceMethods.Count; i++) {
+			if(instanceMethods[i].m_obsolete && m_ignoreObsolete)
+				continue;
 			if(!Finish(instanceMethods[i].m_returnType) || !Finish(instanceMethods[i].m_inType))
 				continue;
 
@@ -615,9 +661,13 @@ public class WrapMaker : EditorWindow{
 		MethodInfo[] mis = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
 		for (int i = 0; i < mis.Length; i++) {
 			if(mis[i].Name == "get_Item"){
+				bool isObsolete = IsObsolete(mis[i]);
+
 				ParameterInfo[] pais = mis[i].GetParameters();
-				Method method = new Method("IndexGet", mis[i].ReturnType, mis[i].Name, pais, pais.Length);
+				Method method = new Method("IndexGet", mis[i].ReturnType, mis[i].Name, pais, pais.Length, false, isObsolete);
 				saveMethods.Add(method);
+				if(isObsolete)
+					log += "[Obsolete]";
 				log += "IndexGet " + mis[i].ReturnType + " [";
 				for(int j = 0; j < pais.Length; j++){
 					log += pais[j].ParameterType + " " + pais[j].Name;
@@ -626,9 +676,13 @@ public class WrapMaker : EditorWindow{
 				}
 				log += "]\n";
 			}else if(mis[i].Name == "set_Item"){
+				bool isObsolete = IsObsolete(mis[i]);
+
 				ParameterInfo[] pais = mis[i].GetParameters();
-				Method method = new Method("IndexSet", mis[i].ReturnType, mis[i].Name, mis[i].GetParameters(), mis[i].GetParameters().Length);
+				Method method = new Method("IndexSet", mis[i].ReturnType, mis[i].Name, mis[i].GetParameters(), mis[i].GetParameters().Length, false, isObsolete);
 				saveMethods.Add(method);
+				if(isObsolete)
+					log += "[Obsolete]";
 				log += "IndexSet [";
 				for(int j = 0; j < pais.Length - 1; j++){
 					log += pais[j].ParameterType + " " + pais[j].Name;
@@ -645,6 +699,8 @@ public class WrapMaker : EditorWindow{
 		string wrapIGet = "";
 		string wrapISet = "";
 		for(int i = 0; i < indexMethods.Count; i++) {
+			if(indexMethods[i].m_obsolete && m_ignoreObsolete)
+				continue;
 			if(!Finish(indexMethods[i].m_returnType) || !Finish(indexMethods[i].m_inType))
 				continue;
 			//TODO 可能有多位数组this[x,y]
@@ -683,13 +739,17 @@ public class WrapMaker : EditorWindow{
 
 		log += "\n运算符\n";
 
-		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//和获取静态方法一样
-		for (int i = 0; i < smis.Length; i++) {
-			if (!IsOp (smis [i]))
+		System.Reflection.MethodInfo[] ops = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//和获取静态方法一样
+		for (int i = 0; i < ops.Length; i++) {
+			bool isObsolete = IsObsolete(ops[i]);
+
+			if (!IsOp (ops [i]))
 				continue;
 
-			System.Reflection.ParameterInfo[] param = smis [i].GetParameters ();
-            log += "public static " + smis[i].ReturnType + " " + smis[i].Name + "(";
+			System.Reflection.ParameterInfo[] param = ops [i].GetParameters ();
+			if(isObsolete)
+				log += "[Obsolete]";
+			log += "public static " + ops[i].ReturnType + " " + ops[i].Name + "(";
             for(int j = 0; j < param.Length; j++) {
                 log += param[j].ParameterType + " " + param[j].Name;
                 if(j != param.Length - 1)
@@ -697,7 +757,7 @@ public class WrapMaker : EditorWindow{
             }
             log += ")\n";
 
-            Method method = new Method(smis[i].Name, smis[i].ReturnType, smis[i].Name, param, param.Length);
+			Method method = new Method(ops[i].Name, ops[i].ReturnType, ops[i].Name, param, param.Length, false, isObsolete);
 			saveMethods.Add(method);
 		}
 		return saveMethods;
@@ -721,6 +781,9 @@ public class WrapMaker : EditorWindow{
         string wrapNegation = "";
 
         for(int i = 0; i < opMethods.Count; i++) {
+			if(opMethods[i].m_obsolete && m_ignoreObsolete)
+				continue;
+			
             if(opMethods[i].m_methodName == "op_Addition") {
                 wrapAdd += "\t\t\tif((mustEqual && left.EqualType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualType(typeof(" + opMethods[i].m_inType[1] + ")))\n"
                 + "\t\t\t\t|| (!mustEqual && left.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[0] + ")) && right.EqualOrImplicateType(typeof(" + opMethods[i].m_inType[1] + ")))){\n"
@@ -875,4 +938,18 @@ public class WrapMaker : EditorWindow{
 		else
 			return "(" + type + ")" + cqval + ".ConvertTo(typeof(" + type + "))";
 	}
+
+	static bool IsObsolete(MemberInfo mb){
+		object[] attrs = mb.GetCustomAttributes(true);
+
+		for (int j = 0; j < attrs.Length; j++){
+			Type t = attrs[j].GetType() ;            
+
+			if (t == typeof(System.ObsoleteAttribute) || t.Name == "MonoNotSupportedAttribute" || t.Name == "MonoTODOAttribute"){
+				return true;               
+			}
+		}
+
+		return false;
+	}    
 }

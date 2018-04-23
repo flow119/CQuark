@@ -124,11 +124,13 @@ public class WrapMakerGUI : WrapMaker {
 		List<Method> opMethods = GetOp (type, ref log);
         string[] wrapOp = Op2PartStr(opMethods);
 
-        if(string.IsNullOrEmpty(assemblyName)) {
-			WriteAllText(WrapFolder, classname + ".txt", log);
-		}
-		else {
-			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", log);
+		if(m_generateLog){
+	        if(string.IsNullOrEmpty(assemblyName)) {
+				WriteAllText(WrapFolder, classname + ".txt", log);
+			}
+			else {
+				WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", log);
+			}
 		}
 
 		UpdateWrapPart(assemblyName, classname, propertyPartStr,
@@ -385,6 +387,7 @@ public class WrapMakerGUI : WrapMaker {
 
 	// Use this for initialization
 	bool _isCompiling = true;
+	bool _option = false;
 	void Start(){
 		Reload();
 	}
@@ -395,9 +398,23 @@ public class WrapMakerGUI : WrapMaker {
 		}
 
 		GUILayout.BeginHorizontal();
-		GUILayout.Label("WrapFolder:", GUILayout.Width(100));
-		_wrapFolder = GUILayout.TextField(_wrapFolder);
+		if(GUILayout.Button((_option ? "\u25BC" : "\u25BA"), GUILayout.Width(25))) {
+			_option = !_option;
+		}
+		GUILayout.Label(" Option");
 		GUILayout.EndHorizontal();
+		if(_option){
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("WrapFolder:", GUILayout.Width(100));
+			_wrapFolder = GUILayout.TextField(_wrapFolder);
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("WrapOption:", GUILayout.Width(100));
+			m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
+			m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Log");
+			GUILayout.EndHorizontal();
+		}
 
 		GUILayout.Space(5);
 

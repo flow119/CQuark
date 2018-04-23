@@ -145,7 +145,7 @@ namespace CQuark
 
                         CQ_Value retValue = func.expr_runtime.ComputeValue(content);
                         content.DepthRemove();
-
+						CQ_ObjPool.PushContent(content);
                         return (ReturnType)retValue.GetObject();
                     }
                     catch (Exception err)
@@ -157,7 +157,6 @@ namespace CQuark
                         DebugUtil.Log(errinfo + content.Dump()); 
                         throw err;
                     }
-					CQ_ObjPool.PushContent(content);
                 }
                 return default(ReturnType);
             };

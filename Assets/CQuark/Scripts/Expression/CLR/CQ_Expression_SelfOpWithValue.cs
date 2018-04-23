@@ -91,7 +91,7 @@ namespace CQuark {
 				CQ_Value key = f._expressions[1].ComputeValue(content);
 
 				IType parenttype = CQuark.AppDomain.GetITypeByCQValue(parent);
-				parenttype._class.IndexSet(content, parent.GetObject(), key.GetObject(), left.GetObject());
+				parenttype._class.IndexSet(content, obj, key.GetObject(), left.GetObject());
 
 				CQ_Expression_GetValue g = f._expressions[0] as CQ_Expression_GetValue;
 				content.Set(g.value_name, parent);
