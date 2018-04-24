@@ -5,7 +5,6 @@ using UnityEditor;
 using System;
 using System.Reflection;
 using System.IO;
-
 public class WrapMaker : EditorWindow{
 	//是否忽略Obsolete的方法
 	public bool m_ignoreObsolete = true;
@@ -145,32 +144,43 @@ public class WrapMaker : EditorWindow{
 	//给出一个命名空间，返回所有Type。nameSpace可以为空
 	public Type[] GetTypesByNamespace(string nameSpace){
 		Assembly assembly = null;
+        List<Type> types = new List<Type>();
 		try{
 			assembly = Assembly.Load( nameSpace );
 			if( assembly != null ){
-				return assembly.GetTypes();
+				Type[] typeArray = assembly.GetTypes();
+                foreach(var t in typeArray) {
+                    if(!IsObsolete(t))
+                        types.Add(t);
+                }
 			}
 		}catch (Exception){
 			AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-			List<Type> types = new List<Type>();
 
 			foreach( var assemblyName in referencedAssemblies ){
+                 if(string.IsNullOrEmpty(nameSpace) && !assemblyName.FullName.StartsWith("Assembly-CSharp"))
+                     continue;
+
 				assembly = Assembly.Load( assemblyName );
 				if(assembly != null ){
+                   
 					Type[] typeArray = assembly.GetTypes();
 					foreach(var t in typeArray){
 						if(string.IsNullOrEmpty(nameSpace) && string.IsNullOrEmpty(t.Namespace)){
-							types.Add(t);
+                            if(!IsObsolete(t))
+                                types.Add(t);
+                            else
+                                Debug.LogWarning("Obsolete " + t.Name);
 						}
 						else if(t.Namespace == nameSpace){
-							types.Add(t);
+                            if(!IsObsolete(t))
+    							types.Add(t);
 						}
 					}
 				}
 			}
-			return types.ToArray();
 		}
-		return null;
+        return types.ToArray();
 	}
 
 	protected static string Type2String(Type type){
@@ -983,4 +993,15 @@ public class WrapMaker : EditorWindow{
 
 		return false;
 	}    
+
+    
+    static bool IsObsolete (Type type) {
+        Type t = type.Attributes.GetType();
+        if(type.FullName.Contains("<"))
+            return true;
+        if(t == typeof(System.ObsoleteAttribute) || t.Name == "MonoNotSupportedAttribute" || t.Name == "MonoTODOAttribute") {
+            return true;
+        }
+        return false;
+    }
 }

@@ -388,6 +388,7 @@ public class WrapMakerGUI : WrapMaker {
 	// Use this for initialization
 	bool _isCompiling = true;
 	bool _option = false;
+    bool _pressAll = false;
 	void Start(){
 		Reload();
 	}
@@ -418,18 +419,48 @@ public class WrapMakerGUI : WrapMaker {
 
 		GUILayout.Space(5);
 
-        GUILayout.Label("    You can make Wrap with this tool simply.\n"
-                            +"    Step 1 : Type Full class name in the box below（eg . UnityEngine.Vector3)\n" 
-                            +"    Step 2 : Click \"Add/Update\" button");
+        GUILayout.Label("  Step 1 : Click buttons below");
+        GUI.backgroundColor = Color.green;
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Wrap Unity Assembly")) {
+			//AddFullProject ();
+            Type[] types = GetTypesByNamespace("UnityEngine");
+            if(types != null) {
+                for(int i = 0; i < types.Length; i++) {
+                    Debug.Log(types[i].ToString());
+                }
+            }
+        }
+        if(GUILayout.Button("Wrap Unity.UI Assembly")) {
+            Type[] types = GetTypesByNamespace("UnityEngine");
+            types = GetTypesByNamespace("UnityEngine.UI");
+            if(types != null) {
+                for(int i = 0; i < types.Length; i++) {
+                    Debug.Log(types[i].ToString());
+                }
+            }
+        }
+        if(GUILayout.Button("Wrap Assembly-CSharp")) {
+            Type[] types = GetTypesByNamespace("");
+            if(types != null) {
+                for(int i = 0; i < types.Length; i++) {
+                    Debug.Log(types[i].ToString());
+                }
+            }
+        }
+        GUILayout.EndHorizontal();
 
-        GUILayout.Space(5);
+        GUI.backgroundColor = Color.white;
+        GUILayout.Label("  If you have custom namespace, Then ");
+        GUILayout.Label("  Step 2 : Type Full class name in the box below and click \"Wrap");
+        GUILayout.Label("  eg . Type \"LitJson.JSONNode\" for wrap class. ");
+        GUILayout.Label("  eg . Type \"LiJson\" for wrap all class in this namespace  ");
 
         GUILayout.BeginHorizontal(); 
         GUI.backgroundColor = Color.green;
-        GUILayout.Label("Full Classname : ", GUILayout.Width(100));
         _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
         GUI.enabled = !string.IsNullOrEmpty(_classInput);
-        if(GUILayout.Button("Add/Update", GUILayout.Width(100))) {
+        if(GUILayout.Button("Wrap Class", GUILayout.Width(100))) {
             string className = "";
             string assemblyName = "";
 
@@ -460,7 +491,7 @@ public class WrapMakerGUI : WrapMaker {
 
         GUI.enabled = true;
 
-		if(GUILayout.Button("AddAssembly", GUILayout.Width(100))){
+		if(GUILayout.Button("Wrap Namespace", GUILayout.Width(120))){
 			string assemblyName = _classInput;
 			Type[] types = GetTypesByNamespace(assemblyName);
 			if(types != null){
@@ -472,21 +503,26 @@ public class WrapMakerGUI : WrapMaker {
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
 
+        GUILayout.Space(20);
 
-        GUILayout.Label("    Or just click the button below");
-        GUI.backgroundColor = Color.green;
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Add/Update Full project")) {
-			AddFullProject ();
+        GUILayout.Label("Wraps : ");
+
+       
+        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
+            _pressAll = !_pressAll;
         }
-        if(GUILayout.Button("Update Registed wrap")) {
+        GUI.enabled = _pressAll;
+        GUI.backgroundColor = Color.cyan;
+       if(GUILayout.Button("Update", GUILayout.Width(60))) {
             //   Reload();
         }
         GUI.backgroundColor = Color.red;
-        if(GUILayout.Button("Clear All wraps")) {
+        if(GUILayout.Button("X", GUILayout.Width(25))) {
 			ClearAll ();
         }
         GUI.backgroundColor = Color.white;
+        GUI.enabled = true;
         GUILayout.EndHorizontal();
 
         //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
@@ -495,9 +531,6 @@ public class WrapMakerGUI : WrapMaker {
         //GUI.backgroundColor = Color.white;
         //GUILayout.EndHorizontal();
 
-		GUILayout.Space(10);
-
-        GUILayout.Label("Wraps : ");
 
 		mScroll = GUILayout.BeginScrollView(mScroll);
 		GUILayout.BeginVertical();
