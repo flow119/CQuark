@@ -80,6 +80,41 @@ public class WrapMaker : EditorWindow{
 	#endregion
 
 	public static Type GetType( string TypeName, ref string nameSpace){
+		if(string.IsNullOrEmpty(nameSpace)){
+			switch(TypeName){
+			case "double":
+				return typeof(double);
+			case "float":
+				return typeof(float);
+			case "long":
+				return typeof(long);
+			case "ulong":
+				return typeof(ulong);
+			case "int":
+				return typeof(int);
+			case "uint":
+				return typeof(uint);
+			case "short":
+				return typeof(short);
+			case "ushort":
+				return typeof(ushort);
+			case "byte":
+				return typeof(byte);
+			case "sbyte":
+				return typeof(sbyte);
+			case "char":
+				return typeof(char);
+
+			case "string":
+				return typeof(string);
+			case "bool":
+				return typeof(bool);
+//							List<>
+//                          Dictionary<,>
+//                          Stack<>
+//                          Queue<>
+			}
+		}
 		Type type = null;
 		if(string.IsNullOrEmpty(nameSpace)){
 			type = Type.GetType( TypeName );
@@ -104,6 +139,7 @@ public class WrapMaker : EditorWindow{
 				}
 			}
 		}else{
+			//TODO 这里改为黑名单
 			if(nameSpace == "CQuark"){
 				Debug.LogError("不允许对CQuark做Wrap");
 				return null;
@@ -936,11 +972,14 @@ public class WrapMaker : EditorWindow{
 	}
 
 	protected static bool Finish(string type){
-		if(type.EndsWith("&"))	//ref
+		//ref
+		//out
+		if(type.EndsWith("&"))	
 			return false;
-		if(type.Contains("List`"))	//List
-			return false;
-		if(type.Contains("IEnumerable`"))
+		//List`
+		//IEnumerable`
+		//System.Action`1
+		if(type.Contains("`"))
 			return false;
 		if(type == "T" || type == "[T]" || type == "T[]")	//T , 比如GetComponent<T>
 			return false;

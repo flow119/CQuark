@@ -57,11 +57,11 @@ namespace CQuark{
 //			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
 
             //对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
-			RegisterType(typeof(int[]), "int[]");	//数组要独立注册
-			RegisterType(typeof(string[]), "string[]");
-			RegisterType(typeof(float[]), "float[]");
-            RegisterType(typeof(bool[]), "bool[]");
-            RegisterType(typeof(byte[]), "byte[]");
+//			RegisterType(typeof(int[]), "int[]");	//数组要独立注册
+//			RegisterType(typeof(string[]), "string[]");
+//			RegisterType(typeof(float[]), "float[]");
+//            RegisterType(typeof(bool[]), "bool[]");
+//            RegisterType(typeof(byte[]), "byte[]");
 
             RegisterType<System.DateTime>("DateTime");
             RegisterType<System.DayOfWeek>("DayOfWeek");

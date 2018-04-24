@@ -39,6 +39,9 @@ public class WrapMakerGUI : WrapMaker {
 	}
 
 	void Reload(){
+		//TODO这里做一次MD5比较，记录原始的cs脚本的md5，然后刷新一下当前的md5,m5可以写到wrap的cs里
+		//md5
+		//sset,sget,mset,mget,new,scall,mcall,op
 		if(string.IsNullOrEmpty(_wrapFolder)){
 			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
 		}
@@ -86,7 +89,14 @@ public class WrapMakerGUI : WrapMaker {
 		PlayerPrefs.SetString("WrapFolder", _wrapFolder);
 	}
 
+	void OnlyAddClass(Type type){
+		OnlyAddClass(type.Namespace, type.Name);
+	}
+	//这里可以改为使用类
 	void OnlyAddClass(string assemblyName, string classname){
+		if(string.IsNullOrEmpty(assemblyName))
+			assemblyName = "";
+		
 		Type type = GetType(classname, ref assemblyName);
 
 		if(type == null){
@@ -309,6 +319,7 @@ public class WrapMakerGUI : WrapMaker {
 
 	List<string> _typeDic = new List<string> ();
 	void UpdateWrapTypes(){
+		//TODO 不要这个类，改为写在各个类文件里面
 		string text = (Resources.Load("WrapTypeTemplate") as TextAsset).text;
 		string types = "";
 		for (int i = 0; i < _typeDic.Count; i++) {
@@ -364,18 +375,7 @@ public class WrapMakerGUI : WrapMaker {
         AssetDatabase.Refresh();
     }
 
-	void AddFullProject(){
-		//TODO，目前测试用，以后改成从Assembly里反射所有的类
-		OnlyAddClass("UnityEngine", "Vector3");
-		OnlyAddClass("UnityEngine", "Mathf");
-		OnlyAddClass("UnityEngine", "Transform");
-		OnlyAddClass("UnityEngine", "Time");
-		Reload();
-		UpdateWrapCore();
-		UpdateWrapTypes ();
-		//Add完毕ReloadDataBase，会编译代码
-		AssetDatabase.Refresh();
-	}
+
     void ClearAll () {
 //        m_wrapClasses.Clear();
 //		Reload();
@@ -384,6 +384,78 @@ public class WrapMakerGUI : WrapMaker {
 //		UpdateWrapTypes ();
 //        AssetDatabase.Refresh();
     }
+
+	public void WrapCommon(){
+		//AddFullProject ();
+		Type[] types = GetTypesByNamespace("");
+		if(types != null) {
+			for(int i = 0; i < types.Length; i++) {
+				OnlyAddClass(types[i].Namespace, types[i].Name);
+			}
+		}
+
+		//TODO 补充基本类型（int,bool,string等）
+
+		//这里并没有直接获取UnityEngine里所有类，因为大部分类不常用。这里列出的类是我自己使用频率较高的
+		//如果需要，你可以在这里补充，或者在编辑器界面里手动输入单独添加
+	
+		OnlyAddClass("UnityEngine", "Vector3");
+		OnlyAddClass("UnityEngine", "Mathf");
+		OnlyAddClass("UnityEngine", "Transform");
+		OnlyAddClass("UnityEngine", "Time");
+
+		Reload();
+		UpdateWrapCore();
+		UpdateWrapTypes ();
+		//Add完毕ReloadDataBase，会编译代码
+		AssetDatabase.Refresh();
+	}
+
+	//Wrap一个自己输入的内容，需要判断是一个类还是一个命名空间
+	public void WrapCustom(string text){
+		string className = "";
+		string assemblyName = "";
+		int dotIndex = text.LastIndexOf('.');
+		if(dotIndex == -1) {
+			assemblyName = "";
+			className = text;
+		}
+		else {
+			assemblyName = text.Substring(0, dotIndex);
+			className = text.Substring(dotIndex + 1);
+		}
+
+		//输入的是一个类
+		if(GetType(className, ref assemblyName) != null){
+			WrapClass wc = GetWrapClass(assemblyName);
+			if(wc == null) {
+				wc = new WrapClass(assemblyName);
+				AddClass(assemblyName, className);
+			}
+			else {
+				if(!wc.m_classes.Contains(className))
+					AddClass(assemblyName, className);
+				else
+					UpdateClass(assemblyName, className);
+			}
+		}
+		//输入的是一个命名空间
+		else{
+			Type[] types = GetTypesByNamespace(text);
+			if(types != null) {
+				for(int i = 0; i < types.Length; i++) {
+//					Debug.Log(types[i].ToString());
+					AddClass(types[i].Namespace, types[i].Name);
+				}
+			}
+		}
+
+		Reload();
+		UpdateWrapCore();
+		UpdateWrapTypes ();
+		//Add完毕ReloadDataBase，会编译代码
+		AssetDatabase.Refresh();
+	}
 
 	// Use this for initialization
 	bool _isCompiling = true;
@@ -415,93 +487,70 @@ public class WrapMakerGUI : WrapMaker {
 			m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
 			m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Log");
 			GUILayout.EndHorizontal();
+
+			//TODO 这里可以输入黑名单和自动添加名单
 		}
 
 		GUILayout.Space(5);
 
-        GUILayout.Label("  Step 1 : Click buttons below");
+		GUILayout.BeginHorizontal();
+        GUILayout.Label("  STEP 1 : Click the button on right side →");
         GUI.backgroundColor = Color.green;
-        GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Wrap Unity Assembly")) {
-			//AddFullProject ();
-            Type[] types = GetTypesByNamespace("UnityEngine");
-            if(types != null) {
-                for(int i = 0; i < types.Length; i++) {
-                    Debug.Log(types[i].ToString());
-                }
-            }
+       
+		if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
+			WrapCommon();
         }
-        if(GUILayout.Button("Wrap Unity.UI Assembly")) {
-            Type[] types = GetTypesByNamespace("UnityEngine");
-            types = GetTypesByNamespace("UnityEngine.UI");
-            if(types != null) {
-                for(int i = 0; i < types.Length; i++) {
-                    Debug.Log(types[i].ToString());
-                }
-            }
-        }
-        if(GUILayout.Button("Wrap Assembly-CSharp")) {
-            Type[] types = GetTypesByNamespace("");
-            if(types != null) {
-                for(int i = 0; i < types.Length; i++) {
-                    Debug.Log(types[i].ToString());
-                }
-            }
-        }
+//        if(GUILayout.Button("Wrap Unity.UI Assembly")) {
+//            Type[] types = GetTypesByNamespace("UnityEngine");
+//            types = GetTypesByNamespace("UnityEngine.UI");
+//            if(types != null) {
+//                for(int i = 0; i < types.Length; i++) {
+//                    Debug.Log(types[i].ToString());
+//                }
+//            }
+//        }
+//        if(GUILayout.Button("Wrap Assembly-CSharp")) {
+//            Type[] types = GetTypesByNamespace("");
+//            if(types != null) {
+//                for(int i = 0; i < types.Length; i++) {
+//                    Debug.Log(types[i].ToString());
+//                }
+//            }
+//        }
         GUILayout.EndHorizontal();
+		GUILayout.Label("  to wrap UnityEngine's COMMON class and ALL non-namespace class");
+
+		GUILayout.Space(10);
 
         GUI.backgroundColor = Color.white;
-        GUILayout.Label("  If you have custom namespace, Then ");
-        GUILayout.Label("  Step 2 : Type Full class name in the box below and click \"Wrap");
-        GUILayout.Label("  eg . Type \"LitJson.JSONNode\" for wrap class. ");
-        GUILayout.Label("  eg . Type \"LiJson\" for wrap all class in this namespace  ");
+        GUILayout.Label("  If you'd like wrap other class or custom namespace, Then ");
+        GUILayout.Label("  STEP 2 : input FULL class name in the box below and click \"Wrap Custom\"");
+       
 
         GUILayout.BeginHorizontal(); 
         GUI.backgroundColor = Color.green;
         _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
         GUI.enabled = !string.IsNullOrEmpty(_classInput);
-        if(GUILayout.Button("Wrap Class", GUILayout.Width(100))) {
-            string className = "";
-            string assemblyName = "";
-
-            int dotIndex = _classInput.LastIndexOf('.');
-            if(dotIndex == -1) {
-                assemblyName = "";
-                className = _classInput;
-            }
-            else {
-                assemblyName = _classInput.Substring(0, dotIndex);
-                className = _classInput.Substring(dotIndex + 1);
-            }
-
-            WrapClass wc = GetWrapClass(assemblyName);
-            if(wc == null) {
-                wc = new WrapClass(assemblyName);
-                AddClass(assemblyName, className);
-            }
-            else {
-                if(!wc.m_classes.Contains(className))
-                    AddClass(assemblyName, className);
-                else
-                    UpdateClass(assemblyName, className);
-            }
-
+        if(GUILayout.Button("Wrap Custom", GUILayout.Width(100))) {
+			WrapCustom(_classInput);
             _classInput = "";
         }
 
         GUI.enabled = true;
-
-		if(GUILayout.Button("Wrap Namespace", GUILayout.Width(120))){
-			string assemblyName = _classInput;
-			Type[] types = GetTypesByNamespace(assemblyName);
-			if(types != null){
-				for(int i = 0; i < types.Length; i++){
-					Debug.Log(types[i].ToString());
-				}
-			}
-		}
+//
+//		if(GUILayout.Button("Wrap Namespace", GUILayout.Width(120))){
+//			string assemblyName = _classInput;
+//			Type[] types = GetTypesByNamespace(assemblyName);
+//			if(types != null){
+//				for(int i = 0; i < types.Length; i++){
+//					Debug.Log(types[i].ToString());
+//				}
+//			}
+//		}
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
+		GUILayout.Label("  eg. input \"LitJson.JSONNode\" for wrap a class. ");
+		GUILayout.Label("  eg. input \"LiJson\" for wrap all classes in this namespace. ");
 
         GUILayout.Space(20);
 
