@@ -386,7 +386,25 @@ public class WrapMakerGUI : WrapMaker {
     }
 
 	public void WrapCommon(){
-		//AddFullProject ();
+        //最后导出的内容是： BaseType + (All-Non-Namespace - BlackList) + WhiteList
+        //导出的时候同时注册
+        //基本类型（int,bool,string等）
+        OnlyAddClass("", "double");
+        OnlyAddClass("", "float");
+        OnlyAddClass("", "long");
+        OnlyAddClass("", "ulong");
+        OnlyAddClass("", "int");
+        OnlyAddClass("", "uint");
+        OnlyAddClass("", "short");
+        OnlyAddClass("", "ushort");
+        OnlyAddClass("", "byte");
+        OnlyAddClass("", "sbyte");
+        OnlyAddClass("", "char");
+        OnlyAddClass("", "object");
+        OnlyAddClass("", "bool");
+        OnlyAddClass("", "string");
+
+        //项目里没有Namespace的所有类, 减去黑名单
 		Type[] types = GetTypesByNamespace("");
 		if(types != null) {
 			for(int i = 0; i < types.Length; i++) {
@@ -394,15 +412,87 @@ public class WrapMakerGUI : WrapMaker {
 			}
 		}
 
-		//TODO 补充基本类型（int,bool,string等）
+        //Config里的所有类，这些可以从外部配置,在Option里设置
 
+        //System.IO.DirectoryInfo
+        //System.IO.Directory
+        //System.IO.File
+        //System.IO.FileInfo
+        
+
+        OnlyAddClass("System", "DateTime");
+        OnlyAddClass("System", "DayOfWeek");
+
+		
+
+        //TODO 这里的内容放到外部配置里，在Option里设置
 		//这里并没有直接获取UnityEngine里所有类，因为大部分类不常用。这里列出的类是我自己使用频率较高的
 		//如果需要，你可以在这里补充，或者在编辑器界面里手动输入单独添加
-	
-		OnlyAddClass("UnityEngine", "Vector3");
-		OnlyAddClass("UnityEngine", "Mathf");
-		OnlyAddClass("UnityEngine", "Transform");
-		OnlyAddClass("UnityEngine", "Time");
+
+        OnlyAddClass("UnityEngine", "Object");
+
+        OnlyAddClass("UnityEngine", "AssetBundle");
+        OnlyAddClass("UnityEngine", "Animation");
+        OnlyAddClass("UnityEngine", "AnimationCurve");
+        OnlyAddClass("UnityEngine", "AnimationClip");
+        OnlyAddClass("UnityEngine", "Animator");
+        OnlyAddClass("UnityEngine", "AnimatorStateInfo");
+        OnlyAddClass("UnityEngine", "Application");
+        OnlyAddClass("UnityEngine", "AudioSource");
+        OnlyAddClass("UnityEngine", "AudioClip");
+        OnlyAddClass("UnityEngine", "AudioListener");
+
+        OnlyAddClass("UnityEngine", "Bounds");
+        OnlyAddClass("UnityEngine", "Behaviour");
+
+        OnlyAddClass("UnityEngine", "Camera");
+        OnlyAddClass("UnityEngine", "Component");
+        OnlyAddClass("UnityEngine", "Color");
+        OnlyAddClass("UnityEngine", "Debug");
+        OnlyAddClass("UnityEngine", "GameObject");
+        OnlyAddClass("UnityEngine", "Input");
+
+        OnlyAddClass("UnityEngine", "KeyCode");
+        OnlyAddClass("UnityEngine", "KeyFrame");
+        OnlyAddClass("UnityEngine", "Light");
+        OnlyAddClass("UnityEngine", "Mathf");
+        OnlyAddClass("UnityEngine", "Material");
+        OnlyAddClass("UnityEngine", "Mesh");
+        OnlyAddClass("UnityEngine", "MeshRenderer");
+        OnlyAddClass("UnityEngine", "MeshFilter");
+        OnlyAddClass("UnityEngine", "MonoBehaviour");
+
+        OnlyAddClass("UnityEngine", "Physics");
+        OnlyAddClass("UnityEngine", "Physics2D");
+        OnlyAddClass("UnityEngine", "ParticleSystem");
+        OnlyAddClass("UnityEngine", "PlayerPrefs");
+        OnlyAddClass("UnityEngine", "Quaternion");
+
+        OnlyAddClass("UnityEngine", "Renderer");
+        OnlyAddClass("UnityEngine", "Resolution");
+        OnlyAddClass("UnityEngine", "Random");
+        OnlyAddClass("UnityEngine", "Ray");
+        OnlyAddClass("UnityEngine", "Ray2D");
+        OnlyAddClass("UnityEngine", "Resources");
+
+        OnlyAddClass("UnityEngine", "Screen");
+        OnlyAddClass("UnityEngine", "Shader");
+        OnlyAddClass("UnityEngine", "Texture");
+        OnlyAddClass("UnityEngine", "SkinnedMeshRenderer");
+        OnlyAddClass("UnityEngine", "Transform");
+        OnlyAddClass("UnityEngine", "Time");
+        OnlyAddClass("UnityEngine", "TextAsset");
+
+        OnlyAddClass("UnityEngine", "Vector2");
+        OnlyAddClass("UnityEngine", "Vector3");
+        OnlyAddClass("UnityEngine", "Vector4");
+
+        OnlyAddClass("UnityEngine", "WWW");
+        OnlyAddClass("UnityEngine", "WWWForm");
+        OnlyAddClass("UnityEngine", "WaitForSeconds");
+        OnlyAddClass("UnityEngine", "WaitForFixedUpdate");
+        OnlyAddClass("UnityEngine", "WaitForEndOfFrame");
+
 
 		Reload();
 		UpdateWrapCore();
