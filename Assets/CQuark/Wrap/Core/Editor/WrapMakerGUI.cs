@@ -23,12 +23,17 @@ public class WrapMakerGUI : WrapMaker {
 
 	Vector2 mScroll = Vector2.zero;
 
-	string _wrapFolder = "";
 	string _classInput = "";
 
-	string WrapFolder{
+	string WrapGenFolder{
 		get{
-			return Application.dataPath + "/" + _wrapFolder;
+			return Application.dataPath + "/CQuark/Wrap/Generate";
+		}
+	}
+
+	string WrapCoreFolder{
+		get{
+			return Application.dataPath + "/CQuark/Wrap/Core";
 		}
 	}
 
@@ -42,20 +47,13 @@ public class WrapMakerGUI : WrapMaker {
 		//TODO这里做一次MD5比较，记录原始的cs脚本的md5，然后刷新一下当前的md5,m5可以写到wrap的cs里
 		//md5
 		//sset,sget,mset,mget,new,scall,mcall,op
-		if(string.IsNullOrEmpty(_wrapFolder)){
-			_wrapFolder = PlayerPrefs.GetString("WrapFolder", "CQuark/Wrap");
-		}
 
         m_wrapClasses.Clear();
-		DirectoryInfo di = new DirectoryInfo(WrapFolder);
+		DirectoryInfo di = new DirectoryInfo(WrapGenFolder);
 		FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
 		for(int i = 0; i < files.Length; i++){
 			string classname = files[i].Name.Split('.')[0];
-			if(files[i].Directory.ToString().Length == WrapFolder.Length){
-				if(classname == WRAP_CORE_NAME || classname == WRAP_TYPE_NAME) {
-					continue;
-				}
-
+			if(files[i].Directory.ToString().Length == WrapGenFolder.Length){
                 WrapClass wc = GetWrapClass("");
                 if(wc == null) {
                     wc = new WrapClass("");
@@ -63,7 +61,7 @@ public class WrapMakerGUI : WrapMaker {
                 }
                 wc.AddClass(classname);
 			}else{
-				string nameSpace = files[i].Directory.ToString().Substring(WrapFolder.Length + 1);
+				string nameSpace = files[i].Directory.ToString().Substring(WrapGenFolder.Length + 1);
 				
                 WrapClass wc = GetWrapClass(nameSpace);
                 if(wc == null) {
@@ -75,7 +73,7 @@ public class WrapMakerGUI : WrapMaker {
 		}
 
 //		_typeDic.Clear ();
-		string wrapType = File.ReadAllText(WrapFolder + "/" + WRAP_TYPE_NAME + ".cs", System.Text.Encoding.UTF8);
+		string wrapType = File.ReadAllText(WrapCoreFolder + "/" + WRAP_TYPE_NAME + ".cs", System.Text.Encoding.UTF8);
 		int startIndex = wrapType.IndexOf ("#region Types") + "#region Types".Length;
 		int endIndex = wrapType.IndexOf ("#endregion");
 		if(startIndex < endIndex){
@@ -86,7 +84,6 @@ public class WrapMakerGUI : WrapMaker {
 					_typeDic.Add (typeLines [i]);
 			}
 		}
-		PlayerPrefs.SetString("WrapFolder", _wrapFolder);
 	}
 
 	void OnlyAddClass(Type type){
@@ -94,13 +91,18 @@ public class WrapMakerGUI : WrapMaker {
 	}
 	//这里可以改为使用类
 	void OnlyAddClass(string assemblyName, string classname){
+		if(classname.Contains("`"))
+			return;
 		if(string.IsNullOrEmpty(assemblyName))
 			assemblyName = "";
 		
 		Type type = GetType(classname, ref assemblyName);
 
 		if(type == null){
-			Debug.LogError("No Such Type : " + classname);
+			if(string.IsNullOrEmpty(assemblyName))
+				Debug.LogWarning("No Such Type : " + classname);
+			else
+				Debug.LogWarning("No Such Type : " + assemblyName + "." + classname);
 			return;
 		}
 
@@ -136,10 +138,10 @@ public class WrapMakerGUI : WrapMaker {
 
 		if(m_generateLog){
 	        if(string.IsNullOrEmpty(assemblyName)) {
-				WriteAllText(WrapFolder, classname + ".txt", log);
+				WriteAllText(WrapGenFolder, classname + ".txt", log);
 			}
 			else {
-				WriteAllText(WrapFolder + "/" + assemblyName, classname + ".txt", log);
+				WriteAllText(WrapGenFolder + "/" + assemblyName, classname + ".txt", log);
 			}
 		}
 
@@ -149,9 +151,9 @@ public class WrapMakerGUI : WrapMaker {
 
 	void OnlyRemoveClass(string assemblyName, string classname){
 		if(string.IsNullOrEmpty(assemblyName))
-			File.Delete(WrapFolder + "/" + classname + ".cs");
+			File.Delete(WrapGenFolder + "/" + classname + ".cs");
 		else
-			File.Delete(WrapFolder + "/" + assemblyName + "/" + classname + ".cs");
+			File.Delete(WrapGenFolder + "/" + assemblyName + "/" + classname + ".cs");
 	}
 		
 	void UpdateWrapPart(string assemblyName, string classname, string[] propertys, 
@@ -184,10 +186,10 @@ public class WrapMakerGUI : WrapMaker {
      //  (op_Addition,op_subtraction,op_Multiply,op_Division,op_Modulus,op_GreaterThan,op_LessThan,op_GreaterThanOrEqual,op_LessThanOrEqual,op_Equality,op_Inequality
 
 		if(string.IsNullOrEmpty(assemblyName)) {
-			WriteAllText(WrapFolder, classname + ".cs", text);
+			WriteAllText(WrapGenFolder, classname + ".cs", text);
 		}
 		else {
-			WriteAllText(WrapFolder + "/" + assemblyName, classname + ".cs", text);
+			WriteAllText(WrapGenFolder + "/" + assemblyName, classname + ".cs", text);
 		}
 	}
 		
@@ -314,7 +316,7 @@ public class WrapMakerGUI : WrapMaker {
         text = text.Replace("{wrapMod}", wrapMod);
 
         //string text = string.Format(_wrapCoreTemplate, wrapNew, wrapSVGet, wrapSVSet, wrapSCall, wrapMVGet, wrapMVSet, wrapMCall, wrapIGet, wrapISet);
-        File.WriteAllText(WrapFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
+        File.WriteAllText(WrapCoreFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}
 
 	List<string> _typeDic = new List<string> ();
@@ -326,7 +328,7 @@ public class WrapMakerGUI : WrapMaker {
 			types += "\t\t\t" + _typeDic [i] + "\n";
 		}
 		text = text.Replace ("{wrapTypes}", types);
-		File.WriteAllText(WrapFolder + "/" + WRAP_TYPE_NAME + ".cs", text, System.Text.Encoding.UTF8);
+		File.WriteAllText(WrapCoreFolder + "/" + WRAP_TYPE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}
 
 	void AddClass(string assemblyName, string classname){
@@ -389,28 +391,28 @@ public class WrapMakerGUI : WrapMaker {
         //最后导出的内容是： BaseType + (All-Non-Namespace - BlackList) + WhiteList
         //导出的时候同时注册
         //基本类型（int,bool,string等）
-        OnlyAddClass("", "double");
-        OnlyAddClass("", "float");
-        OnlyAddClass("", "long");
-        OnlyAddClass("", "ulong");
-        OnlyAddClass("", "int");
-        OnlyAddClass("", "uint");
-        OnlyAddClass("", "short");
-        OnlyAddClass("", "ushort");
-        OnlyAddClass("", "byte");
-        OnlyAddClass("", "sbyte");
-        OnlyAddClass("", "char");
-        OnlyAddClass("", "object");
-        OnlyAddClass("", "bool");
-        OnlyAddClass("", "string");
+//        OnlyAddClass("", "double");
+//        OnlyAddClass("", "float");
+//        OnlyAddClass("", "long");
+//        OnlyAddClass("", "ulong");
+//        OnlyAddClass("", "int");
+//        OnlyAddClass("", "uint");
+//        OnlyAddClass("", "short");
+//        OnlyAddClass("", "ushort");
+//        OnlyAddClass("", "byte");
+//        OnlyAddClass("", "sbyte");
+//        OnlyAddClass("", "char");
+//        OnlyAddClass("", "object");
+//        OnlyAddClass("", "bool");
+//        OnlyAddClass("", "string");
 
         //项目里没有Namespace的所有类, 减去黑名单
-		Type[] types = GetTypesByNamespace("");
-		if(types != null) {
-			for(int i = 0; i < types.Length; i++) {
-				OnlyAddClass(types[i].Namespace, types[i].Name);
-			}
-		}
+//		Type[] types = GetTypesByNamespace("");
+//		if(types != null) {
+//			for(int i = 0; i < types.Length; i++) {
+//				OnlyAddClass(types[i].Namespace, types[i].Name);
+//			}
+//		}
 
         //Config里的所有类，这些可以从外部配置,在Option里设置
 
@@ -420,79 +422,79 @@ public class WrapMakerGUI : WrapMaker {
         //System.IO.FileInfo
         
 
-        OnlyAddClass("System", "DateTime");
-        OnlyAddClass("System", "DayOfWeek");
-
-		
-
-        //TODO 这里的内容放到外部配置里，在Option里设置
-		//这里并没有直接获取UnityEngine里所有类，因为大部分类不常用。这里列出的类是我自己使用频率较高的
-		//如果需要，你可以在这里补充，或者在编辑器界面里手动输入单独添加
-
-        OnlyAddClass("UnityEngine", "Object");
-
-        OnlyAddClass("UnityEngine", "AssetBundle");
-        OnlyAddClass("UnityEngine", "Animation");
-        OnlyAddClass("UnityEngine", "AnimationCurve");
-        OnlyAddClass("UnityEngine", "AnimationClip");
-        OnlyAddClass("UnityEngine", "Animator");
-        OnlyAddClass("UnityEngine", "AnimatorStateInfo");
-        OnlyAddClass("UnityEngine", "Application");
-        OnlyAddClass("UnityEngine", "AudioSource");
-        OnlyAddClass("UnityEngine", "AudioClip");
-        OnlyAddClass("UnityEngine", "AudioListener");
-
-        OnlyAddClass("UnityEngine", "Bounds");
-        OnlyAddClass("UnityEngine", "Behaviour");
-
-        OnlyAddClass("UnityEngine", "Camera");
-        OnlyAddClass("UnityEngine", "Component");
-        OnlyAddClass("UnityEngine", "Color");
-        OnlyAddClass("UnityEngine", "Debug");
-        OnlyAddClass("UnityEngine", "GameObject");
-        OnlyAddClass("UnityEngine", "Input");
-
-        OnlyAddClass("UnityEngine", "KeyCode");
-        OnlyAddClass("UnityEngine", "KeyFrame");
-        OnlyAddClass("UnityEngine", "Light");
-        OnlyAddClass("UnityEngine", "Mathf");
-        OnlyAddClass("UnityEngine", "Material");
-        OnlyAddClass("UnityEngine", "Mesh");
-        OnlyAddClass("UnityEngine", "MeshRenderer");
-        OnlyAddClass("UnityEngine", "MeshFilter");
-        OnlyAddClass("UnityEngine", "MonoBehaviour");
-
-        OnlyAddClass("UnityEngine", "Physics");
-        OnlyAddClass("UnityEngine", "Physics2D");
-        OnlyAddClass("UnityEngine", "ParticleSystem");
-        OnlyAddClass("UnityEngine", "PlayerPrefs");
-        OnlyAddClass("UnityEngine", "Quaternion");
-
-        OnlyAddClass("UnityEngine", "Renderer");
-        OnlyAddClass("UnityEngine", "Resolution");
-        OnlyAddClass("UnityEngine", "Random");
-        OnlyAddClass("UnityEngine", "Ray");
-        OnlyAddClass("UnityEngine", "Ray2D");
-        OnlyAddClass("UnityEngine", "Resources");
-
-        OnlyAddClass("UnityEngine", "Screen");
-        OnlyAddClass("UnityEngine", "Shader");
-        OnlyAddClass("UnityEngine", "Texture");
-        OnlyAddClass("UnityEngine", "SkinnedMeshRenderer");
-        OnlyAddClass("UnityEngine", "Transform");
-        OnlyAddClass("UnityEngine", "Time");
-        OnlyAddClass("UnityEngine", "TextAsset");
-
-        OnlyAddClass("UnityEngine", "Vector2");
-        OnlyAddClass("UnityEngine", "Vector3");
-        OnlyAddClass("UnityEngine", "Vector4");
-
-        OnlyAddClass("UnityEngine", "WWW");
-        OnlyAddClass("UnityEngine", "WWWForm");
-        OnlyAddClass("UnityEngine", "WaitForSeconds");
-        OnlyAddClass("UnityEngine", "WaitForFixedUpdate");
-        OnlyAddClass("UnityEngine", "WaitForEndOfFrame");
-
+//        OnlyAddClass("System", "DateTime");
+//        OnlyAddClass("System", "DayOfWeek");
+//
+//		
+//
+//        //TODO 这里的内容放到外部配置里，在Option里设置
+//		//这里并没有直接获取UnityEngine里所有类，因为大部分类不常用。这里列出的类是我自己使用频率较高的
+//		//如果需要，你可以在这里补充，或者在编辑器界面里手动输入单独添加
+//
+//        OnlyAddClass("UnityEngine", "Object");
+//
+//        OnlyAddClass("UnityEngine", "AssetBundle");
+//        OnlyAddClass("UnityEngine", "Animation");
+//        OnlyAddClass("UnityEngine", "AnimationCurve");
+//        OnlyAddClass("UnityEngine", "AnimationClip");
+//        OnlyAddClass("UnityEngine", "Animator");
+//        OnlyAddClass("UnityEngine", "AnimatorStateInfo");
+//        OnlyAddClass("UnityEngine", "Application");
+//        OnlyAddClass("UnityEngine", "AudioSource");
+//        OnlyAddClass("UnityEngine", "AudioClip");
+//        OnlyAddClass("UnityEngine", "AudioListener");
+//
+//        OnlyAddClass("UnityEngine", "Bounds");
+//        OnlyAddClass("UnityEngine", "Behaviour");
+//
+//        OnlyAddClass("UnityEngine", "Camera");
+//        OnlyAddClass("UnityEngine", "Component");
+//        OnlyAddClass("UnityEngine", "Color");
+//        OnlyAddClass("UnityEngine", "Debug");
+//        OnlyAddClass("UnityEngine", "GameObject");
+//        OnlyAddClass("UnityEngine", "Input");
+//
+//        OnlyAddClass("UnityEngine", "KeyCode");
+//        OnlyAddClass("UnityEngine", "KeyFrame");
+//        OnlyAddClass("UnityEngine", "Light");
+//        OnlyAddClass("UnityEngine", "Mathf");
+//        OnlyAddClass("UnityEngine", "Material");
+//        OnlyAddClass("UnityEngine", "Mesh");
+//        OnlyAddClass("UnityEngine", "MeshRenderer");
+//        OnlyAddClass("UnityEngine", "MeshFilter");
+//        OnlyAddClass("UnityEngine", "MonoBehaviour");
+//
+//        OnlyAddClass("UnityEngine", "Physics");
+//        OnlyAddClass("UnityEngine", "Physics2D");
+//        OnlyAddClass("UnityEngine", "ParticleSystem");
+//        OnlyAddClass("UnityEngine", "PlayerPrefs");
+//        OnlyAddClass("UnityEngine", "Quaternion");
+//
+//        OnlyAddClass("UnityEngine", "Renderer");
+//        OnlyAddClass("UnityEngine", "Resolution");
+//        OnlyAddClass("UnityEngine", "Random");
+//        OnlyAddClass("UnityEngine", "Ray");
+//        OnlyAddClass("UnityEngine", "Ray2D");
+//        OnlyAddClass("UnityEngine", "Resources");
+//
+//        OnlyAddClass("UnityEngine", "Screen");
+//        OnlyAddClass("UnityEngine", "Shader");
+//        OnlyAddClass("UnityEngine", "Texture");
+//        OnlyAddClass("UnityEngine", "SkinnedMeshRenderer");
+//        OnlyAddClass("UnityEngine", "Transform");
+//        OnlyAddClass("UnityEngine", "Time");
+//        OnlyAddClass("UnityEngine", "TextAsset");
+//
+//        OnlyAddClass("UnityEngine", "Vector2");
+//        OnlyAddClass("UnityEngine", "Vector3");
+//        OnlyAddClass("UnityEngine", "Vector4");
+//
+//        OnlyAddClass("UnityEngine", "WWW");
+//        OnlyAddClass("UnityEngine", "WWWForm");
+//        OnlyAddClass("UnityEngine", "WaitForSeconds");
+//        OnlyAddClass("UnityEngine", "WaitForFixedUpdate");
+//        OnlyAddClass("UnityEngine", "WaitForEndOfFrame");
+//
 
 		Reload();
 		UpdateWrapCore();
@@ -568,17 +570,14 @@ public class WrapMakerGUI : WrapMaker {
 		GUILayout.EndHorizontal();
 		if(_option){
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("WrapFolder:", GUILayout.Width(100));
-			_wrapFolder = GUILayout.TextField(_wrapFolder);
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
 			GUILayout.Label("WrapOption:", GUILayout.Width(100));
 			m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
 			m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Log");
 			GUILayout.EndHorizontal();
 
 			//TODO 这里可以输入黑名单和自动添加名单
+
+			GUILayout.Space(20);
 		}
 
 		GUILayout.Space(5);

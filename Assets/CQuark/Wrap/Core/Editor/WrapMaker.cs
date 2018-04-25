@@ -436,6 +436,9 @@ public class WrapMaker : EditorWindow{
 	protected string Constructor2PartStr(string classFullName, List<Method> constructor){
 		string wrapNew = "";
 		for(int i = 0; i < constructor.Count; i++) {
+			if(!Finish(constructor[i].m_returnType) || !Finish(constructor[i].m_inType))
+				continue;
+			
 			if(constructor[i].m_obsolete && m_ignoreObsolete)
 				continue;
 			
@@ -974,6 +977,8 @@ public class WrapMaker : EditorWindow{
 	protected static bool Finish(string type){
 		//ref
 		//out
+		if(string.IsNullOrEmpty(type))
+			return false;
 		if(type.EndsWith("&"))	
 			return false;
 		//List`

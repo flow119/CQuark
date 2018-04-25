@@ -14,33 +14,29 @@ namespace CQuark{
 				returnValue = CQ_Value.Null;
 				return false;
 			}
+			
 
 			returnValue = CQ_Value.Null;
 	        return false;
 	    }
 
 	    public static bool StaticValueSet (Type type, string memberName, CQ_Value param) {
-			if(type == null){
+			//if(type == null){
 				return false;
-			}
-
-			return false;
-	    }
-
-		public static bool MemberValueGet (Type type, object objSelf, string memberName, out CQ_Value returnValue) {
-			if(type == null){
-				returnValue = CQ_Value.Null;
-				return false;
-			}
-
+			//}
+		}
+		public static bool MemberValueGet(Type type, object obj, string memberName, out CQ_Value returnValue){
 			returnValue = CQ_Value.Null;
 			return false;
 	    }
+
+
 
 		public static bool MemberValueSet (Type type, object objSelf, string memberName, CQ_Value param) {
 			if(type == null){
 				return false;
 			}
+			
 
 			return false;
 	    }
@@ -50,6 +46,7 @@ namespace CQuark{
 				returnValue = CQ_Value.Null;
 				return false;
 			}
+			
 
 			returnValue = CQ_Value.Null;
 	        return false;
@@ -60,6 +57,7 @@ namespace CQuark{
 				returnValue = CQ_Value.Null;
 				return false;
 			}
+		
 
 			returnValue = CQ_Value.Null;
 	        return false;
@@ -72,7 +70,7 @@ namespace CQuark{
 				returnValue = CQ_Value.Null;
 				return false;
 			}
-
+		
 			returnValue = CQ_Value.Null;
 	        return false;
 	    }
@@ -82,7 +80,7 @@ namespace CQuark{
 				returnValue = CQ_Value.Null;
 				return false;
 			}
-
+		
 			returnValue = CQ_Value.Null;
 			return false;
 		}
@@ -91,51 +89,40 @@ namespace CQuark{
 			if(type == null) {
 				return false;
 			}
-
+		
 			return false;
 		}
 		
 		public static bool OpAddition (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = CQ_Value.Null;
-			for(int t = 2; t > 0; t--){
-				bool mustEqual = (t == 2);
-			}
+			
            
             return false;
         }
 		
 		public static bool OpSubtraction (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = CQ_Value.Null;
-			for(int t = 2; t > 0; t--){
-				bool mustEqual = (t == 2);
-			}
+			
            
             return false;
         }
 		
 		public static bool OpMultiply (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = CQ_Value.Null;
-			for(int t = 2; t > 0; t--){
-				bool mustEqual = (t == 2);
-			}
+			
            
             return false;
         }
 		
 		public static bool OpDivision (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = CQ_Value.Null;
-			for(int t = 2; t > 0; t--){
-				bool mustEqual = (t == 2);
-			}
-           
+			
             return false;
         }
 		
 		public static bool OpModulus (CQ_Value left, CQ_Value right, out CQ_Value returnValue) {
             returnValue = CQ_Value.Null;
-			for(int t = 2; t > 0; t--){
-				bool mustEqual = (t == 2);
-			}
+			
            
             return false;
         }
