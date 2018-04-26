@@ -49,30 +49,38 @@ public class WrapMakerGUI : WrapMaker {
 		//sset,sget,mset,mget,new,scall,mcall,op
 
         m_wrapClasses.Clear();
-		DirectoryInfo di = new DirectoryInfo(WrapGenFolder);
-		FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
-		for(int i = 0; i < files.Length; i++){
-			string classname = files[i].Name.Split('.')[0];
-			if(files[i].Directory.ToString().Length == WrapGenFolder.Length){
-                WrapClass wc = GetWrapClass("");
-                if(wc == null) {
-                    wc = new WrapClass("");
-                    m_wrapClasses.Add(wc);
+        if(!Directory.Exists(WrapGenFolder)){
+            Directory.CreateDirectory(WrapGenFolder);
+        }
+        else {
+            DirectoryInfo di = new DirectoryInfo(WrapGenFolder);
+
+            FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
+            for(int i = 0; i < files.Length; i++) {
+                string classname = files[i].Name.Split('.')[0];
+                if(files[i].Directory.ToString().Length == WrapGenFolder.Length) {
+                    WrapClass wc = GetWrapClass("");
+                    if(wc == null) {
+                        wc = new WrapClass("");
+                        m_wrapClasses.Add(wc);
+                    }
+                    wc.AddClass(classname);
                 }
-                wc.AddClass(classname);
-			}else{
-				string nameSpace = files[i].Directory.ToString().Substring(WrapGenFolder.Length + 1);
-				
-                WrapClass wc = GetWrapClass(nameSpace);
-                if(wc == null) {
-                    wc = new WrapClass(nameSpace);
-                    m_wrapClasses.Add(wc);
+                else {
+                    string nameSpace = files[i].Directory.ToString().Substring(WrapGenFolder.Length + 1);
+
+                    WrapClass wc = GetWrapClass(nameSpace);
+                    if(wc == null) {
+                        wc = new WrapClass(nameSpace);
+                        m_wrapClasses.Add(wc);
+                    }
+                    wc.AddClass(classname);
                 }
-                wc.AddClass(classname);
-			}
+            }
 		}
 
 //		_typeDic.Clear ();
+        //TODO Type不要分离出来
 		string wrapType = File.ReadAllText(WrapCoreFolder + "/" + WRAP_TYPE_NAME + ".cs", System.Text.Encoding.UTF8);
 		int startIndex = wrapType.IndexOf ("#region Types") + "#region Types".Length;
 		int endIndex = wrapType.IndexOf ("#endregion");
@@ -562,23 +570,19 @@ public class WrapMakerGUI : WrapMaker {
 			Reload();
 		}
 
-		GUILayout.BeginHorizontal();
-		if(GUILayout.Button((_option ? "\u25BC" : "\u25BA"), GUILayout.Width(25))) {
-			_option = !_option;
-		}
-		GUILayout.Label(" Option");
-		GUILayout.EndHorizontal();
-		if(_option){
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("WrapOption:", GUILayout.Width(100));
-			m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
-			m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Log");
-			GUILayout.EndHorizontal();
+        if(NGUIEditorTools.DrawHeader("Option")) {
+            NGUIEditorTools.BeginContents();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("WrapOption:", GUILayout.Width(100));
+            m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
+            m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Log");
+            GUILayout.EndHorizontal();
 
-			//TODO 这里可以输入黑名单和自动添加名单
+            //TODO 这里可以输入黑名单和自动添加名单
 
-			GUILayout.Space(20);
-		}
+            GUILayout.Space(20);
+            NGUIEditorTools.EndContents();
+        }
 
 		GUILayout.Space(5);
 
@@ -589,23 +593,7 @@ public class WrapMakerGUI : WrapMaker {
 		if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
 			WrapCommon();
         }
-//        if(GUILayout.Button("Wrap Unity.UI Assembly")) {
-//            Type[] types = GetTypesByNamespace("UnityEngine");
-//            types = GetTypesByNamespace("UnityEngine.UI");
-//            if(types != null) {
-//                for(int i = 0; i < types.Length; i++) {
-//                    Debug.Log(types[i].ToString());
-//                }
-//            }
-//        }
-//        if(GUILayout.Button("Wrap Assembly-CSharp")) {
-//            Type[] types = GetTypesByNamespace("");
-//            if(types != null) {
-//                for(int i = 0; i < types.Length; i++) {
-//                    Debug.Log(types[i].ToString());
-//                }
-//            }
-//        }
+
         GUILayout.EndHorizontal();
 		GUILayout.Label("  to wrap UnityEngine's COMMON class and ALL non-namespace class");
 
@@ -638,10 +626,24 @@ public class WrapMakerGUI : WrapMaker {
 //		}
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
-		GUILayout.Label("  eg. input \"LitJson.JSONNode\" for wrap a class. ");
-		GUILayout.Label("  eg. input \"LiJson\" for wrap all classes in this namespace. ");
+        EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LiJson\" for wrap all classes in this namespace. ", MessageType.Info);
 
         GUILayout.Space(20);
+
+        //搜索框
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(84f);
+        string before = NGUISettings.partialSprite;
+        string after = EditorGUILayout.TextField("", before, "SearchTextField");
+        if(before != after) NGUISettings.partialSprite = after;
+
+        if(GUILayout.Button("", "SearchCancelButton", GUILayout.Width(18f))) {
+            NGUISettings.partialSprite = "";
+            GUIUtility.keyboardControl = 0;
+        }
+        GUILayout.Space(84f);
+        GUILayout.EndHorizontal();
+        //搜索结束
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Wraps : ");
@@ -728,9 +730,14 @@ public class WrapMakerGUI : WrapMaker {
 
 		GUILayout.Space(10);
 
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(68);
         if(GUILayout.Button("Reload")) {
             Reload();
         }
+        GUILayout.Space(68);
+        GUILayout.EndHorizontal();
+
         GUILayout.Space(10);
 	}
 }
