@@ -24,6 +24,7 @@ public class WrapMakerGUI : WrapMaker {
 	Vector2 mScroll = Vector2.zero;
 
 	string _classInput = "";
+	static string _search = "";
 
 	string WrapGenFolder{
 		get{
@@ -570,8 +571,8 @@ public class WrapMakerGUI : WrapMaker {
 			Reload();
 		}
 
-        if(NGUIEditorTools.DrawHeader("Option")) {
-            NGUIEditorTools.BeginContents();
+		if(CQEditorTools.DrawHeader("Option")) {
+			CQEditorTools.BeginContents();
             GUILayout.BeginHorizontal();
             GUILayout.Label("WrapOption:", GUILayout.Width(100));
             m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
@@ -581,7 +582,7 @@ public class WrapMakerGUI : WrapMaker {
             //TODO 这里可以输入黑名单和自动添加名单
 
             GUILayout.Space(20);
-            NGUIEditorTools.EndContents();
+			CQEditorTools.EndContents();
         }
 
 		GUILayout.Space(5);
@@ -628,116 +629,145 @@ public class WrapMakerGUI : WrapMaker {
         GUILayout.EndHorizontal();
         EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LiJson\" for wrap all classes in this namespace. ", MessageType.Info);
 
-        GUILayout.Space(20);
+        GUILayout.Space(10);
 
-        //搜索框
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(84f);
-        string before = NGUISettings.partialSprite;
-        string after = EditorGUILayout.TextField("", before, "SearchTextField");
-        if(before != after) NGUISettings.partialSprite = after;
+		if(CQEditorTools.DrawHeader("Wraps")){
+//			NGUIEditorTools.BeginContents();
+	        //搜索框
+	        GUILayout.BeginHorizontal();
+	        GUILayout.Space(84f);
+			string before = _search;
+	        string after = EditorGUILayout.TextField("", before, "SearchTextField");
+	        if(before != after) 
+				_search = after;
 
-        if(GUILayout.Button("", "SearchCancelButton", GUILayout.Width(18f))) {
-            NGUISettings.partialSprite = "";
-            GUIUtility.keyboardControl = 0;
-        }
-        GUILayout.Space(84f);
-        GUILayout.EndHorizontal();
-        //搜索结束
+	        if(GUILayout.Button("", "SearchCancelButton", GUILayout.Width(18f))) {
+				_search = "";
+	            GUIUtility.keyboardControl = 0;
+	        }
+//	        GUILayout.Space(84f);
+			if(GUILayout.Button("Reload")) {
+				Reload();
+			}
+	        GUILayout.EndHorizontal();
+	        //搜索结束
 
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Wraps : ");
+	//        GUILayout.BeginHorizontal();
+	//        GUILayout.Label("Wraps : ");
+	//        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
+	//            _pressAll = !_pressAll;
+	//        }
+	//        GUI.enabled = _pressAll;
+	//        GUI.backgroundColor = Color.cyan;
+	//       if(GUILayout.Button("Update", GUILayout.Width(60))) {
+	//            //   Reload();
+	//        }
+	//        GUI.backgroundColor = Color.red;
+	//        if(GUILayout.Button("X", GUILayout.Width(25))) {
+	//			ClearAll ();
+	//        }
+	//        GUI.backgroundColor = Color.white;
+	//        GUI.enabled = true;
+	//        GUILayout.EndHorizontal();
 
-       
-        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
-            _pressAll = !_pressAll;
-        }
-        GUI.enabled = _pressAll;
-        GUI.backgroundColor = Color.cyan;
-       if(GUILayout.Button("Update", GUILayout.Width(60))) {
-            //   Reload();
-        }
-        GUI.backgroundColor = Color.red;
-        if(GUILayout.Button("X", GUILayout.Width(25))) {
-			ClearAll ();
-        }
-        GUI.backgroundColor = Color.white;
-        GUI.enabled = true;
-        GUILayout.EndHorizontal();
-
-        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
-        //    ClearAll();
-        //}
-        //GUI.backgroundColor = Color.white;
-        //GUILayout.EndHorizontal();
+	        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
+	        //    ClearAll();
+	        //}
+	        //GUI.backgroundColor = Color.white;
+	        //GUILayout.EndHorizontal();
 
 
-		mScroll = GUILayout.BeginScrollView(mScroll);
-		GUILayout.BeginVertical();
-		foreach(var kvp in m_wrapClasses){
+			mScroll = GUILayout.BeginScrollView(mScroll);
+			GUILayout.BeginVertical();
+			foreach(var kvp in m_wrapClasses){
+				GUILayout.BeginHorizontal();
+	            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+					if(GUILayout.Button("  \u25BC", "PreToolbar2", GUILayout.Width(20))) {
+	                    _folderNamespace.Remove(kvp.m_nameSpace);
+	                }
+	            }
+	            else {
+					if(GUILayout.Button("  \u25BA",  "PreToolbar2", GUILayout.Width(20))) {
+	                    _folderNamespace.Add(kvp.m_nameSpace);
+	                }
+	            }
+	            
+				GUILayout.Toggle(false,"",GUILayout.Width(25));
+
+//				GUILayout.Button("━",GUILayout.Width(16),GUILayout.Height(14));
+//				GUILayout.Toggle(false,"",GUILayout.Width(16));
+//				GUILayout.Toggle(true,"",GUILayout.Width(16));
+				GUI.contentColor = Color.cyan;
+				EditorGUILayout.TextField(kvp.m_nameSpace);	//EditorGUILayour可以把文字拷出来
+				GUI.contentColor = Color.white;
+//	            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
+//	            GUI.backgroundColor = Color.cyan;
+//	            if(GUILayout.Button("Update", GUILayout.Width(60))) {
+//	                UpdateClass(kvp.m_nameSpace);
+//	            }
+//	            GUI.backgroundColor = Color.red;
+//	            if(GUILayout.Button("X", GUILayout.Width(25))) {
+//	                RemoveClass(kvp.m_nameSpace);
+//	                return;
+//	            }
+//	            GUI.backgroundColor = Color.white;
+	            //GUILayout.Space(90);
+				GUILayout.EndHorizontal();
+
+	            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+	                for(int i = 0; i < kvp.m_classes.Count; i++) {
+	                    GUILayout.BeginHorizontal();
+	                    GUILayout.Space(60);
+
+						GUILayout.Toggle(false,"",GUILayout.Width(25));
+
+						EditorGUILayout.TextField(kvp.m_classes[i]);
+	                   
+	                    GUILayout.EndHorizontal();
+	                }
+	            }
+	            GUILayout.Space(5);
+			}
+			GUILayout.EndVertical();
+			GUILayout.EndScrollView();
+
 			GUILayout.BeginHorizontal();
-            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
-                if(GUILayout.Button("\u25BC", GUILayout.Width(25))) {
-                    _folderNamespace.Remove(kvp.m_nameSpace);
-                }
-            }
-            else {
-                if(GUILayout.Button("\u25BA", GUILayout.Width(25))) {
-                    _folderNamespace.Add(kvp.m_nameSpace);
-                }
-            }
-            
-            GUILayout.Label("Namespace", GUILayout.Width(80));
+			if(GUILayout.Button("All", GUILayout.Width(60))){
 
-			GUILayout.TextField(kvp.m_nameSpace);
-            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
-            GUI.backgroundColor = Color.cyan;
-            if(GUILayout.Button("Update", GUILayout.Width(60))) {
-                UpdateClass(kvp.m_nameSpace);
-            }
-            GUI.backgroundColor = Color.red;
-            if(GUILayout.Button("X", GUILayout.Width(25))) {
-                RemoveClass(kvp.m_nameSpace);
-                return;
-            }
-            GUI.backgroundColor = Color.white;
-            //GUILayout.Space(90);
+			}
+			if(GUILayout.Button("None", GUILayout.Width(60))){
+
+			}
+
+			GUILayout.FlexibleSpace();
+
+			GUI.backgroundColor = Color.cyan;
+			if(GUILayout.Button("Update", GUILayout.Width(60))) {
+				//	UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
+			}
+			GUI.backgroundColor = Color.red;
+			if(GUILayout.Button("Remove", GUILayout.Width(60))) {
+				//	RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
+				return;
+			}
+			GUI.backgroundColor = Color.white;
 			GUILayout.EndHorizontal();
-
-            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
-                for(int i = 0; i < kvp.m_classes.Count; i++) {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(60);
-                    GUILayout.Label("  Class",GUILayout.Width(54));
-                    GUILayout.TextField(kvp.m_classes[i]);
-                    GUI.backgroundColor = Color.cyan;
-                    if(GUILayout.Button("Update", GUILayout.Width(60))) {
-                        UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
-                    }
-                    GUI.backgroundColor = Color.red;
-                    if(GUILayout.Button("X", GUILayout.Width(25))) {
-                        RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
-                        return;
-                    }
-                    GUI.backgroundColor = Color.white;
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.Space(5);
+//			NGUIEditorTools.EndContents();
 		}
-		GUILayout.EndVertical();
-		GUILayout.EndScrollView();
+
+
+
 
 		GUILayout.Space(10);
 
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(68);
-        if(GUILayout.Button("Reload")) {
-            Reload();
-        }
-        GUILayout.Space(68);
-        GUILayout.EndHorizontal();
+//        GUILayout.BeginHorizontal();
+//        GUILayout.Space(68);
+//        if(GUILayout.Button("Reload")) {
+//            Reload();
+//        }
+//        GUILayout.Space(68);
+//        GUILayout.EndHorizontal();
 
-        GUILayout.Space(10);
+
 	}
 }
