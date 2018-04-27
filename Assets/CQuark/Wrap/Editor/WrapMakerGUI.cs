@@ -652,71 +652,110 @@ public class WrapMakerGUI : EditorWindow {
         GUILayout.EndHorizontal();
 
 //			NGUIEditorTools.BeginContents();
-	        //搜索框
-	        GUILayout.BeginHorizontal();
-	        GUILayout.Space(84f);
-			string before = _search;
-	        string after = EditorGUILayout.TextField("", before, "SearchTextField");
-	        if(before != after) 
-				_search = after;
+        //搜索框
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(84f);
+		string before = _search;
+        string after = EditorGUILayout.TextField("", before, "SearchTextField");
+        if(before != after) 
+			_search = after;
 
-	        if(GUILayout.Button("", "SearchCancelButton", GUILayout.Width(18f))) {
-				_search = "";
-	            GUIUtility.keyboardControl = 0;
-	        }
-	        GUILayout.Space(84f);
+        if(GUILayout.Button("", "SearchCancelButton", GUILayout.Width(18f))) {
+			_search = "";
+            GUIUtility.keyboardControl = 0;
+        }
+        GUILayout.Space(84f);
+		
+        GUILayout.EndHorizontal();
+        //搜索结束
+
+//        GUILayout.BeginHorizontal();
+//        GUILayout.Label("Wraps : ");
+//        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
+//            _pressAll = !_pressAll;
+//        }
+//        GUI.enabled = _pressAll;
+//        GUI.backgroundColor = Color.cyan;
+//       if(GUILayout.Button("Update", GUILayout.Width(60))) {
+//            //   Reload();
+//        }
+//        GUI.backgroundColor = Color.red;
+//        if(GUILayout.Button("X", GUILayout.Width(25))) {
+//			ClearAll ();
+//        }
+//        GUI.backgroundColor = Color.white;
+//        GUI.enabled = true;
+//        GUILayout.EndHorizontal();
+
+        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
+        //    ClearAll();
+        //}
+        //GUI.backgroundColor = Color.white;
+        //GUILayout.EndHorizontal();
+
+
+		mScroll = GUILayout.BeginScrollView(mScroll);
+		GUILayout.BeginVertical();
+		foreach(var kvp in m_wrapClasses){
+			GUILayout.BeginHorizontal();
+            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+				if(GUILayout.Button("  \u25BC", "PreToolbar2", GUILayout.Width(20))) {
+                    _folderNamespace.Remove(kvp.m_nameSpace);
+                }
+            }
+            else {
+				if(GUILayout.Button("  \u25BA",  "PreToolbar2", GUILayout.Width(20))) {
+                    _folderNamespace.Add(kvp.m_nameSpace);
+                }
+            }
+            
+
+			Action<string> selectAll = delegate(string ns) {
+				for(int i = 0; i < m_wrapClasses.Count; i++){
+					if(m_wrapClasses[i].m_nameSpace == ns){
+						for(int j = 0; j < m_wrapClasses[i].m_classes.Count; j++){
+							string fullName = string.IsNullOrEmpty(ns) ? "" : ns + ".";
+							fullName += m_wrapClasses[i].m_classes[j];
+							if(!_selectedClasses.Contains(fullName))
+								_selectedClasses.Add(fullName);
+						}
+						break;
+					}
+				}
+			};
+			Action<string> deselectAll = delegate(string ns) {
+				for(int i = 0; i < m_wrapClasses.Count; i++){
+					if(m_wrapClasses[i].m_nameSpace == ns){
+						for(int j = 0; j < m_wrapClasses[i].m_classes.Count; j++){
+							string fullName = string.IsNullOrEmpty(ns) ? "" : ns + ".";
+							fullName += m_wrapClasses[i].m_classes[j];
+							if(_selectedClasses.Contains(fullName))
+								_selectedClasses.Remove(fullName);
+						}
+						break;
+					}
+				}
+			};
+			if(IsAllSelect(kvp.m_nameSpace)){
+				bool b = GUILayout.Toggle(true,"",GUILayout.Width(12));
+				if(!b){
+					deselectAll(kvp.m_nameSpace);
+				}
+			}else if(IsNoneSelect(kvp.m_nameSpace)){
+				bool b = GUILayout.Toggle(false,"",GUILayout.Width(12));
+				if(b){
+					selectAll(kvp.m_nameSpace);
+				}
+			}else{
+				bool b = GUILayout.Toggle(true, "", "ToggleMixed",GUILayout.Width(12));
+				if(!b){
+					deselectAll(kvp.m_nameSpace);
+				}
+			}
+
+            GUILayout.Label("Ns", "sv_label_2", GUILayout.Width(38));
+            EditorGUILayout.SelectableLabel(kvp.m_nameSpace, GUILayout.Height(16));	//EditorGUILayour可以把文字拷出来
 			
-	        GUILayout.EndHorizontal();
-	        //搜索结束
-
-	//        GUILayout.BeginHorizontal();
-	//        GUILayout.Label("Wraps : ");
-	//        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
-	//            _pressAll = !_pressAll;
-	//        }
-	//        GUI.enabled = _pressAll;
-	//        GUI.backgroundColor = Color.cyan;
-	//       if(GUILayout.Button("Update", GUILayout.Width(60))) {
-	//            //   Reload();
-	//        }
-	//        GUI.backgroundColor = Color.red;
-	//        if(GUILayout.Button("X", GUILayout.Width(25))) {
-	//			ClearAll ();
-	//        }
-	//        GUI.backgroundColor = Color.white;
-	//        GUI.enabled = true;
-	//        GUILayout.EndHorizontal();
-
-	        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
-	        //    ClearAll();
-	        //}
-	        //GUI.backgroundColor = Color.white;
-	        //GUILayout.EndHorizontal();
-
-
-			mScroll = GUILayout.BeginScrollView(mScroll);
-			GUILayout.BeginVertical();
-			foreach(var kvp in m_wrapClasses){
-				GUILayout.BeginHorizontal();
-	            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
-					if(GUILayout.Button("  \u25BC", "PreToolbar2", GUILayout.Width(20))) {
-	                    _folderNamespace.Remove(kvp.m_nameSpace);
-	                }
-	            }
-	            else {
-					if(GUILayout.Button("  \u25BA",  "PreToolbar2", GUILayout.Width(20))) {
-	                    _folderNamespace.Add(kvp.m_nameSpace);
-	                }
-	            }
-	            
-				GUILayout.Toggle(false,"",GUILayout.Width(12));
-
-//				GUILayout.Button("━",GUILayout.Width(16),GUILayout.Height(14));
-//				GUILayout.Toggle(false,"",GUILayout.Width(16));
-//				GUILayout.Toggle(true,"",GUILayout.Width(16));
-                GUILayout.Label("Namespace", "sv_label_2", GUILayout.Width(78));
-                EditorGUILayout.SelectableLabel(kvp.m_nameSpace, GUILayout.Height(16));	//EditorGUILayour可以把文字拷出来
-				
 //	            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
 //	            GUI.backgroundColor = Color.cyan;
 //	            if(GUILayout.Button("Update", GUILayout.Width(60))) {
@@ -728,47 +767,65 @@ public class WrapMakerGUI : EditorWindow {
 //	                return;
 //	            }
 //	            GUI.backgroundColor = Color.white;
-	            //GUILayout.Space(90);
-				GUILayout.EndHorizontal();
-
-	            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
-	                for(int i = 0; i < kvp.m_classes.Count; i++) {
-	                    GUILayout.BeginHorizontal();
-	                    GUILayout.Space(40);
-
-						GUILayout.Toggle(false,"",GUILayout.Width(12));
-                        GUILayout.Label("Class", "sv_label_1", GUILayout.Width(62));
-						EditorGUILayout.SelectableLabel(kvp.m_classes[i], GUILayout.Height(16));
-	                   
-	                    GUILayout.EndHorizontal();
-	                }
-	            }
-	            GUILayout.Space(5);
-			}
-			GUILayout.EndVertical();
-			GUILayout.EndScrollView();
-
-			GUILayout.BeginHorizontal();
-			if(GUILayout.Button("All", GUILayout.Width(60))){
-
-			}
-			if(GUILayout.Button("None", GUILayout.Width(60))){
-
-			}
-
-			GUILayout.FlexibleSpace();
-
-			GUI.backgroundColor = Color.cyan;
-			if(GUILayout.Button("Update", GUILayout.Width(60))) {
-				//	UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
-			}
-			GUI.backgroundColor = Color.red;
-			if(GUILayout.Button("Remove", GUILayout.Width(60))) {
-				//	RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
-				return;
-			}
-			GUI.backgroundColor = Color.white;
+            //GUILayout.Space(90);
 			GUILayout.EndHorizontal();
+
+            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
+                for(int i = 0; i < kvp.m_classes.Count; i++) {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(34);
+
+					string fullName = (string.IsNullOrEmpty(kvp.m_nameSpace) ? "" : kvp.m_nameSpace + ".") + kvp.m_classes[i];
+					bool select = _selectedClasses.Contains(fullName);
+					bool old = GUILayout.Toggle(select,"",GUILayout.Width(12));
+					if(old != select){
+						if(old)
+							_selectedClasses.Add(fullName);
+						else
+							_selectedClasses.Remove(fullName);
+					}
+                    GUILayout.Label("C", "sv_label_1", GUILayout.Width(28));
+					EditorGUILayout.SelectableLabel(kvp.m_classes[i], GUILayout.Height(16));
+                   
+                    GUILayout.EndHorizontal();
+                }
+            }
+            GUILayout.Space(5);
+		}
+		GUILayout.EndVertical();
+		GUILayout.EndScrollView();
+
+		GUILayout.BeginHorizontal();
+		if(GUILayout.Button("All", GUILayout.Width(60))){
+			_selectedClasses.Clear();
+			for(int i = 0; i < m_wrapClasses.Count; i++){
+				for(int j = 0; j < m_wrapClasses[i].m_classes.Count; j++){
+					string fullName = string.IsNullOrEmpty(m_wrapClasses[i].m_nameSpace) ? "" : m_wrapClasses[i].m_nameSpace + ".";
+					fullName += m_wrapClasses[i].m_classes[j];
+					_selectedClasses.Add(fullName);
+				}
+			}
+		}
+		if(GUILayout.Button("None", GUILayout.Width(60))){
+			_selectedClasses.Clear();
+		}
+
+		GUILayout.FlexibleSpace();
+
+		GUI.backgroundColor = Color.cyan;
+		if(GUILayout.Button("Update", GUILayout.Width(60))) {
+			//	UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
+		}
+		GUI.backgroundColor = Color.red;
+		if(GUILayout.Button("Remove", GUILayout.Width(60))) {
+			for(int i = 0; i < _selectedClasses.Count; i++){
+			//	OnlyRemoveClass(WrapReflectionTools.GetType();
+			}
+			//	RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
+			return;
+		}
+		GUI.backgroundColor = Color.white;
+		GUILayout.EndHorizontal();
 //			NGUIEditorTools.EndContents();
 //		}
 
@@ -786,5 +843,33 @@ public class WrapMakerGUI : EditorWindow {
 //        GUILayout.EndHorizontal();
 
 
+	}
+
+	bool IsAllSelect(string nameSpace){
+		for(int i = 0; i < m_wrapClasses.Count; i++){
+			if(m_wrapClasses[i].m_nameSpace == nameSpace){
+				for(int j = 0; j < m_wrapClasses[i].m_classes.Count; j++){
+					string fullName = string.IsNullOrEmpty(nameSpace) ? m_wrapClasses[i].m_classes[j] : nameSpace + "." + m_wrapClasses[i].m_classes[j];
+					if(!_selectedClasses.Contains(fullName))
+						return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool IsNoneSelect(string nameSpace){
+		for(int i = 0; i < m_wrapClasses.Count; i++){
+			if(m_wrapClasses[i].m_nameSpace == nameSpace){
+				for(int j = 0; j < m_wrapClasses[i].m_classes.Count; j++){
+					string fullName = string.IsNullOrEmpty(nameSpace) ? m_wrapClasses[i].m_classes[j] : nameSpace + "." + m_wrapClasses[i].m_classes[j];
+					if(_selectedClasses.Contains(fullName))
+						return false;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 }
