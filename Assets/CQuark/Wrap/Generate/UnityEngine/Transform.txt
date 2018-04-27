@@ -1,0 +1,142 @@
+﻿
+字段
+
+静态属性
+
+实例属性
+public UnityEngine.Vector3 position{get;set;}
+public UnityEngine.Vector3 localPosition{get;set;}
+public UnityEngine.Vector3 eulerAngles{get;set;}
+public UnityEngine.Vector3 localEulerAngles{get;set;}
+public UnityEngine.Vector3 right{get;set;}
+public UnityEngine.Vector3 up{get;set;}
+public UnityEngine.Vector3 forward{get;set;}
+public UnityEngine.Quaternion rotation{get;set;}
+public UnityEngine.Quaternion localRotation{get;set;}
+public UnityEngine.Vector3 localScale{get;set;}
+public UnityEngine.Transform parent{get;set;}
+public UnityEngine.Matrix4x4 worldToLocalMatrix{get;}
+public UnityEngine.Matrix4x4 localToWorldMatrix{get;}
+public UnityEngine.Transform root{get;}
+public int childCount{get;}
+public UnityEngine.Vector3 lossyScale{get;}
+public bool hasChanged{get;set;}
+public int hierarchyCapacity{get;set;}
+public int hierarchyCount{get;}
+public UnityEngine.Transform transform{get;}
+public UnityEngine.GameObject gameObject{get;}
+public string tag{get;set;}
+[Obsolete]public UnityEngine.Component rigidbody{get;}
+[Obsolete]public UnityEngine.Component rigidbody2D{get;}
+[Obsolete]public UnityEngine.Component camera{get;}
+[Obsolete]public UnityEngine.Component light{get;}
+[Obsolete]public UnityEngine.Component animation{get;}
+[Obsolete]public UnityEngine.Component constantForce{get;}
+[Obsolete]public UnityEngine.Component renderer{get;}
+[Obsolete]public UnityEngine.Component audio{get;}
+[Obsolete]public UnityEngine.Component guiText{get;}
+[Obsolete]public UnityEngine.Component networkView{get;}
+[Obsolete]public UnityEngine.Component guiElement{get;}
+[Obsolete]public UnityEngine.Component guiTexture{get;}
+[Obsolete]public UnityEngine.Component collider{get;}
+[Obsolete]public UnityEngine.Component collider2D{get;}
+[Obsolete]public UnityEngine.Component hingeJoint{get;}
+[Obsolete]public UnityEngine.Component particleEmitter{get;}
+[Obsolete]public UnityEngine.Component particleSystem{get;}
+public string name{get;set;}
+public UnityEngine.HideFlags hideFlags{get;set;}
+
+构造函数
+
+静态方法
+
+成员方法
+public void SetParent(UnityEngine.Transform parent)
+public void SetParent(UnityEngine.Transform parent, bool worldPositionStays)
+public void SetPositionAndRotation(UnityEngine.Vector3 position, UnityEngine.Quaternion rotation)
+public void Translate(UnityEngine.Vector3 translation)
+public void Translate(UnityEngine.Vector3 translation, UnityEngine.Space relativeTo)
+public void Translate(float x, float y, float z)
+public void Translate(float x, float y, float z, UnityEngine.Space relativeTo)
+public void Translate(UnityEngine.Vector3 translation, UnityEngine.Transform relativeTo)
+public void Translate(float x, float y, float z, UnityEngine.Transform relativeTo)
+public void Rotate(UnityEngine.Vector3 eulerAngles)
+public void Rotate(UnityEngine.Vector3 eulerAngles, UnityEngine.Space relativeTo)
+public void Rotate(float xAngle, float yAngle, float zAngle)
+public void Rotate(float xAngle, float yAngle, float zAngle, UnityEngine.Space relativeTo)
+public void Rotate(UnityEngine.Vector3 axis, float angle)
+public void Rotate(UnityEngine.Vector3 axis, float angle, UnityEngine.Space relativeTo)
+public void RotateAround(UnityEngine.Vector3 point, UnityEngine.Vector3 axis, float angle)
+public void LookAt(UnityEngine.Transform target)
+public void LookAt(UnityEngine.Transform target, UnityEngine.Vector3 worldUp)
+public void LookAt(UnityEngine.Vector3 worldPosition, UnityEngine.Vector3 worldUp)
+public void LookAt(UnityEngine.Vector3 worldPosition)
+public UnityEngine.Vector3 TransformDirection(UnityEngine.Vector3 direction)
+public UnityEngine.Vector3 TransformDirection(float x, float y, float z)
+public UnityEngine.Vector3 InverseTransformDirection(UnityEngine.Vector3 direction)
+public UnityEngine.Vector3 InverseTransformDirection(float x, float y, float z)
+public UnityEngine.Vector3 TransformVector(UnityEngine.Vector3 vector)
+public UnityEngine.Vector3 TransformVector(float x, float y, float z)
+public UnityEngine.Vector3 InverseTransformVector(UnityEngine.Vector3 vector)
+public UnityEngine.Vector3 InverseTransformVector(float x, float y, float z)
+public UnityEngine.Vector3 TransformPoint(UnityEngine.Vector3 position)
+public UnityEngine.Vector3 TransformPoint(float x, float y, float z)
+public UnityEngine.Vector3 InverseTransformPoint(UnityEngine.Vector3 position)
+public UnityEngine.Vector3 InverseTransformPoint(float x, float y, float z)
+public void DetachChildren()
+public void SetAsFirstSibling()
+public void SetAsLastSibling()
+public void SetSiblingIndex(int index)
+public int GetSiblingIndex()
+public UnityEngine.Transform Find(string name)
+public bool IsChildOf(UnityEngine.Transform parent)
+[Obsolete]public UnityEngine.Transform FindChild(string name)
+public System.Collections.IEnumerator GetEnumerator()
+[Obsolete]public void RotateAround(UnityEngine.Vector3 axis, float angle)
+[Obsolete]public void RotateAroundLocal(UnityEngine.Vector3 axis, float angle)
+public UnityEngine.Transform GetChild(int index)
+[Obsolete]public int GetChildCount()
+public UnityEngine.Component GetComponent(System.Type type)
+public T GetComponent<T>()
+public UnityEngine.Component GetComponent(string type)
+public UnityEngine.Component GetComponentInChildren(System.Type t, bool includeInactive)
+public UnityEngine.Component GetComponentInChildren(System.Type t)
+public T GetComponentInChildren<T>()
+public T GetComponentInChildren<T>(bool includeInactive)
+public UnityEngine.Component[] GetComponentsInChildren(System.Type t)
+public UnityEngine.Component[] GetComponentsInChildren(System.Type t, bool includeInactive)
+public T[] GetComponentsInChildren<T>(bool includeInactive)
+public void GetComponentsInChildren<T>(bool includeInactive, System.Collections.Generic.List`1[T] result)
+public T[] GetComponentsInChildren<T>()
+public void GetComponentsInChildren<T>(System.Collections.Generic.List`1[T] results)
+public UnityEngine.Component GetComponentInParent(System.Type t)
+public T GetComponentInParent<T>()
+public UnityEngine.Component[] GetComponentsInParent(System.Type t)
+public UnityEngine.Component[] GetComponentsInParent(System.Type t, bool includeInactive)
+public T[] GetComponentsInParent<T>(bool includeInactive)
+public void GetComponentsInParent<T>(bool includeInactive, System.Collections.Generic.List`1[T] results)
+public T[] GetComponentsInParent<T>()
+public UnityEngine.Component[] GetComponents(System.Type type)
+public void GetComponents(System.Type type, System.Collections.Generic.List`1[UnityEngine.Component] results)
+public void GetComponents<T>(System.Collections.Generic.List`1[T] results)
+public T[] GetComponents<T>()
+public bool CompareTag(string tag)
+public void SendMessageUpwards(string methodName, object value, UnityEngine.SendMessageOptions options)
+public void SendMessageUpwards(string methodName, object value)
+public void SendMessageUpwards(string methodName)
+public void SendMessageUpwards(string methodName, UnityEngine.SendMessageOptions options)
+public void SendMessage(string methodName, object value, UnityEngine.SendMessageOptions options)
+public void SendMessage(string methodName, object value)
+public void SendMessage(string methodName)
+public void SendMessage(string methodName, UnityEngine.SendMessageOptions options)
+public void BroadcastMessage(string methodName, object parameter, UnityEngine.SendMessageOptions options)
+public void BroadcastMessage(string methodName, object parameter)
+public void BroadcastMessage(string methodName)
+public void BroadcastMessage(string methodName, UnityEngine.SendMessageOptions options)
+public string ToString()
+public int GetInstanceID()
+public int GetHashCode()
+public bool Equals(object other)
+public System.Type GetType()
+
+运算符

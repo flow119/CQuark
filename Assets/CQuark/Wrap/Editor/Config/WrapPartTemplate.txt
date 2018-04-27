@@ -8,6 +8,9 @@ using System;
 
 namespace CQuark{
 	public partial class Wrap {
+	
+{TypesArray}
+	
 		private static bool {WrapName}SGet (string memberName, out CQ_Value returnValue) {
 {WrapSGet}
 			returnValue = CQ_Value.Null;

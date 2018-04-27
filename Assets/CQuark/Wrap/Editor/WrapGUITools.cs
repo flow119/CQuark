@@ -1,18 +1,8 @@
-﻿//----------------------------------------------
-//            NGUI: Next-Gen UI kit
-// Copyright © 2011-2014 Tasharen Entertainment
-//----------------------------------------------
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Reflection;
 
-/// <summary>
-/// Tools for the editor
-/// </summary>
-
-public static class CQEditorTools
+public static class WrapGUITools
 {
 	static Texture2D mBackdropTex;
 	static Texture2D mContrastTex;
@@ -487,7 +477,7 @@ public static class CQEditorTools
 		if (rect.width > outerRect.width) outerRect.x += (rect.width - outerRect.width) * 0.5f;
 
 		// Draw the background
-		CQEditorTools.DrawTiledTexture(outerRect, CQEditorTools.backdropTexture);
+		WrapGUITools.DrawTiledTexture(outerRect, WrapGUITools.backdropTexture);
 
 		// Draw the sprite
 		GUI.color = color;
