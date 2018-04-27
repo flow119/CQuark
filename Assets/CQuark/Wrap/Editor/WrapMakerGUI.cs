@@ -593,7 +593,7 @@ public class WrapMakerGUI : EditorWindow {
 		GUILayout.Space(5);
 
 		GUILayout.BeginHorizontal();
-        GUILayout.Label("  STEP 1 : Click the button on right side →");
+        GUILayout.Label("  STEP 1 : Click the button on right side →", "BoldLabel");
         GUI.backgroundColor = Color.green;
        
 		if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
@@ -607,7 +607,7 @@ public class WrapMakerGUI : EditorWindow {
 
         GUI.backgroundColor = Color.white;
         GUILayout.Label("  If you'd like wrap other class or custom namespace, Then ");
-        GUILayout.Label("  STEP 2 : input FULL class name in the box below and click \"Wrap Custom\"");
+        GUILayout.Label("  STEP 2 : input FULL class name in the box below and click \"Wrap Custom\"", "BoldLabel");
        
 
         GUILayout.BeginHorizontal(); 
@@ -636,7 +636,21 @@ public class WrapMakerGUI : EditorWindow {
 
         GUILayout.Space(10);
 
-		if(WrapGUITools.DrawHeader("Wraps")){
+//		if(WrapGUITools.DrawHeader("Wraps")){
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(80);
+        GUILayout.FlexibleSpace();
+        int fontSize = GUI.skin.label.fontSize;
+        GUI.skin.label.fontSize = 30;
+        GUILayout.Label("Wraps");
+        GUI.skin.label.fontSize = fontSize;
+        GUILayout.FlexibleSpace();
+        if(GUILayout.Button("Reload", GUILayout.Width(80))) {
+			Reload();
+		}
+        GUILayout.EndHorizontal();
+
 //			NGUIEditorTools.BeginContents();
 	        //搜索框
 	        GUILayout.BeginHorizontal();
@@ -650,10 +664,8 @@ public class WrapMakerGUI : EditorWindow {
 				_search = "";
 	            GUIUtility.keyboardControl = 0;
 	        }
-//	        GUILayout.Space(84f);
-			if(GUILayout.Button("Reload")) {
-				Reload();
-			}
+	        GUILayout.Space(84f);
+			
 	        GUILayout.EndHorizontal();
 	        //搜索结束
 
@@ -697,14 +709,14 @@ public class WrapMakerGUI : EditorWindow {
 	                }
 	            }
 	            
-				GUILayout.Toggle(false,"",GUILayout.Width(25));
+				GUILayout.Toggle(false,"",GUILayout.Width(12));
 
 //				GUILayout.Button("━",GUILayout.Width(16),GUILayout.Height(14));
 //				GUILayout.Toggle(false,"",GUILayout.Width(16));
 //				GUILayout.Toggle(true,"",GUILayout.Width(16));
-				GUI.contentColor = Color.cyan;
-				EditorGUILayout.TextField(kvp.m_nameSpace);	//EditorGUILayour可以把文字拷出来
-				GUI.contentColor = Color.white;
+                GUILayout.Label("Namespace", "sv_label_2", GUILayout.Width(78));
+                EditorGUILayout.SelectableLabel(kvp.m_nameSpace, GUILayout.Height(16));	//EditorGUILayour可以把文字拷出来
+				
 //	            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
 //	            GUI.backgroundColor = Color.cyan;
 //	            if(GUILayout.Button("Update", GUILayout.Width(60))) {
@@ -722,11 +734,11 @@ public class WrapMakerGUI : EditorWindow {
 	            if(_folderNamespace.Contains(kvp.m_nameSpace)) {
 	                for(int i = 0; i < kvp.m_classes.Count; i++) {
 	                    GUILayout.BeginHorizontal();
-	                    GUILayout.Space(60);
+	                    GUILayout.Space(40);
 
-						GUILayout.Toggle(false,"",GUILayout.Width(25));
-
-						EditorGUILayout.TextField(kvp.m_classes[i]);
+						GUILayout.Toggle(false,"",GUILayout.Width(12));
+                        GUILayout.Label("Class", "sv_label_1", GUILayout.Width(62));
+						EditorGUILayout.SelectableLabel(kvp.m_classes[i], GUILayout.Height(16));
 	                   
 	                    GUILayout.EndHorizontal();
 	                }
@@ -758,7 +770,7 @@ public class WrapMakerGUI : EditorWindow {
 			GUI.backgroundColor = Color.white;
 			GUILayout.EndHorizontal();
 //			NGUIEditorTools.EndContents();
-		}
+//		}
 
 
 
