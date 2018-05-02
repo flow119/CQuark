@@ -410,7 +410,7 @@ public class WrapTextTools  {
             return "(" + type + ")" + cqval + ".ConvertTo(typeof(" + type + "))";
     }
 
-    protected static bool Finish (string type) {
+    public static bool Finish (string type) {
         //ref
         //out
         if(string.IsNullOrEmpty(type))

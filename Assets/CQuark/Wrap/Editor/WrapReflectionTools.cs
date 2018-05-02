@@ -83,11 +83,6 @@ public class WrapReflectionTools {
             case "object":
                 return typeof(object);
         }
-        //TODO 这里改为黑名单
-        if(fullName.StartsWith("CQuark")) {
-            DebugUtil.LogError("不允许对CQuark做Wrap");
-            return null;
-        }
 
         Type type = Type.GetType(fullName); //如System.DateTime
         if(type != null) {
@@ -168,104 +163,6 @@ public class WrapReflectionTools {
         return s.Replace('+', '.');
     }
 
-
-	public static Type GetType( string TypeName, ref string nameSpace){
-		if(string.IsNullOrEmpty(nameSpace)){
-			switch(TypeName){
-			case "double":
-				return typeof(double);
-			case "float":
-				return typeof(float);
-			case "long":
-				return typeof(long);
-			case "ulong":
-				return typeof(ulong);
-			case "int":
-				return typeof(int);
-			case "uint":
-				return typeof(uint);
-			case "short":
-				return typeof(short);
-			case "ushort":
-				return typeof(ushort);
-			case "byte":
-				return typeof(byte);
-			case "sbyte":
-				return typeof(sbyte);
-			case "char":
-				return typeof(char);
-
-			case "string":
-				return typeof(string);
-			case "bool":
-				return typeof(bool);
-//							List<>
-//                          Dictionary<,>
-//                          Stack<>
-//                          Queue<>
-			}
-		}
-		Type type = null;
-		if(string.IsNullOrEmpty(nameSpace)){
-			type = Type.GetType( TypeName );
-			if(type != null){
-				return type;
-			}else{
-				AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-				foreach( var assemblyName in referencedAssemblies ){
-					// Load the referenced assembly
-					var assembly = Assembly.Load( assemblyName );
-					if( assembly != null ){
-						type = assembly.GetType(TypeName );
-						//如DebugUtil
-						if( type != null )
-							return type;
-						
-						nameSpace = "";
-						type = assembly.GetType( assemblyName.ToString() + "." + TypeName );
-						if( type != null )
-							return type;
-					}
-				}
-			}
-		}else{
-			//TODO 这里改为黑名单
-			if(nameSpace == "CQuark"){
-				DebugUtil.LogError("不允许对CQuark做Wrap");
-				return null;
-			}
-			type = Type.GetType( nameSpace + "." + TypeName  );
-			if(type != null){
-				//如System.DateTime
-				return type;
-			}
-			try{
-				Assembly assembly = Assembly.Load( nameSpace );
-				if( assembly != null ){
-					type = assembly.GetType( nameSpace + "." + TypeName );
-					if( type != null ){
-						//如UnityEngine.Vector3
-						return type;
-					}
-					type = assembly.GetType(TypeName );
-					if( type != null )
-						return type;
-				}
-			}catch (Exception){
-				AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-				foreach( var assemblyName in referencedAssemblies ){
-					Assembly assembly = Assembly.Load( assemblyName );
-					if( assembly != null ){
-						//如LitJson.JSONNode
-						type = assembly.GetType( nameSpace + "." + TypeName );
-						if( type != null )
-							return type;
-					}
-				}
-			}
-		}
-		return null;
-	}
 
 	//给出一个命名空间，返回所有Type。nameSpace可以为空
 	public static Type[] GetTypesByNamespace(string nameSpace){
