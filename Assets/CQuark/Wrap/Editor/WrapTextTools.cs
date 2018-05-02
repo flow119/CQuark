@@ -29,6 +29,10 @@ public class WrapTextTools  {
         retType = retType.Replace("System.UInt32", "uint");
         retType = retType.Replace("System.UInt64", "ulong");
         retType = retType.Replace("System.Void", "void");
+		retType = retType.Replace("stringSplitOptions", "System.StringSplitOptions");
+		retType = retType.Replace("stringComparer", "System.StringComparer");
+		retType = retType.Replace("stringComparison", "System.StringComparison");
+		retType = retType.Replace("charEnumerator", "System.CharEnumerator");
         return retType;
     }
 
