@@ -229,22 +229,26 @@ public class WrapReflectionTools {
 		}
 		
 		manifest += "\n静态属性\n";
-		PropertyInfo[] spis = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
+		PropertyInfo[] spis = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.SetProperty);
 		for(int i= 0; i < spis.Length; i++){
 			bool isObsolete = IsObsolete(spis[i]);
 			if(isObsolete)
 				manifest += "[Obsolete]";
 			
 			manifest += "public static ";
-//			string attributes = spis[i].Attributes.ToString();
             manifest += WrapTextTools.Type2String(spis[i].PropertyType) + " " + spis[i].Name + "{";
-			if(spis[i].CanRead) 
+			//这么判断的原因是可能是public Instance{get; private set;}
+			if(spis[i].CanRead && spis[i].GetGetMethod(true).IsPublic) {
 				manifest += "get;";
-			if(spis[i].CanWrite)
+				savePropertys.Add(new Property(spis[i].PropertyType, true, true, false, spis[i].Name, isObsolete));
+			}
+			if(spis[i].CanWrite && spis[i].GetSetMethod(true).IsPublic){
 				manifest += "set;";
+				savePropertys.Add(new Property(spis[i].PropertyType, true, false, true, spis[i].Name, isObsolete));
+			}
 			manifest += "}\n";
 
-			savePropertys.Add(new Property(spis[i].PropertyType, true, spis[i].CanRead, spis[i].CanWrite, spis[i].Name, isObsolete));
+
 		}
 
 		manifest += "\n实例属性\n";
@@ -269,16 +273,17 @@ public class WrapReflectionTools {
 			if(isObsolete)
 				manifest += "[Obsolete]";
 			manifest += "public ";
-//			string attributes = pis[i].Attributes.ToString();
             manifest += WrapTextTools.Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
-			if(pis[i].CanRead) 
+			//这么判断的原因是可能是public Instance{get; private set;}
+			if(pis[i].CanRead && pis[i].GetGetMethod(true).IsPublic) {
 				manifest += "get;";
-			if(pis[i].CanWrite)
+				savePropertys.Add(new Property(pis[i].PropertyType, false, true, false, pis[i].Name, isObsolete));
+			}
+			if(pis[i].CanWrite  && pis[i].GetSetMethod(true).IsPublic){
 				manifest += "set;";
+				savePropertys.Add(new Property(pis[i].PropertyType, false, false, true, pis[i].Name, isObsolete));
+			}
 			manifest += "}\n";
-
-				
-			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name, isObsolete));
 		}
 
 		return savePropertys;

@@ -17,10 +17,10 @@ public class WrapMakerGUI : EditorWindow {
     static string _search = "";
 
     Vector2 mScroll = Vector2.zero;
-    List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
-    List<string> _selectedClasses = new List<string>();    //选中的类
-    List<string> _blackList = new List<string>();   //这个List里的类都不会生成Wrap
-    List<string> _whiteList = new List<string>();   //这个List里的类点击WrapCommon的时候会自动Wrap（如果同时在黑名单中，那么也不会Wrap）
+    public List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
+    public List<string> _selectedClasses = new List<string>();    //选中的类
+    public List<string> _blackList = new List<string>();   //这个List里的类都不会生成Wrap
+    public List<string> _whiteList = new List<string>();   //这个List里的类点击WrapCommon的时候会自动Wrap（如果同时在黑名单中，那么也不会Wrap）
     Vector2 _whiteScroll = Vector2.zero;
     Vector2 _blackScroll = Vector2.zero;
 
@@ -455,6 +455,7 @@ public class WrapMakerGUI : EditorWindow {
     bool _pressAll = false;
 	void Start(){
 		Reload();
+		LoadOption();
 	}
 	void OnGUI () {
 		if(_isCompiling != EditorApplication.isCompiling){
@@ -466,11 +467,12 @@ public class WrapMakerGUI : EditorWindow {
 			WrapGUITools.BeginContents();
 
             //TODO 这里可以输入黑名单和自动添加名单
+			int height = Mathf.Min(Mathf.Max(_whiteList.Count, _blackList.Count) * 20,200);
             GUILayout.BeginHorizontal();
             {
                 GUILayout.BeginVertical();
                 GUILayout.Label("WhiteList");
-                _whiteScroll = GUILayout.BeginScrollView(_whiteScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(200));
+				_whiteScroll = GUILayout.BeginScrollView(_whiteScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height));
                 
                 for(int i = 0; i < _whiteList.Count; i++) {
                     GUILayout.BeginHorizontal();
@@ -492,7 +494,7 @@ public class WrapMakerGUI : EditorWindow {
             {
                 GUILayout.BeginVertical(); 
                 GUILayout.Label("BlackList");
-                _blackScroll = GUILayout.BeginScrollView(_blackScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(200));
+				_blackScroll = GUILayout.BeginScrollView(_blackScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height));
                 
                 for(int i = 0; i < _blackList.Count; i++) {
                     GUILayout.BeginHorizontal();
@@ -529,43 +531,43 @@ public class WrapMakerGUI : EditorWindow {
 
 
 			WrapGUITools.EndContents();
-        }
+		}else{
 
-		GUILayout.Space(5);
+			GUILayout.Space(5);
 
-		GUILayout.BeginHorizontal();
-        GUILayout.Label("  STEP 1 : Click the button on right side →", "BoldLabel");
-        GUI.backgroundColor = Color.green;
-       
-		if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
-			WrapCommon();
-        }
+			GUILayout.BeginHorizontal();
+	        GUILayout.Label("  STEP 1 : Click the button on right side →", "BoldLabel");
+	        GUI.backgroundColor = Color.green;
+	       
+			if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
+				WrapCommon();
+	        }
 
-        GUILayout.EndHorizontal();
-		GUILayout.Label("  to wrap UnityEngine's COMMON class and ALL non-namespace class");
+	        GUILayout.EndHorizontal();
+			GUILayout.Label("  to wrap UnityEngine's COMMON class and ALL non-namespace class");
 
-		GUILayout.Space(10);
+			GUILayout.Space(10);
 
-        GUI.backgroundColor = Color.white;
-        GUILayout.Label("  If you'd like wrap other class or custom namespace, Then ");
-        GUILayout.Label("  STEP 2 : input FULL class name in the box below and click \"Wrap Custom\"", "BoldLabel");
-       
+	        GUI.backgroundColor = Color.white;
+	        GUILayout.Label("  If you'd like wrap other class or custom namespace, Then ");
+	        GUILayout.Label("  STEP 2 : input FULL class name in the box below and click \"Wrap Custom\"", "BoldLabel");
+	       
 
-        GUILayout.BeginHorizontal(); 
-        GUI.backgroundColor = Color.green;
-        _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
-        GUI.enabled = !string.IsNullOrEmpty(_classInput);
-        if(GUILayout.Button("Wrap Custom", GUILayout.Width(100))) {
-			WrapCustom(_classInput);
-            _classInput = "";
-        }
+	        GUILayout.BeginHorizontal(); 
+	        GUI.backgroundColor = Color.green;
+	        _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
+	        GUI.enabled = !string.IsNullOrEmpty(_classInput);
+	        if(GUILayout.Button("Wrap Custom", GUILayout.Width(100))) {
+				WrapCustom(_classInput);
+	            _classInput = "";
+	        }
 
-        GUI.enabled = true;
+	        GUI.enabled = true;
 
-        GUI.backgroundColor = Color.white;
-        GUILayout.EndHorizontal();
-        EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LitJson\" for wrap all classes in this namespace. ", MessageType.Info);
-
+	        GUI.backgroundColor = Color.white;
+	        GUILayout.EndHorizontal();
+	        EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LitJson\" for wrap all classes in this namespace. ", MessageType.Info);
+		}
         GUILayout.Space(10);
 
         GUILayout.BeginHorizontal();
