@@ -48,6 +48,127 @@ public class Method {
 
 public class WrapReflectionTools {
 
+    public static Type GetType (string fullName) {
+        switch(fullName) {
+            case "double":
+                return typeof(double);
+            case "float":
+                return typeof(float);
+            case "long":
+                return typeof(long);
+            case "ulong":
+                return typeof(ulong);
+            case "int":
+                return typeof(int);
+            case "uint":
+                return typeof(uint);
+            case "short":
+                return typeof(short);
+            case "ushort":
+                return typeof(ushort);
+            case "byte":
+                return typeof(byte);
+            case "sbyte":
+                return typeof(sbyte);
+            case "char":
+                return typeof(char);
+
+            case "string":
+                return typeof(string);
+            case "bool":
+                return typeof(bool);
+
+            case "Type":
+                return typeof(Type);
+            case "object":
+                return typeof(object);
+        }
+        //TODO 这里改为黑名单
+        if(fullName.StartsWith("CQuark")) {
+            DebugUtil.LogError("不允许对CQuark做Wrap");
+            return null;
+        }
+
+        Type type = Type.GetType(fullName); //如System.DateTime
+        if(type != null) {
+            return type;
+        }
+
+        AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+
+        string fullNameWithPlus = fullName.Replace('.', '+');
+        foreach(var assemblyName in referencedAssemblies) {
+            // Load the referenced assembly
+            var assembly = Assembly.Load(assemblyName);
+            if(assembly != null) {
+                type = assembly.GetType(fullNameWithPlus);
+                if(type != null)    //如DebugUtil
+                    return type;
+            }
+        }
+
+        string[] split = fullName.Split('.');
+
+        for(int i = 0; i < split.Length - 1; i++){
+            string nameSpace = split[0];
+            for(int j = 0; j < i; j++){
+                nameSpace += "." + split[j + 1];
+            }
+            string typeName = split[i+1];
+            for(int j = i + 1; j < split.Length - 1; j++){
+                typeName += "+" + split[j+1];
+            }
+
+            try {
+                Assembly assembly = Assembly.Load(nameSpace);
+                if(assembly != null) {
+                    type = assembly.GetType(nameSpace + "." + typeName);
+                    if(type != null) {
+                        //如UnityEngine.Vector3
+                        return type;
+                    }
+                    type = assembly.GetType(typeName);
+                    if(type != null)
+                        return type;
+                }
+            }
+            catch(Exception) {
+                foreach(var assemblyName in referencedAssemblies) {
+                    Assembly assembly = Assembly.Load(assemblyName);
+                    if(assembly != null) {
+                        //如LitJson.JSONNode
+                        type = assembly.GetType(nameSpace + "." + typeName);
+                        if(type != null)
+                            return type;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static string GetTrueName (Type type) {
+        return type.FullName.Replace('+','.');
+    }
+
+    public static string GetWrapName (Type type) {
+        return type.FullName.Replace("+", "").Replace(".", "");
+    }
+
+    public static string GetWrapFolderName (Type type) {
+        if(string.IsNullOrEmpty(type.Namespace))
+            return "";
+        return type.Namespace;
+    }
+
+    public static string GetWrapFileName (Type type) {
+        string s = type.FullName;
+        if(!string.IsNullOrEmpty(type.Namespace))
+            s = s.Substring(GetWrapFolderName(type).Length + 1);
+        return s.Replace('+', '.');
+    }
+
+
 	public static Type GetType( string TypeName, ref string nameSpace){
 		if(string.IsNullOrEmpty(nameSpace)){
 			switch(TypeName){
@@ -188,48 +309,48 @@ public class WrapReflectionTools {
         return types.ToArray();
 	}
 
-    public static List<Property> GetPropertys (Type type, ref string log) {
+    public static List<Property> GetPropertys (Type type, ref string manifest) {
 		List<Property> savePropertys = new List<Property>();
-		log += "\n字段\n";
+		manifest += "\n字段\n";
 		FieldInfo[] fis = type.GetFields();
 		for(int i= 0; i < fis.Length; i++){
 			bool isObsolete = IsObsolete(fis[i]);
 			if(isObsolete)
-				log += "[Obsolete]";
+				manifest += "[Obsolete]";
 			
-			log += "public ";
+			manifest += "public ";
 			string attributes = fis[i].Attributes.ToString();
 			bool isStatic = attributes.Contains("Static");
 			if(isStatic)
-				log += "static ";
+				manifest += "static ";
 			bool isReadonly = attributes.Contains("Literal") && attributes.Contains("HasDefault") ; //const
 			isReadonly = isReadonly || attributes.Contains("InitOnly");                             //readonly
 			if(isReadonly)
-				log += "readonly ";
-            log += WrapTextTools.Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
+				manifest += "readonly ";
+            manifest += WrapTextTools.Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
 			savePropertys.Add(new Property(fis[i].FieldType, isStatic, true, !isReadonly, fis[i].Name, isObsolete));
 		}
 		
-		log += "\n静态属性\n";
+		manifest += "\n静态属性\n";
 		PropertyInfo[] spis = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
 		for(int i= 0; i < spis.Length; i++){
 			bool isObsolete = IsObsolete(spis[i]);
 			if(isObsolete)
-				log += "[Obsolete]";
+				manifest += "[Obsolete]";
 			
-			log += "public static ";
+			manifest += "public static ";
 //			string attributes = spis[i].Attributes.ToString();
-            log += WrapTextTools.Type2String(spis[i].PropertyType) + " " + spis[i].Name + "{";
+            manifest += WrapTextTools.Type2String(spis[i].PropertyType) + " " + spis[i].Name + "{";
 			if(spis[i].CanRead) 
-				log += "get;";
+				manifest += "get;";
 			if(spis[i].CanWrite)
-				log += "set;";
-			log += "}\n";
+				manifest += "set;";
+			manifest += "}\n";
 
 			savePropertys.Add(new Property(spis[i].PropertyType, true, spis[i].CanRead, spis[i].CanWrite, spis[i].Name, isObsolete));
 		}
 
-		log += "\n实例属性\n";
+		manifest += "\n实例属性\n";
 		PropertyInfo[] pis = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 		//检查是否有Index
 		MethodInfo[] mis = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
@@ -249,15 +370,15 @@ public class WrapReflectionTools {
 			}
 
 			if(isObsolete)
-				log += "[Obsolete]";
-			log += "public ";
+				manifest += "[Obsolete]";
+			manifest += "public ";
 //			string attributes = pis[i].Attributes.ToString();
-            log += WrapTextTools.Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
+            manifest += WrapTextTools.Type2String(pis[i].PropertyType) + " " + pis[i].Name + "{";
 			if(pis[i].CanRead) 
-				log += "get;";
+				manifest += "get;";
 			if(pis[i].CanWrite)
-				log += "set;";
-			log += "}\n";
+				manifest += "set;";
+			manifest += "}\n";
 
 				
 			savePropertys.Add(new Property(pis[i].PropertyType, false, pis[i].CanRead, pis[i].CanWrite, pis[i].Name, isObsolete));
@@ -266,11 +387,11 @@ public class WrapReflectionTools {
 		return savePropertys;
 	}
 
-    public static List<Method> GetConstructor (Type type, ref string log) {
+    public static List<Method> GetConstructor (Type type, ref string manifest) {
 		List<Method> saveMethods = new List<Method>();
-		log += "\n构造函数\n";
+		manifest += "\n构造函数\n";
 		if (typeof(UnityEngine.MonoBehaviour).IsAssignableFrom(type)) {
-			log += "继承自MonoBehaviour\n";
+			manifest += "继承自MonoBehaviour\n";
 			return saveMethods;
 		}
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
@@ -279,7 +400,7 @@ public class WrapReflectionTools {
 
 			string s = "";
 			if(isObsolete)
-				log += "[Obsolete]";
+				manifest += "[Obsolete]";
 			s += "public ";
 			s += type.ToString() + "(";
 			System.Reflection.ParameterInfo[] param = construct[i].GetParameters();
@@ -302,16 +423,16 @@ public class WrapReflectionTools {
 				}
 			}
 			s += ")";
-			log += s + "\n";
+			manifest += s + "\n";
 		}
 
 		return saveMethods;
 	}
 
-    public static List<Method> GetStaticMethods (Type type, ref string log, List<Property> ignoreProperty) {
+    public static List<Method> GetStaticMethods (Type type, ref string manifest, List<Property> ignoreProperty) {
 		List<Method> saveMethods = new List<Method> ();
 		//静态函数，成员函数
-		log += "\n静态方法\n";
+		manifest += "\n静态方法\n";
 
 		//TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
 		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
@@ -365,17 +486,17 @@ public class WrapReflectionTools {
 				}
 			}
 			s += ")";
-			log += s + "\n";
+			manifest += s + "\n";
 		}
 		return saveMethods;
 	}
 
-	public static List<Method> GetInstanceMethods(Type type, ref string log, List<Property> ignoreProperty){
+	public static List<Method> GetInstanceMethods(Type type, ref string manifest, List<Property> ignoreProperty){
 		List<Method> saveMethods = new List<Method> ();
-		log += "\n成员方法\n";
+		manifest += "\n成员方法\n";
 
 		if (type.GetConstructors ().Length == 0 && !typeof(UnityEngine.Component).IsAssignableFrom(type)) {	//是否是静态类，静态类没有构造函数
-			log += "静态类没有成员方法";
+			manifest += "静态类没有成员方法";
 			return saveMethods;			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
 		}
 
@@ -442,17 +563,17 @@ public class WrapReflectionTools {
 				}
 			}
 			s += ")";
-			log += s + "\n";
+			manifest += s + "\n";
 		}
 		return saveMethods;
 	}
 
-    public static List<Method> GetIndex (Type type, ref string log) {
+    public static List<Method> GetIndex (Type type, ref string manifest) {
 		if (type.GetConstructors ().Length == 0)	//是否是静态类，静态类没有构造函数
 			return new List<Method> ();			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
 		
 		List<Method> saveMethods = new List<Method> ();
-		log += "\n索引\n";
+		manifest += "\n索引\n";
 
 		PropertyInfo[] pis = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 		bool hasIndex = false;
@@ -475,14 +596,14 @@ public class WrapReflectionTools {
 				Method method = new Method("IndexGet", mis[i].ReturnType, mis[i].Name, pais, pais.Length, false, isObsolete);
 				saveMethods.Add(method);
 				if(isObsolete)
-					log += "[Obsolete]";
-				log += "IndexGet " + mis[i].ReturnType + " [";
+					manifest += "[Obsolete]";
+				manifest += "IndexGet " + mis[i].ReturnType + " [";
 				for(int j = 0; j < pais.Length; j++){
-					log += pais[j].ParameterType + " " + pais[j].Name;
+					manifest += pais[j].ParameterType + " " + pais[j].Name;
 					if(j != pais.Length - 1)
-						log += ",";
+						manifest += ",";
 				}
-				log += "]\n";
+				manifest += "]\n";
 			}else if(mis[i].Name == "set_Item"){
 				bool isObsolete = IsObsolete(mis[i]);
 
@@ -490,24 +611,24 @@ public class WrapReflectionTools {
 				Method method = new Method("IndexSet", mis[i].ReturnType, mis[i].Name, mis[i].GetParameters(), mis[i].GetParameters().Length, false, isObsolete);
 				saveMethods.Add(method);
 				if(isObsolete)
-					log += "[Obsolete]";
-				log += "IndexSet [";
+					manifest += "[Obsolete]";
+				manifest += "IndexSet [";
 				for(int j = 0; j < pais.Length - 1; j++){
-					log += pais[j].ParameterType + " " + pais[j].Name;
+					manifest += pais[j].ParameterType + " " + pais[j].Name;
 					if(j != pais.Length - 2)
-						log += ",";
+						manifest += ",";
 				}
-				log += "] = ";
-				log += pais[pais.Length - 1].ParameterType + " " + pais[pais.Length - 1].Name + "\n";
+				manifest += "] = ";
+				manifest += pais[pais.Length - 1].ParameterType + " " + pais[pais.Length - 1].Name + "\n";
 			}
 		}
 		return saveMethods;
 	}
 
-    public static List<Method> GetOp (Type type, ref string log) {
+    public static List<Method> GetOp (Type type, ref string manifest) {
 		List<Method> saveMethods = new List<Method> ();
 
-		log += "\n运算符\n";
+		manifest += "\n运算符\n";
 
 		System.Reflection.MethodInfo[] ops = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//和获取静态方法一样
 		for (int i = 0; i < ops.Length; i++) {
@@ -518,14 +639,14 @@ public class WrapReflectionTools {
 
 			System.Reflection.ParameterInfo[] param = ops [i].GetParameters ();
 			if(isObsolete)
-				log += "[Obsolete]";
-			log += "public static " + ops[i].ReturnType + " " + ops[i].Name + "(";
+				manifest += "[Obsolete]";
+			manifest += "public static " + ops[i].ReturnType + " " + ops[i].Name + "(";
             for(int j = 0; j < param.Length; j++) {
-                log += param[j].ParameterType + " " + param[j].Name;
+                manifest += param[j].ParameterType + " " + param[j].Name;
                 if(j != param.Length - 1)
-                    log += ",";
+                    manifest += ",";
             }
-            log += ")\n";
+            manifest += ")\n";
 
 			Method method = new Method(ops[i].Name, ops[i].ReturnType, ops[i].Name, param, param.Length, false, isObsolete);
 			saveMethods.Add(method);

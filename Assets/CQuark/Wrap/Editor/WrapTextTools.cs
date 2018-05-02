@@ -49,6 +49,8 @@ public class WrapTextTools  {
         for(int i = 0; i < propertys.Count; i++) {
             if(propertys[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
+            if(propertys[i].m_name == "value__")//枚举长度
+                continue;
             if(!Finish(propertys[i].m_type))
                 continue;
 
@@ -70,7 +72,8 @@ public class WrapTextTools  {
                     wrapSVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
                     wrapSVSet += "\t\t\t\t\t" + classFullName + "." + propertys[i].m_name + " = " + ConvertStr("param", propertys[i].m_type) + ";\n";
                     wrapSVSet += "\t\t\t\t\treturn true;\n";
-                    wrapSVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
+                    wrapSVSet += "\t\t\t\t}\n";
+                    wrapSVSet += "\t\t\t\tbreak;\n";
                 }
             }
             else {
@@ -91,7 +94,8 @@ public class WrapTextTools  {
                     wrapMVSet += "\t\t\t\tif(param.EqualOrImplicateType(typeof(" + propertys[i].m_type + "))){\n";
                     wrapMVSet += "\t\t\t\t\tobj." + propertys[i].m_name + " = " + ConvertStr("param", propertys[i].m_type) + ";\n";
                     wrapMVSet += "\t\t\t\t\treturn true;\n";
-                    wrapMVSet += "\t\t\t\t}\n\t\t\t\tbreak;\n";
+                    wrapMVSet += "\t\t\t\t}\n";
+                    wrapMVSet += "\t\t\t\tbreak;\n";
                 }
             }
         }
@@ -139,7 +143,8 @@ public class WrapTextTools  {
                     wrapNew += ",";
             }
             wrapNew += "));\n";
-            wrapNew += "\t\t\t\treturn true;\n\t\t\t}\n";
+            wrapNew += "\t\t\t\treturn true;\n";
+            wrapNew += "\t\t\t}\n";
         }
         return wrapNew;
     }
@@ -180,7 +185,8 @@ public class WrapTextTools  {
                     wrapSCall += "\t\t\t\treturnValue.SetObject(typeof(" + staticMethods[i].m_returnType + "), " + v + ");\n";
             }
 
-            wrapSCall += "\t\t\t\treturn true;\n\t\t\t}\n";
+            wrapSCall += "\t\t\t\treturn true;\n";
+            wrapSCall += "\t\t\t}\n";
         }
         if(!string.IsNullOrEmpty(wrapSCall))
             wrapSCall = "\t\t\tint paramCount = param.Length;\n" + wrapSCall;
@@ -211,8 +217,8 @@ public class WrapTextTools  {
             v += ")";
 
             if(instanceMethods[i].m_returnType == "void") {
-                wrapMCall += "\t\t\t\treturnValue = CQ_Value.Null;\n\t\t\t\t";
-                wrapMCall += v + ";\n";
+                wrapMCall += "\t\t\t\treturnValue = CQ_Value.Null;\n";
+                wrapMCall += "\t\t\t\t" + v + ";\n";
             }
             else {
                 wrapMCall += "\t\t\t\treturnValue = new CQ_Value();\n";
@@ -224,7 +230,8 @@ public class WrapTextTools  {
                     wrapMCall += "\t\t\t\treturnValue.SetObject(typeof(" + instanceMethods[i].m_returnType + "), " + v + ");\n";
             }
 
-            wrapMCall += "\t\t\t\treturn true;\n\t\t\t}\n";
+            wrapMCall += "\t\t\t\treturn true;\n";
+            wrapMCall += "\t\t\t}\n";
         }
         if(!string.IsNullOrEmpty(wrapMCall)) {
             wrapMCall = "\t\t\t" + classFullName + " obj = (" + classFullName + ")objSelf;\n"
@@ -274,13 +281,15 @@ public class WrapTextTools  {
                 else
                     wrapIGet += "\t\t\t\treturnValue.SetObject(typeof(" + indexMethods[i].m_returnType + "), ";
                 wrapIGet += "obj[" + ConvertStr("key", indexMethods[i].m_inType[0]) + "]);\n";
-                wrapIGet += "\t\t\t\treturn true;\n\t\t\t}";
+                wrapIGet += "\t\t\t\treturn true;\n";
+                wrapIGet += "\t\t\t}";
             }
             else if(indexMethods[i].m_methodType == "IndexSet") {
                 wrapISet += "\t\t\tif(param.EqualOrImplicateType(typeof(" + indexMethods[i].m_inType[0] + "))){\n";
                 wrapISet += "\t\t\t\tobj[" + ConvertStr("key", indexMethods[i].m_inType[0]) + "] = ";
                 wrapISet += ConvertStr("param", indexMethods[i].m_inType[indexMethods[i].m_inType.Length - 1]) + ";\n";
-                wrapISet += "\t\t\t\treturn true;\n\t\t\t}";
+                wrapISet += "\t\t\t\treturn true;\n";
+                wrapISet += "\t\t\t}";
             }
         }
         if(!string.IsNullOrEmpty(wrapIGet)) {
@@ -408,6 +417,7 @@ public class WrapTextTools  {
             return false;
         if(type.EndsWith("&"))
             return false;
+    
         //List`
         //IEnumerable`
         //System.Action`1

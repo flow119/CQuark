@@ -13,14 +13,12 @@ public class WrapMakerGUI : EditorWindow {
     //是否忽略Obsolete的方法
     public static bool m_ignoreObsolete = true;
 
-
     string _classInput = "";
-
     static string _search = "";
 
     Vector2 mScroll = Vector2.zero;
     List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
-    List<string> _selectedClasses = new List<string>();       //选中的类
+    List<string> _selectedClasses = new List<string>();    //选中的类
 
     #region WrapClass
     //这个类只是编辑器使用的，便于预览创建的Wrap而已，不影响最终发布
@@ -37,9 +35,9 @@ public class WrapMakerGUI : EditorWindow {
         }
     }
     protected List<WrapClass> m_wrapClasses = new List<WrapClass>();
-    protected WrapClass GetWrapClass (string key) {
+    protected WrapClass GetWrapClass (string nameSpace) {
         for(int i = 0; i < m_wrapClasses.Count; i++) {
-            if(m_wrapClasses[i].m_nameSpace == key)
+            if(m_wrapClasses[i].m_nameSpace == nameSpace)
                 return m_wrapClasses[i];
         }
         return null;
@@ -85,7 +83,7 @@ public class WrapMakerGUI : EditorWindow {
 
             FileInfo[] files = di.GetFiles("*.cs", SearchOption.AllDirectories);
             for(int i = 0; i < files.Length; i++) {
-                string classname = files[i].Name.Split('.')[0];
+                string classname = files[i].Name.Substring(0, files[i].Name.Length - 3);//去掉.cs
                 if(files[i].Directory.ToString().Length == WrapGenFolder.Length) {
                     WrapClass wc = GetWrapClass("");
                     if(wc == null) {
@@ -109,81 +107,73 @@ public class WrapMakerGUI : EditorWindow {
 	}
 
 	void OnlyAddClass(Type type){
-		OnlyAddClass(type.Namespace, type.Name);
-	}
-	//这里可以改为使用类
-	void OnlyAddClass(string assemblyName, string classname){
         List<string> _typeDic = new List<string>();
+        string classFullName = WrapReflectionTools.GetTrueName(type);
+        string assemblyName = WrapReflectionTools.GetWrapFolderName(type);
+        string classname = WrapReflectionTools.GetWrapFileName(type);
 
-		if(classname.Contains("`"))
-			return;
-		if(string.IsNullOrEmpty(assemblyName))
-			assemblyName = "";
-		
-		Type type = WrapReflectionTools.GetType(classname, ref assemblyName);
+        string manifest = "";//一个记事本，用来保存哪些内容做了Wrap
 
-		if(type == null){
-			if(string.IsNullOrEmpty(assemblyName))
-				Debug.LogWarning("No Such Type : " + classname);
-			else
-				Debug.LogWarning("No Such Type : " + assemblyName + "." + classname);
-			return;
-		}
-
-		string log = "";//一个记事本，用来保存哪些内容做了Wrap
-		string classFullName = string.IsNullOrEmpty(assemblyName) ? classname : assemblyName + "." + classname;
-
-		//变量或属性
-        List<Property> savePropertys = WrapReflectionTools.GetPropertys(type, ref log);
+        //变量或属性
+        List<Property> savePropertys = WrapReflectionTools.GetPropertys(type, ref manifest);
         string[] propertyPartStr = WrapTextTools.Propertys2PartStr(classFullName, savePropertys);
 
-		//构造函数，
-        List<Method> constructMethods = WrapReflectionTools.GetConstructor(type, ref log);
+        //构造函数
+        List<Method> constructMethods = WrapReflectionTools.GetConstructor(type, ref manifest);
         string wrapNew = WrapTextTools.Constructor2PartStr(classFullName, constructMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, constructMethods, _typeDic);
 
-		//静态方法（最后的参数是忽略属性，因为属性也是一种方法）
-        List<Method> staticMethods = WrapReflectionTools.GetStaticMethods(type, ref log, savePropertys);
+        //静态方法（最后的参数是忽略属性，因为属性也是一种方法）
+        List<Method> staticMethods = WrapReflectionTools.GetStaticMethods(type, ref manifest, savePropertys);
         string wrapSCall = WrapTextTools.SCall2PartStr(classFullName, staticMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, staticMethods, _typeDic);
 
-		//成员方法
-        List<Method> memberMethods = WrapReflectionTools.GetInstanceMethods(type, ref log, savePropertys);
+        //成员方法
+        List<Method> memberMethods = WrapReflectionTools.GetInstanceMethods(type, ref manifest, savePropertys);
         string wrapMCall = WrapTextTools.MCall2PartStr(classFullName, memberMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, memberMethods, _typeDic);
 
-		//索引
-        List<Method> indexMethods = WrapReflectionTools.GetIndex(type, ref log);
+        //索引
+        List<Method> indexMethods = WrapReflectionTools.GetIndex(type, ref manifest);
         string[] wrapIndex = WrapTextTools.Index2PartStr(classFullName, indexMethods);
 
-		//运算符（数学运算和逻辑运算）
-        List<Method> opMethods = WrapReflectionTools.GetOp(type, ref log);
+        //运算符（数学运算和逻辑运算）
+        List<Method> opMethods = WrapReflectionTools.GetOp(type, ref manifest);
         string[] wrapOp = WrapTextTools.Op2PartStr(opMethods);
 
-        //if(m_generateLog){
-	        if(string.IsNullOrEmpty(assemblyName)) {
-                WrapTextTools.WriteAllText(WrapGenFolder, classname + ".txt", log);
-			}
-			else {
-                WrapTextTools.WriteAllText(WrapGenFolder + "/" + assemblyName, classname + ".txt", log);
-			}
-        //}
-
-		UpdateWrapPart(assemblyName, classname, _typeDic, propertyPartStr,
+        UpdateWrapPart(assemblyName, classname, manifest, _typeDic, propertyPartStr,
             wrapNew, wrapSCall, wrapMCall, wrapIndex, wrapOp);
 	}
 
+    void OnlyAddClass (string fullname) {
+        //if(fullname.Contains("`"))
+        //    return;
+
+        Type type = WrapReflectionTools.GetType(fullname);
+
+        if(type == null) {
+            Debug.LogWarning("No Such Type : " + fullname);
+            return;
+        }
+        OnlyAddClass(type);
+    }
+
 	void OnlyRemoveClass(string assemblyName, string classname){
-		if(string.IsNullOrEmpty(assemblyName))
-			File.Delete(WrapGenFolder + "/" + classname + ".cs");
-		else
-			File.Delete(WrapGenFolder + "/" + assemblyName + "/" + classname + ".cs");
+		if(string.IsNullOrEmpty(assemblyName)){
+            File.Delete(WrapGenFolder + "/" + classname + ".cs");
+            File.Delete(WrapGenFolder + "/" + classname + ".txt");
+        }
+        else {
+            File.Delete(WrapGenFolder + "/" + assemblyName + "/" + classname + ".cs");
+            File.Delete(WrapGenFolder + "/" + assemblyName + "/" + classname + ".txt");
+        }
 	}
 		
-	void UpdateWrapPart(string assemblyName, string classname, List<string> typeDic, string[] propertys, 
+	void UpdateWrapPart(string assemblyName, string classname, string manifest, List<string> typeDic, string[] propertys, 
 		string wrapNew, string wrapSCall, string wrapMCall, string[] wrapIndex, string[] wrapOp){
 
-		string classWrapName = assemblyName.Replace(".","") + classname;   //类似UnityEngineVector3，不带点
+		string classWrapName = assemblyName.Replace(".","") + classname.Replace(".","");   //类似UnityEngineVector3，不带点
+
         string text = File.ReadAllText(WrapConfigFolder + "/WrapPartTemplate.txt", System.Text.Encoding.UTF8);// (Resources.Load("WrapPartTemplate") as TextAsset).text;
 
         string types = "";
@@ -216,17 +206,17 @@ public class WrapMakerGUI : EditorWindow {
 
 		if(string.IsNullOrEmpty(assemblyName)) {
             WrapTextTools.WriteAllText(WrapGenFolder, classname + ".cs", text);
+            WrapTextTools.WriteAllText(WrapGenFolder, classname + ".txt", manifest);
 		}
 		else {
             WrapTextTools.WriteAllText(WrapGenFolder + "/" + assemblyName, classname + ".cs", text);
+            WrapTextTools.WriteAllText(WrapGenFolder + "/" + assemblyName, classname + ".txt", manifest);
 		}
 	}
 		
 	void UpdateWrapCore(){
 //		//测试
-//		return;
         string text = File.ReadAllText(WrapConfigFolder + "/WrapCoreTemplate.txt", System.Text.Encoding.UTF8);
-        //string text = (Resources.Load("WrapCoreTemplate") as TextAsset).text;
 
         string wrapNew = "";
         string wrapSVGet = "";
@@ -246,7 +236,7 @@ public class WrapMakerGUI : EditorWindow {
         foreach(WrapClass kvp in m_wrapClasses) {
             for(int i = 0; i < kvp.m_classes.Count; i++) {
                 string classFullName = kvp.m_nameSpace == "" ? kvp.m_classes[i] : kvp.m_nameSpace + "." + kvp.m_classes[i]; 	//类似UnityEngine.Vector3，用来Wrap
-                string classWrapName = kvp.m_nameSpace.Replace(".", "") + kvp.m_classes[i];                                      //类似UnityEngineVector3，不带点
+                string classWrapName = kvp.m_nameSpace.Replace(".", "") + kvp.m_classes[i].Replace(".", "");                    //类似UnityEngineVector3，不带点
                 
                 wrapNew += "\t\t\tif(type == typeof(" + classFullName + ")){\r\n";
                 wrapNew += "\t\t\t\treturn " + classWrapName + "New(param, out returnValue, true) || " 
@@ -348,8 +338,8 @@ public class WrapMakerGUI : EditorWindow {
         File.WriteAllText(WrapCoreFolder + "/" + WRAP_CORE_NAME + ".cs", text, System.Text.Encoding.UTF8);
 	}
 
-	void AddClass(string assemblyName, string classname){
-		OnlyAddClass(assemblyName, classname);
+	void AddClass(Type type){
+        OnlyAddClass(type);
 		Reload();
 		UpdateWrapCore();
         
@@ -357,50 +347,25 @@ public class WrapMakerGUI : EditorWindow {
 		AssetDatabase.Refresh();
 	}
 
-	void RemoveClass(string assemblyName, string classname){
-		OnlyRemoveClass(assemblyName, classname);
+    void RemoveClass (string[] classes) {
+        for(int i = 0; i < classes.Length; i++) {
+            Type type = WrapReflectionTools.GetType(classes[i]);
+            OnlyRemoveClass(WrapReflectionTools.GetWrapFolderName(type), WrapReflectionTools.GetWrapFileName(type));
+        }
 		Reload();
 		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
 	}
 
-    void RemoveClass (string assemblyName) {
-        List<string> classes = GetWrapClass(assemblyName).m_classes;
-        for(int i = classes.Count - 1; i >= 0; i--) {
-            OnlyRemoveClass(assemblyName, classes[i]);
+    void UpdateClass (string[] classes) {
+        for(int i = 0; i < classes.Length; i++) {
+            Type type = WrapReflectionTools.GetType(classes[i]);
+            OnlyRemoveClass(WrapReflectionTools.GetWrapFolderName(type), WrapReflectionTools.GetWrapFileName(type));
+            OnlyAddClass(type);
         }
-        Reload();
-        UpdateWrapCore();
-        //Remove完毕ReloadDataBase，会编译代码
+        UpdateWrapCore();// 有可能WrapCore被改坏了，还是更新一下
         AssetDatabase.Refresh();
-    }
-
-	void UpdateClass(string assemblyName, string classname){
-		OnlyRemoveClass(assemblyName, classname);
-		OnlyAddClass(assemblyName, classname);
-        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
-		AssetDatabase.Refresh();
-	}
-
-    void UpdateClass (string assemblyName) {
-        List<string> classes = GetWrapClass(assemblyName).m_classes;
-        for(int i = classes.Count - 1; i >= 0; i--) {
-            OnlyRemoveClass(assemblyName, classes[i]);
-            OnlyAddClass(assemblyName, classes[i]);
-        }
-        UpdateWrapCore(); // 有可能WrapCore被改坏了，还是更新一下
-        AssetDatabase.Refresh();
-    }
-
-
-    void ClearAll () {
-//        m_wrapClasses.Clear();
-//		Reload();
-//        UpdateWrapCore();
-//		_typeDic.Clear ();
-//		UpdateWrapTypes ();
-//        AssetDatabase.Refresh();
     }
 
 	public void WrapCommon(){
@@ -520,30 +485,23 @@ public class WrapMakerGUI : EditorWindow {
 
 	//Wrap一个自己输入的内容，需要判断是一个类还是一个命名空间
 	public void WrapCustom(string text){
-		string className = "";
-		string assemblyName = "";
-		int dotIndex = text.LastIndexOf('.');
-		if(dotIndex == -1) {
-			assemblyName = "";
-			className = text;
-		}
-		else {
-			assemblyName = text.Substring(0, dotIndex);
-			className = text.Substring(dotIndex + 1);
-		}
+
+        Type type = WrapReflectionTools.GetType(text);
 
 		//输入的是一个类
-        if(WrapReflectionTools.GetType(className, ref assemblyName) != null) {
+        if(type != null) {
+            string assemblyName = WrapReflectionTools.GetWrapFolderName(type);
+            string className = WrapReflectionTools.GetWrapFileName(type);
 			WrapClass wc = GetWrapClass(assemblyName);
 			if(wc == null) {
 				wc = new WrapClass(assemblyName);
-				AddClass(assemblyName, className);
+                AddClass(type);
 			}
 			else {
 				if(!wc.m_classes.Contains(className))
-					AddClass(assemblyName, className);
+                    AddClass(type);
 				else
-					UpdateClass(assemblyName, className);
+                    UpdateClass(new string[]{text});
 			}
 		}
 		//输入的是一个命名空间
@@ -552,7 +510,7 @@ public class WrapMakerGUI : EditorWindow {
 			if(types != null) {
 				for(int i = 0; i < types.Length; i++) {
 //					Debug.Log(types[i].ToString());
-					AddClass(types[i].Namespace, types[i].Name);
+                    AddClass(types[i]);
 				}
 			}
 		}
@@ -620,38 +578,22 @@ public class WrapMakerGUI : EditorWindow {
         }
 
         GUI.enabled = true;
-//
-//		if(GUILayout.Button("Wrap Namespace", GUILayout.Width(120))){
-//			string assemblyName = _classInput;
-//			Type[] types = GetTypesByNamespace(assemblyName);
-//			if(types != null){
-//				for(int i = 0; i < types.Length; i++){
-//					Debug.Log(types[i].ToString());
-//				}
-//			}
-//		}
+
         GUI.backgroundColor = Color.white;
         GUILayout.EndHorizontal();
-        EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LiJson\" for wrap all classes in this namespace. ", MessageType.Info);
+        EditorGUILayout.HelpBox("  eg. input \"LitJson.JSONNode\" for wrap a class. \n  eg. input \"LitJson\" for wrap all classes in this namespace. ", MessageType.Info);
 
         GUILayout.Space(10);
 
-//		if(WrapGUITools.DrawHeader("Wraps")){
-
         GUILayout.BeginHorizontal();
-        GUILayout.Space(80);
         GUILayout.FlexibleSpace();
         int fontSize = GUI.skin.label.fontSize;
         GUI.skin.label.fontSize = 30;
         GUILayout.Label("Wraps");
         GUI.skin.label.fontSize = fontSize;
         GUILayout.FlexibleSpace();
-        if(GUILayout.Button("Reload", GUILayout.Width(80))) {
-			Reload();
-		}
         GUILayout.EndHorizontal();
 
-//			NGUIEditorTools.BeginContents();
         //搜索框
         GUILayout.BeginHorizontal();
         GUILayout.Space(84f);
@@ -668,31 +610,6 @@ public class WrapMakerGUI : EditorWindow {
 		
         GUILayout.EndHorizontal();
         //搜索结束
-
-//        GUILayout.BeginHorizontal();
-//        GUILayout.Label("Wraps : ");
-//        if(GUILayout.Button(_pressAll ? "Cancel" : "Select All", GUILayout.Width(80))){
-//            _pressAll = !_pressAll;
-//        }
-//        GUI.enabled = _pressAll;
-//        GUI.backgroundColor = Color.cyan;
-//       if(GUILayout.Button("Update", GUILayout.Width(60))) {
-//            //   Reload();
-//        }
-//        GUI.backgroundColor = Color.red;
-//        if(GUILayout.Button("X", GUILayout.Width(25))) {
-//			ClearAll ();
-//        }
-//        GUI.backgroundColor = Color.white;
-//        GUI.enabled = true;
-//        GUILayout.EndHorizontal();
-
-        //if(GUILayout.Button("Clear", GUILayout.Width(60))) {
-        //    ClearAll();
-        //}
-        //GUI.backgroundColor = Color.white;
-        //GUILayout.EndHorizontal();
-
 
 		mScroll = GUILayout.BeginScrollView(mScroll);
 		GUILayout.BeginVertical();
@@ -756,18 +673,6 @@ public class WrapMakerGUI : EditorWindow {
             GUILayout.Label("Ns", "sv_label_2", GUILayout.Width(38));
             EditorGUILayout.SelectableLabel(kvp.m_nameSpace, GUILayout.Height(16));	//EditorGUILayour可以把文字拷出来
 			
-//	            GUILayout.Label("    " + kvp.m_classes.Count + " Classes", GUILayout.Width(80));
-//	            GUI.backgroundColor = Color.cyan;
-//	            if(GUILayout.Button("Update", GUILayout.Width(60))) {
-//	                UpdateClass(kvp.m_nameSpace);
-//	            }
-//	            GUI.backgroundColor = Color.red;
-//	            if(GUILayout.Button("X", GUILayout.Width(25))) {
-//	                RemoveClass(kvp.m_nameSpace);
-//	                return;
-//	            }
-//	            GUI.backgroundColor = Color.white;
-            //GUILayout.Space(90);
 			GUILayout.EndHorizontal();
 
             if(_folderNamespace.Contains(kvp.m_nameSpace)) {
@@ -809,40 +714,26 @@ public class WrapMakerGUI : EditorWindow {
 		if(GUILayout.Button("None", GUILayout.Width(60))){
 			_selectedClasses.Clear();
 		}
+        if(GUILayout.Button("Reload", GUILayout.Width(60))) {
+            Reload();
+        }
 
 		GUILayout.FlexibleSpace();
-
+       
 		GUI.backgroundColor = Color.cyan;
 		if(GUILayout.Button("Update", GUILayout.Width(60))) {
-			//	UpdateClass(kvp.m_nameSpace, kvp.m_classes[i]);
+            UpdateClass(_selectedClasses.ToArray());
 		}
 		GUI.backgroundColor = Color.red;
 		if(GUILayout.Button("Remove", GUILayout.Width(60))) {
-			for(int i = 0; i < _selectedClasses.Count; i++){
-			//	OnlyRemoveClass(WrapReflectionTools.GetType();
-			}
-			//	RemoveClass(kvp.m_nameSpace, kvp.m_classes[i]);
+            RemoveClass(_selectedClasses.ToArray());
+            _selectedClasses.Clear();
 			return;
 		}
 		GUI.backgroundColor = Color.white;
 		GUILayout.EndHorizontal();
-//			NGUIEditorTools.EndContents();
-//		}
-
-
-
 
 		GUILayout.Space(10);
-
-//        GUILayout.BeginHorizontal();
-//        GUILayout.Space(68);
-//        if(GUILayout.Button("Reload")) {
-//            Reload();
-//        }
-//        GUILayout.Space(68);
-//        GUILayout.EndHorizontal();
-
-
 	}
 
 	bool IsAllSelect(string nameSpace){
