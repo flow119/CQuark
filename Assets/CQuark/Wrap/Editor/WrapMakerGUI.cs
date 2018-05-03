@@ -26,6 +26,8 @@ public class WrapMakerGUI : EditorWindow {
     Vector2 _whiteScroll = Vector2.zero;
 	Vector2 _classBlackScroll = Vector2.zero;
     Vector2 _memberBlackScroll = Vector2.zero;
+	// Use this for initialization
+	bool _isCompiling = true;
 
     #region WrapClass
     //这个类只是编辑器使用的，便于预览创建的Wrap而已，不影响最终发布
@@ -456,10 +458,6 @@ public class WrapMakerGUI : EditorWindow {
 		AssetDatabase.Refresh();
 	}
 
-	// Use this for initialization
-	bool _isCompiling = true;
-	bool _option = false;
-    bool _pressAll = false;
 	void OnGUI () {
 		if(_isCompiling != EditorApplication.isCompiling){
 			_isCompiling = EditorApplication.isCompiling;
@@ -582,7 +580,6 @@ public class WrapMakerGUI : EditorWindow {
 	        GUI.enabled = !string.IsNullOrEmpty(_classInput);
 	        if(GUILayout.Button("Wrap Custom", GUILayout.Width(100))) {
 				WrapCustom(_classInput);
-	            _classInput = "";
 	        }
 
 	        GUI.enabled = true;
