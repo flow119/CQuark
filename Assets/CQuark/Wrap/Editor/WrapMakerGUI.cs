@@ -476,7 +476,7 @@ public class WrapMakerGUI : EditorWindow {
                 
                 for(int i = 0; i < _whiteList.Count; i++) {
                     GUILayout.BeginHorizontal();
-                    _whiteList[i] = GUILayout.TextField(_whiteList[i]);
+                    _whiteList[i] = EditorGUILayout.TextField(_whiteList[i]);
                     if(GUILayout.Button("X", GUILayout.Width(25))) {
                         _whiteList.RemoveAt(i);
                     }
@@ -498,7 +498,7 @@ public class WrapMakerGUI : EditorWindow {
                 
                 for(int i = 0; i < _blackList.Count; i++) {
                     GUILayout.BeginHorizontal();
-                    _blackList[i] = GUILayout.TextField(_blackList[i]);
+                    _blackList[i] = EditorGUILayout.TextField(_blackList[i]);
                     if(GUILayout.Button("X", GUILayout.Width(25))) {
                         _blackList.RemoveAt(i);
                     }
@@ -555,7 +555,7 @@ public class WrapMakerGUI : EditorWindow {
 
 	        GUILayout.BeginHorizontal(); 
 	        GUI.backgroundColor = Color.green;
-	        _classInput = GUILayout.TextField(_classInput, GUILayout.MinWidth(100));
+	        _classInput = EditorGUILayout.TextField(_classInput, GUILayout.MinWidth(100));
 	        GUI.enabled = !string.IsNullOrEmpty(_classInput);
 	        if(GUILayout.Button("Wrap Custom", GUILayout.Width(100))) {
 				WrapCustom(_classInput);
