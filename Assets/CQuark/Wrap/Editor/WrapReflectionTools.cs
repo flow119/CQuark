@@ -206,11 +206,16 @@ public class WrapReflectionTools {
         return types.ToArray();
 	}
 
-    public static List<Property> GetPropertys (Type type, ref string manifest) {
+	public static List<Property> GetPropertys (Type type, ref string manifest, List<string> filter) {
 		List<Property> savePropertys = new List<Property>();
+		string trueName = GetTrueName (type);
+
 		manifest += "\n字段\n";
 		FieldInfo[] fis = type.GetFields();
 		for(int i= 0; i < fis.Length; i++){
+			if(filter.Contains(trueName + "." + fis[i].Name))//成员黑名单
+			   continue;
+
 			bool isObsolete = IsObsolete(fis[i]);
 			if(isObsolete)
 				manifest += "[Obsolete]";
@@ -221,7 +226,7 @@ public class WrapReflectionTools {
 			if(isStatic)
 				manifest += "static ";
 			bool isReadonly = attributes.Contains("Literal") && attributes.Contains("HasDefault") ; //const
-			isReadonly = isReadonly || attributes.Contains("InitOnly");                             //readonly
+			isReadonly |= attributes.Contains("InitOnly");                             //readonly
 			if(isReadonly)
 				manifest += "readonly ";
             manifest += WrapTextTools.Type2String(fis[i].FieldType) + " " + fis[i].Name + ";\n";
@@ -231,6 +236,9 @@ public class WrapReflectionTools {
 		manifest += "\n静态属性\n";
 		PropertyInfo[] spis = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.SetProperty);
 		for(int i= 0; i < spis.Length; i++){
+			if(filter.Contains(trueName + "." + spis[i].Name))//成员黑名单
+				continue;
+
 			bool isObsolete = IsObsolete(spis[i]);
 			if(isObsolete)
 				manifest += "[Obsolete]";
@@ -266,9 +274,12 @@ public class WrapReflectionTools {
 		for(int i = 0; i < pis.Length; i++){
 			bool isObsolete = IsObsolete(pis[i]);
 
-			if(pis[i].Name == "Item" && hasIndex){
+			if(filter.Contains(trueName + "." + pis[i].Name))//成员黑名单
+				continue;
+
+			if(pis[i].Name == "Item" && hasIndex)
 				continue;//如果有get_Item或者set_Item，表示是[Index]，否则表示一个属性
-			}
+
 
 			if(isObsolete)
 				manifest += "[Obsolete]";
@@ -289,8 +300,9 @@ public class WrapReflectionTools {
 		return savePropertys;
 	}
 
-    public static List<Method> GetConstructor (Type type, ref string manifest) {
+	public static List<Method> GetConstructor (Type type, ref string manifest) {
 		List<Method> saveMethods = new List<Method>();
+
 		manifest += "\n构造函数\n";
 		if (typeof(UnityEngine.MonoBehaviour).IsAssignableFrom(type)) {
 			manifest += "继承自MonoBehaviour\n";
@@ -299,7 +311,6 @@ public class WrapReflectionTools {
 		System.Reflection.ConstructorInfo[] construct = type.GetConstructors();
 		for(int i = 0; i < construct.Length; i++){
 			bool isObsolete = IsObsolete(construct[i]);
-
 			string s = "";
 			if(isObsolete)
 				manifest += "[Obsolete]";
@@ -331,16 +342,18 @@ public class WrapReflectionTools {
 		return saveMethods;
 	}
 
-    public static List<Method> GetStaticMethods (Type type, ref string manifest, List<Property> ignoreProperty) {
+	public static List<Method> GetStaticMethods (Type type, ref string manifest, List<Property> ignoreProperty, List<string> filter) {
 		List<Method> saveMethods = new List<Method> ();
-		//静态函数，成员函数
+		string trueName = GetTrueName (type);
+
 		manifest += "\n静态方法\n";
 
-		//TODO 暂时不包含op，不包含index，不包含ref，in, out, 不包含IEnumrator
+		//TODO 不包含op，不包含index，暂时不包含ref，in, out, 不包含IEnumrator
 		System.Reflection.MethodInfo[] smis = type.GetMethods (BindingFlags.Public | BindingFlags.Static);//这里没有获取私有方法，因为即使获取了西瓜也没有办法调用
 		//基类的方法一起导出，这样可以自动调用基类
 		for (int i = 0; i < smis.Length; i++) {
-			bool isObsolete = IsObsolete(smis[i]);
+			if(filter.Contains(trueName + "." + smis[i].Name))//成员黑名单
+				continue;
 
 			//属性上面已经获取过了 这里做个判断，是否包含这个属性，包含的话continue，否则表示有方法名是get_,set_开头
 			if (ContainsProperty (ignoreProperty, smis [i].Name))
@@ -351,6 +364,7 @@ public class WrapReflectionTools {
 
             string retType = WrapTextTools.Type2String(smis[i].ReturnType);
 
+			bool isObsolete = IsObsolete(smis[i]);
 			string s = "";
 			if(isObsolete)
 				s += "[Obsolete]";
@@ -393,8 +407,10 @@ public class WrapReflectionTools {
 		return saveMethods;
 	}
 
-	public static List<Method> GetInstanceMethods(Type type, ref string manifest, List<Property> ignoreProperty){
+	public static List<Method> GetInstanceMethods(Type type, ref string manifest, List<Property> ignoreProperty, List<string> filter){
 		List<Method> saveMethods = new List<Method> ();
+		string trueName = GetTrueName (type);
+
 		manifest += "\n成员方法\n";
 
 		if (type.GetConstructors ().Length == 0 && !typeof(UnityEngine.Component).IsAssignableFrom(type)) {	//是否是静态类，静态类没有构造函数
@@ -414,7 +430,8 @@ public class WrapReflectionTools {
 			}
 		}
 		for (int i = 0; i < imis.Length; i++) {
-			bool isObsolete = IsObsolete(imis[i]);
+			if(filter.Contains(trueName + "." + imis[i].Name))//成员黑名单
+				continue;
 
 			//属性上面已经获取过了 这里做个判断，是否包含这个属性，包含的话continue，否则表示有方法名是get_,set_开头
 			if(ContainsProperty(ignoreProperty, imis[i].Name))
@@ -427,6 +444,7 @@ public class WrapReflectionTools {
 
             string retType = WrapTextTools.Type2String(imis[i].ReturnType);
 
+			bool isObsolete = IsObsolete(imis[i]);
 			string s = "";
 			if(isObsolete)
 				s += "[Obsolete]";

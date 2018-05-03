@@ -13,16 +13,19 @@ public class WrapMakerGUI : EditorWindow {
     //是否忽略Obsolete的方法
     public static bool m_ignoreObsolete = true;
     public static bool m_generateLog = true;
+	public static bool m_wrapNonNameSpaceClass = true;
     string _classInput = "";
     static string _search = "";
 
     Vector2 mScroll = Vector2.zero;
     public List<string> _folderNamespace = new List<string>();    //被折叠的wrapclass
     public List<string> _selectedClasses = new List<string>();    //选中的类
-    public List<string> _blackList = new List<string>();   //这个List里的类都不会生成Wrap
+	public List<string> _memberBlackList = new List<string>();   //这个List里的方法都不会生成Wrap
+    public List<string> _classBlackList = new List<string>();   //这个List里的类都不会生成Wrap
     public List<string> _whiteList = new List<string>();   //这个List里的类点击WrapCommon的时候会自动Wrap（如果同时在黑名单中，那么也不会Wrap）
     Vector2 _whiteScroll = Vector2.zero;
-    Vector2 _blackScroll = Vector2.zero;
+	Vector2 _classBlackScroll = Vector2.zero;
+    Vector2 _memberBlackScroll = Vector2.zero;
 
     #region WrapClass
     //这个类只是编辑器使用的，便于预览创建的Wrap而已，不影响最终发布
@@ -70,14 +73,14 @@ public class WrapMakerGUI : EditorWindow {
     [MenuItem("CQuark/Wrap Maker", false, 9)]
     [MenuItem("Assets/CQuark/Wrap Maker", false, 0)]
     static public void OpenWrapMaker () {
-        EditorWindow.GetWindow<WrapMakerGUI>(false, "Wrap Maker", true).Show();
+		WrapMakerGUI gui = EditorWindow.GetWindow<WrapMakerGUI> (false, "Wrap Maker", true);
+		gui.Show ();
+		gui.LoadOption ();
+		gui.ReloadWrap ();
     }
 
-	
-
-	void Reload(){
+	void ReloadWrap(){
 		//sset,sget,mset,mget,new,scall,mcall,op
-
         m_wrapClasses.Clear();
         if(!Directory.Exists(WrapGenFolder)){
             Directory.CreateDirectory(WrapGenFolder);
@@ -115,7 +118,7 @@ public class WrapMakerGUI : EditorWindow {
         string classFullName = WrapReflectionTools.GetTrueName(type);
         if(!WrapTextTools.Finish(classFullName))
             return;
-        if(_blackList.Contains(classFullName))
+        if(_classBlackList.Contains(classFullName))
             return;
 
         string assemblyName = WrapReflectionTools.GetWrapFolderName(type);
@@ -124,22 +127,22 @@ public class WrapMakerGUI : EditorWindow {
         string manifest = "";//一个记事本，用来保存哪些内容做了Wrap
 
         //变量或属性
-        List<Property> savePropertys = WrapReflectionTools.GetPropertys(type, ref manifest);
+        List<Property> savePropertys = WrapReflectionTools.GetPropertys(type, ref manifest, _memberBlackList);
         string[] propertyPartStr = WrapTextTools.Propertys2PartStr(classFullName, savePropertys);
 
         //构造函数
-        List<Method> constructMethods = WrapReflectionTools.GetConstructor(type, ref manifest);
-        string wrapNew = WrapTextTools.Constructor2PartStr(classFullName, constructMethods);
+		List<Method> constructMethods = WrapReflectionTools.GetConstructor(type, ref manifest);
+		string wrapNew = WrapTextTools.Constructor2PartStr(classFullName, constructMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, constructMethods, _typeDic);
 
         //静态方法（最后的参数是忽略属性，因为属性也是一种方法）
-        List<Method> staticMethods = WrapReflectionTools.GetStaticMethods(type, ref manifest, savePropertys);
-        string wrapSCall = WrapTextTools.SCall2PartStr(classFullName, staticMethods);
+		List<Method> staticMethods = WrapReflectionTools.GetStaticMethods(type, ref manifest, savePropertys, _memberBlackList);
+		string wrapSCall = WrapTextTools.SCall2PartStr(classFullName, staticMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, staticMethods, _typeDic);
 
         //成员方法
-        List<Method> memberMethods = WrapReflectionTools.GetInstanceMethods(type, ref manifest, savePropertys);
-        string wrapMCall = WrapTextTools.MCall2PartStr(classFullName, memberMethods);
+		List<Method> memberMethods = WrapReflectionTools.GetInstanceMethods(type, ref manifest, savePropertys, _memberBlackList);
+		string wrapMCall = WrapTextTools.MCall2PartStr(classFullName, memberMethods);
         WrapTextTools.CallTypes2TypeStr(classFullName, memberMethods, _typeDic);
 
         //索引
@@ -224,7 +227,6 @@ public class WrapMakerGUI : EditorWindow {
 	}
 		
 	void UpdateWrapCore(){
-//		//测试
         string text = File.ReadAllText(WrapConfigFolder + "/WrapCoreTemplate.txt", System.Text.Encoding.UTF8);
 
         string wrapNew = "";
@@ -349,7 +351,7 @@ public class WrapMakerGUI : EditorWindow {
 
 	void AddClass(Type type){
         OnlyAddClass(type);
-		Reload();
+		ReloadWrap();
 		UpdateWrapCore();
         
 		//Add完毕ReloadDataBase，会编译代码
@@ -361,7 +363,7 @@ public class WrapMakerGUI : EditorWindow {
             Type type = WrapReflectionTools.GetType(classes[i]);
             OnlyRemoveClass(WrapReflectionTools.GetWrapFolderName(type), WrapReflectionTools.GetWrapFileName(type));
         }
-		Reload();
+		ReloadWrap();
 		UpdateWrapCore();
 		//Remove完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
@@ -397,15 +399,20 @@ public class WrapMakerGUI : EditorWindow {
 //        OnlyAddClass("", "string");
 
         //项目里没有Namespace的所有类, 减去黑名单
-        Type[] types = WrapReflectionTools.GetTypesByNamespace("");
-        if(types != null) {
-            for(int i = 0; i < types.Length; i++) {
-                OnlyAddClass(types[i]);
-            }
-        }
+		if (m_wrapNonNameSpaceClass) {
+			Type[] types = WrapReflectionTools.GetTypesByNamespace ("");
+			if (types != null) {
+				for (int i = 0; i < types.Length; i++) {
+					OnlyAddClass (types [i]);
+				}
+			}
+		}
 
+		for (int i = 0; i < _whiteList.Count; i++) {
+			OnlyAddClass(_whiteList[i]);
+		}
 
-		Reload();
+		ReloadWrap();
 		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
@@ -443,7 +450,7 @@ public class WrapMakerGUI : EditorWindow {
 			}
 		}
 
-		Reload();
+		ReloadWrap();
 		UpdateWrapCore();
 		//Add完毕ReloadDataBase，会编译代码
 		AssetDatabase.Refresh();
@@ -453,83 +460,99 @@ public class WrapMakerGUI : EditorWindow {
 	bool _isCompiling = true;
 	bool _option = false;
     bool _pressAll = false;
-	void Start(){
-		Reload();
-		LoadOption();
-	}
 	void OnGUI () {
 		if(_isCompiling != EditorApplication.isCompiling){
 			_isCompiling = EditorApplication.isCompiling;
-			Reload();
+			ReloadWrap();
 		}
 
 		if(WrapGUITools.DrawHeader("Option")) {
 			WrapGUITools.BeginContents();
 
             //TODO 这里可以输入黑名单和自动添加名单
-			int height = Mathf.Min(Mathf.Max(_whiteList.Count, _blackList.Count) * 20,200);
+			int height = Mathf.Min(Mathf.Max(_whiteList.Count, 2) * 20,200);
             GUILayout.BeginHorizontal();
             {
-                GUILayout.BeginVertical();
-                GUILayout.Label("WhiteList");
-				_whiteScroll = GUILayout.BeginScrollView(_whiteScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height));
-                
-                for(int i = 0; i < _whiteList.Count; i++) {
-                    GUILayout.BeginHorizontal();
-                    _whiteList[i] = EditorGUILayout.TextField(_whiteList[i]);
-                    if(GUILayout.Button("X", GUILayout.Width(25))) {
-                        _whiteList.RemoveAt(i);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndScrollView();
-                if(GUILayout.Button("Add")) {
-                    _whiteList.Add("");
-                }
-                GUILayout.EndVertical();
+				GUILayout.BeginVertical(); 
+				GUILayout.Label("BlackList (Class)");
+				_classBlackScroll = GUILayout.BeginScrollView(_classBlackScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height * 0.8f));
+				for(int i = 0; i < _classBlackList.Count; i++) {
+					GUILayout.BeginHorizontal();
+					_classBlackList[i] = EditorGUILayout.TextField(_classBlackList[i]);
+					if(GUILayout.Button("X", GUILayout.Width(25))) {
+						_classBlackList.RemoveAt(i);
+					}
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.EndScrollView();
+				if(GUILayout.Button("Add")) {
+					_classBlackList.Add("");
+					_classBlackScroll += new Vector2(0,20);
+				}
+
+				GUILayout.Space(5);
+				
+				GUILayout.Label("BlackList (Member)");
+				_memberBlackScroll = GUILayout.BeginScrollView(_memberBlackScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height * 0.4f));
+				for(int i = 0; i < _memberBlackList.Count; i++) {
+					GUILayout.BeginHorizontal();
+					_memberBlackList[i] = EditorGUILayout.TextField(_memberBlackList[i]);
+					if(GUILayout.Button("X", GUILayout.Width(25))) {
+						_memberBlackList.RemoveAt(i);
+					}
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.EndScrollView();
+				if(GUILayout.Button("Add")) {
+					_memberBlackList.Add("");
+					_memberBlackScroll += new Vector2(0,20);
+				}
+				GUILayout.EndVertical(); 
             }
 
             GUILayout.Space(5);
 
             {
-                GUILayout.BeginVertical(); 
-                GUILayout.Label("BlackList");
-				_blackScroll = GUILayout.BeginScrollView(_blackScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height));
-                
-                for(int i = 0; i < _blackList.Count; i++) {
-                    GUILayout.BeginHorizontal();
-                    _blackList[i] = EditorGUILayout.TextField(_blackList[i]);
-                    if(GUILayout.Button("X", GUILayout.Width(25))) {
-                        _blackList.RemoveAt(i);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndScrollView();
-                if(GUILayout.Button("Add")) {
-                    _blackList.Add("");
-                }
-                GUILayout.EndVertical(); 
-            }
-            
-            GUILayout.EndHorizontal();
+				GUILayout.BeginVertical();
+				GUILayout.Label("WhiteList (Class)");
+				_whiteScroll = GUILayout.BeginScrollView(_whiteScroll, GUILayout.Width(Screen.width * 0.5f - 5), GUILayout.Height(height));
+				for(int i = 0; i < _whiteList.Count; i++) {
+					GUILayout.BeginHorizontal();
+					_whiteList[i] = EditorGUILayout.TextField(_whiteList[i]);
+					if(GUILayout.Button("X", GUILayout.Width(25))) {
+						_whiteList.RemoveAt(i);
+					}
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.EndScrollView();
+				if(GUILayout.Button("Add")) {
+					_whiteList.Add("");
+					_whiteScroll += new Vector2(0,20);
+				}
 
-            GUILayout.BeginHorizontal();
-            m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
-            m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Manifest");
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
+				GUILayout.Space(5);
 
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if(GUILayout.Button("Reload", GUILayout.Width(60))) {
-                LoadOption();
-            }
-            if(GUILayout.Button("Save", GUILayout.Width(60))) {
-                SaveOption();
-            }
-            GUILayout.EndHorizontal();
+				m_wrapNonNameSpaceClass = GUILayout.Toggle(m_wrapNonNameSpaceClass, "Auto Wrap Non-Namespace Class");
+				m_ignoreObsolete = GUILayout.Toggle(m_ignoreObsolete, "Ignore Obsolete");
+				m_generateLog = GUILayout.Toggle(m_generateLog, "Generate Manifest");
 
+				GUILayout.Space(5);
 
+				GUILayout.BeginHorizontal();
+				GUILayout.FlexibleSpace();
+				if(GUILayout.Button("Reload", GUILayout.Width(60))) {
+					LoadOption();
+				}
+				if(GUILayout.Button("Save", GUILayout.Width(60))) {
+					SaveOption();
+				}
+				GUILayout.EndVertical();
+
+				GUILayout.EndHorizontal();
+			}
+			
+			GUILayout.EndHorizontal();
+			
 			WrapGUITools.EndContents();
 		}else{
 
@@ -702,9 +725,9 @@ public class WrapMakerGUI : EditorWindow {
 			_selectedClasses.Clear();
 		}
         if(GUILayout.Button("Reload", GUILayout.Width(60))) {
-            Reload();
-        }
-
+			ReloadWrap();
+		}
+		
 		GUILayout.FlexibleSpace();
        
 		GUI.backgroundColor = Color.cyan;
@@ -726,7 +749,8 @@ public class WrapMakerGUI : EditorWindow {
     void LoadOption () {
         string text = File.ReadAllText(WrapConfigFolder + "/Config.txt");
         string[] blocks = text.Split(';');
-        _blackList.Clear();
+        _classBlackList.Clear();
+		_memberBlackList.Clear ();
         _whiteList.Clear();
         for(int i = 0; i < blocks.Length; i++) {
             string[] lines = blocks[i].Replace("\r", "").Split('\n');
@@ -735,41 +759,56 @@ public class WrapMakerGUI : EditorWindow {
                 startLine++;
             string key = lines[startLine].Split('=')[0];
             switch(key) {
-                case "\"IgnoreObsolete\"":
-                    m_ignoreObsolete = lines[startLine].Split('=')[1] == "1";
-                    break;
-                case "\"GenerateManifest\"":
-                    m_generateLog = lines[startLine].Split('=')[1] == "1";
-                    break;
-                case "\"WhiteList\"":
-                    for(int j = startLine + 1; j < lines.Length; j++) {
-                        if(!string.IsNullOrEmpty(lines[j]))
-                            _whiteList.Add(lines[j]);
-                    }
-                    break;
-                case "\"BlackList\"":
-                    for(int j = startLine + 1; j < lines.Length; j++) {
-                        if(!string.IsNullOrEmpty(lines[j]))
-                            _blackList.Add(lines[j]);
-                    }
-                    break;
-            }
-        }
-    }
-
-    void SaveOption () {
-        string text = "\"IgnoreObsolete\"=" + (m_ignoreObsolete ? "1;" : "0;");
+            case "\"IgnoreObsolete\"":
+                m_ignoreObsolete = lines[startLine].Split('=')[1] == "1";
+                break;
+            case "\"GenerateManifest\"":
+                m_generateLog = lines[startLine].Split('=')[1] == "1";
+                break;
+			case "\"WrapNonNameSpaceClass\"":
+				m_wrapNonNameSpaceClass = lines[startLine].Split('=')[1] == "1";
+				break;
+            case "\"WhiteList\"":
+                for(int j = startLine + 1; j < lines.Length; j++) {
+                    if(!string.IsNullOrEmpty(lines[j]))
+                        _whiteList.Add(lines[j]);
+                }
+                break;
+            case "\"ClassBlackList\"":
+                for(int j = startLine + 1; j < lines.Length; j++) {
+                    if(!string.IsNullOrEmpty(lines[j]))
+                        _classBlackList.Add(lines[j]);
+                }
+                break;
+			case "\"MemberBlackList\"":
+				for(int j = startLine + 1; j < lines.Length; j++) {
+					if(!string.IsNullOrEmpty(lines[j]))
+						_memberBlackList.Add(lines[j]);
+				}
+				break;
+			}
+		}
+	}
+	
+	void SaveOption () {
+		string text = "\"IgnoreObsolete\"=" + (m_ignoreObsolete ? "1;" : "0;");
         text += "\n";
         text += "\"GenerateManifest\"=" + (m_generateLog ? "1;" : "0;");
         text += "\n";
-        text += "\"WhiteList\"=" ;
+		text += "\"WrapNonNameSpaceClass\"=" + (m_wrapNonNameSpaceClass ? "1;" : "0;");
+		text += "\n";
+		text += "\"WhiteList\"=\n" ;
         for(int i = 0; i < _whiteList.Count; i++)
             text += _whiteList[i] + "\n";
         text += ";\n";
-        text += "\"BlackList\"=";
-        for(int i = 0; i < _blackList.Count; i++)
-            text += _blackList[i] + "\n";
-        File.WriteAllText(WrapConfigFolder + "/Config.txt", text);
+		text += "\"ClassBlackList\"=\n";
+		for(int i = 0; i < _classBlackList.Count; i++)
+            text += _classBlackList[i] + "\n";
+		text += ";\n";
+		text += "\"MemberBlackList\"=\n";
+		for(int i = 0; i < _memberBlackList.Count; i++)
+			text += _memberBlackList[i] + "\n";
+		File.WriteAllText(WrapConfigFolder + "/Config.txt", text);
         AssetDatabase.Refresh();
     }
 
