@@ -48,13 +48,22 @@ namespace CQuark {
 			//TODO ref, out
         };
         static readonly List<string> types = new List<string>(){
-            "void",
-            "bool",
+			"double",
+			"long",
+			"ulong",
+			"float",
             "int",
             "uint",
-            "float",
-            "double",
+			"short",
+			"ushort",
+			"byte",
+			"sbyte",
+			"char",
+
+			"bool",
             "string",
+			"void",
+			"object",
             //2017-09-15 0.7.1 补充协程
             "IEnumerator"
         };
@@ -265,7 +274,7 @@ namespace CQuark {
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '/') {/// /=
+            else if(line[nstart] == '/') {// / /= //
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -273,7 +282,7 @@ namespace CQuark {
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '%') {/// % %=
+            else if(line[nstart] == '%') {//  % %=
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -281,7 +290,8 @@ namespace CQuark {
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '>') {//> >=
+            else if(line[nstart] == '>') {// > >=
+				//TODO >>
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -289,7 +299,8 @@ namespace CQuark {
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '<') {//< <=
+            else if(line[nstart] == '<') {// < <=
+				//TODO <<
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -298,14 +309,14 @@ namespace CQuark {
                 return nstart + t.text.Length;
             }
 
-            else if(line[nstart] == '&') {//&&
+            else if(line[nstart] == '&') {// &&
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '&')
                     t.text = line.Substring(nstart, 2);
                 else
                     return -1;
             }
-            else if(line[nstart] == '|') {//||
+            else if(line[nstart] == '|') {// ||
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '|')
                     t.text = line.Substring(nstart, 2);
@@ -551,6 +562,20 @@ namespace CQuark {
                             continue;
                         }
                     }
+					if(tokens.Count >= 2 && t.type == TokenType.IDENTIFIER && tokens[tokens.Count - 1].text == "." && tokens[tokens.Count - 2].type == TokenType.IDENTIFIER) {
+						string ntype = tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
+						if(ContainsType(ntype)) {//TODO 命名空间
+							t.type = TokenType.TYPE;
+							t.text = ntype;
+							t.pos = tokens[tokens.Count - 2].pos;
+							t.line = tokens[tokens.Count - 2].line;
+							tokens.RemoveAt(tokens.Count - 1);
+							tokens.RemoveAt(tokens.Count - 1);
+
+							tokens.Add(t);
+							continue;
+						}
+					}
                     if(tokens.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
                         && tokens[tokens.Count - 1].type == TokenType.TYPE
                         && tokens[tokens.Count - 2].type == TokenType.PUNCTUATION && tokens[tokens.Count - 2].text == "<"
