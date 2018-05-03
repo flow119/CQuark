@@ -135,10 +135,13 @@ public class WrapTextTools  {
 
             if(constructor[i].m_inType.Length == 0)
                 wrapNew += "\t\t\tif(param.Length == 0){\n";
-            else {
-                string typehash = GetHashCodeByTypes(classFullName, constructor[i].m_inType);
-                wrapNew += "\t\t\tif(param.Length == " + constructor[i].m_inType.Length + " && MatchType(param, " + typehash + ", mustEqual)){\n";
-            }
+			else if(constructor[i].m_inType.Length == 1){
+				wrapNew += "\t\t\tif(param.Length == " + 1 + " && MatchType(param, typeof(" + constructor[i].m_inType[0] + "), mustEqual)){\n";
+			}
+			else{
+				string typehash = GetHashCodeByTypes(classFullName, constructor[i].m_inType);
+				wrapNew += "\t\t\tif(param.Length == " + constructor[i].m_inType.Length + " && MatchType(param, " + typehash + ", mustEqual)){\n";
+			}
             wrapNew += "\t\t\t\treturnValue = new CQ_Value();\n";
             wrapNew += "\t\t\t\treturnValue.SetObject(typeof(" + classFullName + "), new " + classFullName + "(";
             for(int j = 0; j < constructor[i].m_inType.Length; j++) {
@@ -162,7 +165,10 @@ public class WrapTextTools  {
 
             if(staticMethods[i].m_inType.Length == 0)
                 wrapSCall += "\t\t\tif(paramCount == 0 && functionName == \"" + staticMethods[i].m_methodName + "\"){\n";
-            else {
+			else if(staticMethods[i].m_inType.Length == 1) {
+				wrapSCall += "\t\t\tif(paramCount == " + 1 + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, typeof(" + staticMethods[i].m_inType[0] + "), mustEqual)){\n";
+			}
+			else {
                 string typehash = GetHashCodeByTypes(classFullName, staticMethods[i].m_inType);
                 wrapSCall += "\t\t\tif(paramCount == " + staticMethods[i].m_inType.Length + " && functionName == \"" + staticMethods[i].m_methodName + "\" && MatchType(param, " + typehash + ", mustEqual)){\n";
             }
@@ -206,7 +212,10 @@ public class WrapTextTools  {
 
             if(instanceMethods[i].m_inType.Length == 0)
                 wrapMCall += "\t\t\tif(paramCount == 0 && functionName == \"" + instanceMethods[i].m_methodName + "\"){\n";
-            else {
+			else if(instanceMethods[i].m_inType.Length == 1){
+				wrapMCall += "\t\t\tif(paramCount == " + 1 + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, typeof(" + instanceMethods[i].m_inType[0] + "), mustEqual)){\n";
+			}
+			else {
                 string typehash = GetHashCodeByTypes(classFullName, instanceMethods[i].m_inType);
                 wrapMCall += "\t\t\tif(paramCount == " + instanceMethods[i].m_inType.Length + " && functionName == \"" + instanceMethods[i].m_methodName + "\" && MatchType(param, " + typehash + ", mustEqual)){\n";
             }
@@ -246,7 +255,7 @@ public class WrapTextTools  {
     }
     public static void CallTypes2TypeStr (string prefix, List<Method> methods, List<string> typeDic) {
         for(int i = 0; i < methods.Count; i++) {
-            if(methods[i].m_inType.Length == 0)
+            if(methods[i].m_inType.Length <= 1)
                 continue;
 
             if(!Finish(methods[i].m_inType))

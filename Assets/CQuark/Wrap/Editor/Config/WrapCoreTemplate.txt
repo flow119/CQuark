@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using CQuark;
+﻿using CQuark;
 using System;
 
 //这个类由工具自动生成，不需要手动修改

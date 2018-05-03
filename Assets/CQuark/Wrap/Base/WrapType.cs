@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using CQuark;
+﻿using CQuark;
 using System;
 
 namespace CQuark{
@@ -22,6 +19,19 @@ namespace CQuark{
             }
             return true;
         }
+
+		private static bool MatchType (CQ_Value[] param, Type type, bool mustEqual) {
+			//这里没有做长度判断，因为外面判断过了
+			if(mustEqual) {
+				if(!param[0].EqualType(type))
+						return false;
+			}
+			else {
+				if(!param[0].EqualOrImplicateType(type))
+						return false;
+			}
+			return true;
+		}
 	}
 }
 
