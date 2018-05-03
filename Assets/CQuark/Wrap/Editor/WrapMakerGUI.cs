@@ -662,22 +662,24 @@ public class WrapMakerGUI : EditorWindow {
 
             if(_folderNamespace.Contains(kvp.m_nameSpace)) {
                 for(int i = 0; i < kvp.m_classes.Count; i++) {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(34);
+                    if(string.IsNullOrEmpty(_search) || (kvp.m_nameSpace.Contains(_search) || kvp.m_classes[i].Contains(_search))) {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(34);
 
-					string fullName = (string.IsNullOrEmpty(kvp.m_nameSpace) ? "" : kvp.m_nameSpace + ".") + kvp.m_classes[i];
-					bool select = _selectedClasses.Contains(fullName);
-					bool old = GUILayout.Toggle(select,"",GUILayout.Width(12));
-					if(old != select){
-						if(old)
-							_selectedClasses.Add(fullName);
-						else
-							_selectedClasses.Remove(fullName);
-					}
-                    GUILayout.Label("C", "sv_label_1", GUILayout.Width(28));
-					EditorGUILayout.SelectableLabel(kvp.m_classes[i], GUILayout.Height(16));
-                   
-                    GUILayout.EndHorizontal();
+                        string fullName = (string.IsNullOrEmpty(kvp.m_nameSpace) ? "" : kvp.m_nameSpace + ".") + kvp.m_classes[i];
+                        bool select = _selectedClasses.Contains(fullName);
+                        bool old = GUILayout.Toggle(select, "", GUILayout.Width(12));
+                        if(old != select) {
+                            if(old)
+                                _selectedClasses.Add(fullName);
+                            else
+                                _selectedClasses.Remove(fullName);
+                        }
+                        GUILayout.Label("C", "sv_label_1", GUILayout.Width(28));
+                        EditorGUILayout.SelectableLabel(kvp.m_classes[i], GUILayout.Height(16));
+
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
             GUILayout.Space(5);
