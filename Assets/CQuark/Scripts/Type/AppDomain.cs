@@ -222,59 +222,59 @@ namespace CQuark{
             if(string.IsNullOrEmpty(keyword)) {
                 return null;
             }
-			if(str2itype.TryGetValue(keyword, out ret) == false) {
-                if(keyword[keyword.Length - 1] == '>') {
-                    int iis = keyword.IndexOf('<');
-                    string func = keyword.Substring(0, iis);
-                    List<string> _types = new List<string>();
-                    int istart = iis + 1;
-                    int inow = istart;
-                    int dep = 0;
-                    while(inow < keyword.Length) {
-                        if(keyword[inow] == '<') {
-                            dep++;
-                        }
-                        if(keyword[inow] == '>') {
-                            dep--;
-                            if(dep < 0) {
-                                _types.Add(keyword.Substring(istart, inow - istart));
-                                break;
-                            }
-                        }
+			if(str2itype.TryGetValue(keyword, out ret)) 
+				return ret;
+			if(keyword[keyword.Length - 1] == '>') {
+			    int iis = keyword.IndexOf('<');
+			    string func = keyword.Substring(0, iis);
+			    List<string> _types = new List<string>();
+			    int istart = iis + 1;
+			    int inow = istart;
+			    int dep = 0;
+			    while(inow < keyword.Length) {
+			        if(keyword[inow] == '<') {
+			            dep++;
+			        }
+			        if(keyword[inow] == '>') {
+			            dep--;
+			            if(dep < 0) {
+			                _types.Add(keyword.Substring(istart, inow - istart));
+			                break;
+			            }
+			        }
 
-                        if(keyword[inow] == ',' && dep == 0) {
-                            _types.Add(keyword.Substring(istart, inow - istart));
-                            istart = inow + 1;
-                            inow = istart;
-                            continue; ;
-                        }
+			        if(keyword[inow] == ',' && dep == 0) {
+			            _types.Add(keyword.Substring(istart, inow - istart));
+			            istart = inow + 1;
+			            inow = istart;
+			            continue; ;
+			        }
 
-                        inow++;
-                    }
+			        inow++;
+			    }
 
-                    //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
-					if(str2itype.ContainsKey(func)) {
-                        Type gentype = GetTypeByKeyword(func).typeBridge;
-                        if(gentype.IsGenericTypeDefinition) {
-                            Type[] types = new Type[_types.Count];
-                            for(int i = 0; i < types.Length; i++) {
-                                TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
-                                Type rt = t;
-                                if(rt == null && t != null) {
-                                    rt = typeof(object);
-                                }
-                                types[i] = rt;
-                            }
-                            Type IType = gentype.MakeGenericType(types);
-                            RegisterType(MakeIType(IType, keyword));
-                            return GetTypeByKeyword(keyword);
-                        }
-                    }
-                }
-                DebugUtil.LogError("(CQcript)类型未注册:" + keyword);
-            }
-
-            return ret;
+			    //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
+				if(str2itype.ContainsKey(func)) {
+			        Type gentype = GetTypeByKeyword(func).typeBridge;
+			        if(gentype.IsGenericTypeDefinition) {
+			            Type[] types = new Type[_types.Count];
+			            for(int i = 0; i < types.Length; i++) {
+			                TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
+			                Type rt = t;
+			                if(rt == null && t != null) {
+			                    rt = typeof(object);
+			                }
+			                types[i] = rt;
+			            }
+			            Type IType = gentype.MakeGenericType(types);
+			            RegisterType(MakeIType(IType, keyword));
+			            return GetTypeByKeyword(keyword);
+			        }
+			    }
+			}
+			//TODO反射找类
+			DebugUtil.LogError("(CQcript)类型未注册:" + keyword);
+			return null;
         }
         public static IType GetTypeByKeywordQuiet (string keyword) {
             IType ret = null;
