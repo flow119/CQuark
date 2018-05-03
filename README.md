@@ -1,7 +1,7 @@
 ## 西瓜
 CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Unity热更新。支持Windows,iOS,Android平台。
 
-* 本项目是在Unity3D环境下（Unity4.7.2)运行。
+* 范例是在Unity3D环境下（Unity4.7.2)制作的。
 
 * <del>如果在非Unity3D环境下运行，直接删除Assets/_Unity文件夹和Demo文件夹即可。</del>（从0.9.0版本开始协程机制修改，所有协程依赖MonoBehaviour，因此不再支持非Unity3D环境）
 
@@ -33,12 +33,22 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 因为新版本使用了Wrap机制，<del>效率与Lua一样。</del>(目前效率比Xlua高20%，GC与Xlua相同)
 
 
-## 下个版本预告
+## TODO
 
-* 增加Wrap机制，将以新的方式来注册类型，函数将不再需要注册（理论上效率将和Lua一样）
-* 以往的注册机制将废除，注册过的类将用Wrap执行。而未注册的类将自动反射。
+下个版本
+
+* WrapMaker将自动注册类型，而不再需要把方法和类型分开注册（基本类型和数组将自动注册）
+* 未注册的类将自动反射。且支持命名空间。
+* 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 
 
+下下个版本
+
+* 参考ILRuntime和L#，看看西瓜还有哪些不足，补足缺陷
+
+* 重写MonoBehaviour//参考ILRuntime
+* 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
+* 2 劫持GetComponent和AddComponent，重写。
 
 ## 版本更新记录
 
@@ -199,23 +209,6 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
     Unity的Demo2(从外部加载类并执行类里的函数)。
 
 
-## TODO
-
-下个版本
-
-* 全新的注册机制（包含默认参、自动注册数组）
-* 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
-
-
-下下个版本
-
-* 参考ILRuntime和L#，看看西瓜还有哪些不足，补足缺陷
-
-* 重写MonoBehaviour//参考ILRuntime
-* 1 如果父类继承MonoBehaviour，子类不写Update\Start等不会走父类的方法。
-* 2 劫持GetComponent和AddComponent，重写。
-
-
 ## 特别鸣谢
 
 疯光无线（李剑英） 没有他的CSLE的架构就没有西瓜
@@ -229,3 +222,4 @@ Jare的git: https://github.com/jareguo/
 
 ## 联系我
 我的QQ:181664367
+请注明是西瓜用户或者技术交流
