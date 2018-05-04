@@ -92,14 +92,15 @@ namespace CQuark {
             }
             return -1;
         }
+
         static int GetToken (string line, int nstart, out Token t, ref int lineIndex) {
-            //找到开始字符
+			//符号解析参照:https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/operators/namespace-alias-qualifer
             t.pos = nstart;
             t.line = lineIndex;
             t.text = " ";
             t.type = TokenType.UNKNOWN;
             if(nstart < 0) return -1;
-            if(line[nstart] == '\"') {
+            if(line[nstart] == '\"') {//string
                 t.text = "\"";
                 int pos = nstart + 1;
                 bool bend = false;
@@ -213,35 +214,35 @@ namespace CQuark {
                 }
                 return pos;
             }
-            else if(line[nstart] == '/') {// / /= 注释
-                if(nstart < line.Length - 1 && line[nstart + 1] == '=') {
-                    t.type = TokenType.PUNCTUATION;
-                    t.text = line.Substring(nstart, 2);
-                }
-                else if(nstart < line.Length - 1 && line[nstart + 1] == '/') {
-                    t.type = TokenType.COMMENT;
-                    int enterpos = line.IndexOf('\n', nstart + 2);
-                    if(enterpos < 0) t.text = line.Substring(nstart);
-                    else
-                        t.text = line.Substring(nstart, line.IndexOf('\n', nstart + 2) - nstart);
-                }
-                else {
-                    t.type = TokenType.PUNCTUATION;
-                    t.text = line.Substring(nstart, 1);
-                }
+			else if(line[nstart] == '/' && nstart < line.Length - 1 && line[nstart + 1] == '/') {// //注释
+				t.type = TokenType.COMMENT;
+				int enterpos = line.IndexOf('\n', nstart + 2);
+				if(enterpos < 0)
+					t.text = line.Substring(nstart);
+				else
+					t.text = line.Substring(nstart, enterpos - nstart);
                 return nstart + t.text.Length;
-            }
+			}
+			else if(line[nstart] == '/' && nstart < line.Length - 1 && line[nstart + 1] == '*') {// /*注释
+				t.type = TokenType.COMMENT;
+				int enterpos = line.IndexOf("*/", nstart + 2);
+				if(enterpos < 0)
+					t.text = line.Substring(nstart);
+				else
+					t.text = line.Substring(nstart, enterpos - nstart);
+				return nstart + t.text.Length;
+			}
             else if(line[nstart] == '=') {//= == =>
                 t.type = TokenType.PUNCTUATION;
-                if(nstart < line.Length - 1 && line[nstart + 1] == '=')
+                if(nstart < line.Length - 1 && line[nstart + 1] == '=')//==
                     t.text = line.Substring(nstart, 2);
-                else if(nstart < line.Length - 1 && line[nstart + 1] == '>')
+                else if(nstart < line.Length - 1 && line[nstart + 1] == '>')//=>
                     t.text = line.Substring(nstart, 2);
-                else
+                else//=
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '!') {//= ==
+            else if(line[nstart] == '!') {// !, !=
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -274,7 +275,7 @@ namespace CQuark {
                     t.text = line.Substring(nstart, 1);
                 return nstart + t.text.Length;
             }
-            else if(line[nstart] == '/') {// / /= //
+            else if(line[nstart] == '/') {// / /= 
                 t.type = TokenType.PUNCTUATION;
                 if(nstart < line.Length - 1 && line[nstart + 1] == '=')
                     t.text = line.Substring(nstart, 2);
@@ -309,19 +310,23 @@ namespace CQuark {
                 return nstart + t.text.Length;
             }
 
-            else if(line[nstart] == '&') {// &&
+            else if(line[nstart] == '&') {// &&, &
                 t.type = TokenType.PUNCTUATION;
-                if(nstart < line.Length - 1 && line[nstart + 1] == '&')
+				if(nstart < line.Length - 1 && line[nstart + 1] == '&'){// &&
                     t.text = line.Substring(nstart, 2);
-                else
+				}
+				else{// TODO &
                     return -1;
+				}
             }
-            else if(line[nstart] == '|') {// ||
+            else if(line[nstart] == '|') {
                 t.type = TokenType.PUNCTUATION;
-                if(nstart < line.Length - 1 && line[nstart + 1] == '|')
+				if(nstart < line.Length - 1 && line[nstart + 1] == '|'){// ||
                     t.text = line.Substring(nstart, 2);
-                else
+				}
+				else{// TODO |
                     return -1;
+				}
             }
             else if(char.IsLetter(line, nstart) || line[nstart] == '_') {
                 //字母逻辑
@@ -337,9 +342,6 @@ namespace CQuark {
                     return nstart + t.text.Length;
                 }
                 if(ContainsType(t.text)) { //foreach (string s in types)
-
-                    //if (t.text == s)
-
                     while(line[i] == ' ' && i < line.Length) {
                         i++;
                     }
@@ -371,7 +373,6 @@ namespace CQuark {
                         t.type = TokenType.TYPE;
                         return nstart + t.text.Length;
                     }
-
                 }
                 while(i < line.Length && line[i] == ' ') {
                     i++;
@@ -421,29 +422,24 @@ namespace CQuark {
                     //        t.text = s;
                     //        return nstart + s.Length;
                     //    }
-
                     //}
                 }
                 t.type = TokenType.IDENTIFIER;
                 return nstart + t.text.Length;
             }
             else if(char.IsPunctuation(line, nstart)) {
-                //else
-                {
-                    t.type = TokenType.PUNCTUATION;
-                    t.text = line.Substring(nstart, 1);
-                    return nstart + t.text.Length;
-                }
-                //符号逻辑
-                //-号逻辑
-                //"号逻辑
-                ///逻辑
+                t.type = TokenType.PUNCTUATION;
+                t.text = line.Substring(nstart, 1);
+                return nstart + t.text.Length;
+				//.
+				//;
+				//()[]{}
+				//?:
                 //其他符号
             }
             else if(char.IsNumber(line, nstart)) {
                 //数字逻辑
                 //判断数字合法性
-
                 if(line[nstart] == '0' && line[nstart + 1] == 'x') {//0x....
                     int iend = nstart + 2;
                     for(int i = nstart + 2; i < line.Length; i++) {
@@ -459,7 +455,6 @@ namespace CQuark {
                 }
                 else {
                     //纯数字
-
                     int iend = nstart;
                     for(int i = nstart + 1; i < line.Length; i++) {
                         if(char.IsNumber(line, i)) {
@@ -512,18 +507,13 @@ namespace CQuark {
                 t.text = line.Substring(nstart, i - nstart);
                 return nstart + t.text.Length;
             }
-            //
-            //    -逻辑
-            //
-            //    "逻辑
-            //
-            //    /逻辑
-            //
-            //    其他符号逻辑
-
 
             return nstart + t.text.Length;
         }
+
+		//Parse的流程应该修改：
+		//拆解出Token(不指名是Type还是Identifier)
+		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
         public static IList<Token> Parse (string lines) {
             if(lines[0] == 0xFEFF) {
                 //windows下用记事本写，会在文本第一个字符出现BOM（65279）
