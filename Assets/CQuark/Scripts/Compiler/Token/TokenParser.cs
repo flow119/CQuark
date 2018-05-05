@@ -498,7 +498,7 @@ namespace CQuark {
 
 		//判断x.y到底是类.方法还是命名空间.类，类.类
 		static void ReplaceIdentifier(List<Token> tokens){
-
+			Dictionary<string, string> alias = new Dictionary<string, string> ();
 			int start = 0;
 			while (start < tokens.Count) {
 				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "using"){
@@ -516,6 +516,7 @@ namespace CQuark {
 						if(nextEqual > 0 && nextEqual < nextSemicolon){
 							//别名
 							//TODO 暂时不处理
+//							alias.Add()
 						}else{
 							//命名空间
 							Combine(tokens, start + 1, nextSemicolon - start - 1, TokenType.NAMESPACE);
