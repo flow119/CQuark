@@ -6,6 +6,7 @@ namespace CQuark {
     public enum TokenType {
         UNKNOWN,
         KEYWORD,        //关键字
+		NAMESPACE,		//命名空间，1.0.1新增
         PUNCTUATION,    //标点
         IDENTIFIER,     //标识符 变量与函数
         TYPE,           //类型
@@ -26,4 +27,5 @@ namespace CQuark {
             return string.Format("@line{0},pos{1}", line, pos);
         }
     }
+
 }

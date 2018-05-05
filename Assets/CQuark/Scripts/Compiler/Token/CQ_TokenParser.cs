@@ -229,7 +229,7 @@ namespace CQuark {
 				if(enterpos < 0)
 					t.text = line.Substring(nstart);
 				else
-					t.text = line.Substring(nstart, enterpos - nstart);
+					t.text = line.Substring(nstart, enterpos - nstart + 2);
 				return nstart + t.text.Length;
 			}
             else if(line[nstart] == '=') {//= == =>
@@ -514,7 +514,7 @@ namespace CQuark {
 		//Parse的流程应该修改：
 		//拆解出Token(不指名是Type还是Identifier)
 		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
-        public static IList<Token> Parse (string lines) {
+        public static List<Token> Parse (string lines) {
             if(lines[0] == 0xFEFF) {
                 //windows下用记事本写，会在文本第一个字符出现BOM（65279）
                 lines = lines.Substring(1);
