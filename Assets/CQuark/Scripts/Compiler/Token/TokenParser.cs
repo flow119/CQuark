@@ -5,8 +5,8 @@ using System.Text;
 namespace CQuark {
 	public static class TokenParser {
 		#region Keywords And BasicTypes
-		private static readonly List<string> keywords = new List<string>()
-		{
+		private static readonly List<string> keywords = new List<string>(){
+			//https://msdn.microsoft.com/zh-cn/library/x53a06bb(VS.80).aspx
 			"if",
 			"as",
 			"is",
@@ -48,11 +48,13 @@ namespace CQuark {
 
 			//1.0.2
 			"override",
-			
+			"get",
+			"set",
+			//this //TODO
 			//TODO ref, out
 		};
 
-		static readonly List<string> types = new List<string>(){
+		static readonly List<string> basicTypes = new List<string>(){
 			"double",
 			"long",
 			"ulong",
@@ -67,23 +69,59 @@ namespace CQuark {
 			
 			"bool",
 			"string",
-			"void",
+			"void",//虽然是关键字，但还是作为Type处理
 			"object",
 			//2017-09-15 0.7.1 补充协程
-			"IEnumerator"
+			"IEnumerator",
+			//1.0.1新增
+			"Type",
 		};
 		#endregion
 
-		static List<string> customTypes = new List<string>();
-		static List<string> customNameSpace = new List<string>();
-
-		public static void AddType (string type) {
-			if(ContainsType(type))
+		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx
+		static List<string> customTypes = new List<string>();//注册类型,西瓜声明的类型
+		public static void CleartType(){
+			oriTypes.Clear();
+			customTypes.Clear();
+		}
+		public static void RegisterNewType (string type, string nameSpace) {
+			if(!string.IsNullOrEmpty(nameSpace))
+				type = nameSpace + "." + type;
+			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type))
 				return;
 			customTypes.Add(type);
 		}
-		public static bool ContainsType (string type) {
-			return types.Contains(type) || customTypes.Contains(type);
+		public static void RegisterType(string type){
+			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type))
+				return;
+			oriTypes.Add(type);
+		}
+		public static bool IsType (string type, List<string> nameSpace, out string fullName) {
+			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type)){
+				fullName = type;
+				return true;
+			}
+
+			if(nameSpace != null){
+				for(int i = 0; i < nameSpace.Count; i++){
+					fullName = nameSpace[i] + "." + type;
+					if(basicTypes.Contains(fullName) || customTypes.Contains(fullName) || oriTypes.Contains(fullName)){
+						return true;
+					}
+				}
+			}
+			fullName = "";
+			return false;
+		}
+
+		static List<string> _namespace = new List<string>();
+		public static void RegistNamespace(string type){
+			if(IsNamespace(type))
+				return;
+			_namespace.Add(type);
+		}
+		public static bool IsNamespace(string type){
+			return _namespace.Contains(type);
 		}
 		
 
@@ -99,7 +137,7 @@ namespace CQuark {
 			return -1;
 		}
 
-		//单纯的把所有token提出来，不区分x.y到底是什么
+		//单纯的把所有token提出来，不区分x.y到底是namespace.class还是class.function还是class.class
 		static int GetToken (string line, int nstart, out Token t, ref int lineIndex) {
 			//符号解析参照:https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/operators/namespace-alias-qualifer
 			t.pos = nstart;
@@ -109,6 +147,7 @@ namespace CQuark {
 			if(nstart < 0) 
 				return -1;
 			//string
+			//TODO @"
 			if (line [nstart] == '\"') {
 				t.text = "\"";
 				int pos = nstart + 1;
@@ -485,7 +524,7 @@ namespace CQuark {
 		}
 
 		//把tokens的start位开始合并到一个token里
-		static Token Combine(List<Token> tokens, int start, int length, TokenType type){
+		static Token CombineReplace(List<Token> tokens, int start, int length, TokenType type){
 			Token t = tokens [start];//line和pos继承
 			for (int i = 1; i < length; i++) {
 				t.text += tokens[start + 1].text;
@@ -493,14 +532,21 @@ namespace CQuark {
 			}
 			t.type = type;
 			tokens [start] = t;
-			return tokens [start];
+			return t;
+		}
+
+		static string Combine(List<Token> tokens, int start, int length){
+			string ret = tokens[start].text;
+			for (int i = 1; i < length; i++) {
+				ret += tokens[start + i].text;
+			}
+			return ret;
 		}
 
 		//判断x.y到底是类.方法还是命名空间.类，类.类
 		static void ReplaceIdentifier(List<Token> tokens){
-			Dictionary<string, string> alias = new Dictionary<string, string> ();
-			int start = 0;
-			while (start < tokens.Count) {
+			List<string> usingNamespace = new List<string>();
+			for(int start = 0; start < tokens.Count; start++){
 				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "using"){
 					//using有3种用法。
 					//1控制Dispose
@@ -510,21 +556,85 @@ namespace CQuark {
 					//2命名空间 using System.IO;//后面是命名空间
 					//3别名 using Project = PC.MyCompany.Project;//后面是Identifier
 					else{
-						//由于此时还不确定后面的类型是Type还是Namespace或者是未定义的Identifier，所以用标点判断
+						//由于此时还不确定后面的类型是Type还是Namespace或者是未定义的Identifier，所以判断方式是先出现=还是;
 						int nextEqual = FindToken(tokens, start, "=");
 						int nextSemicolon = FindToken(tokens, start, ";");
 						if(nextEqual > 0 && nextEqual < nextSemicolon){
 							//别名
 							//TODO 暂时不处理
-//							alias.Add()
 						}else{
 							//命名空间
-							Combine(tokens, start + 1, nextSemicolon - start - 1, TokenType.NAMESPACE);
+							string nameSpace = CombineReplace(tokens, start + 1, nextSemicolon - start - 1, TokenType.NAMESPACE).text;
+							if(!usingNamespace.Contains(nameSpace))
+								usingNamespace.Add(nameSpace);
 						}
 					}
 				}
-				start ++;
 			}
+
+			string currentNamespace = "";
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "namespace"){//class后面的一定是类，且后面只能接{
+					for(int i = start + 1; i < tokens.Count; i++){
+						if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "{"){
+							string nameSpace = CombineReplace(tokens, start, i - start - 1, TokenType.NAMESPACE).text;
+							RegistNamespace(nameSpace);
+							currentNamespace = nameSpace;
+							if(!usingNamespace.Contains(nameSpace))
+								usingNamespace.Add(nameSpace);
+							break;
+						}
+					}
+				}
+			}
+
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{
+					string typeName = tokens[start + 1].text;
+					Token t = tokens[start + 1];
+					if(!string.IsNullOrEmpty(currentNamespace)){
+						typeName = currentNamespace + "." + typeName;
+						t.text = typeName;
+					}
+					//TODO 类中类的注册
+					RegisterNewType(typeName, currentNamespace);
+					t.type = TokenType.TYPE;
+					tokens[start + 1] = t;
+				}
+			}
+
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.IDENTIFIER){
+					for(int end = start; end < tokens.Count;){
+						string fullname =  Combine(tokens, start, end - start + 1);
+						if(IsType(fullname, usingNamespace, out fullname)){
+							Token t = CombineReplace(tokens, start, end - start + 1, TokenType.TYPE);
+							t.text = fullname;
+							tokens[start] = t;
+							start--;//先不判断下一个，因为要合并类中类
+							break;
+						}
+
+						if(end + 2 < tokens.Count && tokens[end + 1].text == "." && tokens[end+2].type == TokenType.IDENTIFIER){
+							end += 2;
+						}else{
+							break;
+						}
+					}
+				}else if(tokens[start].type == TokenType.TYPE){
+					//合并类中类
+					if(start + 2 < tokens.Count && tokens[start + 1].text == "." && tokens[start + 2].type == TokenType.IDENTIFIER){
+						string fullname =  Combine(tokens, start, 3);
+						if(IsType(fullname, usingNamespace, out fullname)){
+							Token t = CombineReplace(tokens, start, 3, TokenType.TYPE);
+							t.text = fullname;
+							tokens[start] = t;
+							start--;
+						}
+					}
+				}
+			}
+
 
 //			if(ContainsType(t.text)) { //foreach (string s in types)
 //				while(line[i] == ' ' && i < line.Length) {
@@ -600,35 +710,6 @@ namespace CQuark {
 //					return i;
 //				}
 //			}
-//
-//			if(tokens.Count >= 2 && t.type == TokenType.IDENTIFIER && tokens[tokens.Count - 1].text == "." && tokens[tokens.Count - 2].type == TokenType.TYPE) {
-//				string ntype = tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
-//				if(ContainsType(ntype)) {//类中类，合并之
-//					t.type = TokenType.TYPE;
-//					t.text = ntype;
-//					t.pos = tokens[tokens.Count - 2].pos;
-//					t.line = tokens[tokens.Count - 2].line;
-//					tokens.RemoveAt(tokens.Count - 1);
-//					tokens.RemoveAt(tokens.Count - 1);
-//					
-//					tokens.Add(t);
-//					continue;
-//				}
-//			}
-//			if(tokens.Count >= 2 && t.type == TokenType.IDENTIFIER && tokens[tokens.Count - 1].text == "." && tokens[tokens.Count - 2].type == TokenType.IDENTIFIER) {
-//				string ntype = tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
-//				if(ContainsType(ntype)) {//TODO 命名空间
-//					t.type = TokenType.TYPE;
-//					t.text = ntype;
-//					t.pos = tokens[tokens.Count - 2].pos;
-//					t.line = tokens[tokens.Count - 2].line;
-//					tokens.RemoveAt(tokens.Count - 1);
-//					tokens.RemoveAt(tokens.Count - 1);
-//					
-//					tokens.Add(t);
-//					continue;
-//				}
-//			}
 //			if(tokens.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
 //			   && tokens[tokens.Count - 1].type == TokenType.TYPE
 //			   && tokens[tokens.Count - 2].type == TokenType.PUNCTUATION && tokens[tokens.Count - 2].text == "<"
@@ -644,17 +725,53 @@ namespace CQuark {
 //				tokens.Add(t);
 //				continue;
 //			}
-//			if(tokens.Count >= 2 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].text == "." && (tokens[tokens.Count - 2].type == TokenType.TYPE || tokens[tokens.Count - 2].type == TokenType.IDENTIFIER)) {//Type.Type IDENTIFIER.Type 均不可能，为重名
-//				t.type = TokenType.IDENTIFIER;
-//				tokens.Add(t);
-//				continue;
-//			}
+
+
+			//TODO 用作用域（Stack)去判断
+
+			//C# 允许这种写法 A A = new A();//fuck
+			//但是int int这种又不行
+			//1A B, A一定是Type，B一定是Property
+			//2typeof(A)，A一定是Type
+			//3<A>，<A,B>等 A一定是Type
+			//4A[] A一定是Type
+			//A.B，A.B.C，如果上面有A的Property（B A;），那么A一定是Property，否则A是类或者命名空间
+			//new XX.X()一定是构造函数
+
+			//A.B到底是类中类还是A.成员没有办法知道，必须在Expression级处理
 //			if(tokens.Count >= 1 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].type == TokenType.TYPE) {//Type Type 不可能，为重名
 //				t.type = TokenType.IDENTIFIER;
 //				tokens.Add(t);
 //				continue;
 //			}
 
+			//编译分几步
+			//1，断开成Token，此时只有string,comment,namespace,标点,关键字，数值。没有Type,Property,Function
+			//2，把所有类提取出来，连同其namespace写到注册字典里
+			//3，列举出所有的类（保留unknown.unknow），所有Property,所有function(必须作用域处理)
+			//4，通过字典和反射确定 类名及所有Unknown
+			//5,由compile expression（也需要重构）处理
+		}
+
+		public static bool IsType(List<Token> tokens, int index){
+			//typeof()
+
+			//构造函数
+
+			//后接Identifier
+			if(index == 0)
+				return true;
+			if(tokens[index - 1].type == TokenType.PUNCTUATION){
+				if(tokens[index - 1].text == ";" ||tokens[index - 1].text == "}" 
+					||tokens[index - 1].text == "{" || tokens[index - 1].text == "=>")
+					return true;
+			}
+			if(tokens[index - 1].type == TokenType.KEYWORD){
+				if(tokens[index - 1].text == "public" ||tokens[index - 1].text == "private"
+					||tokens[index - 1].text == "protected" || tokens[index - 1].text == "static")
+					return true;
+			}
+			return false;
 		}
 
 		//Parse的流程应该修改：
@@ -683,6 +800,8 @@ namespace CQuark {
 					}
 				}
 				n = nend;
+				if(t.pos == -1 && t.type == TokenType.UNKNOWN)
+					continue;
 				tokens.Add(t);
 			}
 

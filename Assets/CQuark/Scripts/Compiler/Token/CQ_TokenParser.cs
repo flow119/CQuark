@@ -44,6 +44,8 @@ namespace CQuark {
 
 			//0.8.4 补充
 			"yield",
+			"get",
+			"set",
 
 			//TODO ref, out
         };

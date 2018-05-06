@@ -132,12 +132,40 @@ namespace CQuark{
 			}
 		}
 
+		//含命名空间的注册，除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
+		public static void RegisterType<T> () {
+			string keyword = typeof(T).FullName.Replace('+','.');
+			RegisterIType(MakeIType<T>(keyword));
+			RegisterIType(MakeIType<T[]>(keyword+"[]"));
+		}
+		//非静态类走这个函数注册不会报错，但是会取不到默认值
+		public static void RegisterType (Type type) {
+			string keyword = type.FullName.Replace('+','.');
+			RegisterIType(MakeIType(type, keyword));
+		}
+		public static void RegisterIType (IType type) {
+			if (type.typeBridge.type != null)
+				type2itype [type.typeBridge.type] = type;
+			else if (type.typeBridge.stype != null)
+				ccq2itype [type.typeBridge.stype] = type;
 
-		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
-        public static void RegisterType<T> (string keyword) {
+			string typename = type.keyword;
+			if(string.IsNullOrEmpty(typename)) {//匿名自动注册
+			}
+			else {
+				str2itype[typename] = type;
+				TokenParser.RegisterType(typename);
+			}
+		}
+
+
+		//含命名空间的注册，除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
+		[Obsolete]
+		public static void RegisterType<T> (string keyword) {
 			RegisterType(MakeIType<T>(keyword));
 			RegisterType(MakeIType<T[]>(keyword+"[]"));
-        }
+		}
+		[Obsolete]
 		//非静态类走这个函数注册不会报错，但是会取不到默认值
         public static void RegisterType (Type type, string keyword) {
             RegisterType(MakeIType(type, keyword));
@@ -177,6 +205,7 @@ namespace CQuark{
             else {
 				str2itype[typename] = type;
                 CQ_TokenParser.AddType(typename);
+				TokenParser.RegisterType(typename);
             }
         }
 

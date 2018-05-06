@@ -8,6 +8,8 @@ using CQuark;
 public class TokenParserViewerEditor : Editor {
 
 	TokenParserViewer _target;
+	string _console = "";
+	int _lastline = 0;
 
 	static Dictionary<TokenType, Color> s_typeColor = new Dictionary<TokenType, Color>{
 		{TokenType.COMMENT, new Color(0.5f,0.7f,0.6f)},
@@ -42,31 +44,31 @@ public class TokenParserViewerEditor : Editor {
 			for(int i = 0; i < _target.m_tokens.Count; i++){
 				GUI.contentColor = s_typeColor[_target.m_tokens[i].type];
 
-				GUILayout.Button(_target.m_tokens[i].text);
-				if(_target.m_tokens[i].type == CQuark.TokenType.PUNCTUATION ){
-					if(_target.m_tokens[i].text == ";" )
-					{
-						DrawSpace(depth);
-					}
-					else if(_target.m_tokens[i].text == "{"){
-						depth++;
-						DrawSpace(depth);
-					}
-					else if( _target.m_tokens[i].text == "}"){
-						depth--;
-						DrawSpace(depth);
-					}
+
+
+				if(_target.m_tokens[i].type == CQuark.TokenType.PUNCTUATION && _target.m_tokens[i].text == "}"){
+					depth--;
+				}
+
+				if(_target.m_tokens[i].line != _lastline){
+					GUILayout.FlexibleSpace();
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					GUILayout.Space (depth * 20);
+					_lastline = _target.m_tokens[i].line;
+				}
+
+				if(GUILayout.Button(_target.m_tokens[i].text))
+					_console = _target.m_tokens[i].ToString();
+				
+				
+				if(_target.m_tokens[i].type == CQuark.TokenType.PUNCTUATION && _target.m_tokens[i].text == "{"){
+					depth++;
 				}
 			}
+			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 		}
-	}
-
-	void DrawSpace(int spaceCount){
-		GUILayout.FlexibleSpace();
-		GUILayout.EndHorizontal();
-		GUILayout.BeginHorizontal();
-		GUILayout.Space (spaceCount * 20);
-//		if(_target.m_tokens[i].type == CQuark.TokenType.PUNCTUATION && _target.m_tokens[i].text == "}"){
+		GUILayout.Label(_console);
 	}
 }

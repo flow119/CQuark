@@ -7,6 +7,8 @@ namespace CQuark {
         UNKNOWN,
         KEYWORD,        //关键字
 		NAMESPACE,		//命名空间，1.0.1新增
+		FUNCTION,		//方法，1.0.1新增
+		PROPERTY,		//属性（变量，字段），1.0.1新增
         PUNCTUATION,    //标点
         IDENTIFIER,     //标识符 变量与函数
         TYPE,           //类型
@@ -21,7 +23,7 @@ namespace CQuark {
         public int line;
         public TokenType type;
         public override string ToString () {
-            return type.ToString() + "|" + text + "|" + pos.ToString();
+			return type + "|" + text + "|" + line + "," + pos;
         }
         public string SourcePos () {
             return string.Format("@line{0},pos{1}", line, pos);

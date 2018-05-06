@@ -10,6 +10,10 @@ public class TokenParserViewer : MonoBehaviour {
 	public List<Token> m_tokens;
 
 	public void CompileNew(){
+		TokenParser.CleartType();
+		AppDomain.Reset ();
+		AppDomain.RegisterDefaultType ();
+		InitAppDomain.RegisterFullnameType();
 		m_tokens = TokenParser.Parse (m_text);
 	}
 

@@ -9,9 +9,9 @@ namespace CQuark {
         string keyword {
             get;
         }
-        string _namespace {
-            get;
-        }
+//        string _namespace {
+//            get;
+//        }
         TypeBridge typeBridge {
             get;
         }

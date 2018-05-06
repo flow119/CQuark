@@ -29,7 +29,6 @@ public class InitAppDomain : MonoBehaviour {
 
     public static void RegisterUnityType()
     {
-        //以下内容是Unity专用，如果非Unity平台可以直接主食掉
 		AppDomain.RegisterType<UnityEngine.Object>("Object");
 
 		AppDomain.RegisterType<AssetBundle>("AssetBundle");
@@ -79,4 +78,59 @@ public class InitAppDomain : MonoBehaviour {
         //TODO 补充NGUI,LitJson
         //补充自己需要的类
     }
+
+	public static void RegisterFullnameType()
+	{
+		AppDomain.RegisterType<UnityEngine.Object>();
+
+		AppDomain.RegisterType<AssetBundle>();
+		AppDomain.RegisterType<Animation>();
+		AppDomain.RegisterType<AnimationCurve>();
+		AppDomain.RegisterType<AnimationClip>();
+		AppDomain.RegisterType<Animator>();
+		AppDomain.RegisterType<Application>();
+		AppDomain.RegisterType<AudioSource>();
+		AppDomain.RegisterType<AudioClip>();
+		AppDomain.RegisterType<AudioListener>();
+
+		AppDomain.RegisterType<Camera>();
+		AppDomain.RegisterType<Component>();
+		AppDomain.RegisterType<Color>();
+		AppDomain.RegisterType<Debug>();
+		AppDomain.RegisterType<GameObject>();
+		AppDomain.RegisterType<Input>();
+
+		AppDomain.RegisterType<KeyCode>();
+		AppDomain.RegisterType<Light>();
+		AppDomain.RegisterType<Mathf>();
+		AppDomain.RegisterType<Material>();
+		AppDomain.RegisterType<Mesh>();
+		AppDomain.RegisterType<MeshFilter>();
+
+		AppDomain.RegisterType<ParticleSystem>();
+		AppDomain.RegisterType<PlayerPrefs>();
+		AppDomain.RegisterType<Quaternion>();
+		AppDomain.RegisterType<Renderer>();
+		AppDomain.RegisterType<UnityEngine.Random>();
+		AppDomain.RegisterType<Ray>();
+		AppDomain.RegisterType<Resources>();
+
+		AppDomain.RegisterType<Screen>();
+		AppDomain.RegisterType<Shader>();
+		AppDomain.RegisterType<Texture>();
+		AppDomain.RegisterType<Transform>();
+		AppDomain.RegisterType<UnityEngine.Time>();
+
+		AppDomain.RegisterType<Vector2>();
+		AppDomain.RegisterType<Vector3>();
+		AppDomain.RegisterType<Vector4>();
+		AppDomain.RegisterType<WWW>();
+		AppDomain.RegisterType<WWWForm>();
+
+		AppDomain.RegisterType<Test>();
+		AppDomain.RegisterType<Test.A>();
+		AppDomain.RegisterType<Test.A.B>();
+		//TODO 补充NGUI,LitJson
+		//补充自己需要的类
+	}
 }
