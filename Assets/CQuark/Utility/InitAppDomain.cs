@@ -126,10 +126,10 @@ public class InitAppDomain : MonoBehaviour {
 		AppDomain.RegisterType<Vector4>();
 		AppDomain.RegisterType<WWW>();
 		AppDomain.RegisterType<WWWForm>();
-
-		AppDomain.RegisterType<Test>();
-		AppDomain.RegisterType<Test.A>();
-		AppDomain.RegisterType<Test.A.B>();
+//
+//		AppDomain.RegisterType<Test>();
+//		AppDomain.RegisterType<Test.A>();
+//		AppDomain.RegisterType<Test.A.B>();
 		//TODO 补充NGUI,LitJson
 		//补充自己需要的类
 	}

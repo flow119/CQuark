@@ -14,13 +14,18 @@ public class TokenParserViewerEditor : Editor {
 	static Dictionary<TokenType, Color> s_typeColor = new Dictionary<TokenType, Color>{
 		{TokenType.COMMENT, new Color(0.5f,0.7f,0.6f)},
 		{TokenType.KEYWORD, new Color(0.2f,0.9f,0.4f)},
-		{TokenType.NAMESPACE, new Color(0,0.1f,0.6f)},
-		{TokenType.IDENTIFIER, new Color(0,0,0)},
 		{TokenType.PUNCTUATION, new Color(1f,1f,1f)},
 		{TokenType.STRING, new Color(1f,0.5f,0.1f)},
 		{TokenType.VALUE, new Color(1f,0.7f,0.1f)},
-		{TokenType.TYPE, new Color(0.2f,0.1f,1f)},
+
+		{TokenType.IDENTIFIER, new Color(0,0,0)},
 		{TokenType.UNKNOWN, new Color(0.2f,0.2f,0.2f)},
+
+		{TokenType.NAMESPACE, new Color(0,0.1f,0.6f)},
+		{TokenType.CLASS, new Color(0,0.2f,0.7f)},
+		{TokenType.TYPE, new Color(0.2f,0.1f,1f)},
+		{TokenType.PROPERTY, new Color(1f,0.9f,0.1f)},
+		{TokenType.FUNCTION, new Color(0.1f,0.8f,0.8f)},
 	};
 
 	public override void OnInspectorGUI (){

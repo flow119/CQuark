@@ -50,6 +50,7 @@ namespace CQuark {
 			"override",
 			"get",
 			"set",
+			"this",
 			//this //TODO
 			//TODO ref, out
 		};
@@ -96,6 +97,9 @@ namespace CQuark {
 				return;
 			oriTypes.Add(type);
 		}
+
+
+
 		public static bool IsType (string type, List<string> nameSpace, out string fullName) {
 			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type)){
 				fullName = type;
@@ -544,65 +548,8 @@ namespace CQuark {
 		}
 
 		//判断x.y到底是类.方法还是命名空间.类，类.类
-		static void ReplaceIdentifier(List<Token> tokens){
-			List<string> usingNamespace = new List<string>();
-			for(int start = 0; start < tokens.Count; start++){
-				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "using"){
-					//using有3种用法。
-					//1控制Dispose
-					if(tokens[start + 1].type == TokenType.PUNCTUATION && tokens[start + 1].text == "("){//TODO 暂时不处理
-						
-					}
-					//2命名空间 using System.IO;//后面是命名空间
-					//3别名 using Project = PC.MyCompany.Project;//后面是Identifier
-					else{
-						//由于此时还不确定后面的类型是Type还是Namespace或者是未定义的Identifier，所以判断方式是先出现=还是;
-						int nextEqual = FindToken(tokens, start, "=");
-						int nextSemicolon = FindToken(tokens, start, ";");
-						if(nextEqual > 0 && nextEqual < nextSemicolon){
-							//别名
-							//TODO 暂时不处理
-						}else{
-							//命名空间
-							string nameSpace = CombineReplace(tokens, start + 1, nextSemicolon - start - 1, TokenType.NAMESPACE).text;
-							if(!usingNamespace.Contains(nameSpace))
-								usingNamespace.Add(nameSpace);
-						}
-					}
-				}
-			}
-
-			string currentNamespace = "";
-			for(int start = 0; start < tokens.Count; start++){
-				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "namespace"){//class后面的一定是类，且后面只能接{
-					for(int i = start + 1; i < tokens.Count; i++){
-						if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "{"){
-							string nameSpace = CombineReplace(tokens, start, i - start - 1, TokenType.NAMESPACE).text;
-							RegistNamespace(nameSpace);
-							currentNamespace = nameSpace;
-							if(!usingNamespace.Contains(nameSpace))
-								usingNamespace.Add(nameSpace);
-							break;
-						}
-					}
-				}
-			}
-
-			for(int start = 0; start < tokens.Count; start++){
-				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{
-					string typeName = tokens[start + 1].text;
-					Token t = tokens[start + 1];
-					if(!string.IsNullOrEmpty(currentNamespace)){
-						typeName = currentNamespace + "." + typeName;
-						t.text = typeName;
-					}
-					//TODO 类中类的注册
-					RegisterNewType(typeName, currentNamespace);
-					t.type = TokenType.TYPE;
-					tokens[start + 1] = t;
-				}
-			}
-
+		[Obsolete]
+		static void ReplaceIdentifier(List<Token> tokens, List<string> usingNamespace){
 			for(int start = 0; start < tokens.Count; start++){
 				if(tokens[start].type == TokenType.IDENTIFIER){
 					for(int end = start; end < tokens.Count;){
@@ -746,13 +693,13 @@ namespace CQuark {
 //			}
 
 			//编译分几步
-			//1，断开成Token，此时只有string,comment,namespace,标点,关键字，数值。没有Type,Property,Function
+
 			//2，把所有类提取出来，连同其namespace写到注册字典里
 			//3，列举出所有的类（保留unknown.unknow），所有Property,所有function(必须作用域处理)
 			//4，通过字典和反射确定 类名及所有Unknown
 			//5,由compile expression（也需要重构）处理
 		}
-
+		[Obsolete]
 		public static bool IsType(List<Token> tokens, int index){
 			//typeof()
 
@@ -774,15 +721,13 @@ namespace CQuark {
 			return false;
 		}
 
-		//Parse的流程应该修改：
-		//拆解出Token(不指名是Type还是Identifier)
-		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
-		public static List<Token> Parse (string lines) {
+
+		public static List<Token> SplitToken(string lines){
 			if(lines[0] == 0xFEFF) {
 				//windows下用记事本写，会在文本第一个字符出现BOM（65279）
 				lines = lines.Substring(1);
 			}
-			//找出所有的token
+
 			int lineIndex = 1;
 			List<Token> tokens = new List<Token>();
 			int n = 0;
@@ -804,14 +749,170 @@ namespace CQuark {
 					continue;
 				tokens.Add(t);
 			}
+			return tokens;
+		}
 
-			if(tokens == null)
-				DebugUtil.LogWarning("没有解析到代码");
+		public static List<string> DefineNamespace(List<Token> tokens, out string currentNamespace){
+			List<string> usingNamespace = new List<string>();
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "using"){
+					//using有3种用法。
+					//1控制Dispose
+					if(tokens[start + 1].type == TokenType.PUNCTUATION && tokens[start + 1].text == "("){//TODO 暂时不处理
+						
+					}
+					//2命名空间 using System.IO;//后面是命名空间
+					//3别名 using Project = PC.MyCompany.Project;//后面是Identifier
+					else{
+						//由于此时还不确定后面的类型是Type还是Namespace或者是未定义的Identifier，所以判断方式是先出现=还是;
+						int nextEqual = FindToken(tokens, start, "=");
+						int nextSemicolon = FindToken(tokens, start, ";");
+						if(nextEqual > 0 && nextEqual < nextSemicolon){
+							//别名
+							//TODO 暂时不处理
+						}else{
+							//命名空间
+							string nameSpace = CombineReplace(tokens, start + 1, nextSemicolon - start - 1, TokenType.NAMESPACE).text;
+							if(!usingNamespace.Contains(nameSpace))
+								usingNamespace.Add(nameSpace);
+						}
+					}
+				}
+			}
+			
+			currentNamespace = "";
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "namespace"){//namespace后接命名空间，可以包含多个.
+					for(int i = start + 1; i < tokens.Count; i++){
+						if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "{"){
+							string nameSpace = CombineReplace(tokens, start, i - start - 1, TokenType.NAMESPACE).text;
+							RegistNamespace(nameSpace);
+							currentNamespace = nameSpace;
+							if(!usingNamespace.Contains(nameSpace))
+								usingNamespace.Add(nameSpace);
+							break;
+						}
+					}
+				}
+			}
+			return usingNamespace;
+		}
 
-			//把Token区分出Type还是Namespace还是Method
-			ReplaceIdentifier (tokens);
+		public static void DefineClass(List<Token> tokens){
+			for(int start = 0; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{或:xxx{
+					Token token = tokens[start + 1];
+					token.type = TokenType.CLASS;
+					tokens[start+1] = token;
+
+					if(start + 3 < tokens.Count && tokens[start + 2].text == ":"){
+						for(int i = start + 3; i < tokens.Count; i++){
+							if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "{"){
+								string baseClass = CombineReplace(tokens, start + 3, i - start - 3, TokenType.CLASS).text;
+								start += 3;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		public static void DefineProperty(List<Token> tokens){
+			//三个函数顺序执行
+			for(int start = 1; start < tokens.Count; start++){
+				if(tokens[start].type == TokenType.IDENTIFIER && basicTypes.Contains(tokens[start].text)){//class后面的一定是类，且后面只能接{或:xxx{
+					Token token = tokens[start];
+					token.type = TokenType.TYPE;
+					tokens[start] = token;
+				}
+			}
+
+			for(int start = 1; start < tokens.Count - 1; start++){
+				if(tokens[start].type == TokenType.IDENTIFIER && (tokens[start - 1].type == TokenType.IDENTIFIER || tokens[start - 1].type == TokenType.TYPE)
+				   && tokens[start + 1].text != "("){//Type 后一定是Property
+					Token token = tokens[start];
+					token.type = TokenType.PROPERTY;
+					tokens[start] = token;
+				}
+			}
+			//TODO 作用域，并且获取基类
+			for (int end = tokens.Count - 1; end >= 0; end--) {
+				if(tokens[end].type == TokenType.PROPERTY && tokens[end - 1].type == TokenType.IDENTIFIER){//Property前面的Identifier一定是Type，可能是x.y.z a
+					for(int start = end - 1; start >= 0; ){
+						if(tokens[start - 1].text == "." && tokens[start - 2].type == TokenType.IDENTIFIER){
+							start -= 2;
+						}else{
+							CombineReplace(tokens, start, end - start, TokenType.TYPE);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		public static void DefineFunction(List<Token> tokens){
+			for(int start = 0; start < tokens.Count - 1; start++){
+				if(tokens[start].type == TokenType.IDENTIFIER && 
+				   (tokens[start + 1].text == "(")){
+					Token token = tokens[start];
+					token.type = TokenType.FUNCTION;
+					tokens[start] = token;
+				}
+			}
+		}
+//		public static List<string> FindUsingNamespace(List<Token> tokens){
+//
+//			
+//			for(int start = 0; start < tokens.Count; start++){
+//				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{
+//					string typeName = tokens[start + 1].text;
+//					Token t = tokens[start + 1];
+//					if(!string.IsNullOrEmpty(currentNamespace)){
+//						typeName = currentNamespace + "." + typeName;
+//						t.text = typeName;
+//					}
+//					//TODO 类中类的注册
+//					RegisterNewType(typeName, currentNamespace);
+//					t.type = TokenType.TYPE;
+//					tokens[start + 1] = t;
+//				}
+//			}
+//			return usingNamespace;
+//		}
+
+		//Parse的流程应该修改：
+		//拆解出Token(不指名是Type还是Identifier)
+		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
+		public static List<Token> Parse (string lines) {
+
+			//第一步，找出所有的token
+			//此时只有string,comment,namespace,标点,关键字，数值,Identifier。没有Type,Property,Function
+			List<Token> tokens = SplitToken (lines);
+
+			if (tokens == null) {
+				DebugUtil.LogWarning ("没有解析到代码");
+				return null;
+			}
+
+//			//第二步，找到引用的命名空间，及当前的命名空间。注册到字典
+//			List<string> usingNamespace = FindUsingNamespace (tokens);
+			string currentNamespace = "";
+			List<string> usingNamespace = DefineNamespace (tokens, out currentNamespace);
+			//找到类，注意，此时不用知道类的全名，是根据C#规范来找的
+			DefineClass (tokens);
+
+			DefineProperty (tokens);
+
+			DefineFunction (tokens);
+//			//第三步，列举出所有的类，所有Property,所有function(必须作用域处理)。不确定的保留（Identifier.Identifier），
+//
+//
+//			//把Token区分出Type还是Namespace还是Method
+//			ReplaceIdentifier (tokens, usingNamespace);
 
 			return tokens;
 		}
+
 	}
 }
