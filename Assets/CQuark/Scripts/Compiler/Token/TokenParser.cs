@@ -46,6 +46,9 @@ namespace CQuark {
 			//0.8.4 补充
 			"yield",
 
+			//1.0.1
+			"typeof",
+
 			//1.0.2
 			"override",
 			"get",
@@ -723,7 +726,7 @@ namespace CQuark {
 
 
 		public static List<Token> SplitToken(string lines){
-			if(lines[0] == 0xFEFF) {
+			if(lines.Length > 0 && lines[0] == 0xFEFF) {
 				//windows下用记事本写，会在文本第一个字符出现BOM（65279）
 				lines = lines.Substring(1);
 			}
@@ -799,6 +802,7 @@ namespace CQuark {
 		}
 
 		public static void DefineClass(List<Token> tokens){
+			
 			for(int start = 0; start < tokens.Count; start++){
 				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{或:xxx{
 					Token token = tokens[start + 1];
@@ -812,6 +816,16 @@ namespace CQuark {
 								start += 3;
 								break;
 							}
+						}
+					}
+				}
+				else if(tokens[start].text == "typeof" && tokens[start + 1].text == "("){
+					//TODO 注意要区分T模板
+					for(int i = start + 2; i < tokens.Count; i++){
+						if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == ")"){
+							string baseClass = CombineReplace(tokens, start + 2, i - start - 2, TokenType.CLASS).text;
+							start = i + 1;
+							break;
 						}
 					}
 				}
@@ -861,6 +875,61 @@ namespace CQuark {
 				}
 			}
 		}
+
+		public static void DefineTempletType(List<Token> tokens){
+			//模板类
+			for(int start = 0; start < tokens.Count - 1; start++){
+				if(tokens[start].text == "<"){
+					bool isTemplet = true;
+					int end = start + 1;
+					for(; end < tokens.Count - 1; ){
+						if(tokens[end].type == TokenType.TYPE || tokens[end].type == TokenType.NAMESPACE || tokens[end].type == TokenType.CLASS || tokens[end].type == TokenType.IDENTIFIER){
+							if (tokens[end + 1].text == ".")//<A.b>
+								end += 2;
+							else if (tokens[end + 1].text == ",")//<A, B>
+								end += 2;
+							else if (tokens[end + 1].text == ">")
+								break;
+							else{
+								isTemplet = false;
+								break;
+							}
+						}else{
+							isTemplet = false;
+							break;
+						}
+					}
+					if(isTemplet){
+						CombineReplace(tokens, start - 1, end - start + 3, TokenType.IDENTIFIER);
+					}
+				}
+			}
+
+			//数组
+			for(int end = 1; end < tokens.Count - 1; end++){
+				if(tokens[end].text == "["){
+					for(int start = end - 1; start >= 0;){
+						if(tokens[start].type == TokenType.CLASS || tokens[start].type == TokenType.NAMESPACE ||
+							tokens[start].type == TokenType.TYPE || tokens[start].type == TokenType.IDENTIFIER){
+							if(start - 1 > 0 && tokens[start - 1].text == "."){
+								start -= 2;
+							}else{
+								CombineReplace(tokens, start, end - start, TokenType.TYPE);
+								break;
+							}
+						}
+					}
+				}
+			}
+			for(int start = 0; start < tokens.Count - 4; start++){
+				if(tokens[start].type == TokenType.TYPE && tokens[start + 1].text == "[" && tokens[start + 2].text == "]"){
+					Token t = tokens[start + 3];
+					t.type = TokenType.PROPERTY;
+					tokens[start + 3] = t;
+				}
+			}
+		}
+
 //		public static List<string> FindUsingNamespace(List<Token> tokens){
 //
 //			
@@ -902,9 +971,13 @@ namespace CQuark {
 			//找到类，注意，此时不用知道类的全名，是根据C#规范来找的
 			DefineClass (tokens);
 
+			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数
+
 			DefineProperty (tokens);
 
 			DefineFunction (tokens);
+
+
 //			//第三步，列举出所有的类，所有Property,所有function(必须作用域处理)。不确定的保留（Identifier.Identifier），
 //
 //
