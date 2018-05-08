@@ -53,9 +53,9 @@ namespace CQuark {
 			"override",
 			"get",
 			"set",
-			"this",
-			//this //TODO
-			//TODO ref, out
+			"this",//TODO
+			"ref",//TODO
+			"out",//TODO
 		};
 
 		static readonly List<string> basicTypes = new List<string>(){
@@ -850,7 +850,16 @@ namespace CQuark {
 					tokens[start] = token;
 				}
 			}
+			for(int start = 0; start < tokens.Count - 4; start++){
+				if(tokens[start].text == "[" && tokens[start + 1].text == "]" && tokens[start + 2].type != TokenType.PUNCTUATION){
+					Token t = tokens[start + 2];
+					t.type = TokenType.PROPERTY;
+					tokens[start + 2] = t;
+				}
+			}
+
 			//TODO 作用域，并且获取基类
+
 			for (int end = tokens.Count - 1; end >= 0; end--) {
 				if(tokens[end].type == TokenType.PROPERTY && tokens[end - 1].type == TokenType.IDENTIFIER){//Property前面的Identifier一定是Type，可能是x.y.z a
 					for(int start = end - 1; start >= 0; ){
@@ -906,33 +915,25 @@ namespace CQuark {
 			}
 
 			//数组
-			for(int end = 1; end < tokens.Count - 1; end++){
-				if(tokens[end].text == "["){
-					for(int start = end - 1; start >= 0;){
-						if(tokens[start].type == TokenType.CLASS || tokens[start].type == TokenType.NAMESPACE ||
-							tokens[start].type == TokenType.TYPE || tokens[start].type == TokenType.IDENTIFIER){
-							if(start - 1 > 0 && tokens[start - 1].text == "."){
-								start -= 2;
-							}else{
-								CombineReplace(tokens, start, end - start, TokenType.TYPE);
-								break;
-							}
-						}
-					}
-				}
-			}
-			for(int start = 0; start < tokens.Count - 4; start++){
-				if(tokens[start].type == TokenType.TYPE && tokens[start + 1].text == "[" && tokens[start + 2].text == "]"){
-					Token t = tokens[start + 3];
-					t.type = TokenType.PROPERTY;
-					tokens[start + 3] = t;
-				}
-			}
+//			for(int end = 1; end < tokens.Count - 1; end++){
+//				if(tokens[end].text == "["){
+//					for(int start = end - 1; start >= 0;){
+//						if(tokens[start].type == TokenType.CLASS || tokens[start].type == TokenType.NAMESPACE ||
+//							tokens[start].type == TokenType.TYPE || tokens[start].type == TokenType.IDENTIFIER){
+//							if(start - 1 > 0 && tokens[start - 1].text == "."){
+//								start -= 2;
+//							}else{
+//								CombineReplace(tokens, start, end - start, TokenType.TYPE);
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
+
 		}
 
 //		public static List<string> FindUsingNamespace(List<Token> tokens){
-//
-//			
 //			for(int start = 0; start < tokens.Count; start++){
 //				if(tokens[start].type == TokenType.KEYWORD && tokens[start].text == "class"){//class后面的一定是类，且后面只能接{
 //					string typeName = tokens[start + 1].text;
@@ -954,7 +955,6 @@ namespace CQuark {
 		//拆解出Token(不指名是Type还是Identifier)
 		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
 		public static List<Token> Parse (string lines) {
-
 			//第一步，找出所有的token
 			//此时只有string,comment,namespace,标点,关键字，数值,Identifier。没有Type,Property,Function
 			List<Token> tokens = SplitToken (lines);
@@ -968,15 +968,15 @@ namespace CQuark {
 //			List<string> usingNamespace = FindUsingNamespace (tokens);
 			string currentNamespace = "";
 			List<string> usingNamespace = DefineNamespace (tokens, out currentNamespace);
-			//找到类，注意，此时不用知道类的全名，是根据C#规范来找的
-			DefineClass (tokens);
-
-			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数
-
+			//找到类，注意，此时是根据C#规范来找的,因此不知道类的全名
+			DefineClass (tokens);	//所有的类注册完毕
+			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数，因此放在Property和Function之前
 			DefineProperty (tokens);
-
 			DefineFunction (tokens);
 
+			//第三步。对所有脚本编译（因为需要知道基类的property）
+
+			//第四步，所有Property根据作用域来确定。不确定的保留Identifier.Identifier。
 
 //			//第三步，列举出所有的类，所有Property,所有function(必须作用域处理)。不确定的保留（Identifier.Identifier），
 //

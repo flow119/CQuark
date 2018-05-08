@@ -21,9 +21,9 @@ public class TokenParserViewerEditor : Editor {
 		{TokenType.IDENTIFIER, new Color(0,0,0)},
 		{TokenType.UNKNOWN, new Color(0.2f,0.2f,0.2f)},
 
-		{TokenType.NAMESPACE, new Color(0,0.1f,0.6f)},
-		{TokenType.CLASS, new Color(0,0.2f,0.7f)},
-		{TokenType.TYPE, new Color(0.2f,0.1f,1f)},
+		{TokenType.NAMESPACE, new Color(0.5f,0f,0.8f)},
+		{TokenType.CLASS, new Color(0.2f,0.1f,0.7f)},
+		{TokenType.TYPE, new Color(0.1f,0.3f,0.9f)},
 		{TokenType.PROPERTY, new Color(1f,0.9f,0.1f)},
 		{TokenType.FUNCTION, new Color(0.1f,0.8f,0.8f)},
 	};
@@ -75,5 +75,6 @@ public class TokenParserViewerEditor : Editor {
 			GUILayout.EndHorizontal();
 		}
 		GUILayout.Label(_console);
+
 	}
 }
