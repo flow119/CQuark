@@ -365,13 +365,17 @@ namespace CQuark{
         }
         public static void BuildProject (string path, string pattern) {
             string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
+            BuildProject(files);
+        }
+
+        public static void BuildProject (string[] filePaths) {
             Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
-            foreach(string fileName in files) {
-				if(project.ContainsKey(fileName))
+            foreach(string filePath in filePaths) {
+                if(project.ContainsKey(filePath))
                     continue;
-				string text = System.IO.File.ReadAllText(fileName);
+                string text = System.IO.File.ReadAllText(filePath);
                 var tokens = CQ_TokenParser.Parse(text);
-				project.Add(fileName, tokens);
+                project.Add(filePath, tokens);
             }
             Project_Compile(project, true);
         }
