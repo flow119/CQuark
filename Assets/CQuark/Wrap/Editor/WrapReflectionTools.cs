@@ -143,11 +143,34 @@ public class WrapReflectionTools {
     }
 
     public static string GetTrueName (Type type) {
-        return type.FullName.Replace('+','.');
+		try{
+			string ret = "";
+			string[] s = type.FullName.Split ('+');
+			for (int i = 0; i < s.Length; i++) {
+				string[] t = s[i].Split('`');
+				if(t.Length == 1){
+					ret += t[0];
+				}else{
+					ret += t[0] + "<";
+					for (int j = int.Parse(t[1]) - 1; j > 0; j--) {
+						ret += ",";
+					}
+					ret += ">";
+				}
+
+				if(i != s.Length - 1)
+					ret += ".";
+			}
+			return ret;
+		}
+		catch (Exception e){
+			DebugUtil.LogError(type.FullName);
+			return "";
+		}
     }
 
     public static string GetWrapName (Type type) {
-        return type.FullName.Replace("+", "").Replace(".", "");
+        return type.FullName.Replace("+", "").Replace("`","").Replace(".", "");
     }
 
     public static string GetWrapFolderName (Type type) {
@@ -204,6 +227,28 @@ public class WrapReflectionTools {
 			}
 		}
         return types.ToArray();
+	}
+
+	public static Type[] GetAllTypes(){
+		List<Type> types = new List<Type>();
+		AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+
+		foreach( var assemblyName in referencedAssemblies ){
+			if(assemblyName.FullName.StartsWith("UnityEditor"))
+				continue;
+			
+			Assembly assembly = Assembly.Load( assemblyName );
+			if(assembly != null ){
+				Type[] typeArray = assembly.GetTypes();
+				foreach(var t in typeArray){
+					if(!IsTClass(t))
+						types.Add(t);
+					else
+						DebugUtil.LogWarning("Obsolete " + t.Name);
+				}
+			}
+		}
+		return types.ToArray ();
 	}
 
 	public static List<Property> GetPropertys (Type type, ref string manifest, List<string> filter) {

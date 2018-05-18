@@ -198,6 +198,10 @@ namespace CQuark {
                     bPublic = false;
                     continue;
                 }
+				else if(tokens[i].type == TokenType.KEYWORD && tokens[i].text == "protected") {
+					bPublic = false;
+					continue;
+				}
                 else if(tokens[i].type == TokenType.KEYWORD && tokens[i].text == "static") {
                     bStatic = true;
                     continue;

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Net;
 
 public class WrapMakerGUI : EditorWindow {
 
@@ -158,9 +159,6 @@ public class WrapMakerGUI : EditorWindow {
 	}
 
     void OnlyAddClass (string fullname) {
-        //if(fullname.Contains("`"))
-        //    return;
-
         Type type = WrapReflectionTools.GetType(fullname);
 
         if(type == null) {
@@ -557,7 +555,23 @@ public class WrapMakerGUI : EditorWindow {
 			GUILayout.BeginHorizontal();
 	        GUILayout.Label("  STEP 1 : Click the button on right side →", "BoldLabel");
 	        GUI.backgroundColor = Color.green;
-	       
+			if(GUILayout.Button("Register Type", GUILayout.Width(100))){
+//				Debug.Log(Type.GetType("System.Net.Sockets.TcpListener")  + "");
+				Type t = typeof(System.Net.Sockets.TcpListener);//如果不这么来一下。反射不出System.Net
+//				Debug.Log (t.Assembly.FullName);
+//				System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+//				foreach( var assemblyName in referencedAssemblies ){
+//					Debug.Log ("遍历" + assemblyName.FullName);
+//				}
+				Type[] types = WrapReflectionTools.GetAllTypes();
+				string output = "";
+				for(int i = 0; i < types.Length; i++){
+					output += WrapReflectionTools.GetTrueName(types[i]);
+					output += "\n";
+				}
+				File.WriteAllText(WrapConfigFolder + "/Types.txt", output);
+				AssetDatabase.Refresh();
+			}
 			if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
 				WrapCommon();
 	        }

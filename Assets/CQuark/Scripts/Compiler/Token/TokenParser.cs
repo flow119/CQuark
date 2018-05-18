@@ -33,6 +33,9 @@ namespace CQuark {
 			"public",
 			"private",
 			"static",
+			"protected",//1.0.1补充
+			"internal",//1.0.1补充
+			"const",
 			
 			"try",
 			"catch",
@@ -829,6 +832,27 @@ namespace CQuark {
 						}
 					}
 				}
+				else if(tokens[start].text == "as" || tokens[start].text == "is"){
+					if(tokens[start - 1].type == TokenType.IDENTIFIER ){
+						Token t = tokens[start - 1];
+						t.type = TokenType.PROPERTY;
+						tokens[start - 1] = t;
+					}
+					for(int i = start + 1; i < tokens.Count; i++){
+						if(tokens[i].type == TokenType.IDENTIFIER ){
+							if(tokens[i + 1].text == ".")
+								i += 2;
+						}else{
+							CombineReplace(tokens, start + 1, i - start - 1, TokenType.TYPE);
+							start = i;
+							break;
+						}
+					}
+				}
+			}
+
+			for (int start = 0; start < tokens.Count; start++) {
+				//(I)xxx强转
 			}
 		}
 
@@ -857,7 +881,21 @@ namespace CQuark {
 					tokens[start + 2] = t;
 				}
 			}
-
+			//必须放在模版<>判断之后)
+			for (int start = 1; start < tokens.Count; start++) {
+				if(tokens[start].type == TokenType.PUNCTUATION){
+					if (tokens [start].text == ")" || tokens [start].text == "," || tokens [start].text == "]" || tokens[start].text == ";"
+					    || tokens[start].text == ">" || tokens[start].text == "<" || tokens[start].text == ">=" || tokens[start].text == "<=" || tokens[start].text == "==" || tokens[start].text == "!=" 
+					    || tokens[start].text == "+=" || tokens[start].text == "-=" || tokens[start].text == "*=" || tokens[start].text == "/=" || tokens[start].text == "%=" 
+					    || tokens[start].text == "=" || tokens[start].text == "&&" || tokens[start].text == "||" || tokens[start].text == "&=" || tokens[start].text == "|=") {
+						if(tokens[start - 1].type == TokenType.IDENTIFIER){
+							Token t = tokens[start - 1];
+							t.type = TokenType.PROPERTY;
+							tokens[start - 1] = t;
+						}
+					}
+				}
+			}
 			//TODO 作用域，并且获取基类
 
 			for (int end = tokens.Count - 1; end >= 0; end--) {
@@ -876,8 +914,8 @@ namespace CQuark {
 
 		public static void DefineFunction(List<Token> tokens){
 			for(int start = 0; start < tokens.Count - 1; start++){
-				if(tokens[start].type == TokenType.IDENTIFIER && 
-				   (tokens[start + 1].text == "(")){
+				if(tokens[start + 1].text == "(" && tokens[start].type == TokenType.IDENTIFIER ){
+					//public
 					Token token = tokens[start];
 					token.type = TokenType.FUNCTION;
 					tokens[start] = token;
@@ -915,21 +953,29 @@ namespace CQuark {
 			}
 
 			//数组
-//			for(int end = 1; end < tokens.Count - 1; end++){
-//				if(tokens[end].text == "["){
-//					for(int start = end - 1; start >= 0;){
-//						if(tokens[start].type == TokenType.CLASS || tokens[start].type == TokenType.NAMESPACE ||
-//							tokens[start].type == TokenType.TYPE || tokens[start].type == TokenType.IDENTIFIER){
-//							if(start - 1 > 0 && tokens[start - 1].text == "."){
-//								start -= 2;
-//							}else{
-//								CombineReplace(tokens, start, end - start, TokenType.TYPE);
-//								break;
-//							}
-//						}
-//					}
-//				}
-//			}
+			for(int left = 1; left < tokens.Count - 1; left++){
+				if(tokens[left].text == "[" ){
+					if(tokens[left+1].text == "]"){
+						for(int start = left - 1; start >= 0;){
+							if(tokens[start].type == TokenType.CLASS || tokens[start].type == TokenType.NAMESPACE ||
+								tokens[start].type == TokenType.TYPE || tokens[start].type == TokenType.IDENTIFIER){
+								if(start - 1 > 0 && tokens[start - 1].text == "."){
+									start -= 2;
+								}else{
+									CombineReplace(tokens, start, left - start, TokenType.TYPE);
+									break;
+								}
+							}
+						}
+					}else{
+						if(tokens[left - 1].type == TokenType.IDENTIFIER){
+							Token t = tokens[left - 1];
+							t.type = TokenType.PROPERTY;
+							tokens[left - 1] = t;
+						}
+					}
+				}
+			}
 
 		}
 
