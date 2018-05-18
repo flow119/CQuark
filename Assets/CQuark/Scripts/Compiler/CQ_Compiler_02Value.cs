@@ -43,7 +43,7 @@ namespace CQuark {
                 v.SetObject(typeof(string), value.text.Substring(1, value.text.Length - 2));
                 return new CQ_Expression_Value(v);
             }
-			else if(value.type == TokenType.IDENTIFIER || value.type == TokenType.PROPERTY) {
+            else if(value.type == TokenType.IDENTIFIER) {
                 CQ_Expression_GetValue getvalue = new CQ_Expression_GetValue(pos, pos, value.line, value.line);
                 getvalue.value_name = value.text;
                 return getvalue;

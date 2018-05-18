@@ -156,6 +156,8 @@ namespace CQuark {
 			}else if(val.m_type == typeof(bool)){
 				bool b = val.GetBool();
 				SetBool(b);
+			}else if(val.IsDelegate || val.IsDeleEvent){
+				_obj = val._obj;
 			}else{
 				SetObject(val.typeBridge, val._obj);
 			}

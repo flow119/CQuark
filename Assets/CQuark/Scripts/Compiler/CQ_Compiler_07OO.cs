@@ -206,13 +206,14 @@ namespace CQuark {
                     bStatic = true;
                     continue;
                 }
-				else if(tokens[i].type == TokenType.TYPE || (tokens[i].type == TokenType.IDENTIFIER || tokens[i].type == TokenType.CLASS && tokens[i].text == classname))//发现类型
+                else if(tokens[i].type == TokenType.TYPE || (tokens[i].type == TokenType.IDENTIFIER && tokens[i].text == classname))//发现类型
                 {
 
                     IType idtype = CQuark.AppDomain.GetTypeByKeyword("null");
                     bool bctor = false;
                     if(tokens[i].type == TokenType.TYPE)//类型
                     {
+
                         if(tokens[i].text == classname && tokens[i + 1].text == "(") {//构造函数
                             bctor = true;
                             i--;
@@ -229,7 +230,7 @@ namespace CQuark {
                         }
                     }
 
-					if(tokens[i + 1].type == CQuark.TokenType.IDENTIFIER || tokens[i + 1].type == CQuark.TokenType.PROPERTY || bctor) //类型后面是名称
+                    if(tokens[i + 1].type == CQuark.TokenType.IDENTIFIER || bctor) //类型后面是名称
                     {
                         string idname = tokens[i + 1].text;
                         if(tokens[i + 2].type == CQuark.TokenType.PUNCTUATION && tokens[i + 2].text == "(")//参数开始,这是函数

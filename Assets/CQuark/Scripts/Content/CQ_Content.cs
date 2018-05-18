@@ -302,7 +302,7 @@ namespace CQuark {
         //}
         public CQ_Value Get (string name) {
             CQ_Value v = GetQuiet(name);
-            if(v == CQ_Value.Null)
+			if(v == CQ_Value.Null && v.m_type == null)
                 throw new Exception("值" + name + "没有定义过");
             return v;
         }
