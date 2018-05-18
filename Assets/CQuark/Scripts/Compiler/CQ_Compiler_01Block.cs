@@ -262,8 +262,7 @@ namespace CQuark {
                         bTest = true;
                     }
                     if(!bTest && tlist[expbegin].type == TokenType.TYPE) {
-
-                        if(tlist[expbegin + 1].type == TokenType.IDENTIFIER) {//定义表达式或者定义并赋值表达式
+						if(tlist[expbegin + 1].type == TokenType.IDENTIFIER || tlist[expbegin + 1].type == TokenType.PROPERTY) {//定义表达式或者定义并赋值表达式
                             if(expend == expbegin + 1)//定义表达式
                             {
                                 ICQ_Expression subvalue = Compiler_Expression_Define(tlist, expbegin, expend);
@@ -286,7 +285,8 @@ namespace CQuark {
                                 return false;
                             }
                         }
-                        else if(tlist[expbegin + 1].text == "[" && tlist[expbegin + 2].text == "]" && tlist[expbegin + 3].type == TokenType.IDENTIFIER)//定义表达式或者定义并赋值表达式
+                        else if(tlist[expbegin + 1].text == "[" && tlist[expbegin + 2].text == "]" && 
+							(tlist[expbegin + 3].type == TokenType.IDENTIFIER || tlist[expbegin + 3].type == TokenType.PROPERTY))//定义表达式或者定义并赋值表达式
                         {
                             if(expend == expbegin + 3)//定义表达式
                             {
@@ -330,7 +330,7 @@ namespace CQuark {
                             }
                         }
                     }
-                    if(!bTest && tlist[expbegin].type == TokenType.IDENTIFIER) {
+					if(!bTest && (tlist[expbegin].type == TokenType.IDENTIFIER || tlist[expbegin].type == TokenType.PROPERTY)) {
                         if(expend == expbegin + 1)//一元表达式
                         {
                             ICQ_Expression subvalue = Compiler_Expression_MathSelf(tlist, expbegin, expend);
@@ -354,7 +354,8 @@ namespace CQuark {
                             bTest = true;
                         }
                     }
-                    if(!bTest && (tlist[expbegin].type == TokenType.IDENTIFIER || tlist[expbegin].type == TokenType.VALUE || tlist[expbegin].type == TokenType.STRING)) {
+					if(!bTest && (tlist[expbegin].type == TokenType.IDENTIFIER || tlist[expbegin].type == TokenType.PROPERTY
+						|| tlist[expbegin].type == TokenType.VALUE || tlist[expbegin].type == TokenType.STRING)) {
                         //算数表达式
                         ICQ_Expression subvalue = Compiler_Expression_Math(tlist, expbegin, expend);
                         if(null != subvalue) {
