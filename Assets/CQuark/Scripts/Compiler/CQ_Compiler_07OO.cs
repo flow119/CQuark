@@ -241,6 +241,9 @@ namespace CQuark {
                             Class_CQuark.Function func = new Class_CQuark.Function();
                             func.bStatic = bStatic;
                             func.bPublic = bPublic;
+							
+							if(tokens[i].text != "void")
+								func._returntype = CQuark.AppDomain.GetTypeByKeyword(tokens[i].text);
 
                             int funcparambegin = i + 2;
                             int funcparamend = FindBlock(tokens, funcparambegin);

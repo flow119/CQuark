@@ -88,6 +88,9 @@ namespace CQuark {
             yield break;
         }
 
+		//当Function_CQ作为Delegate、IEnumrator等传递时，记录调用对象
+		public CQ_Content callObj;
+		
         public override string ToString () {
             return "Block|";
         }

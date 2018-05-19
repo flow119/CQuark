@@ -231,6 +231,17 @@ namespace CQuark {
                         //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
 						content.DefineAndSet(funccache._paramnames[i], _params[i].typeBridge, _params[i]);
                     }
+					
+					//如果返回值是IEnumerator的话，这里把方法返回出来
+					if(funccache._returntype != null && funccache._returntype.typeBridge.type == typeof(IEnumerator)){
+						CQ_Value ienumerator = new CQ_Value();
+						CQ_Expression_Block funcCQ = funccache.expr_runtime as CQ_Expression_Block;
+						funcCQ.callObj = content;
+						ienumerator.SetObject(typeof(CQ_Expression_Block), funcCQ);
+						return ienumerator;
+					}
+					
+
                     CQ_Value value = CQ_Value.Null;
                     var funcobj = funccache;
                     if(this.bInterface) {
@@ -296,7 +307,8 @@ namespace CQuark {
                         funcobj = (object_this as CQ_ClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
-                        yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
+						yield return CoroutineCall(funcobj.expr_runtime, content, coroutine);
+ //                       yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
@@ -307,6 +319,10 @@ namespace CQuark {
             else
                 yield return MemberCall(contentParent, object_this, func, _params, null);
         }
+		
+		public virtual IEnumerator CoroutineCall (ICQ_Expression expression, CQ_Content param, UnityEngine.MonoBehaviour coroutine) {
+			yield return coroutine.StartCoroutine(expression.CoroutineCompute(param, coroutine));
+		}
 
         public CQ_Value MemberValueGet (CQ_Content content, object object_this, string valuename) {
             CQ_ClassInstance sin = object_this as CQ_ClassInstance;

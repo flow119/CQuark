@@ -75,7 +75,17 @@ namespace CQuark {
                     CQ_Value ret = new CQ_Value();
                     ret.SetObject(typeof(string), obj.ToString());
                     return ret;
-                }
+				}else if(obj is UnityEngine.MonoBehaviour && functionName == "StartCoroutine" &&
+					parameters.Length >= 1 && parameters[0].GetObject() is CQ_Expression_Block){
+					//从西瓜调用的ClassSystem.StartCoroutine(CquarkMethod());不需要走cache
+					UnityEngine.MonoBehaviour mb = obj as UnityEngine.MonoBehaviour;
+					CQ_Expression_Block call = parameters[0].GetObject()  as CQ_Expression_Block;
+
+					CQ_Value ret = new CQ_Value();
+					ret.SetObject(typeof(UnityEngine.Coroutine),
+						mb.StartCoroutine(call.callObj.CallType.CoroutineCall(call, call.callObj, mb)));
+					return ret;
+				}
                 else {
                     var iclass = CQuark.AppDomain.GetITypeByCQValue(parent)._class;
                     if(cache == null || cache.cachefail) {
