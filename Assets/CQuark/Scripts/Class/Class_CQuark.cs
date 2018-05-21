@@ -307,8 +307,8 @@ namespace CQuark {
                         funcobj = (object_this as CQ_ClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
-						yield return CoroutineCall(funcobj.expr_runtime, content, coroutine);
- //                       yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
+//						yield return CoroutineCall(funcobj.expr_runtime, content, coroutine);
+                       yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
                     }
 #if CQUARK_DEBUG
                     contentParent.OutStack(content);
