@@ -460,6 +460,70 @@ public class WrapMakerGUI : EditorWindow {
 			ReloadWrap();
 		}
 
+		if(GUILayout.Button("Register All Types", GUILayout.Width(100))){
+			Type t = typeof(System.Net.Sockets.TcpListener);//如果不这么来一下。反射不出System.Net
+
+			Type[] types = WrapReflectionTools.GetAllTypes();
+			string output = "";
+			for(int i = 0; i < types.Length; i++){
+				string trueName = WrapReflectionTools.GetTrueName(types[i]);
+
+				if(!types[i].IsVisible)//不可见
+					continue;
+				if(types[i].IsGenericType)//IsGenericTypeDefinition  IsGenericParameter ;//<>
+					continue;
+
+				if(types[i].Namespace == "System" && !types[i].IsSerializable && types[i].IsValueType)//System命名空间下的不可序列化的struct无法转成object
+					continue;
+
+				if(types[i].Namespace == "UnityEngine"){
+					output += "/*";
+					output += types[i].IsSerializable ? "1":"0";
+					output += types[i].IsValueType ? "1":"0";
+
+					output += types[i].IsInterface ? "1":"0";
+
+					output += types[i].IsImport ? "1":"0";
+
+					output += types[i].IsLayoutSequential ? "1":"0";
+					output += types[i].IsMarshalByRef ? "1":"0";//+
+
+					output += types[i].IsNested ? "1":"0";
+					output += types[i].IsNestedAssembly ? "1":"0";
+					output += types[i].IsNestedFamANDAssem ? "1":"0";
+					output += types[i].IsNestedFamily ? "1":"0";
+					output += types[i].IsNestedFamORAssem ? "1":"0";
+					output += types[i].IsPointer ? "1":"0";
+					output += types[i].IsPrimitive ? "1":"0";
+
+					output += types[i].IsSpecialName ? "1":"0";
+					output += types[i].IsUnicodeClass ? "1":"0";
+	
+					output += types[i].IsAnsiClass ? "1":"0";//-
+					output += types[i].IsAutoClass ? "1":"0";//-
+					output += types[i].IsAutoLayout ? "1":"0";//-
+					output += types[i].IsByRef ? "1":"0";//-
+					output += types[i].IsClass ? "1":"0";//-
+					output += types[i].IsCOMObject ? "1":"0";//-
+					output += types[i].IsContextful ? "1":"0";
+					output += types[i].IsEnum ? "1":"0";
+					output += types[i].IsExplicitLayout ? "1":"0";
+
+					output += types[i].IsSealed ? "1":"0";
+					output += types[i].IsAbstract ? "1":"0";//-
+					output += "*/";
+				}
+				if(WrapReflectionTools.IsStaticClass(types[i]))
+					output += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
+				else
+					output += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
+				output += "\n";
+
+			}
+			File.WriteAllText(WrapConfigFolder + "/Types.txt", output);
+			AssetDatabase.Refresh();
+		}
+
 		if(WrapGUITools.DrawHeader("Option")) {
 			WrapGUITools.BeginContents();
 
@@ -555,23 +619,7 @@ public class WrapMakerGUI : EditorWindow {
 			GUILayout.BeginHorizontal();
 	        GUILayout.Label("  STEP 1 : Click the button on right side →", "BoldLabel");
 	        GUI.backgroundColor = Color.green;
-			if(GUILayout.Button("Register Type", GUILayout.Width(100))){
-//				Debug.Log(Type.GetType("System.Net.Sockets.TcpListener")  + "");
-				Type t = typeof(System.Net.Sockets.TcpListener);//如果不这么来一下。反射不出System.Net
-//				Debug.Log (t.Assembly.FullName);
-//				System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-//				foreach( var assemblyName in referencedAssemblies ){
-//					Debug.Log ("遍历" + assemblyName.FullName);
-//				}
-				Type[] types = WrapReflectionTools.GetAllTypes();
-				string output = "";
-				for(int i = 0; i < types.Length; i++){
-					output += WrapReflectionTools.GetTrueName(types[i]);
-					output += "\n";
-				}
-				File.WriteAllText(WrapConfigFolder + "/Types.txt", output);
-				AssetDatabase.Refresh();
-			}
+
 			if(GUILayout.Button("Wrap Common", GUILayout.Width(100))) {
 				WrapCommon();
 	        }

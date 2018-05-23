@@ -753,9 +753,15 @@ namespace CQuark {
 				n = nend;
 				if(t.pos == -1 && t.type == TokenType.UNKNOWN)
 					continue;
+				if(t.type == TokenType.COMMENT)//所有注释不加入List（因为注释可以夹杂在表达式中导致解析错误）
+					continue;
 				tokens.Add(t);
 			}
 			return tokens;
+		}
+
+		public static void RemoveComments(List<string> list){
+
 		}
 
 		public static List<string> DefineNamespace(List<Token> tokens, out string currentNamespace){
@@ -923,6 +929,28 @@ namespace CQuark {
 			}
 		}
 
+		public static void DefineAttributes(List<Token> tokens){
+			for (int left = 1; left < tokens.Count - 1; left++) {
+				if(tokens[left].text == "[" && 
+				   (tokens[left-1].type == TokenType.PUNCTUATION || tokens[left - 1].type == TokenType.COMMENT)){
+					int depth = 0;
+					int right = left + 1;
+					for(; right < tokens.Count; right++){
+						if(tokens[right].text == "[")
+							depth ++;
+						else if(tokens[right].text == "]"){
+							if(depth > 0)
+								depth --;
+							else
+								break;
+						}
+					}
+					CombineReplace(tokens, left, right - left + 1, TokenType.ATTRIBUTE);
+					left = right;
+				}
+			}
+		}
+
 		public static void DefineTempletType(List<Token> tokens){
 			//模板类
 			for(int start = 0; start < tokens.Count - 1; start++){
@@ -1002,13 +1030,15 @@ namespace CQuark {
 		//对Tokens第二次处理，看是Namespace.Type还是Identifier(解决Namespace，类中类，类.方法，x.x.x)
 		public static List<Token> Parse (string lines) {
 			//第一步，找出所有的token
-			//此时只有string,comment,namespace,标点,关键字，数值,Identifier。没有Type,Property,Function
+			//此时只有string,namespace,标点,关键字，数值,Identifier。没有Type,Property,Function
+			//所有注释不加入List（因为注释可以夹杂在表达式中导致解析错误）
 			List<Token> tokens = SplitToken (lines);
 
 			if (tokens == null) {
 				DebugUtil.LogWarning ("没有解析到代码");
 				return null;
 			}
+
 
 //			//第二步，找到引用的命名空间，及当前的命名空间。注册到字典
 //			List<string> usingNamespace = FindUsingNamespace (tokens);
@@ -1019,6 +1049,7 @@ namespace CQuark {
 			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数，因此放在Property和Function之前
 			DefineProperty (tokens);
 			DefineFunction (tokens);
+			DefineAttributes (tokens);
 
 			//第三步。对所有脚本编译（因为需要知道基类的property）
 

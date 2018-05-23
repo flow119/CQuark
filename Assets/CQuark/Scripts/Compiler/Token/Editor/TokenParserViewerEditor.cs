@@ -26,6 +26,7 @@ public class TokenParserViewerEditor : Editor {
 		{TokenType.TYPE, new Color(0.1f,0.3f,0.9f)},
 		{TokenType.PROPERTY, new Color(1f,0.9f,0.1f)},
 		{TokenType.FUNCTION, new Color(0.1f,0.8f,0.8f)},
+		{TokenType.ATTRIBUTE, new Color(0.2f,0.2f,0.5f)},
 	};
 
 	public override void OnInspectorGUI (){

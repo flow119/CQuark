@@ -243,8 +243,8 @@ public class WrapReflectionTools {
 				foreach(var t in typeArray){
 					if(!IsTClass(t))
 						types.Add(t);
-					else
-						DebugUtil.LogWarning("Obsolete " + t.Name);
+//					else
+//						DebugUtil.LogWarning("Obsolete " + t.Name);
 				}
 			}
 		}
@@ -458,7 +458,7 @@ public class WrapReflectionTools {
 
 		manifest += "\n成员方法\n";
 
-		if (type.GetConstructors ().Length == 0 && !typeof(UnityEngine.Component).IsAssignableFrom(type)) {	//是否是静态类，静态类没有构造函数
+		if (IsStaticClass(type)) {	//是否是静态类，静态类没有构造函数
 			manifest += "静态类没有成员方法";
 			return saveMethods;			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
 		}
@@ -533,8 +533,13 @@ public class WrapReflectionTools {
 		return saveMethods;
 	}
 
+	//判断一个类是否的静态类，这个做法是不需要反射的最优方案
+	public static bool IsStaticClass(Type t){
+		return t.IsAbstract && t.IsSealed;
+	}
+
     public static List<Method> GetIndex (Type type, ref string manifest) {
-		if (type.GetConstructors ().Length == 0)	//是否是静态类，静态类没有构造函数
+		if (IsStaticClass(type))	//是否是静态类，静态类没有构造函数
 			return new List<Method> ();			//静态类依然会反射出成员方法（比如ToString,GetType），但没法调用，我们不保存
 		
 		List<Method> saveMethods = new List<Method> ();

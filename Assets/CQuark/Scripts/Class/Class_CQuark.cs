@@ -20,7 +20,7 @@ namespace CQuark {
             get;
             private set;
         }
-
+		public List<string> attributes;
         //dumplog用的
         public IList<Token> tokenlist {
             get;
@@ -364,6 +364,7 @@ namespace CQuark {
            
         }
         public struct Member {
+			public List<string> attributes;
             public IType m_itype;
             public bool bPublic;
             public bool bStatic;
