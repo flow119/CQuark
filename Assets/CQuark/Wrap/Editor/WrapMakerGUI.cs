@@ -461,8 +461,6 @@ public class WrapMakerGUI : EditorWindow {
 		}
 
 		if(GUILayout.Button("Register All Types", GUILayout.Width(100))){
-			Type t = typeof(System.Net.Sockets.TcpListener);//如果不这么来一下。反射不出System.Net
-
 			Type[] types = WrapReflectionTools.GetAllTypes();
 			string output = "";
 			for(int i = 0; i < types.Length; i++){
@@ -472,47 +470,66 @@ public class WrapMakerGUI : EditorWindow {
 					continue;
 				if(types[i].IsGenericType)//IsGenericTypeDefinition  IsGenericParameter ;//<>
 					continue;
-
-				if(types[i].Namespace == "System" && !types[i].IsSerializable && types[i].IsValueType)//System命名空间下的不可序列化的struct无法转成object
-					continue;
-
-				if(types[i].Namespace == "UnityEngine"){
-					output += "/*";
-					output += types[i].IsSerializable ? "1":"0";
-					output += types[i].IsValueType ? "1":"0";
-
-					output += types[i].IsInterface ? "1":"0";
-
-					output += types[i].IsImport ? "1":"0";
-
-					output += types[i].IsLayoutSequential ? "1":"0";
-					output += types[i].IsMarshalByRef ? "1":"0";//+
-
-					output += types[i].IsNested ? "1":"0";
-					output += types[i].IsNestedAssembly ? "1":"0";
-					output += types[i].IsNestedFamANDAssem ? "1":"0";
-					output += types[i].IsNestedFamily ? "1":"0";
-					output += types[i].IsNestedFamORAssem ? "1":"0";
-					output += types[i].IsPointer ? "1":"0";
-					output += types[i].IsPrimitive ? "1":"0";
-
-					output += types[i].IsSpecialName ? "1":"0";
-					output += types[i].IsUnicodeClass ? "1":"0";
-	
-					output += types[i].IsAnsiClass ? "1":"0";//-
-					output += types[i].IsAutoClass ? "1":"0";//-
-					output += types[i].IsAutoLayout ? "1":"0";//-
-					output += types[i].IsByRef ? "1":"0";//-
-					output += types[i].IsClass ? "1":"0";//-
-					output += types[i].IsCOMObject ? "1":"0";//-
-					output += types[i].IsContextful ? "1":"0";
-					output += types[i].IsEnum ? "1":"0";
-					output += types[i].IsExplicitLayout ? "1":"0";
-
-					output += types[i].IsSealed ? "1":"0";
-					output += types[i].IsAbstract ? "1":"0";//-
-					output += "*/";
+				if(types[i].Namespace == "System"){
+					if(!types[i].IsSerializable && types[i].IsValueType)//System命名空间下的不可序列化的struct无法转成object
+						continue;
 				}
+
+	
+				if(types[i].Namespace == "UnityEngine"){
+#if !UNITY_ANDROID
+					if(types[i].FullName.Contains("Android")
+					   ||types[i].FullName.Contains("jvalue"))
+						continue;
+#endif
+
+#if !UNITY_IPHONE
+					if(types[i].FullName.Contains("iOS")
+					   ||types[i].FullName.Contains("iPhone")
+					   ||types[i].FullName.Contains("ADBanner")
+					   ||types[i].FullName.Contains("ADInterstitial")
+					   ||types[i].FullName.Contains("Notification"))
+						continue;
+#endif
+
+					if(types[i].FullName.Contains("Calendar"))
+						continue;
+					if(types[i].FullName.Contains("FullScreenMovie"))
+						continue;
+					if(types[i].FullName.Contains("Handheld"))
+						continue;
+
+					if(types[i].FullName.Contains("TextureCompressionQuality"))
+						continue;
+					if(types[i].FullName.Contains("OnRequestRebuild"))
+						continue;
+					if(types[i].FullName.Contains("EventProvider"))
+						continue;	
+				}
+
+				if(types[i].Namespace == "UnityEngine.UI"){
+					if(types[i].FullName.Contains("GraphicRebuildTracker")
+					   ||types[i].FullName.Contains("IMask")
+					   ||types[i].FullName.Contains("Vertex")
+					   ||types[i].FullName.Contains("Mesh"))
+						continue;
+				}
+
+			
+#if !UNITY_IPHONE
+				if(trueName.Contains("UnityEngine.iOS")
+				   || trueName.Contains("UnityEngine.Apple"))
+					continue;
+#endif
+				if(trueName.Contains("UnityEngine.VR")
+				   || trueName.Contains("UnityEngine.Internal.VR")
+				   || trueName.Contains("UnityEngine.WSA")
+				   || trueName.Contains("UnityEngine.Tizen")
+				   || trueName.Contains("UnityEngine.SamsungTV")
+				   || trueName.Contains("UnityEngine.Collections"))
+				   continue;
+
+
 				if(WrapReflectionTools.IsStaticClass(types[i]))
 					output += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
 				else

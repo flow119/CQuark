@@ -233,18 +233,35 @@ public class WrapReflectionTools {
 		List<Type> types = new List<Type>();
 		AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
 
+		Type ty = typeof(System.Net.Sockets.TcpListener);	//如果不这么来一下。反射不出System.Net
+		ty = typeof(UnityEngine.UI.Text);					//如果不这么来一下。反射不出UnityEngine.UI
+		ty = typeof(System.IO.File);
+		ty = typeof(System.Text.UTF8Encoding);
+
 		foreach( var assemblyName in referencedAssemblies ){
 			if(assemblyName.FullName.StartsWith("UnityEditor"))
 				continue;
-			
-			Assembly assembly = Assembly.Load( assemblyName );
-			if(assembly != null ){
-				Type[] typeArray = assembly.GetTypes();
-				foreach(var t in typeArray){
-					if(!IsTClass(t))
+			else if(assemblyName.FullName.StartsWith("System")){
+				Assembly assembly = Assembly.Load( assemblyName );
+				if(assembly != null ){
+					Type[] typeArray = assembly.GetTypes();
+					foreach(var t in typeArray){
+						if(t.Namespace == ("System.Net.Sockets"))
+							types.Add(t);
+					}
+				}
+			}
+			else{
+				Assembly assembly = Assembly.Load( assemblyName );
+				if(assembly != null ){
+					Type[] typeArray = assembly.GetTypes();
+					foreach(var t in typeArray){
+						if(IsTClass(t))
+							continue;
+						if(!string.IsNullOrEmpty(t.Namespace) && t.Namespace.StartsWith("UnityEditor"))
+						   continue;
 						types.Add(t);
-//					else
-//						DebugUtil.LogWarning("Obsolete " + t.Name);
+					}
 				}
 			}
 		}
