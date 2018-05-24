@@ -5,15 +5,15 @@ namespace CQuark
 {
     public class Type_Generic : IType
     {
+		public string[] usingNamespace;
+		public IClass baseClass;
+
         public string keyword
         {
             get;
             protected set;
         }
-        public string _namespace
-        {
-            get { return typeBridge.NameSpace; }
-        }
+
         public TypeBridge typeBridge
         {
             get;
