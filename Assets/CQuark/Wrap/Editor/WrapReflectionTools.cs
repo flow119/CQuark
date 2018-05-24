@@ -196,7 +196,7 @@ public class WrapReflectionTools {
 			if( assembly != null ){
 				Type[] typeArray = assembly.GetTypes();
                 foreach(var t in typeArray) {
-                    if(!IsTClass(t))
+                    if(IsSupported(t))
                         types.Add(t);
                 }
 			}
@@ -204,7 +204,7 @@ public class WrapReflectionTools {
 			AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
 
 			foreach( var assemblyName in referencedAssemblies ){
-                 if(string.IsNullOrEmpty(nameSpace) && !assemblyName.FullName.StartsWith("Assembly-CSharp"))
+                 if(string.IsNullOrEmpty(nameSpace) && assemblyName.Name != "Assembly-CSharp")
                      continue;
 
 				assembly = Assembly.Load( assemblyName );
@@ -213,13 +213,11 @@ public class WrapReflectionTools {
 					Type[] typeArray = assembly.GetTypes();
 					foreach(var t in typeArray){
 						if(string.IsNullOrEmpty(nameSpace) && string.IsNullOrEmpty(t.Namespace)){
-                            if(!IsTClass(t))
+                            if(IsSupported(t))
                                 types.Add(t);
-                            else
-                                DebugUtil.LogWarning("Obsolete " + t.Name);
 						}
 						else if(t.Namespace == nameSpace){
-                            if(!IsTClass(t))
+                            if(IsSupported(t))
     							types.Add(t);
 						}
 					}
@@ -230,43 +228,133 @@ public class WrapReflectionTools {
 	}
 
 	public static Type[] GetAllTypes(){
-		List<Type> types = new List<Type>();
+        Type temp = typeof(System.Net.Sockets.TcpListener);	//如果不这么来一下。反射不出System.Net
+        temp = typeof(UnityEngine.UI.Text);					//如果不这么来一下。反射不出UnityEngine.UI
+        temp = typeof(System.IO.File);
+        temp = typeof(System.Text.UTF8Encoding);
+
+		List<Type> ret = new List<Type>();
 		AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
 
-		Type ty = typeof(System.Net.Sockets.TcpListener);	//如果不这么来一下。反射不出System.Net
-		ty = typeof(UnityEngine.UI.Text);					//如果不这么来一下。反射不出UnityEngine.UI
-		ty = typeof(System.IO.File);
-		ty = typeof(System.Text.UTF8Encoding);
+        foreach(AssemblyName assemblyName in referencedAssemblies) {
+            List<Type> types;
+            switch(assemblyName.Name) {
+                case "Assembly-CSharp"://用户的C#代码
+                    types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(t.Namespace == "CQuark")
+                            continue;
+                        if(!IsSupported(t))
+                            continue;
+                        ret.Add(t);
+                    }
+                    break;
+                case "mscorlib"://System.常用
+                    types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(t.Namespace == "System") {
+                            if(!t.IsSerializable && t.IsValueType)//System命名空间下的不可序列化的struct无法转成object
+                                continue;
+                        }
+                        if(!IsSupported(t))
+                            continue;
+                        ret.Add(t);
+                    }
+                    break;
+                case "System":
+                     types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(!IsSupported(t))
+                            continue;
+                        if(t.Namespace == "System.Net.Sockets") //除了System.Net.Sockets会在System里常用，别的都不需要（System.IO,System.Random,System.DateTime都在mscorlib里）
+                            ret.Add(t);
+                    }
+                    break;
+                case "UnityEngine":
+                    types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(!string.IsNullOrEmpty(t.Namespace) && t.Namespace.StartsWith("UnityEditor")) //Unity5以后，部分UnityEditor命名空间在UnityEngine的Assembly里
+                            continue;
 
-		foreach( var assemblyName in referencedAssemblies ){
-			if(assemblyName.FullName.StartsWith("UnityEditor"))
-				continue;
-			else if(assemblyName.FullName.StartsWith("System")){
-				Assembly assembly = Assembly.Load( assemblyName );
-				if(assembly != null ){
-					Type[] typeArray = assembly.GetTypes();
-					foreach(var t in typeArray){
-						if(t.Namespace == ("System.Net.Sockets"))
-							types.Add(t);
-					}
-				}
-			}
-			else{
-				Assembly assembly = Assembly.Load( assemblyName );
-				if(assembly != null ){
-					Type[] typeArray = assembly.GetTypes();
-					foreach(var t in typeArray){
-						if(IsTClass(t))
-							continue;
-						if(!string.IsNullOrEmpty(t.Namespace) && t.Namespace.StartsWith("UnityEditor"))
-						   continue;
-						types.Add(t);
-					}
-				}
-			}
+                        if(!IsSupported(t))
+                            continue;
+                        
+                        if(t.FullName.Contains("Calendar")
+                        || t.FullName.Contains("FullScreenMovie")
+                        || t.FullName.Contains("Handheld")
+                        || t.FullName.Contains("TextureCompressionQuality")
+                        || t.FullName.Contains("OnRequestRebuild")
+                        || t.FullName.Contains("EventProvider"))
+                            continue;
+
+                        string trueName = GetTrueName(t);
+                        if(trueName.Contains("UnityEngine.VR")
+                       || trueName.Contains("UnityEngine.Internal.VR")
+                       || trueName.Contains("UnityEngine.WSA")
+                       || trueName.Contains("UnityEngine.Tizen")
+                       || trueName.Contains("UnityEngine.SamsungTV")
+                       || trueName.Contains("UnityEngine.Collections")
+                       || trueName.Contains("UnityEngine.Windows")
+                       || trueName.Contains("UnityEngine.Experimental")
+                       || trueName.Contains("UnityEngine.SocialPlatforms"))
+                            continue;
+
+#if !UNITY_ANDROID
+                        if(trueName.Contains("Android")
+                           || trueName.Contains("jvalue"))
+                            continue;
+#endif
+#if !UNITY_IPHONE
+                        if(trueName.Contains("iOS")
+                            || trueName.Contains("iPhone")
+                            || trueName.Contains("ADBanner")
+                            || trueName.Contains("ADInterstitial")
+                            || trueName.Contains("Notification")
+                            || trueName.Contains("UnityEngine.Apple"))
+                            continue;
+#endif
+                        ret.Add(t);
+                    }
+                    break;
+                case "UnityEngine.UI":
+                     types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(t.FullName.Contains("GraphicRebuildTracker")
+                        || t.FullName.Contains("IMask")
+                        || t.FullName.Contains("Vertex")
+                        || t.FullName.Contains("Mesh"))
+                            continue;
+                        if(!IsSupported(t))
+                            continue;
+                        ret.Add(t);
+                    }
+                    break;
+                case "UnityEditor":
+                    //不要UnityEditor的Assembly
+                    break;
+                default:
+                     types = GetTypesFromAssembly(assemblyName);
+                    foreach(Type t in types) {
+                        if(!IsSupported(t))
+                            continue;
+                        ret.Add(t);
+                    }
+                    break;
+            }
 		}
-		return types.ToArray ();
+		return ret.ToArray ();
 	}
+
+    public static List<Type> GetTypesFromAssembly (AssemblyName assemblyName) {
+        Assembly assembly = Assembly.Load(assemblyName);
+        Type[] types = assembly.GetTypes();
+        List<Type> ret = new List<Type>();
+        foreach(Type t in types) {
+            if(IsSupported(t))
+               ret.Add(t);
+        }
+        return ret;
+    }
 
 	public static List<Property> GetPropertys (Type type, ref string manifest, List<string> filter) {
 		List<Property> savePropertys = new List<Property>();
@@ -704,14 +792,14 @@ public class WrapReflectionTools {
 	}    
 
     
-    static bool IsTClass (Type type) {
-        if(type.FullName.Contains("<"))//TODO 模版类判断不应该在这里
-            return true;
-        return false;
-        //Type t = type.Attributes.GetType();
-        //if(t == typeof(System.ObsoleteAttribute) || t.Name == "MonoNotSupportedAttribute" || t.Name == "MonoTODOAttribute") {
-        //    return true;
-        //}
-        //return false;
+    static bool IsSupported (Type type) {
+        if(type.FullName.Contains("<"))//<T>
+            return false;
+        if(!type.IsVisible)    //不可见
+            return false;
+        if(type.IsGenericType) //IsGenericTypeDefinition  IsGenericParameter ;//<>
+            return false;
+        return true;
+
     }
 }

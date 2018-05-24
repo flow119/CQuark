@@ -464,73 +464,9 @@ public class WrapMakerGUI : EditorWindow {
 			Type[] types = WrapReflectionTools.GetAllTypes();
 			string output = "";
 			for(int i = 0; i < types.Length; i++){
-				string trueName = WrapReflectionTools.GetTrueName(types[i]);
+                string trueName = WrapReflectionTools.GetTrueName(types[i]);
 
-				if(!types[i].IsVisible)//不可见
-					continue;
-				if(types[i].IsGenericType)//IsGenericTypeDefinition  IsGenericParameter ;//<>
-					continue;
-				if(types[i].Namespace == "System"){
-					if(!types[i].IsSerializable && types[i].IsValueType)//System命名空间下的不可序列化的struct无法转成object
-						continue;
-				}
-
-	
-				if(types[i].Namespace == "UnityEngine"){
-#if !UNITY_ANDROID
-					if(types[i].FullName.Contains("Android")
-					   ||types[i].FullName.Contains("jvalue"))
-						continue;
-#endif
-
-#if !UNITY_IPHONE
-					if(types[i].FullName.Contains("iOS")
-					   ||types[i].FullName.Contains("iPhone")
-					   ||types[i].FullName.Contains("ADBanner")
-					   ||types[i].FullName.Contains("ADInterstitial")
-					   ||types[i].FullName.Contains("Notification"))
-						continue;
-#endif
-
-					if(types[i].FullName.Contains("Calendar"))
-						continue;
-					if(types[i].FullName.Contains("FullScreenMovie"))
-						continue;
-					if(types[i].FullName.Contains("Handheld"))
-						continue;
-
-					if(types[i].FullName.Contains("TextureCompressionQuality"))
-						continue;
-					if(types[i].FullName.Contains("OnRequestRebuild"))
-						continue;
-					if(types[i].FullName.Contains("EventProvider"))
-						continue;	
-				}
-
-				if(types[i].Namespace == "UnityEngine.UI"){
-					if(types[i].FullName.Contains("GraphicRebuildTracker")
-					   ||types[i].FullName.Contains("IMask")
-					   ||types[i].FullName.Contains("Vertex")
-					   ||types[i].FullName.Contains("Mesh"))
-						continue;
-				}
-
-			
-#if !UNITY_IPHONE
-				if(trueName.Contains("UnityEngine.iOS")
-				   || trueName.Contains("UnityEngine.Apple"))
-					continue;
-#endif
-				if(trueName.Contains("UnityEngine.VR")
-				   || trueName.Contains("UnityEngine.Internal.VR")
-				   || trueName.Contains("UnityEngine.WSA")
-				   || trueName.Contains("UnityEngine.Tizen")
-				   || trueName.Contains("UnityEngine.SamsungTV")
-				   || trueName.Contains("UnityEngine.Collections"))
-				   continue;
-
-
-				if(WrapReflectionTools.IsStaticClass(types[i]))
+                if(WrapReflectionTools.IsStaticClass(types[i]))
 					output += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
 				else
 					output += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
