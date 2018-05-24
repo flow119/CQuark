@@ -56,7 +56,7 @@ namespace CQuark {
 			"override",
 			"get",
 			"set",
-			"this",//TODO
+
 			"ref",//TODO
 			"out",//TODO
 		};
@@ -85,26 +85,25 @@ namespace CQuark {
 		};
 		#endregion
 
-		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx
+		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx,读取生成工具
 		static List<string> customTypes = new List<string>();//注册类型,西瓜声明的类型
-		public static void CleartType(){
-			oriTypes.Clear();
+		public static void Reload(bool reloadOrigion){
 			customTypes.Clear();
+			if (reloadOrigion)
+				oriTypes.Clear ();
 		}
-		public static void RegisterNewType (string type, string nameSpace) {
-			if(!string.IsNullOrEmpty(nameSpace))
-				type = nameSpace + "." + type;
-			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type))
-				return;
-			customTypes.Add(type);
-		}
-		public static void RegisterType(string type){
-			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type))
+		//初始化时由AppDomain调用
+		public static void RegisterOriType (string type) {
+			if(oriTypes.Contains(type))
 				return;
 			oriTypes.Add(type);
 		}
-
-
+		//实时编译调用
+		public static void RegisterCustomType(string type){
+			if(customTypes.Contains(type))
+				return;
+			customTypes.Add(type);
+		}
 
 		public static bool IsType (string type, List<string> nameSpace, out string fullName) {
 			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type)){
@@ -115,7 +114,7 @@ namespace CQuark {
 			if(nameSpace != null){
 				for(int i = 0; i < nameSpace.Count; i++){
 					fullName = nameSpace[i] + "." + type;
-					if(basicTypes.Contains(fullName) || customTypes.Contains(fullName) || oriTypes.Contains(fullName)){
+					if(/*basicTypes.Contains(fullName) || */customTypes.Contains(fullName) || oriTypes.Contains(fullName)){
 						return true;
 					}
 				}
@@ -123,17 +122,6 @@ namespace CQuark {
 			fullName = "";
 			return false;
 		}
-
-		static List<string> _namespace = new List<string>();
-		public static void RegistNamespace(string type){
-			if(IsNamespace(type))
-				return;
-			_namespace.Add(type);
-		}
-		public static bool IsNamespace(string type){
-			return _namespace.Contains(type);
-		}
-		
 
 		static int FindStart (string lines, int npos, ref int lineIndex) {
 			int n = npos;
@@ -760,10 +748,6 @@ namespace CQuark {
 			return tokens;
 		}
 
-		public static void RemoveComments(List<string> list){
-
-		}
-
 		public static List<string> DefineNamespace(List<Token> tokens, out string currentNamespace){
 			List<string> usingNamespace = new List<string>();
 			for(int start = 0; start < tokens.Count; start++){
@@ -798,7 +782,6 @@ namespace CQuark {
 					for(int i = start + 1; i < tokens.Count; i++){
 						if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "{"){
 							string nameSpace = CombineReplace(tokens, start, i - start - 1, TokenType.NAMESPACE).text;
-							RegistNamespace(nameSpace);
 							currentNamespace = nameSpace;
 							if(!usingNamespace.Contains(nameSpace))
 								usingNamespace.Add(nameSpace);
@@ -874,7 +857,7 @@ namespace CQuark {
 
 			for(int start = 1; start < tokens.Count - 1; start++){
 				if(tokens[start].type == TokenType.IDENTIFIER && (tokens[start - 1].type == TokenType.IDENTIFIER || tokens[start - 1].type == TokenType.TYPE)
-				   && tokens[start + 1].text != "("){//Type 后一定是Property
+				   && tokens[start + 1].text != "("){//TYPE 后一定是Property
 					Token token = tokens[start];
 					token.type = TokenType.PROPERTY;
 					tokens[start] = token;

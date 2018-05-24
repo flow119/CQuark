@@ -7,6 +7,7 @@ using CQuark;
 namespace CQuark{
 	//参考了ILRuntime，把以前Environment和Content整合到了一起。
 	//整个项目只需要一个AppDomain,所以改成了全部静态
+	//AppDomain的作用是保存了所有的IType。
     public class AppDomain {
 		static Dictionary<Class_CQuark, IType> ccq2itype = new Dictionary<Class_CQuark, IType> ();
 		static Dictionary<Type, IType> type2itype = new Dictionary<Type, IType> ();
@@ -14,14 +15,19 @@ namespace CQuark{
 
         public static void Reset () {
             DebugUtil.Log("Reset Domain");
-//			cqtype2itype.Clear();
 			ccq2itype.Clear ();
 			type2itype.Clear ();
 			str2itype.Clear();
             RegisterDefaultType();
         }
+
         public static void RegisterDefaultType () {
-            //最好能默认
+			RegisterType(new Type_String());
+			RegisterType(new Type_Var());
+			RegisterType(new Type_Bool());
+			RegisterType(new Type_Lambda());
+			RegisterType(new Type_Delegate());
+
 			RegisterType<double>("double");
 			RegisterType<float>("float");
 			RegisterType<long>("long");
@@ -33,13 +39,6 @@ namespace CQuark{
 			RegisterType<byte>("byte");
 			RegisterType<sbyte>("sbyte");
 			RegisterType<char>("char");
-
-            RegisterType(new Type_String());
-            RegisterType(new Type_Var());
-            RegisterType(new Type_Bool());
-            RegisterType(new Type_Lambda());
-            RegisterType(new Type_Delegate());
-
             RegisterType<IEnumerator>("IEnumerator");
 			RegisterType<object>("object");
 						
@@ -50,25 +49,7 @@ namespace CQuark{
 
 			str2itype["null"] = new Type_NULL();
 
-
-			RegisterType<WaitForSeconds>("WaitForSeconds");
-			RegisterType<WaitForEndOfFrame>("WaitForEndOfFrame");
-			RegisterType<WaitForFixedUpdate>("WaitForFixedUpdate");
-//			RegisterType(typeof(WaitForSecondsRealtime),"WaitForSecondsRealtime");
-
-            //对于AOT环境，比如IOS，get set不能用RegHelper直接提供，就用AOTExt里面提供的对应类替换
-//			RegisterType(typeof(int[]), "int[]");	//数组要独立注册
-//			RegisterType(typeof(string[]), "string[]");
-//			RegisterType(typeof(float[]), "float[]");
-//            RegisterType(typeof(bool[]), "bool[]");
-//            RegisterType(typeof(byte[]), "byte[]");
-
-            RegisterType<System.DateTime>("DateTime");
-            RegisterType<System.DayOfWeek>("DayOfWeek");
-
-			RegisterType(typeof(System.IO.Directory), "Directory");//静态类无法使用模板
-			RegisterType(typeof(System.IO.File),"File");
-
+			//TODO register生成
         }
 			
 		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
@@ -81,13 +62,11 @@ namespace CQuark{
 			else
 				return new Type_Generic(type, keyword, default(T));
 		}
-
 		private static IType MakeIType (Type type, string keyword) {
 			if(type.IsSubclassOf(typeof(Delegate))) 
 				return MakeITypeWithDelegate(type, keyword);
 			return new Type_Generic(type, keyword, null);
 		}
-
 		private static IType MakeITypeWithDelegate(Type type, string keyword){
 			var method = type.GetMethod("Invoke");
 			var pp = method.GetParameters();
@@ -143,7 +122,8 @@ namespace CQuark{
 			string keyword = type.FullName.Replace('+','.');
 			RegisterIType(MakeIType(type, keyword));
 		}
-		public static void RegisterIType (IType type) {
+
+		private static void RegisterIType (IType type) {
 			if (type.typeBridge.type != null)
 				type2itype [type.typeBridge.type] = type;
 			else if (type.typeBridge.stype != null)
@@ -154,7 +134,7 @@ namespace CQuark{
 			}
 			else {
 				str2itype[typename] = type;
-				TokenParser.RegisterType(typename);
+				TokenParser.RegisterOriType(typename);
 			}
 		}
 
@@ -189,23 +169,15 @@ namespace CQuark{
 				type2itype [type.typeBridge.type] = type;
 			else if (type.typeBridge.stype != null)
 				ccq2itype [type.typeBridge.stype] = type;
-//			cqtype2itype[type.cqType] = type;
 
             string typename = type.keyword;
-            //if (useNamespace)
-            //{
 
-            //    if (string.IsNullOrEmpty(type._namespace) == false)
-            //    {
-            //        typename = type._namespace + "." + type.keyword;
-            //    }
-            //}
             if(string.IsNullOrEmpty(typename)) {//匿名自动注册
             }
             else {
 				str2itype[typename] = type;
                 CQ_TokenParser.AddType(typename);
-				TokenParser.RegisterType(typename);
+				TokenParser.RegisterOriType(typename);
             }
         }
 
@@ -245,7 +217,6 @@ namespace CQuark{
 			}
 			return ret;
 		}
-		
 		public static IType GetTypeByKeyword (string keyword) {
 			IType ret = null;
             if(string.IsNullOrEmpty(keyword)) {
@@ -314,14 +285,16 @@ namespace CQuark{
         }
 
 		public static object ConvertTo(object obj, TypeBridge targetType){
-//			return GetType(obj.GetType()).ConvertTo(obj, targetType);
 			return GetITypeByType(obj.GetType()).ConvertTo(obj, targetType);
 		}
+
+
+
 
         private static void Project_Compile (Dictionary<string, IList<Token>> project, bool embDebugToken) {
             foreach(KeyValuePair<string, IList<Token>> f in project) {
                 //先把所有代码里的类注册一遍
-                IList<IType> types = CQ_Expression_Compiler.FilePreCompile(f.Key, f.Value);
+                IList<IType> types = Precompile.FilePreCompile(f.Key, f.Value);
                 foreach(var type in types) {
 					RegisterCQType(type);
                 }
@@ -345,22 +318,19 @@ namespace CQuark{
         }
         private static void File_CompileToken (string filename, IList<Token> listToken, bool embDebugToken) {
             DebugUtil.Log("File_CompilerToken:" + filename);
-            IList<IType> types = CQ_Expression_Compiler.FileCompile(filename, listToken, embDebugToken);
+			IList<IType> types = Precompile.FileCompile(filename, listToken, embDebugToken);
             foreach(var type in types) {
                 if(GetTypeByKeywordQuiet(type.keyword) == null)
 					RegisterCQType(type);
             }
         }
+
         /// <summary>
         /// 这里的filename只是为了编译时报错可以看到出错文件
         /// </summary>
 
-        public static ICQ_Expression BuildBlock (string code) {
-			var token = CQ_TokenParser.Parse(code);
-            return CQ_Expression_Compiler.Compile(token);
-        }
         public static void BuildFile (string filename, string code) {
-			var token = CQ_TokenParser.Parse(code);
+			List<Token> token = CQ_TokenParser.Parse(code);
             File_CompileToken(filename, token, false);
         }
         public static void BuildProject (string path, string pattern) {
@@ -374,7 +344,7 @@ namespace CQuark{
                 if(project.ContainsKey(filePath))
                     continue;
                 string text = System.IO.File.ReadAllText(filePath);
-                var tokens = CQ_TokenParser.Parse(text);
+				List<Token> tokens = CQ_TokenParser.Parse(text);
                 project.Add(filePath, tokens);
             }
             Project_Compile(project, true);

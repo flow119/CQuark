@@ -14,12 +14,12 @@ public class CQuarkParagraph {
     }
 
 	public CQ_Value Execute (string script) {
-        var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
+		var expr = CQuark.CQ_Compiler.CompileBlock(script);//语法分析
         CQ_Value value = expr.ComputeValue(content);//执行表达式
         return value;
     }
     public IEnumerator StartCoroutine (string script, UnityEngine.MonoBehaviour coroutine) {
-        var expr = CQuark.AppDomain.BuildBlock(script);//语法分析
+		var expr = CQuark.CQ_Compiler.CompileBlock(script);//语法分析
         yield return coroutine.StartCoroutine(expr.CoroutineCompute(content, coroutine));
     }
 

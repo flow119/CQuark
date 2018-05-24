@@ -3,28 +3,52 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark {
     public partial class CQ_Expression_Compiler {
-        static int FindCodeBlock (IList<Token> tokens, int pos) {
-            int dep = 0;
-            for(int i = pos; i < tokens.Count; i++) {
+     	//调用到这个方法时，Token如果是TYPE，必须是全名
+		public static ICQ_Expression Compile (IList<Token> tlist) {
+			ICQ_Expression value;
+			
+			int expbegin = 0;
+			int expend = FindCodeBlock(tlist, expbegin);
+			if(expend != tlist.Count - 1) {
+				LogError(tlist, "CodeBlock 识别问题,异常结尾", expbegin, expend);
+				return null;
+			}
+			bool succ = Compiler_Expression_Block(tlist, expbegin, expend, out value);
+			if(succ) {
+				if(value == null) {
+					DebugUtil.LogWarning("编译为null:");
+				}
+				return value;
+				
+			}
+			else {
+				LogError(tlist, "编译失败:", expbegin, expend);
+				return null;
+			}
+		}
 
-                if(tokens[i].type == TokenType.PUNCTUATION) {
-                    if(tokens[i].text == "{") {
-                        dep++;
-                    }
-                    if(tokens[i].text == "}") {
-                        dep--;
-                        if(dep < 0)
-                            return i - 1;
-                    }
-                }
-            }
-            if(dep != 0)
-                return -1;
-            else
-                return tokens.Count - 1;
-        }
+		static int FindCodeBlock (IList<Token> tokens, int pos) {
+			int dep = 0;
+			for(int i = pos; i < tokens.Count; i++) {
+				
+				if(tokens[i].type == TokenType.PUNCTUATION) {
+					if(tokens[i].text == "{") {
+						dep++;
+					}
+					if(tokens[i].text == "}") {
+						dep--;
+						if(dep < 0)
+							return i - 1;
+					}
+				}
+			}
+			if(dep != 0)
+				return -1;
+			else
+				return tokens.Count - 1;
+		}
 
-        static int FindCodeAny (IList<Token> tokens, ref int pos, out int depstyle) {
+        public static int FindCodeAny (IList<Token> tokens, ref int pos, out int depstyle) {
             int dep = 0;
             Token? start = null;
 

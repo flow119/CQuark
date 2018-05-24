@@ -6,12 +6,10 @@ using System.Collections;
 namespace CQuark {
     //运算类型，相当于把各种类分成几个大类
     public interface IType {
-        string keyword {
+        string keyword {//FullName
             get;
         }
-//        string _namespace {
-//            get;
-//        }
+
         TypeBridge typeBridge {
             get;
         }

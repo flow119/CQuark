@@ -1,8 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 namespace CQuark {
-    public partial class CQ_Expression_Compiler {
+    public class Precompile {
+
+		public static IList<IType> FileCompile (string filename, IList<Token> tlist, bool embDebugToken) {
+			return _FileCompiler(filename, tlist, embDebugToken, false);
+		}
+		
+		public static IList<IType> FilePreCompile (string filename, IList<Token> tlist) {
+			return _FileCompiler(filename, tlist, false, true);
+		}
 
         static IList<IType> _FileCompiler (string filename, IList<Token> tokens, bool embDeubgToken, bool onlyGotType) {
             List<IType> typelist = new List<IType>();
@@ -21,7 +30,7 @@ namespace CQuark {
                 if(tokens[i].type == TokenType.KEYWORD && tokens[i].text == "using") {
                     int dep;
                     int pos = i;
-                    int iend = FindCodeAny(tokens, ref pos, out dep);
+					int iend = CQ_Expression_Compiler.FindCodeAny(tokens, ref pos, out dep);
                     List<string> list = Compiler_Using(tokens, pos, iend);
                     string useText = "";
                     for(int j = 0; j < list.Count; j++) {
@@ -274,7 +283,7 @@ namespace CQuark {
                             int funcbegin = funcparamend + 1;
                             if(tokens[funcbegin].text == "{") {
                                 int funcend = FindBlock(tokens, funcbegin);
-                                Compiler_Expression_Block(tokens, funcbegin, funcend, out func.expr_runtime);
+								CQ_Expression_Compiler.Compiler_Expression_Block(tokens, funcbegin, funcend, out func.expr_runtime);
                                 if(func.expr_runtime == null) {
                                     DebugUtil.LogWarning("警告，该函数编译为null，请检查");
                                 }
@@ -327,9 +336,9 @@ namespace CQuark {
                             if(tokens[i + 2].text == "=") {
                                 int jbegin = i + 3;
                                 int jdep;
-                                int jend = FindCodeAny(tokens, ref jbegin, out jdep);
+								int jend = CQ_Expression_Compiler.FindCodeAny(tokens, ref jbegin, out jdep);
 
-                                if(!Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue)) {
+								if(!CQ_Expression_Compiler.Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue)) {
                                     DebugUtil.LogError("Get/Set定义错误");
                                 }
                                 i = jend;
@@ -361,11 +370,11 @@ namespace CQuark {
 
                                 int jbegin = i + 3;
                                 int jdep;
-                                int jend = FindCodeAny(tokens, ref jbegin, out jdep);
+								int jend = CQ_Expression_Compiler.FindCodeAny(tokens, ref jbegin, out jdep);
                                 if(jend < posend) {
                                     jend = posend;
                                 }
-                                if(!Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue)) {
+                                if(!CQ_Expression_Compiler.Compiler_Expression(tokens, jbegin, jend, out member.expr_defvalue)) {
                                     DebugUtil.LogError("成员定义错误");
                                 }
                                 i = jend;
