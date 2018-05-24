@@ -15,7 +15,7 @@ public class Demo4 : MonoBehaviour {
 		
 
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
+		CQuark.CQ_Compiler.CompileOneFile(m_blockFilePath, text);
 	}
 
 	string result = "";

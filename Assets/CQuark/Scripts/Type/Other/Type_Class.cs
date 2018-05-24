@@ -52,11 +52,12 @@ namespace CQuark
         {
             this.types = types;
         }
+#if CQUARK_DEBUG
         public void EmbDebugToken(IList<Token> tokens)
         {
             ((Class_CQuark)typeBridge).EmbDebugToken(tokens);
         }
-     
+#endif     
         public object ConvertTo(object src, TypeBridge targetType)
         {
 			var type = CQuark.AppDomain.GetITypeByCQType(targetType);

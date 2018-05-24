@@ -12,7 +12,7 @@ public class Demo6 : MonoBehaviour {
 		CQuark.AppDomain.Reset();
         CQuark.AppDomain.RegisterType<Debug>("Debug");
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
-		CQuark.AppDomain.BuildFile(m_blockFilePath, text);
+		CQuark.CQ_Compiler.CompileOneFile(m_blockFilePath, text);
 	}
 
 	void OnGUI()

@@ -13,8 +13,8 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 	}
 
 	public ECodeType m_codeType = ECodeType.FileName;
-	CQuark.IType type;
-	CQuark.CQ_ClassInstance inst;//脚本实例
+	IType type;
+	CQ_ClassInstance inst;//脚本实例
 	public string m_className;
 	Class_CQuark cclass;
 
@@ -30,10 +30,10 @@ public class CQuarkBehaviourText : CQuarkBehaviourBase {
 		case ECodeType.FileName:
 			break;
 		case ECodeType.TextAsset:
-			AppDomain.BuildFile(m_className, m_ta.text);
+			CQ_Compiler.CompileOneFile(m_className, m_ta.text);
 			break;
 		case ECodeType.Text:
-			AppDomain.BuildFile(m_className, m_codeText);
+			CQ_Compiler.CompileOneFile(m_className, m_codeText);
 			break;
 		}
 

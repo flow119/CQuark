@@ -86,6 +86,7 @@ namespace CQuark {
 		#endregion
 
 		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx,读取生成工具
+
 		static List<string> customTypes = new List<string>();//注册类型,西瓜声明的类型
 		public static void Reload(bool reloadOrigion){
 			customTypes.Clear();

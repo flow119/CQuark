@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CQuark {
     //由西瓜脚本里获取的自定义Type
@@ -20,6 +19,7 @@ namespace CQuark {
             get;
             private set;
         }
+		//因为一些特殊需要，attributes我也保存下来
 		public List<string> attributes;
         //dumplog用的
         public IList<Token> tokenlist {
@@ -284,10 +284,9 @@ namespace CQuark {
 
 
         public virtual IEnumerator CoroutineCall (CQ_Content contentParent, object object_this, string func, CQ_Value[] _params, UnityEngine.MonoBehaviour coroutine) {
-            //TODO
             Function funccache = null;
             if(this.functions.TryGetValue(func, out funccache)) {
-                if(funccache.bStatic == false) {
+                if(!funccache.bStatic) {
 					CQ_Content content = CQ_ObjPool.PopContent();
                     content.CallType = this;
                     content.CallThis = object_this as CQ_ClassInstance;
@@ -297,7 +296,6 @@ namespace CQuark {
 #endif
                     for(int i = 0; i < funccache._paramtypes.Count; i++)
                     {
-                        //content.DefineAndSet(funccache._paramnames[i], funccache._paramtypes[i].typeBridge, _params[i].GetValue());
 						content.DefineAndSet(funccache._paramnames[i], _params[i].typeBridge, _params[i]);
                     }
 
@@ -307,7 +305,6 @@ namespace CQuark {
                         funcobj = (object_this as CQ_ClassInstance).type.functions[func];
                     }
                     if(funcobj.expr_runtime != null) {
-//						yield return CoroutineCall(funcobj.expr_runtime, content, coroutine);
                        yield return coroutine.StartCoroutine(funcobj.expr_runtime.CoroutineCompute(content, coroutine));
                     }
 #if CQUARK_DEBUG

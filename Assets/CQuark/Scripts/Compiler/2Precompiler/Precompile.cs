@@ -5,15 +5,15 @@ using System.Text;
 namespace CQuark {
     public class Precompile {
 
-		public static IList<IType> FileCompile (string filename, IList<Token> tlist, bool embDebugToken) {
-			return _FileCompiler(filename, tlist, embDebugToken, false);
+		public static IList<IType> FileCompile (string filename, IList<Token> tlist) {
+			return _FileCompiler(filename, tlist, false);
 		}
 		
 		public static IList<IType> FilePreCompile (string filename, IList<Token> tlist) {
-			return _FileCompiler(filename, tlist, false, true);
+			return _FileCompiler(filename, tlist, true);
 		}
 
-        static IList<IType> _FileCompiler (string filename, IList<Token> tokens, bool embDeubgToken, bool onlyGotType) {
+        static IList<IType> _FileCompiler (string filename, IList<Token> tokens, bool onlyGotType) {
             List<IType> typelist = new List<IType>();
 
             List<string> usingList = new List<string>();
@@ -21,13 +21,15 @@ namespace CQuark {
 
             //扫描token有没有要合并的类型
             //using的实现在token级别处理即可
-            bool bJumpClass = false;
+ 
             for(int i = 0; i < tokens.Count; i++) {
                 if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == ";")
                     continue;
+				//新版的tokenParser已经做了
                 if(tokens[i].type == TokenType.COMMENT)
                     continue;
                 if(tokens[i].type == TokenType.KEYWORD && tokens[i].text == "using") {
+					//TODO 新版的tokenParser已经做了
                     int dep;
                     int pos = i;
 					int iend = CQ_Expression_Compiler.FindCodeAny(tokens, ref pos, out dep);
@@ -44,13 +46,6 @@ namespace CQuark {
                     continue;
                 }
 
-                if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == "[") {
-                    if(tokens[i + 1].text == "NotScipt" || (tokens[i + 1].text == "CQuark" && tokens[i + 3].text == "NotScipt")) {
-                        bJumpClass = true;
-                        i = i + 2;
-                        continue;
-                    }
-                }
                 if(tokens[i].type == TokenType.KEYWORD && (tokens[i].text == "class" || tokens[i].text == "interface")) {
                     string name = tokens[i + 1].text;
                     //在这里检查继承
@@ -78,25 +73,20 @@ namespace CQuark {
                         DebugUtil.LogError("查找文件尾失败。");
                         return null;
                     }
-                    if(bJumpClass) {
-                        DebugUtil.Log("(NotScript)findclass:" + name + "(" + ibegin + "," + iend + ")");
-                    }
-                    else if(onlyGotType) {
+#if CQUARK_DEBUG
+                    if(onlyGotType) {
                         DebugUtil.Log("(scriptPreParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
                     }
                     else {
                         DebugUtil.Log("(scriptParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
                     }
-                    if(bJumpClass) {//忽略这个Class
-                        //ICQ_Type type = Compiler_Class(env, name, (tokens[i].text == "interface"), filename, tokens, ibegin, iend, embDeubgToken, true);
-                        //bJumpClass = false;
+#endif                    
+
+                    IType type = Compiler_Class(name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, onlyGotType, usingList);
+                    if(type != null) {
+                        typelist.Add(type);
                     }
-                    else {
-                        IType type = Compiler_Class(name, (tokens[i].text == "interface"), typebase, filename, tokens, ibegin, iend, embDeubgToken, onlyGotType, usingList);
-                        if(type != null) {
-                            typelist.Add(type);
-                        }
-                    }
+                    
                     i = iend;
                     continue;
                 }
@@ -104,7 +94,7 @@ namespace CQuark {
 
             return typelist;
         }
-        static IType Compiler_Class (string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool EmbDebugToken, bool onlyGotType, IList<string> usinglist) {
+        static IType Compiler_Class (string classname, bool bInterface, IList<string> basetype, string filename, IList<Token> tokens, int ibegin, int iend, bool onlyGotType, IList<string> usinglist) {
 
             Type_Class typeClass = CQuark.AppDomain.GetTypeByKeywordQuiet(classname) as Type_Class;
 
@@ -193,12 +183,13 @@ namespace CQuark {
             //属性语法            //Type id{get{},set{}};
             bool bPublic = false;
             bool bStatic = false;
-            if(EmbDebugToken)//SType 嵌入Token
-            {
-                typeClass.EmbDebugToken(tokens);
-            }
-            for(int i = ibegin; i <= iend; i++) {
 
+#if CQUARK_DEBUG
+			//嵌入Token 到Class_CQuark 
+            typeClass.EmbDebugToken(tokens);
+#endif
+
+            for(int i = ibegin; i <= iend; i++) {
                 if(tokens[i].type == TokenType.KEYWORD && tokens[i].text == "public") {
                     bPublic = true;
                     continue;

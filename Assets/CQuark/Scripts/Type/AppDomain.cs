@@ -39,8 +39,9 @@ namespace CQuark{
 			RegisterType<byte>("byte");
 			RegisterType<sbyte>("sbyte");
 			RegisterType<char>("char");
-            RegisterType<IEnumerator>("IEnumerator");
+            
 			RegisterType<object>("object");
+			RegisterType<IEnumerator>("IEnumerator");
 						
 			RegisterType(typeof(List<>), "List");	//模板类要独立注册
 			RegisterType(typeof(Dictionary<,>), "Dictionary");
@@ -200,7 +201,7 @@ namespace CQuark{
 				return str2itype["null"];
 			
 			IType ret = null;
-			if(ccq2itype.TryGetValue(stype, out ret) == false) {
+			if(!ccq2itype.TryGetValue(stype, out ret)) {
 				DebugUtil.LogWarning("(Class_CQuark)类型未注册,将自动注册一份匿名:" + stype.ToString());
 			}
 			return ret;
@@ -210,7 +211,7 @@ namespace CQuark{
 				return str2itype["null"];
 			
 			IType ret = null;
-			if(type2itype.TryGetValue(type, out ret) == false) {
+			if(!type2itype.TryGetValue(type, out ret)) {
 				DebugUtil.LogWarning("(Type)类型未注册,将自动注册一份匿名:" + type.ToString());
 				ret = MakeIType(type, "");
 				RegisterType(ret);
@@ -273,7 +274,7 @@ namespace CQuark{
 			    }
 			}
 			//TODO反射找类
-			DebugUtil.LogError("(CQcript)类型未注册:" + keyword);
+			DebugUtil.LogError("(CQScript)类型未注册:" + keyword);
 			return null;
         }
         public static IType GetTypeByKeywordQuiet (string keyword) {
@@ -287,67 +288,5 @@ namespace CQuark{
 		public static object ConvertTo(object obj, TypeBridge targetType){
 			return GetITypeByType(obj.GetType()).ConvertTo(obj, targetType);
 		}
-
-
-
-
-        private static void Project_Compile (Dictionary<string, IList<Token>> project, bool embDebugToken) {
-            foreach(KeyValuePair<string, IList<Token>> f in project) {
-                //先把所有代码里的类注册一遍
-                IList<IType> types = Precompile.FilePreCompile(f.Key, f.Value);
-                foreach(var type in types) {
-					RegisterCQType(type);
-                }
-            }
-            foreach(KeyValuePair<string, IList<Token>> f in project) {
-                //预处理符号
-                for(int i = 0; i < f.Value.Count; i++) {
-                    if(f.Value[i].type == TokenType.IDENTIFIER && CQ_TokenParser.ContainsType(f.Value[i].text)) {//有可能预处理导致新的类型
-                        if(i > 0
-                            &&
-                            (f.Value[i - 1].type == TokenType.TYPE || f.Value[i - 1].text == ".")) {
-                            continue;
-                        }
-                        Token rp = f.Value[i];
-                        rp.type = TokenType.TYPE;
-                        f.Value[i] = rp;
-                    }
-                }
-                File_CompileToken(f.Key, f.Value, embDebugToken);
-            }
-        }
-        private static void File_CompileToken (string filename, IList<Token> listToken, bool embDebugToken) {
-            DebugUtil.Log("File_CompilerToken:" + filename);
-			IList<IType> types = Precompile.FileCompile(filename, listToken, embDebugToken);
-            foreach(var type in types) {
-                if(GetTypeByKeywordQuiet(type.keyword) == null)
-					RegisterCQType(type);
-            }
-        }
-
-        /// <summary>
-        /// 这里的filename只是为了编译时报错可以看到出错文件
-        /// </summary>
-
-        public static void BuildFile (string filename, string code) {
-			List<Token> token = CQ_TokenParser.Parse(code);
-            File_CompileToken(filename, token, false);
-        }
-        public static void BuildProject (string path, string pattern) {
-            string[] files = System.IO.Directory.GetFiles(path, pattern, System.IO.SearchOption.AllDirectories);
-            BuildProject(files);
-        }
-
-        public static void BuildProject (string[] filePaths) {
-            Dictionary<string, IList<CQuark.Token>> project = new Dictionary<string, IList<CQuark.Token>>();
-            foreach(string filePath in filePaths) {
-                if(project.ContainsKey(filePath))
-                    continue;
-                string text = System.IO.File.ReadAllText(filePath);
-				List<Token> tokens = CQ_TokenParser.Parse(text);
-                project.Add(filePath, tokens);
-            }
-            Project_Compile(project, true);
-        }
     }
 }

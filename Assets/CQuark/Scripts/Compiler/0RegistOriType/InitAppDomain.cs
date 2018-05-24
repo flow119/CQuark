@@ -23,7 +23,7 @@ public class InitAppDomain : MonoBehaviour {
             CQuark.AppDomain.Reset();
             RegisterUnityType();
         }
-        CQuark.AppDomain.BuildProject(Application.streamingAssetsPath + "/" + m_folderPath, m_pattern);
+        CQuark.CQ_Compiler.CompileProject(Application.streamingAssetsPath + "/" + m_folderPath, m_pattern);
         Debug.Log("Project Compile Finished");
     }
 
