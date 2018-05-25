@@ -49,6 +49,10 @@ namespace CQuark{
 			str2itype["null"] = new Type_NULL();
         }
 
+		public static bool ContainsType(string type){
+			return str2itype.ContainsKey (type);
+		}
+
 			
 		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
 		private static IType MakeIType<T>(string keyword){

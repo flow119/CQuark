@@ -74,13 +74,13 @@ namespace CQuark {
                     return stype.Name;
             }
         }
-        public string NameSpace {
-            get {
-                if(type != null)
-                    return type.Namespace;
-                else
-                    return stype.Namespace;
-            }
-        }
+//        public string NameSpace {
+//            get {
+//                if(type != null)
+//                    return type.Namespace;
+//                else
+//                    return stype.Namespace;
+//            }
+//        }
     }
 }

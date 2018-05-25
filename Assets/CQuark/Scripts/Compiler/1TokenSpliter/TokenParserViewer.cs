@@ -14,7 +14,7 @@ public class TokenParserViewer : MonoBehaviour {
 		AppDomain.Reset ();
 //		AppDomain.RegisterDefaultType ();
 //		InitAppDomain.RegisterFullnameType();
-		m_tokens = TokenSpliter.Parse (m_text);
+		m_tokens = TokenSpliter.SplitToken (m_text);
 	}
 
 	public void CompileOld(){
@@ -22,6 +22,7 @@ public class TokenParserViewer : MonoBehaviour {
 		AppDomain.Reset ();
 //		AppDomain.RegisterDefaultType ();
 		InitAppDomain.RegisterOriType ();
+		AppDomain.RegisterType (typeof(GameObject[]), "GameObject[]");
 		m_tokens = CQ_TokenParser.Parse (m_text);
 	}
 }

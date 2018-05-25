@@ -12,11 +12,11 @@ namespace CQuark
             get;
             private set;
         }
-        public string _namespace
-        {
-            get;
-            private set;
-        }
+//        public string _namespace
+//        {
+//            get;
+//            private set;
+//        }
         public TypeBridge typeBridge
         {
             get;
@@ -41,11 +41,11 @@ namespace CQuark
             get;
             set;
         }
-        public Type_Class(string keyword, bool bInterface, string filename)
+        public Type_Class(string fullName, bool bInterface, string filename)
         {
-            this.keyword = keyword;
-            this._namespace = "";
-            typeBridge = new Class_CQuark(keyword, "", filename, bInterface);
+			this.keyword = fullName;
+//            this._namespace = "";
+			typeBridge = new Class_CQuark(fullName, "", filename, bInterface);
             compiled = false;
         }
         public void SetBaseType(IList<IType> types)

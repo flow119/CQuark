@@ -7,7 +7,7 @@ namespace CQuark {
     public class Class_CQuark : IClass {
         public Class_CQuark (string keyword, string _namespace, string filename, bool bInterface) {
             this.Name = keyword;
-            this.Namespace = _namespace;
+//            this.Namespace = _namespace;
             this.filename = filename;
             this.bInterface = bInterface;
         }
@@ -31,14 +31,14 @@ namespace CQuark {
         }
 
         #region impl type
-        public string FullName {
-            get { return Namespace + "." + Name; }
-        }
+//        public string FullName {
+//            get { return Namespace + "." + Name; }
+//        }
 
-        public string Namespace {
-            get;
-            private set;
-        }
+//        public string Namespace {
+//            get;
+//            private set;
+//        }
 
         public string Name {
             get;

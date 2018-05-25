@@ -12,10 +12,10 @@ namespace CQuark
             get;
             protected set;
         }
-        public string _namespace
-        {
-            get { return typeBridge.NameSpace; }
-        }
+//        public string _namespace
+//        {
+//            get { return typeBridge.NameSpace; }
+//        }
         public TypeBridge typeBridge
         {
             get;
