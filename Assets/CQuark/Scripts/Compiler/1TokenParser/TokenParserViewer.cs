@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CQuark;
@@ -10,18 +10,18 @@ public class TokenParserViewer : MonoBehaviour {
 	public List<Token> m_tokens;
 
 	public void CompileNew(){
-		TokenParser.Reload(true);
+
 		AppDomain.Reset ();
-		AppDomain.RegisterDefaultType ();
+//		AppDomain.RegisterDefaultType ();
 //		InitAppDomain.RegisterFullnameType();
-		m_tokens = TokenParser.Parse (m_text);
+		m_tokens = TokenSpliter.Parse (m_text);
 	}
 
 	public void CompileOld(){
 		//TODO 注册类型
 		AppDomain.Reset ();
-		AppDomain.RegisterDefaultType ();
-		InitAppDomain.RegisterUnityType ();
+//		AppDomain.RegisterDefaultType ();
+		InitAppDomain.RegisterOriType ();
 		m_tokens = CQ_TokenParser.Parse (m_text);
 	}
 }

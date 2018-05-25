@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace CQuark {
-	public static class TokenParser {
+	public static class TokenSpliter {
 		#region Keywords And BasicTypes
 		private static readonly List<string> keywords = new List<string>(){
 			//https://msdn.microsoft.com/zh-cn/library/x53a06bb(VS.80).aspx
@@ -60,69 +60,9 @@ namespace CQuark {
 			"ref",//TODO
 			"out",//TODO
 		};
-
-		static readonly List<string> basicTypes = new List<string>(){
-			"double",
-			"long",
-			"ulong",
-			"float",
-			"int",
-			"uint",
-			"short",
-			"ushort",
-			"byte",
-			"sbyte",
-			"char",
-			
-			"bool",
-			"string",
-			"void",//虽然是关键字，但还是作为Type处理
-			"object",
-			//2017-09-15 0.7.1 补充协程
-			"IEnumerator",
-			//1.0.1新增
-			"Type",
-		};
 		#endregion
 
-		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx,读取生成工具
 
-		static List<string> customTypes = new List<string>();//注册类型,西瓜声明的类型
-		public static void Reload(bool reloadOrigion){
-			customTypes.Clear();
-			if (reloadOrigion)
-				oriTypes.Clear ();
-		}
-		//初始化时由AppDomain调用
-		public static void RegisterOriType (string type) {
-			if(oriTypes.Contains(type))
-				return;
-			oriTypes.Add(type);
-		}
-		//实时编译调用
-		public static void RegisterCustomType(string type){
-			if(customTypes.Contains(type))
-				return;
-			customTypes.Add(type);
-		}
-
-		public static bool IsType (string type, List<string> nameSpace, out string fullName) {
-			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type)){
-				fullName = type;
-				return true;
-			}
-
-			if(nameSpace != null){
-				for(int i = 0; i < nameSpace.Count; i++){
-					fullName = nameSpace[i] + "." + type;
-					if(/*basicTypes.Contains(fullName) || */customTypes.Contains(fullName) || oriTypes.Contains(fullName)){
-						return true;
-					}
-				}
-			}
-			fullName = "";
-			return false;
-		}
 
 		static int FindStart (string lines, int npos, ref int lineIndex) {
 			int n = npos;
@@ -543,178 +483,178 @@ namespace CQuark {
 		}
 
 		//判断x.y到底是类.方法还是命名空间.类，类.类
-		[Obsolete]
-		static void ReplaceIdentifier(List<Token> tokens, List<string> usingNamespace){
-			for(int start = 0; start < tokens.Count; start++){
-				if(tokens[start].type == TokenType.IDENTIFIER){
-					for(int end = start; end < tokens.Count;){
-						string fullname =  Combine(tokens, start, end - start + 1);
-						if(IsType(fullname, usingNamespace, out fullname)){
-							Token t = CombineReplace(tokens, start, end - start + 1, TokenType.TYPE);
-							t.text = fullname;
-							tokens[start] = t;
-							start--;//先不判断下一个，因为要合并类中类
-							break;
-						}
-
-						if(end + 2 < tokens.Count && tokens[end + 1].text == "." && tokens[end+2].type == TokenType.IDENTIFIER){
-							end += 2;
-						}else{
-							break;
-						}
-					}
-				}else if(tokens[start].type == TokenType.TYPE){
-					//合并类中类
-					if(start + 2 < tokens.Count && tokens[start + 1].text == "." && tokens[start + 2].type == TokenType.IDENTIFIER){
-						string fullname =  Combine(tokens, start, 3);
-						if(IsType(fullname, usingNamespace, out fullname)){
-							Token t = CombineReplace(tokens, start, 3, TokenType.TYPE);
-							t.text = fullname;
-							tokens[start] = t;
-							start--;
-						}
-					}
-				}
-			}
-
-
-//			if(ContainsType(t.text)) { //foreach (string s in types)
-//				while(line[i] == ' ' && i < line.Length) {
-//					i++;
-//				}
-//				if(line[i] == '<') { /*  || line[i] == '['*/
-//					int dep = 0;
-//					string text = t.text;
-//					while(i < line.Length) {
-//						if(line[i] == '<')
-//							dep++;
-//						if(line[i] == '>') 
-//							dep--;
-//						if(line[i] == ';' || line[i] == '(' || line[i] == '{') {
+//		[Obsolete]
+//		static void ReplaceIdentifier(List<Token> tokens, List<string> usingNamespace){
+//			for(int start = 0; start < tokens.Count; start++){
+//				if(tokens[start].type == TokenType.IDENTIFIER){
+//					for(int end = start; end < tokens.Count;){
+//						string fullname =  Combine(tokens, start, end - start + 1);
+//						if(IsType(fullname, usingNamespace, out fullname)){
+//							Token t = CombineReplace(tokens, start, end - start + 1, TokenType.TYPE);
+//							t.text = fullname;
+//							tokens[start] = t;
+//							start--;//先不判断下一个，因为要合并类中类
 //							break;
 //						}
-//						if(line[i] != ' ') 
-//							text += line[i];
-//						i++;
-//						if(dep == 0) {
-//							t.text = text;
+//
+//						if(end + 2 < tokens.Count && tokens[end + 1].text == "." && tokens[end+2].type == TokenType.IDENTIFIER){
+//							end += 2;
+//						}else{
 //							break;
 //						}
 //					}
-//					//if (types.Contains(t.text))//自动注册
-//					{
-//						t.type = TokenType.TYPE;
-//						return i;
-//					}
-//				}
-//				else {
-//					t.type = TokenType.TYPE;
-//					return nstart + t.text.Length;
-//				}
-//			}
-//			while(i < line.Length && line[i] == ' ') {
-//				i++;
-//			}
-//			if(i < line.Length && (line[i] == '<'/* || line[i] == '['*/)) {//检查特别类型
-//				int dep = 0;
-//				string text = t.text;
-//				while(i < line.Length) {
-//					if(line[i] == '<') {
-//						dep++;
-//						i++;
-//						text += '<';
-//						continue;
-//					}
-//					if(line[i] == '>') {
-//						dep--;
-//						i++;
-//						if(dep == 0) {
-//							t.text = text + '>';
-//							break;
+//				}else if(tokens[start].type == TokenType.TYPE){
+//					//合并类中类
+//					if(start + 2 < tokens.Count && tokens[start + 1].text == "." && tokens[start + 2].type == TokenType.IDENTIFIER){
+//						string fullname =  Combine(tokens, start, 3);
+//						if(IsType(fullname, usingNamespace, out fullname)){
+//							Token t = CombineReplace(tokens, start, 3, TokenType.TYPE);
+//							t.text = fullname;
+//							tokens[start] = t;
+//							start--;
 //						}
-//						continue;
 //					}
-//					Token tt;
-//					int nnstart = FindStart(line, i, ref lineIndex);
-//					i = GetToken(line, nnstart, out tt, ref lineIndex);
-//					if(tt.type != TokenType.IDENTIFIER && tt.type != TokenType.TYPE && tt.text != ",") {
-//						break;
-//					}
-//					text += tt.text;
-//				}
-//				if(ContainsType(t.text)) {
-//					t.type = TokenType.TYPE;
-//					return i;
-//					
-//				}
-//				else if(dep == 0) {
-//					t.type = TokenType.IDENTIFIER;
-//					return i;
 //				}
 //			}
-//			if(tokens.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
-//			   && tokens[tokens.Count - 1].type == TokenType.TYPE
-//			   && tokens[tokens.Count - 2].type == TokenType.PUNCTUATION && tokens[tokens.Count - 2].text == "<"
-//			   && tokens[tokens.Count - 3].type == TokenType.IDENTIFIER) {//模板函数调用,合并之
-//				string ntype = tokens[tokens.Count - 3].text + tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
-//				t.type = TokenType.IDENTIFIER;
-//				t.text = ntype;
-//				t.pos = tokens[tokens.Count - 2].pos;
-//				t.line = tokens[tokens.Count - 2].line;
-//				tokens.RemoveAt(tokens.Count - 1);
-//				tokens.RemoveAt(tokens.Count - 1);
-//				tokens.RemoveAt(tokens.Count - 1);
-//				tokens.Add(t);
-//				continue;
+//
+//
+////			if(ContainsType(t.text)) { //foreach (string s in types)
+////				while(line[i] == ' ' && i < line.Length) {
+////					i++;
+////				}
+////				if(line[i] == '<') { /*  || line[i] == '['*/
+////					int dep = 0;
+////					string text = t.text;
+////					while(i < line.Length) {
+////						if(line[i] == '<')
+////							dep++;
+////						if(line[i] == '>') 
+////							dep--;
+////						if(line[i] == ';' || line[i] == '(' || line[i] == '{') {
+////							break;
+////						}
+////						if(line[i] != ' ') 
+////							text += line[i];
+////						i++;
+////						if(dep == 0) {
+////							t.text = text;
+////							break;
+////						}
+////					}
+////					//if (types.Contains(t.text))//自动注册
+////					{
+////						t.type = TokenType.TYPE;
+////						return i;
+////					}
+////				}
+////				else {
+////					t.type = TokenType.TYPE;
+////					return nstart + t.text.Length;
+////				}
+////			}
+////			while(i < line.Length && line[i] == ' ') {
+////				i++;
+////			}
+////			if(i < line.Length && (line[i] == '<'/* || line[i] == '['*/)) {//检查特别类型
+////				int dep = 0;
+////				string text = t.text;
+////				while(i < line.Length) {
+////					if(line[i] == '<') {
+////						dep++;
+////						i++;
+////						text += '<';
+////						continue;
+////					}
+////					if(line[i] == '>') {
+////						dep--;
+////						i++;
+////						if(dep == 0) {
+////							t.text = text + '>';
+////							break;
+////						}
+////						continue;
+////					}
+////					Token tt;
+////					int nnstart = FindStart(line, i, ref lineIndex);
+////					i = GetToken(line, nnstart, out tt, ref lineIndex);
+////					if(tt.type != TokenType.IDENTIFIER && tt.type != TokenType.TYPE && tt.text != ",") {
+////						break;
+////					}
+////					text += tt.text;
+////				}
+////				if(ContainsType(t.text)) {
+////					t.type = TokenType.TYPE;
+////					return i;
+////					
+////				}
+////				else if(dep == 0) {
+////					t.type = TokenType.IDENTIFIER;
+////					return i;
+////				}
+////			}
+////			if(tokens.Count >= 3 && t.type == TokenType.PUNCTUATION && t.text == ">"
+////			   && tokens[tokens.Count - 1].type == TokenType.TYPE
+////			   && tokens[tokens.Count - 2].type == TokenType.PUNCTUATION && tokens[tokens.Count - 2].text == "<"
+////			   && tokens[tokens.Count - 3].type == TokenType.IDENTIFIER) {//模板函数调用,合并之
+////				string ntype = tokens[tokens.Count - 3].text + tokens[tokens.Count - 2].text + tokens[tokens.Count - 1].text + t.text;
+////				t.type = TokenType.IDENTIFIER;
+////				t.text = ntype;
+////				t.pos = tokens[tokens.Count - 2].pos;
+////				t.line = tokens[tokens.Count - 2].line;
+////				tokens.RemoveAt(tokens.Count - 1);
+////				tokens.RemoveAt(tokens.Count - 1);
+////				tokens.RemoveAt(tokens.Count - 1);
+////				tokens.Add(t);
+////				continue;
+////			}
+//
+//
+//			//TODO 用作用域（Stack)去判断
+//
+//			//C# 允许这种写法 A A = new A();//fuck
+//			//但是int int这种又不行
+//			//1A B, A一定是Type，B一定是Property
+//			//2typeof(A)，A一定是Type
+//			//3<A>，<A,B>等 A一定是Type
+//			//4A[] A一定是Type
+//			//A.B，A.B.C，如果上面有A的Property（B A;），那么A一定是Property，否则A是类或者命名空间
+//			//new XX.X()一定是构造函数
+//
+//			//A.B到底是类中类还是A.成员没有办法知道，必须在Expression级处理
+////			if(tokens.Count >= 1 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].type == TokenType.TYPE) {//Type Type 不可能，为重名
+////				t.type = TokenType.IDENTIFIER;
+////				tokens.Add(t);
+////				continue;
+////			}
+//
+//			//编译分几步
+//
+//			//2，把所有类提取出来，连同其namespace写到注册字典里
+//			//3，列举出所有的类（保留unknown.unknow），所有Property,所有function(必须作用域处理)
+//			//4，通过字典和反射确定 类名及所有Unknown
+//			//5,由compile expression（也需要重构）处理
+//		}
+//		[Obsolete]
+//		public static bool IsType(List<Token> tokens, int index){
+//			//typeof()
+//
+//			//构造函数
+//
+//			//后接Identifier
+//			if(index == 0)
+//				return true;
+//			if(tokens[index - 1].type == TokenType.PUNCTUATION){
+//				if(tokens[index - 1].text == ";" ||tokens[index - 1].text == "}" 
+//					||tokens[index - 1].text == "{" || tokens[index - 1].text == "=>")
+//					return true;
 //			}
-
-
-			//TODO 用作用域（Stack)去判断
-
-			//C# 允许这种写法 A A = new A();//fuck
-			//但是int int这种又不行
-			//1A B, A一定是Type，B一定是Property
-			//2typeof(A)，A一定是Type
-			//3<A>，<A,B>等 A一定是Type
-			//4A[] A一定是Type
-			//A.B，A.B.C，如果上面有A的Property（B A;），那么A一定是Property，否则A是类或者命名空间
-			//new XX.X()一定是构造函数
-
-			//A.B到底是类中类还是A.成员没有办法知道，必须在Expression级处理
-//			if(tokens.Count >= 1 && t.type == TokenType.TYPE && tokens[tokens.Count - 1].type == TokenType.TYPE) {//Type Type 不可能，为重名
-//				t.type = TokenType.IDENTIFIER;
-//				tokens.Add(t);
-//				continue;
+//			if(tokens[index - 1].type == TokenType.KEYWORD){
+//				if(tokens[index - 1].text == "public" ||tokens[index - 1].text == "private"
+//					||tokens[index - 1].text == "protected" || tokens[index - 1].text == "static")
+//					return true;
 //			}
-
-			//编译分几步
-
-			//2，把所有类提取出来，连同其namespace写到注册字典里
-			//3，列举出所有的类（保留unknown.unknow），所有Property,所有function(必须作用域处理)
-			//4，通过字典和反射确定 类名及所有Unknown
-			//5,由compile expression（也需要重构）处理
-		}
-		[Obsolete]
-		public static bool IsType(List<Token> tokens, int index){
-			//typeof()
-
-			//构造函数
-
-			//后接Identifier
-			if(index == 0)
-				return true;
-			if(tokens[index - 1].type == TokenType.PUNCTUATION){
-				if(tokens[index - 1].text == ";" ||tokens[index - 1].text == "}" 
-					||tokens[index - 1].text == "{" || tokens[index - 1].text == "=>")
-					return true;
-			}
-			if(tokens[index - 1].type == TokenType.KEYWORD){
-				if(tokens[index - 1].text == "public" ||tokens[index - 1].text == "private"
-					||tokens[index - 1].text == "protected" || tokens[index - 1].text == "static")
-					return true;
-			}
-			return false;
-		}
+//			return false;
+//		}
 
 
 		public static List<Token> SplitToken(string lines){
@@ -846,61 +786,61 @@ namespace CQuark {
 			}
 		}
 
-		public static void DefineProperty(List<Token> tokens){
-			//三个函数顺序执行
-			for(int start = 1; start < tokens.Count; start++){
-				if(tokens[start].type == TokenType.IDENTIFIER && basicTypes.Contains(tokens[start].text)){//class后面的一定是类，且后面只能接{或:xxx{
-					Token token = tokens[start];
-					token.type = TokenType.TYPE;
-					tokens[start] = token;
-				}
-			}
-
-			for(int start = 1; start < tokens.Count - 1; start++){
-				if(tokens[start].type == TokenType.IDENTIFIER && (tokens[start - 1].type == TokenType.IDENTIFIER || tokens[start - 1].type == TokenType.TYPE)
-				   && tokens[start + 1].text != "("){//TYPE 后一定是Property
-					Token token = tokens[start];
-					token.type = TokenType.PROPERTY;
-					tokens[start] = token;
-				}
-			}
-			for(int start = 0; start < tokens.Count - 4; start++){
-				if(tokens[start].text == "[" && tokens[start + 1].text == "]" && tokens[start + 2].type != TokenType.PUNCTUATION){
-					Token t = tokens[start + 2];
-					t.type = TokenType.PROPERTY;
-					tokens[start + 2] = t;
-				}
-			}
-			//必须放在模版<>判断之后)
-			for (int start = 1; start < tokens.Count; start++) {
-				if(tokens[start].type == TokenType.PUNCTUATION){
-					if (tokens [start].text == ")" || tokens [start].text == "," || tokens [start].text == "]" || tokens[start].text == ";"
-					    || tokens[start].text == ">" || tokens[start].text == "<" || tokens[start].text == ">=" || tokens[start].text == "<=" || tokens[start].text == "==" || tokens[start].text == "!=" 
-					    || tokens[start].text == "+=" || tokens[start].text == "-=" || tokens[start].text == "*=" || tokens[start].text == "/=" || tokens[start].text == "%=" 
-					    || tokens[start].text == "=" || tokens[start].text == "&&" || tokens[start].text == "||" || tokens[start].text == "&=" || tokens[start].text == "|=") {
-						if(tokens[start - 1].type == TokenType.IDENTIFIER){
-							Token t = tokens[start - 1];
-							t.type = TokenType.PROPERTY;
-							tokens[start - 1] = t;
-						}
-					}
-				}
-			}
-			//TODO 作用域，并且获取基类
-
-			for (int end = tokens.Count - 1; end >= 0; end--) {
-				if(tokens[end].type == TokenType.PROPERTY && tokens[end - 1].type == TokenType.IDENTIFIER){//Property前面的Identifier一定是Type，可能是x.y.z a
-					for(int start = end - 1; start >= 0; ){
-						if(tokens[start - 1].text == "." && tokens[start - 2].type == TokenType.IDENTIFIER){
-							start -= 2;
-						}else{
-							CombineReplace(tokens, start, end - start, TokenType.TYPE);
-							break;
-						}
-					}
-				}
-			}
-		}
+//		public static void DefineProperty(List<Token> tokens){
+//			//三个函数顺序执行
+//			for(int start = 1; start < tokens.Count; start++){
+//				if(tokens[start].type == TokenType.IDENTIFIER && basicTypes.Contains(tokens[start].text)){//class后面的一定是类，且后面只能接{或:xxx{
+//					Token token = tokens[start];
+//					token.type = TokenType.TYPE;
+//					tokens[start] = token;
+//				}
+//			}
+//
+//			for(int start = 1; start < tokens.Count - 1; start++){
+//				if(tokens[start].type == TokenType.IDENTIFIER && (tokens[start - 1].type == TokenType.IDENTIFIER || tokens[start - 1].type == TokenType.TYPE)
+//				   && tokens[start + 1].text != "("){//TYPE 后一定是Property
+//					Token token = tokens[start];
+//					token.type = TokenType.PROPERTY;
+//					tokens[start] = token;
+//				}
+//			}
+//			for(int start = 0; start < tokens.Count - 4; start++){
+//				if(tokens[start].text == "[" && tokens[start + 1].text == "]" && tokens[start + 2].type != TokenType.PUNCTUATION){
+//					Token t = tokens[start + 2];
+//					t.type = TokenType.PROPERTY;
+//					tokens[start + 2] = t;
+//				}
+//			}
+//			//必须放在模版<>判断之后)
+//			for (int start = 1; start < tokens.Count; start++) {
+//				if(tokens[start].type == TokenType.PUNCTUATION){
+//					if (tokens [start].text == ")" || tokens [start].text == "," || tokens [start].text == "]" || tokens[start].text == ";"
+//					    || tokens[start].text == ">" || tokens[start].text == "<" || tokens[start].text == ">=" || tokens[start].text == "<=" || tokens[start].text == "==" || tokens[start].text == "!=" 
+//					    || tokens[start].text == "+=" || tokens[start].text == "-=" || tokens[start].text == "*=" || tokens[start].text == "/=" || tokens[start].text == "%=" 
+//					    || tokens[start].text == "=" || tokens[start].text == "&&" || tokens[start].text == "||" || tokens[start].text == "&=" || tokens[start].text == "|=") {
+//						if(tokens[start - 1].type == TokenType.IDENTIFIER){
+//							Token t = tokens[start - 1];
+//							t.type = TokenType.PROPERTY;
+//							tokens[start - 1] = t;
+//						}
+//					}
+//				}
+//			}
+//			//TODO 作用域，并且获取基类
+//
+//			for (int end = tokens.Count - 1; end >= 0; end--) {
+//				if(tokens[end].type == TokenType.PROPERTY && tokens[end - 1].type == TokenType.IDENTIFIER){//Property前面的Identifier一定是Type，可能是x.y.z a
+//					for(int start = end - 1; start >= 0; ){
+//						if(tokens[start - 1].text == "." && tokens[start - 2].type == TokenType.IDENTIFIER){
+//							start -= 2;
+//						}else{
+//							CombineReplace(tokens, start, end - start, TokenType.TYPE);
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
 
 		public static void DefineFunction(List<Token> tokens){
 			for(int start = 0; start < tokens.Count - 1; start++){
@@ -1027,13 +967,13 @@ namespace CQuark {
 //			//第二步，找到引用的命名空间，及当前的命名空间。注册到字典
 //			List<string> usingNamespace = FindUsingNamespace (tokens);
 			string currentNamespace = "";
-			List<string> usingNamespace = DefineNamespace (tokens, out currentNamespace);
+//			List<string> usingNamespace = DefineNamespace (tokens, out currentNamespace);
 			//找到类，注意，此时是根据C#规范来找的,因此不知道类的全名
-			DefineClass (tokens);	//所有的类注册完毕
-			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数，因此放在Property和Function之前
-			DefineProperty (tokens);
-			DefineFunction (tokens);
-			DefineAttributes (tokens);
+//			DefineClass (tokens);	//所有的类注册完毕
+//			DefineTempletType(tokens);//模板类会导致新的Type和新的构造函数，因此放在Property和Function之前
+//			DefineProperty (tokens);
+//			DefineFunction (tokens);
+//			DefineAttributes (tokens);
 
 			//第三步。对所有脚本编译（因为需要知道基类的property）
 

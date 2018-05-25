@@ -4,6 +4,86 @@ using System.Text;
 
 namespace CQuark {
     public class Precompile {
+		static readonly List<string> basicTypes = new List<string>(){
+			"double",
+			"long",
+			"ulong",
+			"float",
+			"int",
+			"uint",
+			"short",
+			"ushort",
+			"byte",
+			"sbyte",
+			"char",
+			
+			"bool",
+			"string",
+			"void",//虽然是关键字，但还是作为Type处理
+			"object",
+			//2017-09-15 0.7.1 补充协程
+			"IEnumerator",
+			//1.0.1新增
+			"Type",
+		};
+
+		public static void RegisterCQClass(IList<Token> tokens){
+			//合并using namespace
+			//找到类型，写如AppDomain
+		}
+
+		//再全部注册完毕后，把类名补足
+		public static void FixNamespace(IList<Token> tokens){
+
+		}
+
+		public static void FileCompile(IList<Token> tokens){
+			//把Identifier全部替换成Type
+		}
+
+		static List<string> oriTypes = new List<string>();//原生类型，比如UnityEngine.xxx,读取生成工具
+		
+		static List<string> customTypes = new List<string>();//注册类型,西瓜声明的类型
+		public static void Reload(bool reloadOrigion){
+			customTypes.Clear();
+			if (reloadOrigion)
+				oriTypes.Clear ();
+		}
+		//初始化时由AppDomain调用
+		public static void RegisterOriType (string type) {
+			if(oriTypes.Contains(type))
+				return;
+			oriTypes.Add(type);
+		}
+		//实时编译调用
+		public static void RegisterCustomType(string type){
+			if(customTypes.Contains(type))
+				return;
+			customTypes.Add(type);
+		}
+		
+		public static bool IsType (string type, List<string> nameSpace, out string fullName) {
+			if(basicTypes.Contains(type) || customTypes.Contains(type) || oriTypes.Contains(type)){
+				fullName = type;
+				return true;
+			}
+			
+			if(nameSpace != null){
+				for(int i = 0; i < nameSpace.Count; i++){
+					fullName = nameSpace[i] + "." + type;
+					if(/*basicTypes.Contains(fullName) || */customTypes.Contains(fullName) || oriTypes.Contains(fullName)){
+						return true;
+					}
+				}
+			}
+			fullName = "";
+			return false;
+		}
+
+
+
+
+
 
 		public static IList<IType> FileCompile (string filename, IList<Token> tlist) {
 			return _FileCompiler(filename, tlist, false);

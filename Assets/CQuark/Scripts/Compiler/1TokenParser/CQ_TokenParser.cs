@@ -4,8 +4,8 @@ using System.Text;
 
 namespace CQuark {
     public static class CQ_TokenParser {
-        private static readonly List<string> keywords = new List<string>()
-        {
+		#region Keywords And BasicTypes
+        private static readonly List<string> keywords = new List<string>(){
             "if",
             "as",
             "is",
@@ -69,6 +69,8 @@ namespace CQuark {
             //2017-09-15 0.7.1 补充协程
             "IEnumerator"
         };
+		#endregion
+
         static List<string> customTypes = new List<string>();
         public static void AddType (string type) {
             if(ContainsType(type))
@@ -416,15 +418,6 @@ namespace CQuark {
                         return i;
                     }
 
-                    //foreach (string s in types)
-                    //{
-                    //    if (s.Length > t.text.Length && line.IndexOf(s, nstart) == nstart)
-                    //    {
-                    //        t.type = TokenType.TYPE;
-                    //        t.text = s;
-                    //        return nstart + s.Length;
-                    //    }
-                    //}
                 }
                 t.type = TokenType.IDENTIFIER;
                 return nstart + t.text.Length;

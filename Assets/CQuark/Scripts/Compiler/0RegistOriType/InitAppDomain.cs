@@ -20,14 +20,16 @@ public class InitAppDomain : MonoBehaviour {
         if (!appDomainInit)
         {
             appDomainInit = true;
+			//重置AppDomain(清空已注册类型，并且注册基本类型)
             CQuark.AppDomain.Reset();
-            RegisterUnityType();
+			//注册原生类型
+            RegisterOriType();
         }
         CQuark.CQ_Compiler.CompileProject(Application.streamingAssetsPath + "/" + m_folderPath, m_pattern);
         Debug.Log("Project Compile Finished");
     }
 
-    public static void RegisterUnityType()
+    public static void RegisterOriType()
     {
 		AppDomain.RegisterType<UnityEngine.Object>("Object");
 

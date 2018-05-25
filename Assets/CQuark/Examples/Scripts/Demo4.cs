@@ -10,10 +10,9 @@ public class Demo4 : MonoBehaviour {
 	void Start()
 	{
         CQuark.AppDomain.Reset();
-        InitAppDomain.RegisterUnityType();
-        //CQuark.AppDomain.RegisterType (typeof(System.DateTime),"DateTime");
-		
-
+        InitAppDomain.RegisterOriType();
+        CQuark.AppDomain.RegisterType (typeof(System.DateTime),"DateTime");
+		CQuark.AppDomain.RegisterType (typeof(System.DayOfWeek),"DayOfWeek");
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.CQ_Compiler.CompileOneFile(m_blockFilePath, text);
 	}

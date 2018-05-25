@@ -18,16 +18,14 @@ namespace CQuark{
 			ccq2itype.Clear ();
 			type2itype.Clear ();
 			str2itype.Clear();
-            RegisterDefaultType();
-        }
-
-        public static void RegisterDefaultType () {
+            
+			//注册基本类型
 			RegisterType(new Type_String());
 			RegisterType(new Type_Var());
 			RegisterType(new Type_Bool());
 			RegisterType(new Type_Lambda());
 			RegisterType(new Type_Delegate());
-
+			
 			RegisterType<double>("double");
 			RegisterType<float>("float");
 			RegisterType<long>("long");
@@ -39,19 +37,18 @@ namespace CQuark{
 			RegisterType<byte>("byte");
 			RegisterType<sbyte>("sbyte");
 			RegisterType<char>("char");
-            
+			
 			RegisterType<object>("object");
 			RegisterType<IEnumerator>("IEnumerator");
-						
+			
 			RegisterType(typeof(List<>), "List");	//模板类要独立注册
 			RegisterType(typeof(Dictionary<,>), "Dictionary");
 			RegisterType(typeof(Stack<>), "Stack");
 			RegisterType(typeof(Queue<>), "Queue");
-
+			
 			str2itype["null"] = new Type_NULL();
-
-			//TODO register生成
         }
+
 			
 		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
 		private static IType MakeIType<T>(string keyword){
@@ -135,7 +132,7 @@ namespace CQuark{
 			}
 			else {
 				str2itype[typename] = type;
-				TokenParser.RegisterOriType(typename);
+//				TokenSpliter.RegisterOriType(typename);
 			}
 		}
 
@@ -162,6 +159,7 @@ namespace CQuark{
 			else {
 				str2itype[typename] = type;
 				CQ_TokenParser.AddType(typename);
+//				TokenSpliter.RegisterCustomType(typename);
 			}
 		}
 
@@ -178,7 +176,7 @@ namespace CQuark{
             else {
 				str2itype[typename] = type;
                 CQ_TokenParser.AddType(typename);
-				TokenParser.RegisterOriType(typename);
+//				TokenSpliter.RegisterOriType(typename);
             }
         }
 
