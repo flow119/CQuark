@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark {
     public partial class CQ_Expression_Compiler {
-     	//调用到这个方法时，Token如果是TYPE，必须是全名
+		//TODO这2个方法移动到PreCompile
+     	//编译一个非类的CQ。调用到这个方法时，Token如果是TYPE，必须是全名
 		public static ICQ_Expression Compile (IList<Token> tlist) {
 			ICQ_Expression value;
 			
@@ -26,7 +27,6 @@ namespace CQuark {
 				return null;
 			}
 		}
-
 		static int FindCodeBlock (IList<Token> tokens, int pos) {
 			int dep = 0;
 			for(int i = pos; i < tokens.Count; i++) {

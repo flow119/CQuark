@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CQuark {
 	public static class TokenSpliter {
-		#region Keywords And BasicTypes
+		#region Keywords
 		private static readonly List<string> keywords = new List<string>(){
 			//https://msdn.microsoft.com/zh-cn/library/x53a06bb(VS.80).aspx
 			"if",
@@ -31,6 +31,8 @@ namespace CQuark {
 
 			"namespace",//180525新增
 			"struct",//180525新增
+			"partial",//180526新增
+			"void", //180526新增
 			
 			"using",
 			"public",

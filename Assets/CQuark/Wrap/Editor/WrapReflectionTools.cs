@@ -258,6 +258,8 @@ public class WrapReflectionTools {
                         }
                         if(!IsSupported(t))
                             continue;
+						if(t.Name == "Void")
+							continue;
                         ret.Add(t);
                     }
                     break;
@@ -278,7 +280,7 @@ public class WrapReflectionTools {
 
                         if(!IsSupported(t))
                             continue;
-                        
+
                         if(t.FullName.Contains("Calendar")
                         || t.FullName.Contains("FullScreenMovie")
                         || t.FullName.Contains("Handheld")

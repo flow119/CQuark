@@ -176,7 +176,6 @@ namespace CQuark {
             //    iend = tokens.Count - 1;
             //}
 
-            typeClass.compiled = false;
             (typeClass._class as Class_CQuark).functions.Clear();
             (typeClass._class as Class_CQuark).members.Clear();
             //搜寻成员定义和函数
@@ -385,7 +384,6 @@ namespace CQuark {
                     }
                 }
             }
-            typeClass.compiled = true;
             return typeClass;
         }
 

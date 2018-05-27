@@ -15,7 +15,7 @@ namespace CQuark{
 	//3把所有Tokens再编成Expression，加到对应的IType里			
 	//4执行需要的IType
 	public class CQ_Compiler {
-		const bool USE_NEW = false;
+		public static bool USE_NEW = false;
 		//编译整个项目
 		//如果不是特殊情况，这个函数一般只需要调用一次
 		//因为你编译的CQuark引用到了别的类，而别的类没有编译过的话会报错
@@ -41,18 +41,8 @@ namespace CQuark{
 					PreCompiler.RegisterCQClass(filePath, tokens);
 				}
 
+				//这一步必须在所有类型注册完后，因为编译会产生新的类
 				foreach(KeyValuePair<string, IList<Token>> f in project) {
-					//预处理符号
-					for(int i = 0; i < f.Value.Count; i++) {
-						if(f.Value[i].type == TokenType.IDENTIFIER && CQ_TokenParser.ContainsType(f.Value[i].text)) {//有可能预处理导致新的类型
-							if(i > 0 && (f.Value[i - 1].type == TokenType.TYPE || f.Value[i - 1].text == ".")) {
-								continue;
-							}
-							Token rp = f.Value[i];
-							rp.type = TokenType.TYPE;
-							f.Value[i] = rp;
-						}
-					}
 					CompileOneFile(f.Key, f.Value);
 				}
 			} else {
@@ -107,16 +97,14 @@ namespace CQuark{
 				CompileOneFile(fileName, tokens);
 			}
 		}
-		private static void CompileOneFile(string fileName, IList<Token> tokens){
+		//TODO 测试完后改成private
+		public static void CompileOneFile(string fileName, IList<Token> tokens){
 			if (USE_NEW) {
 				//到这里，所有会用到的类都注册过了，可以用AppDomain判断类了
 				//2.3 补足命名空间
 				DebugUtil.Log ("File_CompilerToken:" + fileName);
-				IList<IType> types = Precompile.FileCompile (fileName, tokens);
-				foreach (var type in types) {
-					if (AppDomain.GetTypeByKeywordQuiet (type.keyword) == null)
-						AppDomain.RegisterCQType (type);
-				}
+				PreCompiler.IdentifyType (fileName, tokens);
+
 				//2.3
 			} else {
 				DebugUtil.Log ("File_CompilerToken:" + fileName);
@@ -129,11 +117,11 @@ namespace CQuark{
 			}
 		}
 
-		//编译一个函数块
-		public static ICQ_Expression CompileBlock(string text){
+		//编译一个非类函数块
+		public static ICQ_Expression CompileParagraph(string text){
 			if (USE_NEW) {
 				List<Token> tokens = TokenSpliter.SplitToken (text);
-				PreCompiler.IdentifyClass("", tokens);
+				PreCompiler.IdentifyType("", tokens);
 				return CQ_Expression_Compiler.Compile (tokens);
 			} else {
 				List<Token> tokens = CQ_TokenParser.Parse (text);

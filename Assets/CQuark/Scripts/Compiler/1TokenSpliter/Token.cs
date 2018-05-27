@@ -11,14 +11,12 @@ namespace CQuark {
         STRING,         //字符串
 		PUNCTUATION,    //标点
 
-		IDENTIFIER,     //标识符 变量与函数//废弃
-		ATTRIBUTE,		//Attribute 180523新增
-		NAMESPACE,		//命名空间，1.0.1新增
-		CLASS,			//类， 1.0.1新增
+		IDENTIFIER,     //标识符 变量与函数
+		NAMESPACE,		//命名空间，1.0.1新增(编译中间使用，等同于IDENTIFIER)
 		TYPE,           //类型
-		CONSTRUCTOR,	//构造函数，既是Type又是Function
-		FUNCTION,		//方法，1.0.1新增
-		PROPERTY,		//属性（变量，字段，event, delegate），1.0.1新增
+		CLASS,			//类， 1.0.1新增(编译中间使用，等同于TYPE)
+
+		ATTRIBUTE,		//Attribute 180523新增
     }
 
 

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 namespace CQuark {
     public partial class CQ_Expression_Compiler {
-        public static void LogError (IList<Token> tlist, string text, int pos, int posend) {
+        static void LogError (IList<Token> tlist, string text, int pos, int posend) {
             string str = "";
             for(int i = pos; i <= posend; i++) {
                 str += tlist[i].text + " ";
             }
             DebugUtil.LogError(text + ":" + str + "(" + pos + "-" + posend + ")");
         }
-        //可以搞出Block
+ 
         public static bool Compiler_Expression_Block (IList<Token> tlist, int pos, int posend, out ICQ_Expression value) {
             int begin = pos;
             value = null;

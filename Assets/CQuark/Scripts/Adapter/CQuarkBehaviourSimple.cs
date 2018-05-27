@@ -63,7 +63,7 @@ public class CQuarkBehaviourSimple : CQuarkBehaviourBase {
 		if (string.IsNullOrEmpty (code))
 			return;
 		try{
-			dictExpr[key] = CQuark.CQ_Compiler.CompileBlock(code);
+			dictExpr[key] = CQuark.CQ_Compiler.CompileParagraph(code);
 		}catch(System.Exception e){
 			Debug.LogError("BuildScript:" + key + " err\n" + e.ToString());
 		}

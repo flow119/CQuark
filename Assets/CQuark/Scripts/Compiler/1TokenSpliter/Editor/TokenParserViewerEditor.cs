@@ -18,15 +18,15 @@ public class TokenParserViewerEditor : Editor {
 		{TokenType.STRING, new Color(1f,0.5f,0.1f)},
 		{TokenType.VALUE, new Color(1f,0.7f,0.1f)},
 
-		{TokenType.IDENTIFIER, new Color(0,0,0)},
-		{TokenType.UNKNOWN, new Color(0.2f,0.2f,0.2f)},
+		{TokenType.UNKNOWN, new Color(0,0,0)},
 
-		{TokenType.NAMESPACE, new Color(0.5f,0f,0.8f)},
+		{TokenType.IDENTIFIER, new Color(0.2f,0.2f,0.2f)},
+		{TokenType.NAMESPACE, new Color(0.0f,0.8f,0.5f)},
+
 		{TokenType.CLASS, new Color(0.2f,0.1f,0.7f)},
 		{TokenType.TYPE, new Color(0.1f,0.3f,0.9f)},
-		{TokenType.PROPERTY, new Color(1f,0.9f,0.1f)},
-		{TokenType.FUNCTION, new Color(0.1f,0.8f,0.8f)},
-		{TokenType.ATTRIBUTE, new Color(0.2f,0.2f,0.5f)},
+
+		{TokenType.ATTRIBUTE, new Color(0.8f,0.1f,0.5f)},
 	};
 
 	public override void OnInspectorGUI (){
@@ -38,6 +38,9 @@ public class TokenParserViewerEditor : Editor {
 		GUILayout.BeginHorizontal ();
 		if (GUILayout.Button ("Compile Old")) {
 			_target.CompileOld();
+		}
+		if (GUILayout.Button ("Regist New")) {
+			_target.RegistOriTypeNew();
 		}
 		if (GUILayout.Button ("Compile New")) {
 			_target.CompileNew();

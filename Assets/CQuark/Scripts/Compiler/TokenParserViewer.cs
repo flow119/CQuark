@@ -9,12 +9,23 @@ public class TokenParserViewer : MonoBehaviour {
 	public string m_text;
 	public List<Token> m_tokens;
 
+	public void RegistOriTypeNew(){
+		
+		AppDomain.Reset ();
+		//		AppDomain.RegisterDefaultType ();
+		InitAppDomain.RegisterFullnameType();
+
+	}
+
 	public void CompileNew(){
 
-		AppDomain.Reset ();
-//		AppDomain.RegisterDefaultType ();
-//		InitAppDomain.RegisterFullnameType();
-		m_tokens = TokenSpliter.SplitToken (m_text);
+		//2.1 分割成Token
+		m_tokens = TokenSpliter.SplitToken(m_text);
+//		
+//		//2.2把所有代码里的类注册一遍
+		PreCompiler.RegisterCQClass("", m_tokens);
+//		
+		CQ_Compiler.CompileOneFile("", m_tokens);
 	}
 
 	public void CompileOld(){

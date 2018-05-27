@@ -36,17 +36,12 @@ namespace CQuark
 
 
         IList<IType> types;
-        public bool compiled
-        {
-            get;
-            set;
-        }
+
         public Type_Class(string fullName, bool bInterface, string filename)
         {
 			this.keyword = fullName;
 //            this._namespace = "";
 			typeBridge = new Class_CQuark(fullName, "", filename, bInterface);
-            compiled = false;
         }
         public void SetBaseType(IList<IType> types)
         {

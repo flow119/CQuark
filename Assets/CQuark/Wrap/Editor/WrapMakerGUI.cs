@@ -464,6 +464,10 @@ public class WrapMakerGUI : EditorWindow {
 			Type[] types = WrapReflectionTools.GetAllTypes();
 			string output = "";
 			for(int i = 0; i < types.Length; i++){
+				
+				if(types[i].IsSubclassOf(typeof(Delegate)))//暂时不处理delegate,
+					continue;
+
                 string trueName = WrapReflectionTools.GetTrueName(types[i]);
 
                 if(WrapReflectionTools.IsStaticClass(types[i]))
