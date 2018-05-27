@@ -42,10 +42,10 @@ namespace CQuark{
 			RegisterType<object>("object");
 			RegisterType<IEnumerator>("IEnumerator");
 			
-			RegisterType(typeof(List<>), "List");	//模板类要独立注册
-			RegisterType(typeof(Dictionary<,>), "Dictionary");
-			RegisterType(typeof(Stack<>), "Stack");
-			RegisterType(typeof(Queue<>), "Queue");
+			RegisterType(typeof(List<>), "System.Collections.Generic.List");	//模板类要独立注册
+			RegisterType(typeof(Dictionary<,>), "System.Collections.Generic.Dictionary");
+			RegisterType(typeof(Stack<>), "System.Collections.Stack");
+			RegisterType(typeof(Queue<>), "System.Collections.Queue");
 			
 			str2itype["null"] = new Type_NULL();
         }
@@ -54,7 +54,6 @@ namespace CQuark{
 			return str2itype.ContainsKey (type);
 		}
 
-			
 		//除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
 		private static IType MakeIType<T>(string keyword){
 			Type type = typeof(T);
