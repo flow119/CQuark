@@ -272,8 +272,6 @@ Jare的git: https://github.com/jareguo/
 
 下个版本
 
-* WrapMaker将自动注册类型，而不再需要把方法和类型分开注册（基本类型和数组将自动注册）
-* 未注册的类将自动反射。且支持命名空间。
 * 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 * 位运算符（<<,>>,&,|,^）
 
@@ -287,6 +285,12 @@ Jare的git: https://github.com/jareguo/
 * 2 劫持GetComponent和AddComponent，重写。
 
 ## 版本更新记录
+
+2018-05-27 v1.0.3
+    完美支持命名空间
+    增加了一个一键注册所有基本类型的工具
+    支持Partial关键字
+
 2018-05-19 v1.0.2
 
     修正一个优化效率造成的Action+=的错误
