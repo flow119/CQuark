@@ -1,36 +1,36 @@
 int a = 1;
 
 if(a == 0){
-	Debug.Log("AAA");
+	UnityEngine.Debug.Log("AAA");
 	a = a+1;
 }else if(a==1){
-	Debug.Log("BBB");
+	UnityEngine.Debug.Log("BBB");
 }else if(a==1){
-	Debug.Log("CCC");
+	UnityEngine.Debug.Log("CCC");
 }
 
 int b = 2;
 
 switch(a){
 case 0:
-	Debug.Log("zero");
+	UnityEngine.Debug.Log("zero");
 	break;
 case 1:
 case 2:
-	Debug.Log("number");
+	UnityEngine.Debug.Log("number");
 	int c = 3;
 	switch(c){
 	case 3:
-		Debug.Log("c=3");
+		UnityEngine.Debug.Log("c=3");
 		break;
 	case 4:
-		Debug.Log("c=4");
+		UnityEngine.Debug.Log("c=4");
 		break;
 	}
-	Debug.Log("1 or 2");
+	UnityEngine.Debug.Log("1 or 2");
 	break;
 default:
-	Debug.Log("not zero");
+	UnityEngine.Debug.Log("not zero");
 	break;
 }
 

@@ -46,7 +46,8 @@ namespace CQuark {
 
 			CQ_Value left = _expressions[0].ComputeValue(content);
 			CQ_Value right = _expressions[1].ComputeValue(content);
-            CQ_Value result = CQuark.AppDomain.GetITypeByCQValue(left).Math2Value(mathop, left, right);
+			IType itype = CQuark.AppDomain.GetITypeByCQValue(left);
+            CQ_Value result = itype.Math2Value(mathop, left, right);
 
 #if CQUARK_DEBUG
             content.OutStack(this);

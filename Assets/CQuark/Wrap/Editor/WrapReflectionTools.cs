@@ -258,8 +258,23 @@ public class WrapReflectionTools {
                         }
                         if(!IsSupported(t))
                             continue;
-						if(t.Name == "Void")
+						if(t.Name == "Void"
+						|| t.Name == "Object"
+					   	|| t.Name == "String"
+					   	|| t.Name == "Boolean"
+					   	|| t.Name == "Double"
+					   	|| t.Name == "Single"
+					   	|| t.Name == "Int64"
+					   	|| t.Name == "UInt64"
+					   	|| t.Name == "Int32"
+					   	|| t.Name == "UInt32"
+					   	|| t.Name == "Int16"
+					   	|| t.Name == "UInt16"
+					   	|| t.Name == "Byte"
+					   	|| t.Name == "SByte"
+					   	|| t.Name == "Char")
 							continue;
+
                         ret.Add(t);
                     }
                     break;

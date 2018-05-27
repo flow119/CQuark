@@ -15,7 +15,7 @@ class ClassB: IScriptBehaviour
 	ClassC c = new ClassC();
 	c.Log();
 	ClassD.Log();
-	a = Random.Range(0,100);
+	a = UnityEngine.Random.Range(0,100);
     }
 
 	public void Update(){

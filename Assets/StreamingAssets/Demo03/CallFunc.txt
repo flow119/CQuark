@@ -1,4 +1,4 @@
-Debug.Log("Today is:"+Demo3.Today());
+UnityEngine.Debug.Log("Today is:"+Demo3.Today());
 if(Demo3.Today()==1)
 
       return HP1+HP2;

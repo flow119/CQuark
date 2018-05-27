@@ -15,7 +15,7 @@ namespace CQuark{
 	//3把所有Tokens再编成Expression，加到对应的IType里			
 	//4执行需要的IType
 	public class CQ_Compiler {
-		public static bool USE_NEW = false;
+		public static bool USE_NEW = true;
 		//编译整个项目
 		//如果不是特殊情况，这个函数一般只需要调用一次
 		//因为你编译的CQuark引用到了别的类，而别的类没有编译过的话会报错
@@ -106,6 +106,7 @@ namespace CQuark{
 				PreCompiler.IdentifyType (fileName, tokens);
 
 				//2.3
+
 			} else {
 				DebugUtil.Log ("File_CompilerToken:" + fileName);
 				IList<IType> types = Precompile.FileCompile (fileName, tokens);

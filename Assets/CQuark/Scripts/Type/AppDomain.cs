@@ -19,6 +19,7 @@ namespace CQuark{
 			type2itype.Clear ();
 			str2itype.Clear();
             
+			DebugUtil.Log("Register Base Type");
 			//注册基本类型
 			RegisterType(new Type_String());
 			RegisterType(new Type_Var());

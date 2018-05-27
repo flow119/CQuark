@@ -43,7 +43,9 @@ namespace CQuark{
 					}else if(tokens[i].text == "using"){
 						int end = FindToken(tokens, i, ";");
 						string Using = CombineReplace(tokens, i + 1, end - i - 1, TokenType.NAMESPACE).text;
+#if CQUARK_DEBUG
 						DebugUtil.Log("Using = " + Using);
+#endif
 						continue;
 					}
 				}
@@ -199,6 +201,9 @@ namespace CQuark{
 					tokens[i] = tok;
 				}
 			}
+
+			//编译各个类里面的变量和方法
+			CompileAll(fileName, tokens);
 		}
 		//定义Attribute
 		static void DefineAttributes(IList<Token> tokens){
@@ -289,7 +294,34 @@ namespace CQuark{
 			}
 		}
 
-
+		static void CompileAll(string fileName, IList<Token> tokens){
+			for(int i = 0; i < tokens.Count; i++) {
+				if(tokens[i].type == TokenType.PUNCTUATION && tokens[i].text == ";")
+					continue;
+				
+				if(tokens[i].type == TokenType.KEYWORD && (tokens[i].text == "class" || tokens[i].text == "interface")) {
+					string name = tokens[i + 1].text;
+					int ibegin = i + 2;
+					
+					if(tokens[ibegin].text == ":") {
+						ibegin++;
+					}
+					while(tokens[ibegin].text != "{") {
+						ibegin++;
+					}
+					
+					int iend = FindBlock(tokens, ibegin);
+					if(iend == -1) {
+						DebugUtil.LogError("查找文件尾失败。");
+						return;
+					}
+					
+					Compiler_Class(name, (tokens[i].text == "interface"), fileName, tokens, ibegin, iend);
+					i = iend;
+					continue;
+				}
+			}
+		}
 
 		static IType Compiler_Class (string classname, bool bInterface, string filename, IList<Token> tokens, int ibegin, int iend) {
 			

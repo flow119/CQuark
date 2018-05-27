@@ -1,52 +1,52 @@
-﻿Debug.Log("嵌套");
+﻿UnityEngine.Debug.Log("嵌套");
 for(int i = 0; i < 3; i++){
 	for(int j = 0; j < 3; j++){
-		Debug.Log(i + ":" + j);
+		UnityEngine.Debug.Log(i + ":" + j);
 	}
 }
 
-Debug.Log("Break");
+UnityEngine.Debug.Log("Break");
 for(int i = 0; i < 5; i++){
 	if(i > 3)
 		break;
-	Debug.Log(i.ToString());
+	UnityEngine.Debug.Log(i.ToString());
 }
 
-Debug.Log("Break2次");
+UnityEngine.Debug.Log("Break2次");
 for(int i = 0; i < 5; i++){
 	if(i > 3)
 		break;
-	Debug.Log(i.ToString());
+	UnityEngine.Debug.Log(i.ToString());
 }
 
-Debug.Log("循环Break");
+UnityEngine.Debug.Log("循环Break");
 for(int i = 1; i < 6; i++){
 	for(int j = 0; j < 5; j++){
 		if(i > 3)
 			break;
-		Debug.Log(i.ToString());
+		UnityEngine.Debug.Log(i.ToString());
 	}
 }
 
-Debug.Log("混合");
+UnityEngine.Debug.Log("混合");
 for(int i = 0; i < 10; i++){
-	Debug.Log("HH"+i);
+	UnityEngine.Debug.Log("HH"+i);
 	for(int j = 0; j < 10; j++){
 		if(j<2)
 			continue;
 		if(i > 5)
 			break;
 		if((i+j) % 3 == 0){
-			Debug.Log("" + i + j);
+			UnityEngine.Debug.Log("" + i + j);
 		}
 	}
 }
 
-Debug.Log("一般循环");
+UnityEngine.Debug.Log("一般循环");
 for(int i = 0; i < 5; i++){
 	if(i % 2 == 0){
-		Debug.Log("" + i);
+		UnityEngine.Debug.Log("" + i);
 	}
 }
 
-Debug.Log("Finish");
+UnityEngine.Debug.Log("Finish");

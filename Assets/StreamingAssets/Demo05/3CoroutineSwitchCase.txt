@@ -1,22 +1,22 @@
-int a = 2;
+int a = 0;
 switch(a){
 case 0:
 	for(int i = 0; i < 5; i++){
 		if(i > 3)
 			break;
-		yield return new WaitForSeconds(0.1f);
-		Debug.Log(i.ToString());
+		yield return new UnityEngine.WaitForSeconds(0.1f);
+		UnityEngine.Debug.Log(i.ToString());
 	}
 	break;
 case 1:
 	for(int i = 0; i < 5; i++){
-		yield return new WaitForSeconds(0.1f);
-		Debug.Log(i.ToString());
+		yield return new UnityEngine.WaitForSeconds(0.1f);
+		UnityEngine.Debug.Log(i.ToString());
 	}
 	break;
 case 2:
-	yield return new WaitForSeconds(1);
-	Debug.Log(a.ToString());
+	yield return new UnityEngine.WaitForSeconds(1);
+	UnityEngine.Debug.Log(a.ToString());
 	break;
 	
 }

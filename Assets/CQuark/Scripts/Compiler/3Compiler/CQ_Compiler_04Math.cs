@@ -5,6 +5,10 @@ namespace CQuark {
     public partial class CQ_Expression_Compiler {
 
         public static ICQ_Expression Compiler_Expression_Math (IList<Token> tlist, int pos, int posend) {
+			string debug = "";
+			for(int i = pos; i <= posend; i++){
+				debug += tlist[i].text;
+			}
             IList<int> sps = SplitExpressionWithOp(tlist, pos, posend);
             int oppos = GetLowestMathOp(tlist, sps);
             if(oppos < 0) {
