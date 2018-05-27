@@ -274,7 +274,9 @@ Jare的git: https://github.com/jareguo/
 
 * 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 * 位运算符（<<,>>,&,|,^）
-
+* Attribute
+* struct
+* 修复已知错误（Vector3.up + Vector3.up）.ToString()解析有问题
 
 下下个版本
 
@@ -289,7 +291,7 @@ Jare的git: https://github.com/jareguo/
 2018-05-27 v1.0.3
     完美支持命名空间
     增加了一个一键注册所有基本类型的工具
-    支持Partial关键字
+    支持partial关键字
 
 2018-05-19 v1.0.2
 
