@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -9,8 +9,7 @@ public class Demo6 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CQuark.AppDomain.Reset();
-		InitAppDomain.RegisterFullnameType();
+		CQuark.AppDomain.Initialize(true, true, true);
 		string text = LoadMgr.LoadFromStreaming(m_blockFilePath);
 		CQuark.CQ_Compiler.CompileOneFile(m_blockFilePath, text);
 	}

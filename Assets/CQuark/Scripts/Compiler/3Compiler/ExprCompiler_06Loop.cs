@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-namespace CQuark {
-    public partial class CQ_Expression_Compiler {
+﻿using System.Collections.Generic;
 
+namespace CQuark.Compile {
+	public partial class ExprCompileUtil {
         public static ICQ_Expression Compiler_Expression_Loop_For (IList<Token> tlist, int pos, int posend) {
             int b1;
             int fs1 = pos + 1;

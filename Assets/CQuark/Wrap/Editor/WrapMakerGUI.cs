@@ -80,6 +80,21 @@ public class WrapMakerGUI : EditorWindow {
 		gui.ReloadWrap ();
     }
 
+	void UpdateRegisterTypes(){
+		List<Type> systemType = new List<Type>();
+		List<Type> unityType = new List<Type>();
+		List<Type> customType = new List<Type>();
+		WrapReflectionTools.GetAllTypes(systemType, unityType, customType);
+		string[] output = WrapTextTools.RegisterTypeToString(systemType, unityType, customType);
+		//TODO
+		string text = File.ReadAllText(WrapConfigFolder + "/RegisterTypesTemplate.txt", System.Text.Encoding.UTF8);// (Resources.Load("WrapPartTemplate") as TextAsset).text;
+		text = text.Replace("{RegisterSystemTypes}", output[0]);  
+		text = text.Replace("{RegisterUnityTypes}", output[1]);  
+		text = text.Replace("{RegisterCustomTypes}", output[2]);  
+		WrapTextTools.WriteAllText(WrapGenFolder, "RegisterTypes.cs", text);
+		AssetDatabase.Refresh();
+	}
+
 	void ReloadWrap(){
 		//sset,sget,mset,mget,new,scall,mcall,op
         m_wrapClasses.Clear();
@@ -117,7 +132,7 @@ public class WrapMakerGUI : EditorWindow {
 	void OnlyAddClass(Type type){
         List<string> _typeDic = new List<string>();
         string classFullName = WrapReflectionTools.GetTrueName(type);
-        if(!WrapTextTools.Finish(classFullName))
+        if(!WrapTextTools.IsSupported(classFullName))
             return;
         if(_classBlackList.Contains(classFullName))
             return;
@@ -460,26 +475,11 @@ public class WrapMakerGUI : EditorWindow {
 			ReloadWrap();
 		}
 
-		if(GUILayout.Button("Register All Types", GUILayout.Width(100))){
-			Type[] types = WrapReflectionTools.GetAllTypes();
-			string output = "";
-			for(int i = 0; i < types.Length; i++){
-				
-				if(types[i].IsSubclassOf(typeof(Delegate)))//暂时不处理delegate,
-					continue;
-
-                string trueName = WrapReflectionTools.GetTrueName(types[i]);
-
-                if(WrapReflectionTools.IsStaticClass(types[i]))
-					output += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
-				else
-					output += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
-				output += "\n";
-
-			}
-			File.WriteAllText(WrapConfigFolder + "/Types.txt", output);
-			AssetDatabase.Refresh();
+		GUI.backgroundColor = Color.green;
+		if(GUILayout.Button("Register All Types", GUILayout.Width(200))){
+			UpdateRegisterTypes();
 		}
+		GUI.backgroundColor = Color.white;
 
 		if(WrapGUITools.DrawHeader("Option")) {
 			WrapGUITools.BeginContents();

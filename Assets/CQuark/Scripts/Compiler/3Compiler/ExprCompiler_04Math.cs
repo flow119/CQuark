@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-namespace CQuark {
-    public partial class CQ_Expression_Compiler {
 
+namespace CQuark.Compile {
+	public partial class ExprCompileUtil {
         public static ICQ_Expression Compiler_Expression_Math (IList<Token> tlist, int pos, int posend) {
 			string debug = "";
 			for(int i = pos; i <= posend; i++){
@@ -73,7 +72,7 @@ namespace CQuark {
                 if(tkCur.text == "(") {
                     ICQ_Expression v;
                     if(!Compiler_Expression(tlist, oppos + 3, posend, out v)) {
-                        LogError(tlist, "编译表达式失败", right, rightend);
+                        DebugUtil.LogError(tlist, "编译表达式失败", right, rightend);
                         return null;
                     }
                     CQ_Expression_TypeConvert convert = new CQ_Expression_TypeConvert(pos, posend, tlist[pos].line, tlist[posend].line);
@@ -88,7 +87,7 @@ namespace CQuark {
                 if(tkCur.text == "[") {
                     rightend--;
                     if(!Compiler_Expression(tlist, right, rightend, out valueright)) {
-                        LogError(tlist, "编译表达式失败", right, rightend);
+                        DebugUtil.LogError(tlist, "编译表达式失败", right, rightend);
                         return null;
                     }
                     CQ_Expression_IndexGet value = new CQ_Expression_IndexGet(left, rightend, tlist[left].line, tlist[rightend].line);
@@ -244,7 +243,7 @@ namespace CQuark {
                     }
                 }
                 else {
-                    LogError(tlist, "编译表达式失败", right, rightend);
+                    DebugUtil.LogError(tlist, "编译表达式失败", right, rightend);
                 }
             }
 

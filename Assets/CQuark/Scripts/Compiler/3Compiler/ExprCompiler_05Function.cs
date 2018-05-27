@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-namespace CQuark {
-    public partial class CQ_Expression_Compiler {
+
+namespace CQuark.Compile {
+	public partial class ExprCompileUtil {
         public static ICQ_Expression Compiler_Expression_Function (IList<Token> tlist, int pos, int posend) {
             CQ_Expression_FunctionCQ func = new CQ_Expression_FunctionCQ(pos, posend, tlist[pos].line, tlist[posend].line);
 

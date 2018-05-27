@@ -34,6 +34,41 @@ public class WrapTextTools  {
         return retType;
     }
 
+	//分为3部分：System(不会变)，Unity(更新Unity版本时变)，Custom(Assembly-CSharp里，每次改代码时变)
+	public static string[] RegisterTypeToString(List<Type> systemTypes, List<Type> unityTypes, List<Type> customTypes){
+		string systemType = "";
+		string unityType = "";
+		string customType = "";
+		for(int i = 0; i < systemTypes.Count; i ++){
+			string trueName = WrapReflectionTools.GetTrueName(systemTypes[i]);
+			
+			if(WrapReflectionTools.IsStaticClass(systemTypes[i]))
+				systemType += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
+			else
+				systemType += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
+			systemType += "\n";
+		}
+		for(int i = 0; i < unityTypes.Count; i ++){
+			string trueName = WrapReflectionTools.GetTrueName(unityTypes[i]);
+			
+			if(WrapReflectionTools.IsStaticClass(unityTypes[i]))
+				unityType += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
+			else
+				unityType += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
+			unityType += "\n";
+		}
+		for(int i = 0; i < customTypes.Count; i ++){
+			string trueName = WrapReflectionTools.GetTrueName(customTypes[i]);
+			
+			if(WrapReflectionTools.IsStaticClass(customTypes[i]))
+				customType += "CQuark.AppDomain.RegisterType (typeof(" + trueName + "), \"" + trueName + "\");";
+			else
+				customType += "CQuark.AppDomain.RegisterType<" + trueName + "> ();";
+			customType += "\n";
+		}
+		return new string[]{systemType, unityType, customType};
+	}
+
     static string GetHashCodeByTypes (string prefix, string[] types) {
         string hashkey = "";
         foreach(string s in types) {
@@ -53,7 +88,7 @@ public class WrapTextTools  {
                 continue;
             if(propertys[i].m_name == "value__")//枚举长度
                 continue;
-            if(!Finish(propertys[i].m_type))
+            if(!IsSupported(propertys[i].m_type))
                 continue;
 
             if(propertys[i].m_isStatic) {
@@ -125,7 +160,7 @@ public class WrapTextTools  {
     public static string Constructor2PartStr (string classFullName, List<Method> constructor) {
         string wrapNew = "";
         for(int i = 0; i < constructor.Count; i++) {
-            if(!Finish(constructor[i].m_returnType) || !Finish(constructor[i].m_inType))
+            if(!IsSupported(constructor[i].m_returnType) || !IsSupported(constructor[i].m_inType))
                 continue;
 
             if(constructor[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
@@ -158,7 +193,7 @@ public class WrapTextTools  {
         for(int i = 0; i < staticMethods.Count; i++) {
             if(staticMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!Finish(staticMethods[i].m_returnType) || !Finish(staticMethods[i].m_inType))
+            if(!IsSupported(staticMethods[i].m_returnType) || !IsSupported(staticMethods[i].m_inType))
                 continue;
 
             if(staticMethods[i].m_inType.Length == 0)
@@ -205,7 +240,7 @@ public class WrapTextTools  {
         for(int i = 0; i < instanceMethods.Count; i++) {
             if(instanceMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!Finish(instanceMethods[i].m_returnType) || !Finish(instanceMethods[i].m_inType))
+            if(!IsSupported(instanceMethods[i].m_returnType) || !IsSupported(instanceMethods[i].m_inType))
                 continue;
 
             if(instanceMethods[i].m_inType.Length == 0)
@@ -256,7 +291,7 @@ public class WrapTextTools  {
             if(methods[i].m_inType.Length <= 1)
                 continue;
 
-            if(!Finish(methods[i].m_inType))
+            if(!IsSupported(methods[i].m_inType))
                 continue;
 
             string hashCode = GetHashCodeByTypes(prefix, methods[i].m_inType);
@@ -279,7 +314,7 @@ public class WrapTextTools  {
         for(int i = 0; i < indexMethods.Count; i++) {
             if(indexMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!Finish(indexMethods[i].m_returnType) || !Finish(indexMethods[i].m_inType))
+            if(!IsSupported(indexMethods[i].m_returnType) || !IsSupported(indexMethods[i].m_inType))
                 continue;
             //TODO 可能有多位数组this[x,y]
             if(indexMethods[i].m_methodType == "IndexGet") {
@@ -421,7 +456,7 @@ public class WrapTextTools  {
             return "(" + type + ")" + cqval + ".ConvertTo(typeof(" + type + "))";
     }
 
-    public static bool Finish (string type) {
+    public static bool IsSupported (string type) {
         //ref
         //out
         if(string.IsNullOrEmpty(type))
@@ -440,9 +475,9 @@ public class WrapTextTools  {
             return false;
         return true;
     }
-    protected static bool Finish (string[] types) {
+    protected static bool IsSupported (string[] types) {
         for(int j = 0; j < types.Length; j++) {
-            if(!Finish(types[j]))
+            if(!IsSupported(types[j]))
                 return false;
         }
         return true;

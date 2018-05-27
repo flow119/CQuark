@@ -13,7 +13,7 @@ namespace CQuark{
 		static Dictionary<Type, IType> type2itype = new Dictionary<Type, IType> ();
         static Dictionary<string, IType> str2itype = new Dictionary<string, IType>();
 
-        public static void Reset () {
+        public static void Initialize (bool registerSystem, bool registerUnity, bool registerCustom) {
             DebugUtil.Log("Reset Domain");
 			ccq2itype.Clear ();
 			type2itype.Clear ();
@@ -48,6 +48,16 @@ namespace CQuark{
 			RegisterType(typeof(Queue<>), "System.Collections.Queue");
 			
 			str2itype["null"] = new Type_NULL();
+
+			if(registerSystem){
+				RegisterTypes.RegisterSystemTypes();
+			}
+			if(registerUnity){
+				RegisterTypes.RegisterUnityTypes();
+			}
+			if(registerCustom){
+				RegisterTypes.RegisterCustomTypes();
+			}
         }
 
 		public static bool ContainsType(string type){
@@ -116,62 +126,28 @@ namespace CQuark{
 		//含命名空间的注册，除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
 		public static void RegisterType<T> () {
 			string keyword = typeof(T).FullName.Replace('+','.');
-			RegisterIType(MakeIType<T>(keyword));
-			RegisterIType(MakeIType<T[]>(keyword+"[]"));
+			RegisterType<T>(keyword);
 		}
-		//非静态类走这个函数注册不会报错，但是会取不到默认值
-		public static void RegisterType (Type type) {
-			string keyword = type.FullName.Replace('+','.');
-			RegisterIType(MakeIType(type, keyword));
-		}
-
-		private static void RegisterIType (IType type) {
-			if (type.typeBridge.type != null)
-				type2itype [type.typeBridge.type] = type;
-			else if (type.typeBridge.stype != null)
-				ccq2itype [type.typeBridge.stype] = type;
-
-			string typename = type.keyword;
-			if(string.IsNullOrEmpty(typename)) {//匿名自动注册
-			}
-			else {
-				str2itype[typename] = type;
-//				TokenSpliter.RegisterOriType(typename);
-			}
-		}
-
-
 		//含命名空间的注册，除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
-		[Obsolete]
 		public static void RegisterType<T> (string keyword) {
 			RegisterType(MakeIType<T>(keyword));
 			RegisterType(MakeIType<T[]>(keyword+"[]"));
 		}
-		[Obsolete]
+		//非静态类走这个函数注册不会报错，但是会取不到默认值
+		public static void RegisterType (Type type) {
+			string keyword = type.FullName.Replace('+','.');
+			RegisterType(type, keyword);
+		}
 		//非静态类走这个函数注册不会报错，但是会取不到默认值
         public static void RegisterType (Type type, string keyword) {
             RegisterType(MakeIType(type, keyword));
         }
 
-		public static void RegisterCQType(IType type){
+        public static void RegisterType (IType type) {
 			if (type.typeBridge.stype != null)
 				ccq2itype [type.typeBridge.stype] = type;
-			string typename = type.keyword;
-			if(string.IsNullOrEmpty(typename)) {//匿名自动注册
-				
-			}
-			else {
-				str2itype[typename] = type;
-				CQ_TokenParser.AddType(typename);
-//				TokenSpliter.RegisterCustomType(typename);
-			}
-		}
-
-        public static void RegisterType (IType type) {
-			if (type.typeBridge.type != null)
+			else if (type.typeBridge.type != null)
 				type2itype [type.typeBridge.type] = type;
-			else if (type.typeBridge.stype != null)
-				ccq2itype [type.typeBridge.stype] = type;
 
             string typename = type.keyword;
 
@@ -179,8 +155,6 @@ namespace CQuark{
             }
             else {
 				str2itype[typename] = type;
-                CQ_TokenParser.AddType(typename);
-//				TokenSpliter.RegisterOriType(typename);
             }
         }
 

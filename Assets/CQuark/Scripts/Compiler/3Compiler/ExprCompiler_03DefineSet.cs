@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-namespace CQuark {
-    public partial class CQ_Expression_Compiler {
+﻿using System.Collections.Generic;
+
+namespace CQuark.Compile {
+	public partial class ExprCompileUtil {
         public static ICQ_Expression Compiler_Expression_Define (IList<Token> tlist, int pos, int posend) {
             CQ_Expression_Define define = new CQ_Expression_Define(pos, posend, tlist[pos].line, tlist[posend].line);
             if(tlist[pos].text == "bool") {
@@ -92,7 +91,7 @@ namespace CQuark {
                 define._expressions.Add(v);
                 return define;
             }
-            LogError(tlist, "不正确的定义表达式:", pos, posend);
+            DebugUtil.LogError(tlist, "不正确的定义表达式:", pos, posend);
             return null;
         }
         public static ICQ_Expression Compiler_Expression_DefineAndSetArray (IList<Token> tlist, int pos, int posend) {
@@ -114,7 +113,7 @@ namespace CQuark {
                 define._expressions.Add(v);
                 return define;
             }
-            LogError(tlist, "不正确的定义表达式:", pos, posend);
+            DebugUtil.LogError(tlist, "不正确的定义表达式:", pos, posend);
             return null;
         }
         public static ICQ_Expression Compiler_Expression_Set (IList<Token> tlist, int pos, int posend) {
@@ -133,7 +132,7 @@ namespace CQuark {
                 define._expressions.Add(v);
                 return define;
             }
-            LogError(tlist, "不正确的定义表达式:", pos, posend);
+            DebugUtil.LogError(tlist, "不正确的定义表达式:", pos, posend);
             return null;
         }
     }

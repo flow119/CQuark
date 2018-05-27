@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -6,15 +6,12 @@ public class Demo2 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CQuark.AppDomain.Reset();
-		InitAppDomain.RegisterFullnameType();
+		CQuark.AppDomain.Initialize(false, true, false);
 
-//		CQuark.AppDomain.RegisterType<Debug>("Debug");
-//		CQuark.AppDomain.RegisterType<Vector3>("Vector3");
-//		Execute1 ();
+		Execute1 ();
 
 		//将函数Today()注册给脚本使用
-        CQuark.AppDomain.RegisterType<Demo2>("Demo2");
+        CQuark.AppDomain.RegisterType<Demo2>();
 		Execute2 ();
 	}
 

@@ -7,7 +7,8 @@ using UnityEngine;
 #else
 using System;
 #endif
-
+using System.Collections.Generic;
+using CQuark;
 //TODO 增加Log类型，数据备份
 //public enum ELogType{
 //	Info,		//灰色。	用于硬件信息，IP地址等。		每日备份，每日清空
@@ -19,6 +20,15 @@ using System;
 //}
 
 public class DebugUtil {
+
+	public static void LogError (IList<Token> tlist, string text, int pos, int posend) {
+		string str = "";
+		for(int i = pos; i <= posend; i++) {
+			str += tlist[i].text + " ";
+		}
+		DebugUtil.LogError(text + ":" + str + "(" + pos + "-" + posend + ")");
+	}
+
 	public static void Log(string s){
 #if DEBUG || UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE || UNITY_STANDALONE
 		Debug.Log (s);

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -7,9 +7,7 @@ public class Demo5 : MonoBehaviour {
 
 	CQuarkParagraph script = new CQuarkParagraph();
 	void Start(){
-		CQuark.AppDomain.Reset();
-		InitAppDomain.RegisterFullnameType();
-//		CQuark.AppDomain.RegisterType<Debug>("Debug");
+		CQuark.AppDomain.Initialize(true, true, true);
 		ExecuteFile ();
 	}
 

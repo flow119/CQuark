@@ -33,12 +33,9 @@ public class TokenParserViewerEditor : Editor {
 		_target = target as TokenParserViewer;
 
 		GUILayout.Label("原文");
-		_target.m_text		= EditorGUILayout.TextArea(_target.m_text);
+		_target.m_text = EditorGUILayout.TextArea(_target.m_text);
 
 		GUILayout.BeginHorizontal ();
-		if (GUILayout.Button ("Compile Old")) {
-			_target.CompileOld();
-		}
 		if (GUILayout.Button ("Regist New")) {
 			_target.RegistOriTypeNew();
 		}

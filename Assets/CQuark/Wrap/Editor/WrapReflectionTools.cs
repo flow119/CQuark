@@ -227,13 +227,13 @@ public class WrapReflectionTools {
         return types.ToArray();
 	}
 
-	public static Type[] GetAllTypes(){
+	//分为3部分：System(不会变)，Unity(更新Unity版本时变)，Custom(Assembly-CSharp里，每次改代码时变)
+	public static void GetAllTypes(List<Type> systemType, List<Type> unityType, List<Type> customType){
         Type temp = typeof(System.Net.Sockets.TcpListener);	//如果不这么来一下。反射不出System.Net
         temp = typeof(UnityEngine.UI.Text);					//如果不这么来一下。反射不出UnityEngine.UI
         temp = typeof(System.IO.File);
         temp = typeof(System.Text.UTF8Encoding);
 
-		List<Type> ret = new List<Type>();
 		AssemblyName[] referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
 
         foreach(AssemblyName assemblyName in referencedAssemblies) {
@@ -242,11 +242,12 @@ public class WrapReflectionTools {
                 case "Assembly-CSharp"://用户的C#代码
                     types = GetTypesFromAssembly(assemblyName);
                     foreach(Type t in types) {
-                        if(t.Namespace == "CQuark")
+                        if(t.Namespace == "CQuark" 
+					   ||t.Namespace == "CQuark.Compile")
                             continue;
                         if(!IsSupported(t))
                             continue;
-                        ret.Add(t);
+                        customType.Add(t);
                     }
                     break;
                 case "mscorlib"://System.常用
@@ -275,7 +276,7 @@ public class WrapReflectionTools {
 					   	|| t.Name == "Char")
 							continue;
 
-                        ret.Add(t);
+						systemType.Add(t);
                     }
                     break;
                 case "System":
@@ -284,7 +285,7 @@ public class WrapReflectionTools {
                         if(!IsSupported(t))
                             continue;
                         if(t.Namespace == "System.Net.Sockets") //除了System.Net.Sockets会在System里常用，别的都不需要（System.IO,System.Random,System.DateTime都在mscorlib里）
-                            ret.Add(t);
+                            systemType.Add(t);
                     }
                     break;
                 case "UnityEngine":
@@ -330,7 +331,7 @@ public class WrapReflectionTools {
                             || trueName.Contains("UnityEngine.Apple"))
                             continue;
 #endif
-                        ret.Add(t);
+						unityType.Add(t);
                     }
                     break;
                 case "UnityEngine.UI":
@@ -343,7 +344,7 @@ public class WrapReflectionTools {
                             continue;
                         if(!IsSupported(t))
                             continue;
-                        ret.Add(t);
+                        unityType.Add(t);
                     }
                     break;
                 case "UnityEditor":
@@ -354,12 +355,11 @@ public class WrapReflectionTools {
                     foreach(Type t in types) {
                         if(!IsSupported(t))
                             continue;
-                        ret.Add(t);
+                        customType.Add(t);
                     }
                     break;
             }
 		}
-		return ret.ToArray ();
 	}
 
     public static List<Type> GetTypesFromAssembly (AssemblyName assemblyName) {
@@ -807,8 +807,7 @@ public class WrapReflectionTools {
 		}
 		return false;
 	}    
-
-    
+	
     static bool IsSupported (Type type) {
         if(type.FullName.Contains("<"))//<T>
             return false;
@@ -816,7 +815,8 @@ public class WrapReflectionTools {
             return false;
         if(type.IsGenericType) //IsGenericTypeDefinition  IsGenericParameter ;//<>
             return false;
+		if(type.IsSubclassOf(typeof(Delegate)))//暂时不处理delegate,
+			return false;
         return true;
-
     }
 }

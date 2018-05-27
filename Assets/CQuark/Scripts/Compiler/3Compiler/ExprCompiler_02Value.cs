@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-namespace CQuark {
-    public partial class CQ_Expression_Compiler {
+﻿using System.Collections.Generic;
+
+namespace CQuark.Compile {
+	public partial class ExprCompileUtil {
         public static ICQ_Expression Compiler_Expression_Value (Token value, int pos) {
             if(value.type == TokenType.VALUE) {
                 if(value.text[value.text.Length - 1] == 'f') {
@@ -101,7 +100,7 @@ namespace CQuark {
             int bdep;
             int expend2 = FindCodeAny(tlist, ref expbegin, out bdep);
             if(expend2 != posend) {
-                LogError(tlist, "无法识别的负号表达式:", expbegin, posend);
+                DebugUtil.LogError(tlist, "无法识别的负号表达式:", expbegin, posend);
                 return null;
             }
             else {
@@ -113,7 +112,7 @@ namespace CQuark {
                     return v;
                 }
                 else {
-                    LogError(tlist, "无法识别的负号表达式:", expbegin, posend);
+                    DebugUtil.LogError(tlist, "无法识别的负号表达式:", expbegin, posend);
                     return null;
                 }
             }
@@ -124,7 +123,7 @@ namespace CQuark {
             int expend2 = FindCodeAny(tlist, ref expbegin, out bdep);
             if(expend2 != posend) {
                 //expend2 = posend;
-                LogError(tlist, "无法识别的取反表达式:", expbegin, posend);
+                DebugUtil.LogError(tlist, "无法识别的取反表达式:", expbegin, posend);
                 return null;
             }
 
@@ -145,7 +144,7 @@ namespace CQuark {
                 }
             }
             else {
-                LogError(tlist, "无法识别的取反表达式:", expbegin, posend);
+                DebugUtil.LogError(tlist, "无法识别的取反表达式:", expbegin, posend);
                 return null;
             }
         }

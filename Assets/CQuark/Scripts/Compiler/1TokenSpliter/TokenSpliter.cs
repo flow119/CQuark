@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using CQuark.Compile;
 
-namespace CQuark {
+namespace CQuark.Compile {
 	public static class TokenSpliter {
 		#region Keywords
 		private static readonly List<string> keywords = new List<string>(){

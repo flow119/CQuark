@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CQuark.Compile;
 
 namespace CQuark {
     public enum TokenType {
@@ -18,8 +16,6 @@ namespace CQuark {
 
 		ATTRIBUTE,		//Attribute 180523新增
     }
-
-
 
     public struct Token {
         public string text;

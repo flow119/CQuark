@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Demo1 : MonoBehaviour {
@@ -6,7 +6,7 @@ public class Demo1 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 //		Script.Init ();
-		CQuark.AppDomain.Reset();
+		CQuark.AppDomain.Initialize(false, false, false);
 		Eval1 ();
 		Eval2 ();
 		ExecuteBlock ();

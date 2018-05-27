@@ -10,30 +10,10 @@ public class TokenParserViewer : MonoBehaviour {
 	public List<Token> m_tokens;
 
 	public void RegistOriTypeNew(){
-		
-		AppDomain.Reset ();
-		//		AppDomain.RegisterDefaultType ();
-		InitAppDomain.RegisterFullnameType();
-
+		AppDomain.Initialize (true, true, true);
 	}
 
 	public void CompileNew(){
-
-		//2.1 分割成Token
-		m_tokens = TokenSpliter.SplitToken(m_text);
-//		
-//		//2.2把所有代码里的类注册一遍
-		PreCompiler.RegisterCQClass("", m_tokens);
-//		
-		CQ_Compiler.CompileOneFile("", m_tokens);
-	}
-
-	public void CompileOld(){
-		//TODO 注册类型
-		AppDomain.Reset ();
-//		AppDomain.RegisterDefaultType ();
-		InitAppDomain.RegisterOriType ();
-		AppDomain.RegisterType (typeof(GameObject[]), "GameObject[]");
-		m_tokens = CQ_TokenParser.Parse (m_text);
+		m_tokens = CQ_Compiler.CompileOneFile("", m_text) as List<Token>;
 	}
 }

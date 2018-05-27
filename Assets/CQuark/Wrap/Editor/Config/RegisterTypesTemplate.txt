@@ -1,0 +1,14 @@
+using CQuark;
+
+public class RegisterTypes  {
+
+	public static void RegisterSystemTypes(){
+{RegisterSystemTypes}
+	}
+	public static void RegisterUnityTypes(){
+{RegisterUnityTypes}
+	}
+	public static void RegisterCustomTypes(){
+{RegisterCustomTypes}
+	}
+}

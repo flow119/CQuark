@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -9,8 +9,7 @@ public class Demo4 : MonoBehaviour {
 
 	void Start()
 	{
-        CQuark.AppDomain.Reset();
-		InitAppDomain.RegisterFullnameType();
+        CQuark.AppDomain.Initialize(false, true, true);
 //        InitAppDomain.RegisterOriType();
 //        CQuark.AppDomain.RegisterType (typeof(System.DateTime),"DateTime");
 //		CQuark.AppDomain.RegisterType (typeof(System.DayOfWeek),"DayOfWeek");
