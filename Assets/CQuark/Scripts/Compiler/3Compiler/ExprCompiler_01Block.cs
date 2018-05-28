@@ -80,6 +80,12 @@ namespace CQuark.Compile {
             }
             int begin = pos;
             value = null;
+
+			string debug = "";
+			for(int i = pos; i <= posend; i++){
+				debug += tlist[i].text;
+			}
+
             List<ICQ_Expression> values = new List<ICQ_Expression>();
             do {
                 if(tlist[begin].type == TokenType.COMMENT) {
@@ -109,6 +115,12 @@ namespace CQuark.Compile {
                     if(bMath) {
                         end = posend;
                         //如果表达式一次搞不完，那肯定是优先级问题
+						string debug3 = "";
+						for(int i = begin; i <= posend; i++){
+							debug3 += tlist[i].text;
+						}
+						DebugUtil.Log(debug3);
+
                         value = Compiler_Expression_Math(tlist, begin, posend);
                         return true;
                     }
@@ -116,7 +128,8 @@ namespace CQuark.Compile {
 
                 int expend = end;
                 int expbegin = begin;
-                if(expbegin > expend) return true;
+                if(expbegin > expend) 
+					return true;
                 if(expend == expbegin) {//simple
                     if(tlist[expbegin].type == TokenType.KEYWORD) {
                         if(tlist[expbegin].text == "return") {

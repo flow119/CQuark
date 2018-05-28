@@ -71,6 +71,12 @@ namespace CQuark.Compile {
                 int rightend = posend;
                 if(tkCur.text == "(") {
                     ICQ_Expression v;
+
+					string debug2 = "";
+					for(int i = oppos + 3; i <= posend; i++){
+						debug2 += tlist[i].text;
+					}
+
                     if(!Compiler_Expression(tlist, oppos + 3, posend, out v)) {
                         DebugUtil.LogError(tlist, "编译表达式失败", right, rightend);
                         return null;

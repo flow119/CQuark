@@ -37,11 +37,13 @@ namespace CQuark.Compile{
 					if(tokens[i].text == "namespace"){
 						int end = FindToken(tokens, i, "{");
 						Namespace = CombineReplace(tokens, i + 1, end - i - 1, TokenType.NAMESPACE).text;
+#if CQUARK_DEBUG
 						DebugUtil.Log("Namespace = " + Namespace);
+#endif
 						continue;
 					}else if(tokens[i].text == "using"){
 						int end = FindToken(tokens, i, ";");
-						CombineReplace(tokens, i + 1, end - i - 1, TokenType.NAMESPACE);
+						string Using = CombineReplace(tokens, i + 1, end - i - 1, TokenType.NAMESPACE).text;
 #if CQUARK_DEBUG
 						DebugUtil.Log("Using = " + Using);
 #endif
@@ -53,7 +55,7 @@ namespace CQuark.Compile{
 					outterClass = name;
 
 					#if CQUARK_DEBUG
-					DebugUtil.Log("(scriptPreParser)findclass:" + name + "(" + ibegin + "," + iend + ")");
+					DebugUtil.Log("(PreCompiler)findclass:" + name + "(" + i + ")");
 					#endif                    
 
 					string fullName = "";

@@ -23,7 +23,7 @@ namespace CQuark {
         public int line;
         public TokenType type;
         public override string ToString () {
-			return type + "|" + text + "|" + line + "," + pos;
+			return "      \"" + text + "\"      " + type + "(" + line + "," + pos + ")";
         }
         public string SourcePos () {
             return string.Format("@line{0},pos{1}", line, pos);

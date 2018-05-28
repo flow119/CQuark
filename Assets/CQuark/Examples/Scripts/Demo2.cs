@@ -8,7 +8,7 @@ public class Demo2 : MonoBehaviour {
 	void Start () {
 		CQuark.AppDomain.Initialize(false, true, false);
 
-		Execute1 ();
+//		Execute1 ();
 
 		//将函数Today()注册给脚本使用
         CQuark.AppDomain.RegisterType<Demo2>();
@@ -34,10 +34,10 @@ public class Demo2 : MonoBehaviour {
 	void Execute2(){
 		CQuarkParagraph block = new CQuarkParagraph();
 		CQuark.CQ_Value ret = block.Execute (
-			"UnityEngine.Debug.Log(\"V\" + (UnityEngine.Vector3.up + UnityEngine.Vector3.back));\n" +
-			"UnityEngine.Debug.Log(UnityEngine.Vector3.up.ToString());\n" +
+//			"UnityEngine.Debug.Log(\"V\" + (UnityEngine.Vector3.up + UnityEngine.Vector3.back));\n" +
+//			"UnityEngine.Debug.Log(UnityEngine.Vector3.up.ToString());\n" +
 			//TODO 括号的识别有问题
-//			"UnityEngine.Debug.Log((UnityEngine.Vector3.up + UnityEngine.Vector3.back).ToString());\n" +
+			"UnityEngine.Debug.Log((UnityEngine.Vector3.up + UnityEngine.Vector3.back).ToString());\n" +
 			"UnityEngine.Debug.Log(\"Today is \" + Demo2.Today());\n" +
             "return Demo2.Today();");
 //			"Debug.Log(\"V\" + (Vector3.up + Vector3.back));\n" +

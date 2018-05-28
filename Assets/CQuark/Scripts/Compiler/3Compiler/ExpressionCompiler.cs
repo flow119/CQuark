@@ -40,9 +40,11 @@ namespace CQuark.Compile{
 			
 			if(typeClass == null)
 				typeClass = new Type_Class(classname, bInterface, filename);
-			
-			(typeClass._class as Class_CQuark).functions.Clear();
-			(typeClass._class as Class_CQuark).members.Clear();
+
+			//支持partial
+//			(typeClass._class as Class_CQuark).functions.Clear();
+//			(typeClass._class as Class_CQuark).members.Clear();
+
 			//搜寻成员定义和函数
 			//定义语法            //Type id[= expr];
 			//函数语法            //Type id([Type id,]){block};
