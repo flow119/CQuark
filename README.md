@@ -41,7 +41,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 * 位运算符（<<,>>,&,|,^）
 * Attribute存下来（我个人的项目需要）
 * struct
-* 修复已知错误：(Vector3.up + Vector3.up).ToString()解析出错
+
 
 下下个版本
 
@@ -53,8 +53,16 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 ## 版本更新记录
 
+
+2018-05-28 v1.0.4
+
+    修改了命名空间。现在和C#一样using System.Collections.Generic会同时using System和System.Collections
+    注册工具不再注册Queue和Stack，改为自动注册
+    一个括号优先级的问题（Vector3.up + Vector3.up).ToString()能正确解析了
+
 2018-05-27 v1.0.3
-    完美支持命名空间
+
+    支持命名空间
     增加一个一键自动注册所有类型的工具（因为注册几乎没有开销，所以建议注册全部）
     支持partial关键字
     重构了编译部分的代码，看起来更优雅，使用起来更方便
