@@ -21,9 +21,9 @@ namespace CQuark.Compile {
                     if(start.Value.type == TokenType.PUNCTUATION) {
                         if(start.Value.text == "{")
                             depstyle = 2;
-                        if(start.Value.text == "(")
+                        else if(start.Value.text == "(")
                             depstyle = 1;
-                        if(start.Value.text == "[")
+                        else if(start.Value.text == "[")
                             depstyle = 1;
                         //bdepstart = true;
                     }
@@ -596,7 +596,7 @@ namespace CQuark.Compile {
                         max = 10;
                         break;
                     case "(":
-                        max = 9;//提高括弧的处理顺序到11，已回滚此修改
+                        max = 11;//提高括弧的处理顺序9到11，已回滚此修改
                         //表达式识别存在缺陷，并非单纯的改动可以解决，可能造成其他的不明显bug
                         break;
                     case "as":

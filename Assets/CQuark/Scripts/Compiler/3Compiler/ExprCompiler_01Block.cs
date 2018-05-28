@@ -65,8 +65,9 @@ namespace CQuark.Compile {
             }
             else if(values.Count > 1) {
                 CQ_Expression_Block block = new CQ_Expression_Block(pos, end, tlist[pos].line, tlist[end].line);
-                foreach(var v in values)
+                foreach(var v in values){
                     block._expressions.Add(v);
+				}
                 value = block;
             }
             return true;
@@ -80,11 +81,6 @@ namespace CQuark.Compile {
             }
             int begin = pos;
             value = null;
-
-			string debug = "";
-			for(int i = pos; i <= posend; i++){
-				debug += tlist[i].text;
-			}
 
             List<ICQ_Expression> values = new List<ICQ_Expression>();
             do {
@@ -115,11 +111,6 @@ namespace CQuark.Compile {
                     if(bMath) {
                         end = posend;
                         //如果表达式一次搞不完，那肯定是优先级问题
-						string debug3 = "";
-						for(int i = begin; i <= posend; i++){
-							debug3 += tlist[i].text;
-						}
-						DebugUtil.Log(debug3);
 
                         value = Compiler_Expression_Math(tlist, begin, posend);
                         return true;

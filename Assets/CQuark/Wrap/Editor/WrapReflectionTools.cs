@@ -273,7 +273,9 @@ public class WrapReflectionTools {
 					   	|| t.Name == "UInt16"
 					   	|| t.Name == "Byte"
 					   	|| t.Name == "SByte"
-					   	|| t.Name == "Char")
+					   	|| t.Name == "Char"
+					   || t.Name == "Stack"
+					   || t.Name == "Queue")
 							continue;
 
 						systemType.Add(t);

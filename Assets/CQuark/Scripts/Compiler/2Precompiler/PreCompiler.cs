@@ -104,7 +104,13 @@ namespace CQuark.Compile{
 				if(tokens[i].type == TokenType.NAMESPACE){
 					if(usingNamespace == null)
 						usingNamespace = new List<string>();
-					usingNamespace.Add(tokens[i].text);
+
+					//C#中命名空间如果using System.Collections.Generic。也会同时using了System,System.Collections
+					ClassHeader header = new ClassHeader(tokens[i].text);
+					for(int j = 0; j < header.split.Length; j++){
+						if(!usingNamespace.Contains(header.split[j]))
+							usingNamespace.Add(header.split[j]);
+					}
 				}
 			}
 			string[] usingNamespaceArray = usingNamespace != null ? usingNamespace.ToArray() : null;
