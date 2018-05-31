@@ -37,11 +37,12 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 下个版本
 
-* 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
+* 数组自动注册、支持List、Dictionary内嵌套数组
+* Action和Func的泛型自动注册，支持delegate
 * 位运算符（<<,>>,&,|,^）
 * Attribute存下来（我个人的项目需要）
 * struct
-
+* 补充逻辑运算符的Wrap，补充T,T[],ref,out,List,IEnumurator等
 
 下下个版本
 
@@ -53,6 +54,10 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
 
 ## 版本更新记录
 
+2018-05-31 v1.1.0
+
+    增加一个Action的测试用例
+    发布release版本
 
 2018-05-28 v1.0.4
 
@@ -123,7 +128,7 @@ CQuark（西瓜） 是一个简单的C#语法的脚本解析器。可以用于Un
     新增Index的Wrap
 
 2018-04-09 v0.9.1
-
+l
     RegistMethod被废除，方法不再需要注册，只需要注册所在的类即可。
     Example用4.7.2重新开发。
     
