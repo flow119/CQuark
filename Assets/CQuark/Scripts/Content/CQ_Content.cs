@@ -64,36 +64,36 @@ namespace CQuark {
         public void InStack(CQ_Content expr)
         {
 
-            if (stackContent.Count > 0 && stackContent.Peek() == expr)
-            {
-                throw new Exception("InStackContent error");
-            }
-            stackContent.Push(expr);
+//            if (stackContent.Count > 0 && stackContent.Peek() == expr)
+//            {
+//                throw new Exception("InStackContent error");
+//            }
+//            stackContent.Push(expr);
         }
         public void OutStack(CQ_Content expr)
         {        
-            if (stackContent.Peek() != expr)
-            {
-                throw new Exception("OutStackContent error:" + expr.ToString() + " err:" + stackContent.Peek().ToString());
-            }
-            stackContent.Pop();
+//            if (stackContent.Peek() != expr)
+//            {
+//                throw new Exception("OutStackContent error:" + expr.ToString() + " err:" + stackContent.Peek().ToString());
+//            }
+//            stackContent.Pop();
         }
         public void InStack(ICQ_Expression expr)
         {       
-            if (stackExpr.Count > 0 && stackExpr.Peek() == expr)
-            {
-                throw new Exception("InStack error");
-            }
-            stackExpr.Push(expr);
+//            if (stackExpr.Count > 0 && stackExpr.Peek() == expr)
+//            {
+//                throw new Exception("InStack error");
+//            }
+//            stackExpr.Push(expr);
         }
         public void OutStack(ICQ_Expression expr)
         {       
-			if (stackExpr.Peek() != expr)
-            {
-				throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
-
-            }
-            stackExpr.Pop();
+//			if (stackExpr.Peek() != expr)
+//            {
+//				throw new Exception("OutStack error:" + expr.ToString() + " err:" + stackExpr.Peek().ToString());
+//
+//            }
+//            stackExpr.Pop();
         }
 #endif
         public int Record () {

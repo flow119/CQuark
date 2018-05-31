@@ -133,7 +133,6 @@ namespace CQuark{
 		//含命名空间的注册，除非是静态类，否则建议都走模板（比如Vector3 a;依然可以取出默认值）
 		public static void RegisterType<T> (string keyword) {
 			RegisterType(MakeIType<T>(keyword));
-			RegisterType(MakeIType<T[]>(keyword+"[]"));
 		}
 		//非静态类走这个函数注册不会报错，但是会取不到默认值
 		public static void RegisterType (Type type) {
@@ -203,59 +202,12 @@ namespace CQuark{
             }
 			if(str2itype.TryGetValue(keyword, out ret)) 
 				return ret;
-			if(keyword[keyword.Length - 1] == '>') {
-			    int iis = keyword.IndexOf('<');
-			    string func = keyword.Substring(0, iis);
-			    List<string> _types = new List<string>();
-			    int istart = iis + 1;
-			    int inow = istart;
-			    int dep = 0;
-			    while(inow < keyword.Length) {
-			        if(keyword[inow] == '<') {
-			            dep++;
-			        }
-			        if(keyword[inow] == '>') {
-			            dep--;
-			            if(dep < 0) {
-			                _types.Add(keyword.Substring(istart, inow - istart));
-			                break;
-			            }
-			        }
 
-			        if(keyword[inow] == ',' && dep == 0) {
-			            _types.Add(keyword.Substring(istart, inow - istart));
-			            istart = inow + 1;
-			            inow = istart;
-			            continue; ;
-			        }
-
-			        inow++;
-			    }
-
-			    //var funk = keyword.Split(new char[] { '<', '>', ',' }, StringSplitOptions.RemoveEmptyEntries);
-				if(str2itype.ContainsKey(func)) {
-			        Type gentype = GetTypeByKeyword(func).typeBridge;
-			        if(gentype.IsGenericTypeDefinition) {
-			            Type[] types = new Type[_types.Count];
-			            for(int i = 0; i < types.Length; i++) {
-			                TypeBridge t = GetTypeByKeyword(_types[i]).typeBridge;
-			                Type rt = t;
-			                if(rt == null && t != null) {
-			                    rt = typeof(object);
-			                }
-			                types[i] = rt;
-			            }
-			            Type IType = gentype.MakeGenericType(types);
-			            RegisterType(MakeIType(IType, keyword));
-			            return GetTypeByKeyword(keyword);
-			        }
-			    }
-			}
-			//TODO反射找类
-			DebugUtil.LogError("(CQScript)类型未注册:" + keyword);
+			DebugUtil.LogError("类型未注册:" + keyword);
 			return null;
         }
-        public static IType GetTypeByKeywordQuiet (string keyword) {
+
+		public static IType GetTypeByKeywordQuiet (string keyword) {
             IType ret = null;
 			if(str2itype.TryGetValue(keyword, out ret) == false) {
                 return null;

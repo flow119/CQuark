@@ -268,34 +268,85 @@ namespace CQuark.Compile{
 				}
 			}
 		}
-		//合并模板
+		//合并数组、模板
 		static void CombineTempletType(IList<Token> tokens){
-			for(int start = 0; start < tokens.Count - 1; start++){
-				if(tokens[start].text == "<"){
-					bool isTemplet = true;
+			//先合并数组，因为[]里不能套<>或[]，而<>里可以套[]
+			for(int start = 1; start < tokens.Count - 1; start++){
+				if(tokens[start - 1].type == TokenType.TYPE && tokens[start].text == "["){
+					bool isArray = true;
 					int end = start + 1;
+					int dimension = 1;
+
+					string s = tokens[start - 1].text + tokens[start].text;
+
 					for(; end < tokens.Count - 1; ){
-						if(tokens[end].type == TokenType.TYPE){// || tokens[end].type == TokenType.IDENTIFIER){
-							if (tokens[end + 1].text == ".")//<A.b>
-								end += 2;
-							else if (tokens[end + 1].text == ",")//<A, B>
-								end += 2;
-							else if (tokens[end + 1].text == ">")
-								break;
-							else{
-								isTemplet = false;
-								break;
-							}
-						}else{
-							isTemplet = false;
+						s += tokens[end].text;
+
+						if (tokens[end].text == ","){//多维数组
+							end += 1;
+							dimension ++;
+						}
+						else if (tokens[end].text == "]"){//直接break即可，如果有int[][]，那么下一个循环会走到，即：int[]是一个类，（int[]）[]是一个类
+							break;
+						}
+						else{
+							isArray = false;
 							break;
 						}
 					}
-					if(isTemplet){
-						CombineReplace(tokens, start - 1, end - start + 3, tokens[start - 1].type);
+					if(isArray){
+						Type t = AppDomain.GetTypeByKeywordQuiet(tokens[start - 1].text).typeBridge.type;
+//						CombineReplace(tokens, start - 1, end - start + 2, TokenType.TYPE);//XX[,]
+						string keywords = Combine(tokens, start - 1, end - start + 2);
+						if(!AppDomain.ContainsType(keywords)){
+							Type tArray = dimension == 1 ? t.MakeArrayType() : t.MakeArrayType(dimension);
+							AppDomain.RegisterType(tArray, keywords);
+							DebugUtil.Log(tArray.ToString() + keywords);
+						}
 					}
 				}
 			}
+			//再合并List<>,Queue<>,Stack<>,Dictionary<,>等
+			bool hasGeneric = false;
+			List<Type> types = new List<Type>();//避免GC，放外面
+			do {
+				for (int start = 1; start < tokens.Count - 1; start++) {
+					if (tokens [start].text == "<") {
+						bool isTemplet = true;
+						int end = start + 1;
+						types.Clear();
+						for (; end < tokens.Count - 1;) {
+							if (tokens [end].type == TokenType.TYPE) {// || tokens[end].type == TokenType.IDENTIFIER){
+								if(tokens [start - 1].type == TokenType.TYPE)//如果是List，Queue,Dictionary之类的模版类型，需要再次注册
+									types.Add(AppDomain.GetTypeByKeyword(tokens[end].text).typeBridge.type);
+								if (tokens [end + 1].text == ",")//<A, B>
+									end += 2;
+								else if (tokens [end + 1].text == ">")
+									break;
+								else {
+									isTemplet = false;
+									break;
+								}
+							} else {
+								isTemplet = false;
+								break;
+							}
+						}
+						if (isTemplet) {
+							if(tokens [start - 1].type == TokenType.TYPE){
+								Type func = AppDomain.GetTypeByKeyword(tokens [start - 1].text).typeBridge.type;
+								Type genType = func.MakeGenericType(types.ToArray());
+								CombineReplace (tokens, start - 1, end - start + 3, TokenType.TYPE);//Type看前一个token。比如List<x,y>是类型
+								AppDomain.RegisterType(genType, tokens[start - 1].text);
+								DebugUtil.Log(genType.ToString());
+							}else{
+								CombineReplace (tokens, start - 1, end - start + 3, TokenType.IDENTIFIER);//Type看前一个token。比如GetComponent<x>是标识符
+							}
+							hasGeneric = true;
+						}
+					}
+				}
+			} while(hasGeneric);//如果有<>，那么可能一次脱不完，比如Dictionary<int, List<int>>
 		}
 
 #region Utility
