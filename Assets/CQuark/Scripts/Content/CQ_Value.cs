@@ -354,6 +354,18 @@ namespace CQuark {
         public static bool operator != (CQ_Value a, CQ_Value b) {
 			return a.m_stype != b.m_stype || a._obj != b._obj || a._num != b._num || a._isNum != b._isNum;
         }
+
+		public override bool Equals (Object b)
+		{
+			if(b is CQ_Value)
+				return this == (CQ_Value) b;
+			return false;
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode ();
+		}
     }
 }
 
