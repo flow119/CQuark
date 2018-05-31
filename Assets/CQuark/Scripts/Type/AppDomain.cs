@@ -26,6 +26,7 @@ namespace CQuark{
 			RegisterType(new Type_Bool());
 			RegisterType(new Type_Lambda());
 			RegisterType(new Type_Delegate());
+			str2itype["null"] = new Type_NULL();
 			
 			RegisterType<double>("double");
 			RegisterType<float>("float");
@@ -46,8 +47,9 @@ namespace CQuark{
 			RegisterType(typeof(Dictionary<,>), "System.Collections.Generic.Dictionary");
 			RegisterType(typeof(Stack<>), "System.Collections.Stack");
 			RegisterType(typeof(Queue<>), "System.Collections.Queue");
-			
-			str2itype["null"] = new Type_NULL();
+
+			RegisterType<System.Action> ();
+
 
 			if(registerSystem){
 				RegisterTypes.RegisterSystemTypes();
