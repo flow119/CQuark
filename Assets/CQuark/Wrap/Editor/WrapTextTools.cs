@@ -160,7 +160,7 @@ public class WrapTextTools  {
     public static string Constructor2PartStr (string classFullName, List<Method> constructor) {
         string wrapNew = "";
         for(int i = 0; i < constructor.Count; i++) {
-            if(!IsSupported(constructor[i].m_returnType) || !IsSupported(constructor[i].m_inType))
+			if(constructor[i].m_returnType != null && !IsSupported(constructor[i].m_returnType) || !IsSupported(constructor[i].m_inType))
                 continue;
 
             if(constructor[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
@@ -193,7 +193,7 @@ public class WrapTextTools  {
         for(int i = 0; i < staticMethods.Count; i++) {
             if(staticMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!IsSupported(staticMethods[i].m_returnType) || !IsSupported(staticMethods[i].m_inType))
+			if(staticMethods[i].m_returnType != null && !IsSupported(staticMethods[i].m_returnType) || !IsSupported(staticMethods[i].m_inType))
                 continue;
 
             if(staticMethods[i].m_inType.Length == 0)
@@ -240,7 +240,7 @@ public class WrapTextTools  {
         for(int i = 0; i < instanceMethods.Count; i++) {
             if(instanceMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!IsSupported(instanceMethods[i].m_returnType) || !IsSupported(instanceMethods[i].m_inType))
+			if(instanceMethods[i].m_returnType != null && !IsSupported(instanceMethods[i].m_returnType) || !IsSupported(instanceMethods[i].m_inType))
                 continue;
 
             if(instanceMethods[i].m_inType.Length == 0)
@@ -314,7 +314,7 @@ public class WrapTextTools  {
         for(int i = 0; i < indexMethods.Count; i++) {
             if(indexMethods[i].m_obsolete && WrapMakerGUI.m_ignoreObsolete)
                 continue;
-            if(!IsSupported(indexMethods[i].m_returnType) || !IsSupported(indexMethods[i].m_inType))
+			if(indexMethods[i].m_returnType != null && !IsSupported(indexMethods[i].m_returnType) || !IsSupported(indexMethods[i].m_inType))
                 continue;
             //TODO 可能有多位数组this[x,y]
             if(indexMethods[i].m_methodType == "IndexGet") {

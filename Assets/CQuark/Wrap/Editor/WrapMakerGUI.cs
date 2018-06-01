@@ -52,7 +52,11 @@ public class WrapMakerGUI : EditorWindow {
     }
     #endregion
 
-
+	string RegisterGenFolder{
+		get{
+			return Application.dataPath + "/CQuark/Wrap/Register";
+		}
+	}
 	string WrapGenFolder{
 		get{
 			return Application.dataPath + "/CQuark/Wrap/Generate";
@@ -91,7 +95,10 @@ public class WrapMakerGUI : EditorWindow {
 		text = text.Replace("{RegisterSystemTypes}", output[0]);  
 		text = text.Replace("{RegisterUnityTypes}", output[1]);  
 		text = text.Replace("{RegisterCustomTypes}", output[2]);  
-		WrapTextTools.WriteAllText(WrapGenFolder, "RegisterTypes.cs", text);
+		if(!Directory.Exists(RegisterGenFolder)){
+			Directory.CreateDirectory(RegisterGenFolder);
+		}
+		WrapTextTools.WriteAllText(RegisterGenFolder, "RegisterTypes.cs", text);
 		AssetDatabase.Refresh();
 	}
 
